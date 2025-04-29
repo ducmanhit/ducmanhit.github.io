@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+        <!-- Nhạc -->
+
+    <meta charset="UTF-8">
+    <title>Phương Thức Thanh Toán</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <style>
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #music-control:hover {
+            transform: scale(1.1);
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <button id="music-control" aria-label="Toggle music">
+        <svg class="icon" id="play-icon" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg class="icon" id="pause-icon" viewBox="0 0 24 24" style="display: none;">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+    </button>
+
+    <audio id="music" loop autoplay>
+        <source src="anhthanhnien.mp3" type="audio/mpeg">
+    </audio>
+    <meta charset="UTF-8">
+    <title>Home Button</title>
+    <style>
+        #home-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+
+        #home-button:hover {
+            transform: scale(1.1);
+            background-color: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f5f5f7;
+        }
+
+        
+    </style>
+</head>
+    <!-- Nút Trang Chủ -->
+<body>
+    <a href="https://ducmanh.net/" id="home-button" aria-label="Go to homepage">
+        <svg class="icon" viewBox="0 0 24 24">
+            <path d="M3 12l9-9 9 9M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+        </svg>
+    </a>
+
+    <script>
+        const music = document.getElementById('music');
+        const musicControl = document.getElementById('music-control');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        let isPlaying = false;
+
+        musicControl.addEventListener('click', toggleMusic);
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            } else {
+                music.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Preload music
+        music.load();
+    </script>
+    <title>Phương Thức Thanh Toán</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f5f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #86868b;
+            letter-spacing: -0.02em;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .payment-card {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .bank-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 24px;
+        }
+
+        .payment-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .payment-info {
+            margin: 16px 0;
+        }
+
+        .label {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .value {
+            font-size: 17px;
+            color: #1d1d1f;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 980px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #0077ED;
+            transform: scale(1.05);
+        }
+
+        .qr-btn {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qr-btn:hover {
+            background: #1d1d1f;
+            transform: scale(1.02);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            margin: 180px auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f5f5f7;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #1d1d1f;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #e5e5e5;
+        }
+
+        .qr-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .success-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Phương Thức Thanh Toán</h1>
+            <div class="subtitle">Chọn phương thức thanh toán phù hợp.</div>
+                </div>
+        <div class="payment-grid">
+            <!-- VietcomBank -->
+            <div class="payment-card">
+                <img src="tech.png" alt="VietcomBank" class="bank-logo">
+                <div class="payment-title">Techcombank</div>
+                <div class="payment-info">
+                    <div class="label">Số tài khoản</div>
+                    <div class="value">
+                        4609686868
+                        <button class="copy-btn" onclick="copyText('4609686868')">Copy</button>
+                    </div>
+                </div>
+                <div class="payment-info">
+                    <div class="label">Tên tài khoản</div>
+                    <div class="value">
+                        NONG DUC MANH
+                        <button class="copy-btn" onclick="copyText('NONG DUC MANH')">Copy</button>
+                    </div>
+                </div>
+                <button class="qr-btn" onclick="showQR('vcb')">Xem mã QR</button>
+            </div>
+
+            <!-- MoMo -->
+            <div class="payment-card">
+                <img src="momologo.png" alt="MoMo" class="bank-logo">
+                <div class="payment-title">MoMo</div>
+                <div class="payment-info">
+                    <div class="label">Số tài khoản</div>
+                    <div class="value">
+                        0397373696
+                        <button class="copy-btn" onclick="copyText('0397373696')">Copy</button>
+                    </div>
+                </div>
+                <div class="payment-info">
+                    <div class="label">Tên tài khoản</div>
+                    <div class="value">
+                        NONG DUC MANH
+                        <button class="copy-btn" onclick="copyText('NONG DUC MANH')">Copy</button>
+                    </div>
+                </div>
+                <button class="qr-btn" onclick="showQR('momo')">Xem mã QR</button>
+            </div>
+
+            <!-- ZaloPay -->
+            <div class="payment-card">
+                <img src="zalopay.png" alt="ZaloPay" class="bank-logo">
+                <div class="payment-title">ZaloPay</div>
+                <div class="payment-info">
+                    <div class="label">Số tài khoản</div>
+                    <div class="value">
+                        0397373696
+                        <button class="copy-btn" onclick="copyText('0397373696')">Copy</button>
+                    </div>
+                </div>
+                <div class="payment-info">
+                    <div class="label">Tên tài khoản</div>
+                    <div class="value">
+                        NONG DUC MANH
+                        <button class="copy-btn" onclick="copyText('NONG DUC MANH')">Copy</button>
+                    </div>
+                </div>
+                <button class="qr-btn" onclick="showQR('zalo')">Xem mã QR</button>
+            </div>
+
+            <!-- BIDV -->
+            <div class="payment-card">
+                <img src="vcb.png" alt="BIDV" class="bank-logo">
+                <div class="payment-title">Vietcombank</div>
+                <div class="payment-info">
+                    <div class="label">Số tài khoản</div>
+                    <div class="value">
+                        1032836214
+                        <button class="copy-btn" onclick="copyText('1032836214')">Copy</button>
+                    </div>
+                </div>
+                <div class="payment-info">
+                    <div class="label">Tên tài khoản</div>
+                    <div class="value">
+                        NONG DUC MANH
+                        <button class="copy-btn" onclick="copyText('NONG DUC MANH')">Copy</button>
+                    </div>
+                </div>
+                <button class="qr-btn" onclick="showQR('bidv')">Xem mã QR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeQR()">&times;</button>
+            <img id="qrImage" src="" alt="QR Code" class="qr-image">
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="success-toast">Đã sao chép</div>
+
+    <script>
+        const qrCodes = {
+            vcb: 'techqr.png',
+            momo: 'momoqr.png',
+            zalo: 'zalopayqr.png',
+            bidv: 'vcbqr.png'
+        };
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+
+        function showQR(type) {
+            const modal = document.getElementById('qrModal');
+            const qrImage = document.getElementById('qrImage');
+            
+            qrImage.src = qrCodes[type];
+            modal.style.display = 'flex';
+            
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeQR() {
+            const modal = document.getElementById('qrModal');
+            modal.classList.remove('show');
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('qrModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQR();
+            }
+        });
+    </script>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    
+</body>
+</html>

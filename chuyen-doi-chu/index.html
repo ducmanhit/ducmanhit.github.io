@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ chuyển đổi chữ</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .container:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+            background: linear-gradient(90deg, #007aff, #5856d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .editor-container {
+            position: relative;
+            margin-bottom: 32px;
+        }
+        
+        .text-area {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #d2d2d7;
+            font-size: 16px;
+            color: #1d1d1f;
+            background-color: white;
+            height: 120px;
+            resize: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+        }
+        
+        .tools-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .format-options {
+            display: flex;
+            gap: 6px;
+            border-radius: 10px;
+            background: #f5f5f7;
+            padding: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .format-btn {
+            border: none;
+            background: transparent;
+            color: #1d1d1f;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .format-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .format-btn.active {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+        }
+        
+        .style-options {
+            display: flex;
+            gap: 6px;
+            border-radius: 10px;
+            background: #f5f5f7;
+            padding: 6px;
+        }
+        
+        .style-btn {
+            border: none;
+            background: transparent;
+            color: #1d1d1f;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .style-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .style-btn.active {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-bold {
+            font-weight: bold;
+        }
+        
+        .btn-italic {
+            font-style: italic;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .clear-btn {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        
+        .clear-btn:hover {
+            background-color: #e8e8ed;
+        }
+        
+        .copy-btn {
+            background-color: #0071e3;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background-color: #0077ed;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+        }
+        
+        .copy-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .copy-status.show {
+            opacity: 1;
+            animation: fadeInOut 1.5s ease;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #6e6e73;
+            margin-top: 20px;
+        }
+        
+        /* Apply bold and italic styles */
+        .text-bold {
+            font-weight: bold;
+        }
+        
+        .text-italic {
+            font-style: italic;
+        }
+        
+        /* Apple-style background gradient */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(108, 99, 255, 0.1), rgba(0, 122, 255, 0.1));
+            z-index: -1;
+        }
+        
+        .background-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, #0a84ff, #30c8ff);
+            top: 20%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(45deg, #5e5ce6, #bf5af2);
+            bottom: 10%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.05);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+            
+            .tools-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .format-options, .style-options {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="background-shape shape-1"></div>
+    <div class="background-shape shape-2"></div>
+    
+    <div class="container">
+        <h1>Công cụ chuyển đổi chữ</h1>
+        
+        <div class="tools-row">
+            <div class="format-options">
+                <button class="format-btn active" data-type="normal">Bình thường</button>
+                <button class="format-btn" data-type="uppercase">CHỮ HOA</button>
+                <button class="format-btn" data-type="lowercase">chữ thường</button>
+                <button class="format-btn" data-type="capitalize">Viết Hoa Đầu Từ</button>
+                <button class="format-btn" data-type="sentence">Viết hoa câu</button>
+                <button class="format-btn" data-type="alternate">cHữ XeN kẼ</button>
+                <button class="format-btn" data-type="reverse">ữhc iộlgN</button>
+            </div>
+            
+            <div class="style-options">
+                <button class="style-btn btn-bold" data-style="bold">B</button>
+                <button class="style-btn btn-italic" data-style="italic">I</button>
+            </div>
+        </div>
+        
+        <div class="editor-container">
+            <textarea id="textEditor" class="text-area" placeholder="Nhập hoặc dán văn bản tại đây..."></textarea>
+            <div id="copyStatus" class="copy-status">Đã sao chép!</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn clear-btn" onclick="clearText()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Xóa
+            </button>
+            <button class="action-btn copy-btn" onclick="copyText()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Sao chép
+            </button>
+        </div>
+        
+        <div class="footer">Thiết kế bởi Ducmanh.net</div>
+    </div>
+
+    <script>
+        // Các biến lưu trạng thái
+        let currentFormat = 'normal';
+        let isBold = false;
+        let isItalic = false;
+        
+        // Lấy tham chiếu đến các phần tử DOM
+        const textEditor = document.getElementById('textEditor');
+        const formatButtons = document.querySelectorAll('.format-btn');
+        const styleButtons = document.querySelectorAll('.style-btn');
+        const copyStatus = document.getElementById('copyStatus');
+        
+        // Thiết lập sự kiện cho các nút định dạng (uppercase, lowercase, v.v.)
+        formatButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Đánh dấu nút được chọn
+                formatButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Lưu loại định dạng hiện tại
+                currentFormat = this.getAttribute('data-type');
+                
+                // Áp dụng định dạng
+                applyFormatting();
+            });
+        });
+        
+        // Thiết lập sự kiện cho các nút kiểu (đậm, nghiêng)
+        styleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const style = this.getAttribute('data-style');
+                
+                // Đảo trạng thái
+                if (style === 'bold') {
+                    isBold = !isBold;
+                    this.classList.toggle('active');
+                } else if (style === 'italic') {
+                    isItalic = !isItalic;
+                    this.classList.toggle('active');
+                }
+                
+                // Áp dụng định dạng
+                applyStyles();
+            });
+        });
+        
+        // Sự kiện khi nội dung thay đổi
+        textEditor.addEventListener('input', function() {
+            applyFormatting();
+        });
+        
+        // Hàm áp dụng định dạng (uppercase, lowercase, v.v.)
+        function applyFormatting() {
+            let text = textEditor.value;
+            let formattedText = text;
+            
+            // Áp dụng định dạng dựa trên loại đã chọn
+            switch (currentFormat) {
+                case 'uppercase':
+                    formattedText = text.toUpperCase();
+                    break;
+                case 'lowercase':
+                    formattedText = text.toLowerCase();
+                    break;
+                case 'capitalize':
+                    formattedText = text.split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join(' ');
+                    break;
+                case 'sentence':
+                    formattedText = text.toLowerCase()
+                        .replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
+                    break;
+                case 'alternate':
+                    formattedText = text.split('')
+                        .map((char, index) => index % 2 === 0 ? char.toLowerCase() : char.toUpperCase())
+                        .join('');
+                    break;
+                case 'reverse':
+                    formattedText = text.split('').reverse().join('');
+                    break;
+                default:
+                    formattedText = text;
+            }
+            
+            // Nếu định dạng đã thay đổi, cập nhật nội dung
+            if (formattedText !== text) {
+                textEditor.value = formattedText;
+            }
+            
+            // Áp dụng kiểu (đậm, nghiêng)
+            applyStyles();
+        }
+        
+        // Hàm áp dụng kiểu (đậm, nghiêng)
+        function applyStyles() {
+            // Xóa tất cả kiểu hiện tại
+            textEditor.classList.remove('text-bold', 'text-italic');
+            
+            // Thêm kiểu dựa trên trạng thái
+            if (isBold) {
+                textEditor.classList.add('text-bold');
+            }
+            
+            if (isItalic) {
+                textEditor.classList.add('text-italic');
+            }
+        }
+        
+        // Hàm xóa văn bản
+        function clearText() {
+            textEditor.value = '';
+            // Thêm hiệu ứng rung nhẹ
+            textEditor.classList.add('shake');
+            setTimeout(() => {
+                textEditor.classList.remove('shake');
+            }, 500);
+        }
+        
+        // Hàm sao chép văn bản
+        function copyText() {
+            if (textEditor.value.trim() === '') return;
+            
+            // Chọn văn bản
+            textEditor.select();
+            textEditor.setSelectionRange(0, 99999);
+            
+            // Sao chép vào clipboard
+            navigator.clipboard.writeText(textEditor.value).then(() => {
+                // Hiệu ứng viền xanh
+                textEditor.style.borderColor = '#34c759';
+                textEditor.style.boxShadow = '0 0 0 3px rgba(52, 199, 89, 0.3)';
+                
+                // Hiển thị trạng thái đã sao chép
+                copyStatus.classList.add('show');
+                
+                // Đặt lại trạng thái sau 2 giây
+                setTimeout(() => {
+                    textEditor.style.borderColor = '';
+                    textEditor.style.boxShadow = '';
+                    copyStatus.classList.remove('show');
+                }, 1500);
+            });
+        }
+        
+        // Tạo hiệu ứng lướt chuột đẹp mắt
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'all 0.2s ease';
+            });
+            
+            button.addEventListener('mouseout', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Hiệu ứng nhấp chuột
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            button.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Tạo hiệu ứng cho container khi di chuyển chuột
+        const container = document.querySelector('.container');
+        document.addEventListener('mousemove', function(e) {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            container.style.transform = `translateY(-5px) rotateX(${y * 2}deg) rotateY(${-x * 2}deg)`;
+        });
+        
+        document.addEventListener('mouseleave', function() {
+            container.style.transform = 'translateY(-5px) rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
+</body>
+</html>

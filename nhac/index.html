@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Background particles effect -->
+        <div class="particles-container" id="particles"></div>
+
+        <div class="music-player">
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+                <div class="logo-container">
+                    <div class="app-logo">
+                        <i class="fas fa-compact-disc rotating"></i>
+                    </div>
+                    <h1 class="app-name">Aurora<span>Music</span></h1>
+                </div>
+                
+                <div class="menu-container">
+                    <div class="menu-item active" data-tab="main">
+                        <i class="fas fa-home"></i>
+                        <span>Trang Chính</span>
+                    </div>
+                    <div class="menu-item" data-tab="library">
+                        <i class="fas fa-music"></i>
+                        <span>Thư Viện</span>
+                    </div>
+                    <div class="menu-item" data-tab="data">
+                        <i class="fas fa-folder"></i>
+                        <span>Dữ Liệu</span>
+                    </div>
+                    <div class="menu-item" data-tab="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài Đặt</span>
+                    </div>
+                </div>
+                
+                <div class="recently-played">
+                    <h3>Gần Đây</h3>
+                    <ul class="recent-list" id="recentList">
+                        <!-- Recent songs will be added here -->
+                        <li class="empty-list">Chưa có bài hát nào</li>
+                    </ul>
+                </div>
+                
+                <div class="theme-toggle">
+                    <span>Giao Diện</span>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Tab Content -->
+                <div class="tab-content active" id="main-tab">
+                    <div class="header-section">
+                        <h2 class="section-title">Phát Hiện Tại</h2>
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Tìm kiếm bài hát...">
+                        </div>
+                    </div>
+                    
+                    <div class="now-playing-container">
+                        <div class="album-display">
+                            <div class="album-reflection"></div>
+                            <div class="album-art-container">
+                                <img id="albumArt" src="default-album.jpg" alt="Album Art">
+                                <div class="vinyl-effect">
+                                    <div class="vinyl-disc"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="song-info">
+                            <h2 id="songTitle">Chưa chọn bài hát</h2>
+                            <p id="artistName">Chưa có nghệ sĩ</p>
+                            
+                            <div class="visualizer-container">
+                                <canvas id="audioVisualizer"></canvas>
+                            </div>
+                            
+                            <div class="player-controls">
+                                <div class="progress-container">
+                                    <span id="currentTime">0:00</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-buffer"></div>
+                                        <div class="progress" id="progress"></div>
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <span id="totalTime">0:00</span>
+                                </div>
+                                
+                                <div class="control-buttons">
+                                    <button id="shuffleBtn" class="control-btn">
+                                        <i class="fas fa-random"></i>
+                                    </button>
+                                    <button id="prevBtn" class="control-btn">
+                                        <i class="fas fa-step-backward"></i>
+                                    </button>
+                                    <button id="playBtn" class="control-btn play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button id="nextBtn" class="control-btn">
+                                        <i class="fas fa-step-forward"></i>
+                                    </button>
+                                    <button id="repeatBtn" class="control-btn">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="volume-container">
+                                    <i class="fas fa-volume-up" id="volumeIcon"></i>
+                                    <div class="volume-slider">
+                                        <div class="volume-bar">
+                                            <div class="volume-level" id="volumeLevel"></div>
+                                            <div class="volume-handle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="featured-songs">
+                        <h3>Bài Hát Đã Tải Lên</h3>
+                        <div class="songs-grid" id="featuredSongs">
+                            <!-- Songs will be added here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="library-tab">
+                    <div class="header-section">
+                        <h2 class="section-title">Thư Viện Nhạc</h2>
+                        <div class="filter-controls">
+                            <select id="sortOptions">
+                                <option value="nameAsc">Tên: A-Z</option>
+                                <option value="nameDesc">Tên: Z-A</option>
+                                <option value="dateAdded">Thời gian thêm</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="library-container">
+                        <div class="playlists-section">
+                            <div class="section-header">
+                                <h3>Danh Sách Phát</h3>
+                                <button class="action-button" id="createPlaylistBtn">
+                                    <i class="fas fa-plus"></i> Tạo mới
+                                </button>
+                            </div>
+                            <ul class="playlists-list" id="playlistsList">
+                                <li class="playlist-item active" data-playlist="all">
+                                    <i class="fas fa-list"></i>
+                                    <span>Tất cả bài hát</span>
+                                </li>
+                                <li class="playlist-item" data-playlist="favorites">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Yêu thích</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="songs-section">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Kéo thả hoặc nhấp để tải lên bài hát</p>
+                                <input type="file" id="uploadInput" accept="audio/*" multiple>
+                            </div>
+                            
+                            <div class="songs-table-container">
+                                <table class="songs-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">#</th>
+                                            <th width="5%"></th>
+                                            <th width="40%">Tên bài hát</th>
+                                            <th width="25%">Nghệ sĩ</th>
+                                            <th width="15%">Thời lượng</th>
+                                            <th width="10%">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="songsTableBody">
+                                        <!-- Songs will be added here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="data-tab">
+                    <div class="header-section">
+                        <h2 class="section-title">Quản Lý Dữ Liệu</h2>
+                    </div>
+                    
+                    <div class="data-container">
+                        <div class="file-explorer">
+                            <div class="section-header">
+                                <h3>Trình Duyệt Tệp</h3>
+                                <button class="action-button" id="selectFolderBtn">
+                                    <i class="fas fa-folder-open"></i> Chọn Thư Mục
+                                </button>
+                            </div>
+                            
+                            <div class="folder-structure" id="folderStructure">
+                                <div class="folder-item">
+                                    <i class="fas fa-folder"></i>
+                                    <span>Nhạc của tôi</span>
+                                </div>
+                                <div class="folder-path" id="currentPath">
+                                    <span>Thư mục gốc > Nhạc > Bộ sưu tập</span>
+                                </div>
+                            </div>
+                            
+                            <div class="files-container" id="filesContainer">
+                                <!-- This is where files will be displayed -->
+                                <div class="data-instructions">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>Để truy cập tệp nhạc trên thiết bị của bạn, hãy chọn thư mục nguồn bằng cách nhấp vào nút "Chọn Thư Mục" phía trên.</p>
+                                    <p>Hoặc bạn có thể kéo và thả tệp nhạc trực tiếp vào khu vực này.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="import-options">
+                            <h3>Tùy Chọn Nhập</h3>
+                            <div class="option-item">
+                                <label>
+                                    <input type="checkbox" id="organizeOption" checked>
+                                    Tự động sắp xếp theo nghệ sĩ/album
+                                </label>
+                            </div>
+                            <div class="option-item">
+                                <label>
+                                    <input type="checkbox" id="metadataOption" checked>
+                                    Trích xuất metadata
+                                </label>
+                            </div>
+                            <div class="option-item">
+                                <label>
+                                    <input type="checkbox" id="coverArtOption" checked>
+                                    Tìm kiếm ảnh bìa
+                                </label>
+                            </div>
+                            
+                            <button class="primary-button" id="importSelectedBtn">
+                                <i class="fas fa-file-import"></i> Nhập Đã Chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="settings-tab">
+                    <div class="header-section">
+                        <h2 class="section-title">Cài Đặt</h2>
+                    </div>
+                    
+                    <div class="settings-container">
+                        <div class="settings-group">
+                            <h3>Giao Diện</h3>
+                            <div class="setting-item">
+                                <span>Chế độ ban đêm</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="darkModeToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <span>Màu chủ đề</span>
+                                <div class="color-options">
+                                    <span class="color-option" style="background: linear-gradient(45deg, #ff3e78, #ff9b57);" data-theme="default"></span>
+                                    <span class="color-option" style="background: linear-gradient(45deg, #4facfe, #00f2fe);" data-theme="blue"></span>
+                                    <span class="color-option" style="background: linear-gradient(45deg, #11998e, #38ef7d);" data-theme="green"></span>
+                                    <span class="color-option" style="background: linear-gradient(45deg, #8e2de2, #4a00e0);" data-theme="purple"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <span>Hiệu ứng nền</span>
+                                <select id="backgroundEffect">
+                                    <option value="particles">Hạt động</option>
+                                    <option value="waves">Sóng</option>
+                                    <option value="gradient">Gradient</option>
+                                    <option value="none">Không có</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>Âm Thanh</h3>
+                            <div class="setting-item">
+                                <span>Bộ chỉnh âm</span>
+                                <select id="equalizerPreset">
+                                    <option value="normal">Bình thường</option>
+                                    <option value="pop">Pop</option>
+                                    <option value="rock">Rock</option>
+                                    <option value="jazz">Jazz</option>
+                                    <option value="classical">Classical</option>
+                                </select>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <span>Crossfade</span>
+                                <input type="range" min="0" max="10" value="2" id="crossfadeRange">
+                                <span class="range-value">2s</span>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <span>Normalization</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="normalizationToggle" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>Dữ Liệu</h3>
+                            <div class="setting-item">
+                                <span>Lưu trữ cục bộ</span>
+                                <div class="storage-info">
+                                    <div class="storage-bar">
+                                        <div class="storage-used" style="width: 35%"></div>
+                                    </div>
+                                    <span>2.1 GB / 5.0 GB</span>
+                                </div>
+                            </div>
+                            
+                            <button class="danger-button" id="clearDataBtn">
+                                <i class="fas fa-trash-alt"></i> Xóa dữ liệu lưu trữ
+                            </button>
+                            
+                            <button class="primary-button" id="exportDataBtn">
+                                <i class="fas fa-download"></i> Xuất danh sách phát
+                            </button>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>Thông Tin</h3>
+                            <div class="about-info">
+                                <p>Aurora Music Player v1.0.0</p>
+                                <p>© 2025 My GitHub Username</p>
+                                <a href="https://github.com/yourusername/aurora-music-player" target="_blank" class="github-link">
+                                    <i class="fab fa-github"></i> GitHub Repository
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal dialogs -->
+    <div class="modal" id="createPlaylistModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo Danh Sách Phát Mới</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="playlistName">Tên danh sách phát</label>
+                    <input type="text" id="playlistName" placeholder="Nhập tên...">
+                </div>
+                <div class="input-group">
+                    <label for="playlistDescription">Mô tả (không bắt buộc)</label>
+                    <textarea id="playlistDescription" placeholder="Nhập mô tả..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-button" id="cancelPlaylistBtn">Hủy</button>
+                <button class="primary-button" id="savePlaylistBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

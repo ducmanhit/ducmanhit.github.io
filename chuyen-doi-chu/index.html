@@ -3,535 +3,1517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ chuyển đổi chữ</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>TextMorph Glass - Công cụ chuyển đổi văn bản</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            /* Màu chính - Chế độ tối (mặc định) */
+            --primary-dark: #0a2a80;
+            --primary: #0e5bae;
+            --primary-light: #0e8bd5;
+            --white: #ffffff;
+            
+            /* Màu nền */
+            --bg: #040d2c;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
+            
+            /* Màu chữ */
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            
+            /* Hiệu ứng */
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            
+            /* Bo tròn */
+            --radius-sm: 0.5rem;
+            --radius: 0.75rem;
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --radius-xl: 2rem;
+            
+            /* Transition */
+            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Chế độ sáng */
+        body.light {
+            --bg: #f5f9ff;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(14, 91, 174, 0.2);
+            --text: #0a2a80;
+            --text-secondary: rgba(10, 42, 128, 0.7);
+            --shadow: 0 8px 32px 0 rgba(14, 91, 174, 0.15);
+        }
+        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
         }
         
         body {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        
-        .container:hover {
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-            transform: translateY(-5px);
-        }
-        
-        h1 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            text-align: center;
-            background: linear-gradient(90deg, #007aff, #5856d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        
-        .editor-container {
+            flex-direction: column;
+            background: linear-gradient(135deg, var(--bg) 0%, #0a1f4d 100%);
             position: relative;
-            margin-bottom: 32px;
+            overflow-x: hidden;
+            transition: background-color var(--transition), color var(--transition);
         }
         
-        .text-area {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #d2d2d7;
-            font-size: 16px;
-            color: #1d1d1f;
-            background-color: white;
-            height: 120px;
-            resize: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        body.light {
+            background: linear-gradient(135deg, var(--bg) 0%, #e1e9ff 100%);
         }
         
-        .text-area:focus {
-            outline: none;
-            border-color: #0071e3;
-            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
-        }
-        
-        .tools-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .format-options {
-            display: flex;
-            gap: 6px;
-            border-radius: 10px;
-            background: #f5f5f7;
-            padding: 6px;
-            flex-wrap: wrap;
-        }
-        
-        .format-btn {
-            border: none;
-            background: transparent;
-            color: #1d1d1f;
-            font-size: 14px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .format-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        
-        .format-btn.active {
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            font-weight: 500;
-        }
-        
-        .style-options {
-            display: flex;
-            gap: 6px;
-            border-radius: 10px;
-            background: #f5f5f7;
-            padding: 6px;
-        }
-        
-        .style-btn {
-            border: none;
-            background: transparent;
-            color: #1d1d1f;
-            font-size: 14px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .style-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        
-        .style-btn.active {
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-bold {
-            font-weight: bold;
-        }
-        
-        .btn-italic {
-            font-style: italic;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .action-btn {
-            flex: 1;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .action-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-        
-        .clear-btn {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-        }
-        
-        .clear-btn:hover {
-            background-color: #e8e8ed;
-        }
-        
-        .copy-btn {
-            background-color: #0071e3;
-            color: white;
-        }
-        
-        .copy-btn:hover {
-            background-color: #0077ed;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-        }
-        
-        .copy-status {
+        /* Các hình cầu trang trí */
+        .sphere {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        
-        .copy-status.show {
-            opacity: 1;
-            animation: fadeInOut 1.5s ease;
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
-        }
-        
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #6e6e73;
-            margin-top: 20px;
-        }
-        
-        /* Apply bold and italic styles */
-        .text-bold {
-            font-weight: bold;
-        }
-        
-        .text-italic {
-            font-style: italic;
-        }
-        
-        /* Apple-style background gradient */
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(108, 99, 255, 0.1), rgba(0, 122, 255, 0.1));
-            z-index: -1;
-        }
-        
-        .background-shape {
-            position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out;
+            background: radial-gradient(circle at 30% 30%, #0e8bd5, #0a2a80);
+            box-shadow: 0 0 60px rgba(14, 139, 213, 0.5);
+            z-index: 0;
         }
         
-        .shape-1 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(45deg, #0a84ff, #30c8ff);
-            top: 20%;
-            left: 15%;
-            animation-delay: 0s;
+        .sphere-1 {
+            top: 10%;
+            left: 10%;
+            width: 150px;
+            height: 150px;
+            animation: float 8s ease-in-out infinite;
         }
         
-        .shape-2 {
-            width: 350px;
-            height: 350px;
-            background: linear-gradient(45deg, #5e5ce6, #bf5af2);
+        .sphere-2 {
             bottom: 10%;
-            right: 10%;
-            animation-delay: -5s;
+            right: 15%;
+            width: 200px;
+            height: 200px;
+            animation: float 10s ease-in-out infinite 1s;
+        }
+        
+        .sphere-3 {
+            top: 60%;
+            left: 75%;
+            width: 100px;
+            height: 100px;
+            animation: float 7s ease-in-out infinite 0.5s;
+        }
+        
+        body.light .sphere {
+            opacity: 0.6;
         }
         
         @keyframes float {
             0%, 100% {
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
             50% {
-                transform: translateY(-30px) scale(1.05);
+                transform: translateY(-20px);
             }
         }
         
+        /* Hiệu ứng ánh sáng */
+        .light-beam {
+            position: absolute;
+            top: -10%;
+            left: 30%;
+            width: 40%;
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(14, 139, 213, 0.3), transparent);
+            transform: rotate(15deg);
+            filter: blur(30px);
+            z-index: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .navbar {
+            padding: 1.5rem 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+        
+        .logo {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 25%; /* Bo góc nhẹ hơn */
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(14, 139, 213, 0.5);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text);
+            transition: color var(--transition);
+        }
+        
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            color: var(--text);
+            padding: 0.5rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            box-shadow: 0 0 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .lang-dropdown {
+            position: relative;
+        }
+        
+        .lang-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .lang-btn:hover {
+            box-shadow: 0 0 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .lang-flag {
+            width: 20px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+        
+        .lang-dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            min-width: 150px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all var(--transition);
+            z-index: 100;
+        }
+        
+        .lang-dropdown.active .lang-dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: background-color var(--transition);
+        }
+        
+        .lang-option:hover {
+            background-color: rgba(14, 139, 213, 0.1);
+        }
+        
+        .main {
+            flex: 1;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .editor-container {
+                grid-template-columns: 3fr 2fr;
+            }
+        }
+        
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: background-color var(--transition), 
+                        border-color var(--transition), 
+                        box-shadow var(--transition);
+        }
+        
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            transition: border-color var(--transition);
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        .card-title i {
+            color: white;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .textarea-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .editor-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+            transition: all var(--transition);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        body.light .editor-textarea {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editor-textarea:focus {
+            outline: none;
+            border-color: #0e8bd5;
+            box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2);
+        }
+        
+        .char-count {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: color var(--transition), background-color var(--transition);
+        }
+        
+        body.light .char-count {
+            background: rgba(255, 255, 255, 0.7);
+            color: #0a2a80;
+            font-weight: 500;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(14, 139, 213, 0.5);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(14, 139, 213, 0.5);
+        }
+        
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: all var(--transition);
+        }
+        
+        body.light .btn-outline {
+            background: rgba(255, 255, 255, 0.7);
+            color: #0a2a80;
+            border-color: rgba(14, 91, 174, 0.3);
+            font-weight: 500;
+        }
+        
+        .btn-outline:hover {
+            border-color: #0e8bd5;
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
+        }
+        
+        body.light .btn-outline:hover {
+            border-color: #0e5bae;
+            color: #0e5bae;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        body.light .tool-btn {
+            background: rgba(255, 255, 255, 0.7);
+            color: #0a2a80;
+            border-color: rgba(14, 91, 174, 0.3);
+            font-weight: 600;
+        }
+        
+        .tool-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+        
+        .tool-btn:hover::before {
+            left: 100%;
+        }
+        
+        .tool-btn i {
+            color: #0e8bd5;
+            font-size: 1rem;
+        }
+        
+        body.light .tool-btn i {
+            color: #0a2a80;
+        }
+        
+        .tool-btn:hover {
+            border-color: #0e8bd5;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
+        }
+        
+        body.light .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #0e5bae;
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .tool-btn.active {
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
+        }
+        
+        .tool-btn.active i {
+            color: white;
+        }
+        
+        body.light .tool-btn.active {
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            color: white;
+        }
+        
+        body.light .tool-btn.active i {
+            color: white;
+        }
+        
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        
+        .toast {
+            background: var(--card-bg);
+            color: var(--text);
+            border-left: 4px solid #0e8bd5;
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            margin-top: 0.75rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(calc(100% + 2rem));
+            opacity: 0;
+            transition: all var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 1.25rem;
+            color: #0e8bd5;
+        }
+        
+        .toast.success {
+            border-left-color: #0e8bd5;
+        }
+        
+        .toast.warning {
+            border-left-color: #f72585;
+        }
+        
+        .toast.warning i {
+            color: #f72585;
+        }
+        
+        .footer {
+            padding: 1.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            transition: color var(--transition);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-link {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: color var(--transition);
+            cursor: pointer;
+        }
+        
+        .footer-link:hover {
+            color: #0e8bd5;
+        }
+        
+        /* Modal Styles - Cải tiến */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition), visibility var(--transition);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform var(--transition), opacity var(--transition);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
+            color: white;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            color: var(--text);
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        /* Thanh cuộn tùy chỉnh */
+        .modal-body::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #0e8bd5, #0a2a80);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #0a2a80, #0e8bd5);
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        
+        body.light .modal-body::-webkit-scrollbar-track {
+            background: rgba(14, 91, 174, 0.1);
+        }
+        
+        .modal-body h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0e8bd5;
+            font-weight: 600;
+        }
+        
+        .modal-body p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .modal-body ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        .modal-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Contact Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all var(--transition);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        body.light .form-control {
+            background: rgba(255, 255, 255, 0.5);
+            color: #0a2a80;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #0e8bd5;
+            box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-submit {
+            margin-top: 1rem;
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                padding: 24px;
-            }
-            
-            .tools-row {
+            .editor-actions {
                 flex-direction: column;
-                gap: 12px;
             }
             
-            .format-options, .style-options {
-                width: 100%;
-                justify-content: center;
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
             }
         }
     </style>
 </head>
-<body>
-    <div class="background"></div>
-    <div class="background-shape shape-1"></div>
-    <div class="background-shape shape-2"></div>
+<body class="light">
+    <!-- Các hình cầu trang trí -->
+    <div class="sphere sphere-1"></div>
+    <div class="sphere sphere-2"></div>
+    <div class="sphere sphere-3"></div>
     
-    <div class="container">
-        <h1>Công cụ chuyển đổi chữ</h1>
-        
-        <div class="tools-row">
-            <div class="format-options">
-                <button class="format-btn active" data-type="normal">Bình thường</button>
-                <button class="format-btn" data-type="uppercase">CHỮ HOA</button>
-                <button class="format-btn" data-type="lowercase">chữ thường</button>
-                <button class="format-btn" data-type="capitalize">Viết Hoa Đầu Từ</button>
-                <button class="format-btn" data-type="sentence">Viết hoa câu</button>
-                <button class="format-btn" data-type="alternate">cHữ XeN kẼ</button>
-                <button class="format-btn" data-type="reverse">ữhc iộlgN</button>
-            </div>
+    <!-- Hiệu ứng ánh sáng -->
+    <div class="light-beam"></div>
+    
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="#" class="logo-link">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image">
+                </div>
+                <span class="logo-text">TextMorph</span>
+            </a>
             
-            <div class="style-options">
-                <button class="style-btn btn-bold" data-style="bold">B</button>
-                <button class="style-btn btn-italic" data-style="italic">I</button>
+            <div class="navbar-actions">
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-btn" id="langBtn">
+                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" id="currentFlag">
+                        <span id="currentLang">Tiếng Việt</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="lang-dropdown-content">
+                        <a href="#" class="lang-option" data-lang="vi">
+                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag">
+                            <span>Tiếng Việt</span>
+                        </a>
+                        <a href="#" class="lang-option" data-lang="en">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="lang-flag">
+                            <span>English</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </div>
-        
-        <div class="editor-container">
-            <textarea id="textEditor" class="text-area" placeholder="Nhập hoặc dán văn bản tại đây..."></textarea>
-            <div id="copyStatus" class="copy-status">Đã sao chép!</div>
+    </nav>
+    
+    <main class="main">
+        <div class="container">
+            <div class="editor-container">
+                <div class="glass-card" id="editorCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-keyboard"></i>
+                            <span id="editorTitle">Trình soạn thảo</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="textarea-wrapper">
+                            <textarea class="editor-textarea" id="inputText" placeholder="Nhập hoặc dán văn bản của bạn vào đây..."></textarea>
+                            <div class="char-count" id="charCount">0 ký tự</div>
+                        </div>
+                        
+                        <div class="editor-actions">
+                            <button class="btn btn-primary" id="copyBtn">
+                                <i class="far fa-copy"></i>
+                                <span>Sao chép</span>
+                            </button>
+                            
+                            <button class="btn btn-secondary" id="resetBtn">
+                                <i class="fas fa-history"></i>
+                                <span>Khôi phục</span>
+                            </button>
+                            
+                            <button class="btn btn-outline" id="clearBtn">
+                                <i class="far fa-trash-alt"></i>
+                                <span>Xóa</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card" id="toolsCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-tools"></i>
+                            <span id="toolsTitle">Công cụ chuyển đổi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="tools-grid">
+                            <button class="tool-btn" data-type="uppercase">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>CHỮ HOA</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="lowercase">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>chữ thường</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="capitalizeWords">
+                                <i class="fas fa-heading"></i>
+                                <span>Viết Hoa Đầu Từ</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="capitalizeSentences">
+                                <i class="fas fa-paragraph"></i>
+                                <span>Viết hoa câu</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="toggleCase">
+                                <i class="fas fa-random"></i>
+                                <span>cHữ XeN kẼ</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="slug">
+                                <i class="fas fa-link"></i>
+                                <span>Slug URL</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="removeAccents">
+                                <i class="fas fa-eraser"></i>
+                                <span>Xóa dấu</span>
+                            </button>
+                            
+                            <button class="tool-btn" data-type="normal">
+                                <i class="fas fa-font"></i>
+                                <span>Bình thường</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="action-buttons">
-            <button class="action-btn clear-btn" onclick="clearText()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                Xóa
-            </button>
-            <button class="action-btn copy-btn" onclick="copyText()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                Sao chép
-            </button>
+    </main>
+    
+    <div class="toast-container">
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Đã sao chép!</span>
         </div>
-        
-        <div class="footer">Thiết kế bởi Ducmanh.net</div>
     </div>
-
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text" id="footerText">Thiết kế bởi DucManh.</p>
+                
+                <div class="footer-links">
+                    <a class="footer-link" id="contactLink">Liên hệ</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal Liên hệ -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Liên hệ với chúng tôi</h2>
+                <button class="modal-close" data-modal="contactModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.</p>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Họ và tên</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Chủ đề</label>
+                        <input type="text" id="subject" name="subject" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Nội dung</label>
+                        <textarea id="message" name="message" class="form-control" required></textarea>
+                    </div>
+                    
+                    <div class="form-submit">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Gửi tin nhắn</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // Các biến lưu trạng thái
-        let currentFormat = 'normal';
-        let isBold = false;
-        let isItalic = false;
-        
-        // Lấy tham chiếu đến các phần tử DOM
-        const textEditor = document.getElementById('textEditor');
-        const formatButtons = document.querySelectorAll('.format-btn');
-        const styleButtons = document.querySelectorAll('.style-btn');
-        const copyStatus = document.getElementById('copyStatus');
-        
-        // Thiết lập sự kiện cho các nút định dạng (uppercase, lowercase, v.v.)
-        formatButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Đánh dấu nút được chọn
-                formatButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Lưu loại định dạng hiện tại
-                currentFormat = this.getAttribute('data-type');
-                
-                // Áp dụng định dạng
-                applyFormatting();
-            });
-        });
-        
-        // Thiết lập sự kiện cho các nút kiểu (đậm, nghiêng)
-        styleButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const style = this.getAttribute('data-style');
-                
-                // Đảo trạng thái
-                if (style === 'bold') {
-                    isBold = !isBold;
-                    this.classList.toggle('active');
-                } else if (style === 'italic') {
-                    isItalic = !isItalic;
-                    this.classList.toggle('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Các phần tử DOM
+            const inputText = document.getElementById('inputText');
+            const charCount = document.getElementById('charCount');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const themeToggle = document.getElementById('themeToggle');
+            const langDropdown = document.getElementById('langDropdown');
+            const langBtn = document.getElementById('langBtn');
+            const langOptions = document.querySelectorAll('.lang-option');
+            const currentLangText = document.getElementById('currentLang');
+            const currentFlag = document.getElementById('currentFlag');
+            const toolButtons = document.querySelectorAll('.tool-btn');
+            const footerText = document.getElementById('footerText');
+            
+            // Modal elements
+            const contactLink = document.getElementById('contactLink');
+            const modalOverlays = document.querySelectorAll('.modal-overlay');
+            const modalCloseButtons = document.querySelectorAll('.modal-close');
+            const contactForm = document.getElementById('contactForm');
+            
+            // Biến lưu trữ
+            let currentType = null;
+            let originalText = '';
+            let currentLang = 'vi';
+            
+            // Đa ngôn ngữ
+            const texts = {
+                vi: {
+                    langName: "Tiếng Việt",
+                    flagUrl: "https://flagcdn.com/w20/vn.png",
+                    editorTitle: "Trình soạn thảo",
+                    toolsTitle: "Công cụ chuyển đổi",
+                    placeholder: "Nhập hoặc dán văn bản của bạn vào đây...",
+                    charCount: "ký tự",
+                    footerText: "Thiết kế bởi DucManh.",
+                    contactTitle: "Liên hệ với chúng tôi",
+                    contactIntro: "Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
+                    contactLink: "Liên hệ",
+                    formLabels: {
+                        name: "Họ và tên",
+                        email: "Email",
+                        subject: "Chủ đề",
+                        message: "Nội dung",
+                        submit: "Gửi tin nhắn"
+                    },
+                    buttons: {
+                        uppercase: "CHỮ HOA",
+                        lowercase: "chữ thường",
+                        capitalizeWords: "Viết Hoa Đầu Từ",
+                        capitalizeSentences: "Viết hoa câu",
+                        toggleCase: "cHữ XeN kẼ",
+                        slug: "Slug URL",
+                        removeAccents: "Xóa dấu",
+                        normal: "Bình thường",
+                        copy: "Sao chép",
+                        clear: "Xóa",
+                        reset: "Khôi phục",
+                        lightMode: "Chế độ sáng",
+                        darkMode: "Chế độ tối"
+                    },
+                    toast: {
+                        copied: "Đã sao chép vào clipboard!",
+                        cleared: "Đã xóa văn bản!",
+                        reset: "Đã khôi phục văn bản gốc!",
+                        converted: "Đã chuyển đổi thành công!",
+                        error: "Lỗi khi chuyển đổi văn bản!",
+                        noText: "Không có văn bản để sao chép!",
+                        messageSent: "Tin nhắn đã được gửi thành công!"
+                    }
+                },
+                en: {
+                    langName: "English",
+                    flagUrl: "https://flagcdn.com/w20/gb.png",
+                    editorTitle: "Editor",
+                    toolsTitle: "Conversion Tools",
+                    placeholder: "Enter or paste your text here...",
+                    charCount: "characters",
+                    footerText: "Design by DucManh.",
+                    contactTitle: "Contact Us",
+                    contactIntro: "Please fill out the form below to send us a message. We will respond as soon as possible.",
+                    contactLink: "Contact",
+                    formLabels: {
+                        name: "Full Name",
+                        email: "Email",
+                        subject: "Subject",
+                        message: "Message",
+                        submit: "Send Message"
+                    },
+                    buttons: {
+                        uppercase: "UPPERCASE",
+                        lowercase: "lowercase",
+                        capitalizeWords: "Capitalize Words",
+                        capitalizeSentences: "Capitalize Sentences",
+                        toggleCase: "tOgGlE cAsE",
+                        slug: "Slug URL",
+                        removeAccents: "Remove Accents",
+                        normal: "Normal",
+                        copy: "Copy",
+                        clear: "Clear",
+                        reset: "Reset",
+                        lightMode: "Light Mode",
+                        darkMode: "Dark Mode"
+                    },
+                    toast: {
+                        copied: "Copied to clipboard!",
+                        cleared: "Text cleared!",
+                        reset: "Reset to original text!",
+                        converted: "Conversion successful!",
+                        error: "Error converting text!",
+                        noText: "No text to copy!",
+                        messageSent: "Message sent successfully!"
+                    }
                 }
-                
-                // Áp dụng định dạng
-                applyStyles();
-            });
-        });
-        
-        // Sự kiện khi nội dung thay đổi
-        textEditor.addEventListener('input', function() {
-            applyFormatting();
-        });
-        
-        // Hàm áp dụng định dạng (uppercase, lowercase, v.v.)
-        function applyFormatting() {
-            let text = textEditor.value;
-            let formattedText = text;
+            };
             
-            // Áp dụng định dạng dựa trên loại đã chọn
-            switch (currentFormat) {
-                case 'uppercase':
-                    formattedText = text.toUpperCase();
-                    break;
-                case 'lowercase':
-                    formattedText = text.toLowerCase();
-                    break;
-                case 'capitalize':
-                    formattedText = text.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                        .join(' ');
-                    break;
-                case 'sentence':
-                    formattedText = text.toLowerCase()
-                        .replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
-                    break;
-                case 'alternate':
-                    formattedText = text.split('')
-                        .map((char, index) => index % 2 === 0 ? char.toLowerCase() : char.toUpperCase())
-                        .join('');
-                    break;
-                case 'reverse':
-                    formattedText = text.split('').reverse().join('');
-                    break;
-                default:
-                    formattedText = text;
-            }
-            
-            // Nếu định dạng đã thay đổi, cập nhật nội dung
-            if (formattedText !== text) {
-                textEditor.value = formattedText;
-            }
-            
-            // Áp dụng kiểu (đậm, nghiêng)
-            applyStyles();
-        }
-        
-        // Hàm áp dụng kiểu (đậm, nghiêng)
-        function applyStyles() {
-            // Xóa tất cả kiểu hiện tại
-            textEditor.classList.remove('text-bold', 'text-italic');
-            
-            // Thêm kiểu dựa trên trạng thái
-            if (isBold) {
-                textEditor.classList.add('text-bold');
-            }
-            
-            if (isItalic) {
-                textEditor.classList.add('text-italic');
-            }
-        }
-        
-        // Hàm xóa văn bản
-        function clearText() {
-            textEditor.value = '';
-            // Thêm hiệu ứng rung nhẹ
-            textEditor.classList.add('shake');
-            setTimeout(() => {
-                textEditor.classList.remove('shake');
-            }, 500);
-        }
-        
-        // Hàm sao chép văn bản
-        function copyText() {
-            if (textEditor.value.trim() === '') return;
-            
-            // Chọn văn bản
-            textEditor.select();
-            textEditor.setSelectionRange(0, 99999);
-            
-            // Sao chép vào clipboard
-            navigator.clipboard.writeText(textEditor.value).then(() => {
-                // Hiệu ứng viền xanh
-                textEditor.style.borderColor = '#34c759';
-                textEditor.style.boxShadow = '0 0 0 3px rgba(52, 199, 89, 0.3)';
-                
-                // Hiển thị trạng thái đã sao chép
-                copyStatus.classList.add('show');
-                
-                // Đặt lại trạng thái sau 2 giây
+            // Lưu trạng thái ban đầu khi paste
+            inputText.addEventListener('paste', function() {
                 setTimeout(() => {
-                    textEditor.style.borderColor = '';
-                    textEditor.style.boxShadow = '';
-                    copyStatus.classList.remove('show');
-                }, 1500);
-            });
-        }
-        
-        // Tạo hiệu ứng lướt chuột đẹp mắt
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('mouseover', function() {
-                this.style.transform = 'scale(1.05)';
-                this.style.transition = 'all 0.2s ease';
+                    originalText = inputText.value;
+                    updateCharCount();
+                }, 100);
             });
             
-            button.addEventListener('mouseout', function() {
-                this.style.transform = 'scale(1)';
-            });
-        });
-        
-        // Hiệu ứng nhấp chuột
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('mousedown', function() {
-                this.style.transform = 'scale(0.95)';
+            // Lưu trạng thái ban đầu khi nhập
+            inputText.addEventListener('input', function() {
+                if (!originalText && inputText.value.trim() !== '') {
+                    originalText = inputText.value;
+                }
+                updateCharCount();
             });
             
-            button.addEventListener('mouseup', function() {
-                this.style.transform = 'scale(1)';
+            // Gán sự kiện cho dropdown ngôn ngữ
+            langBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                langDropdown.classList.toggle('active');
+                e.stopPropagation();
             });
-        });
-        
-        // Tạo hiệu ứng cho container khi di chuyển chuột
-        const container = document.querySelector('.container');
-        document.addEventListener('mousemove', function(e) {
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
             
-            container.style.transform = `translateY(-5px) rotateX(${y * 2}deg) rotateY(${-x * 2}deg)`;
-        });
-        
-        document.addEventListener('mouseleave', function() {
-            container.style.transform = 'translateY(-5px) rotateX(0deg) rotateY(0deg)';
+            // Đóng dropdown khi click bên ngoài
+            document.addEventListener('click', function(e) {
+                if (!langDropdown.contains(e.target)) {
+                    langDropdown.classList.remove('active');
+                }
+            });
+            
+            // Gán sự kiện cho các tùy chọn ngôn ngữ
+            langOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    updateLanguage(lang);
+                    langDropdown.classList.remove('active');
+                });
+            });
+            
+            // Gán sự kiện cho các nút công cụ
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    
+                    // Đặt tất cả các nút về trạng thái không active
+                    toolButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Nếu nhấp vào cùng một nút đã active, hủy active
+                    if (currentType === type && type !== 'normal') {
+                        currentType = null;
+                    } else {
+                        // Đặt nút được chọn thành active
+                        this.classList.add('active');
+                        currentType = type;
+                    }
+                    
+                    convertText(type);
+                });
+            });
+            
+            // Gán sự kiện cho nút sao chép
+            copyBtn.addEventListener('click', copyText);
+            
+            // Gán sự kiện cho nút xóa
+            clearBtn.addEventListener('click', clearText);
+            
+            // Gán sự kiện cho nút khôi phục
+            resetBtn.addEventListener('click', resetText);
+            
+            // Gán sự kiện cho nút chuyển đổi chế độ sáng/tối
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Gán sự kiện cho liên kết liên hệ
+            contactLink.addEventListener('click', function() {
+                openModal('contactModal');
+            });
+            
+            // Gán sự kiện cho nút đóng modal
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    closeModal(modalId);
+                });
+            });
+            
+            // Đóng modal khi click bên ngoài
+            modalOverlays.forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        const modalId = this.id;
+                        closeModal(modalId);
+                    }
+                });
+            });
+            
+            // Ngăn chặn sự kiện click trên modal lan ra ngoài
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+            
+            // Gán sự kiện cho form liên hệ
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Giả lập gửi form
+                    setTimeout(() => {
+                        showToast(texts[currentLang].toast.messageSent, 'success');
+                        closeModal('contactModal');
+                        contactForm.reset();
+                    }, 1000);
+                });
+            }
+            
+            function updateCharCount() {
+                const count = inputText.value.length;
+                const t = texts[currentLang];
+                charCount.textContent = `${count} ${t.charCount}`;
+            }
+            
+            function convertText(type) {
+                let text = inputText.value;
+                let originalTextBeforeConversion = text;
+                
+                try {
+                    switch(type) {
+                        case 'normal':
+                            // Giữ nguyên văn bản
+                            break;
+                        case 'uppercase':
+                            inputText.value = text.toUpperCase();
+                            break;
+                        case 'lowercase':
+                            inputText.value = text.toLowerCase();
+                            break;
+                        case 'capitalizeWords':
+                            inputText.value = text.replace(/\b\w/g, function(c) {
+                                return c.toUpperCase();
+                            });
+                            break;
+                        case 'capitalizeSentences':
+                            inputText.value = text.replace(/(^\s*\w|[.!?]\s*\w)/g, function(c) {
+                                return c.toUpperCase();
+                            });
+                            break;
+                        case 'toggleCase':
+                            let toggled = '';
+                            for(let i=0; i<text.length; i++) {
+                                let c = text.charAt(i);
+                                toggled += c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+                            }
+                            inputText.value = toggled;
+                            break;
+                        case 'slug':
+                            inputText.value = text.toLowerCase()
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/đ/g, 'd').replace(/Đ/g, 'd')
+                                .replace(/[^a-z0-9\s-]/g, '')
+                                .trim()
+                                .replace(/\s+/g, '-')
+                                .replace(/-+/g, '-');
+                            break;
+                        case 'removeAccents':
+                            inputText.value = text
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+                            break;
+                    }
+                    
+                    if (inputText.value !== originalTextBeforeConversion || type === 'normal') {
+                        showToast(texts[currentLang].toast.converted, 'success');
+                    }
+                    
+                    updateCharCount();
+                } catch (error) {
+                    showToast(texts[currentLang].toast.error, 'warning');
+                    console.error('Lỗi chuyển đổi:', error);
+                }
+            }
+            
+            function copyText() {
+                if (inputText.value) {
+                    try {
+                        navigator.clipboard.writeText(inputText.value).then(() => {
+                            showToast(texts[currentLang].toast.copied, 'success');
+                        }).catch(err => {
+                            fallbackCopyText();
+                        });
+                    } catch (err) {
+                        fallbackCopyText();
+                    }
+                } else {
+                    showToast(texts[currentLang].toast.noText, 'warning');
+                }
+            }
+            
+            function fallbackCopyText() {
+                inputText.select();
+                inputText.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                showToast(texts[currentLang].toast.copied, 'success');
+            }
+            
+            function clearText() {
+                inputText.value = '';
+                updateCharCount();
+                showToast(texts[currentLang].toast.cleared, 'success');
+                
+                toolButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                currentType = null;
+            }
+            
+            function resetText() {
+                if (originalText) {
+                    inputText.value = originalText;
+                    updateCharCount();
+                    showToast(texts[currentLang].toast.reset, 'success');
+                    
+                    toolButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    currentType = null;
+                } else {
+                    showToast(texts[currentLang].toast.noText, 'warning');
+                }
+            }
+            
+            function toggleTheme() {
+                const body = document.body;
+                const hasLightClass = body.classList.toggle('light');
+                
+                const icon = themeToggle.querySelector('i');
+                
+                if (hasLightClass) {
+                    icon.className = 'fas fa-moon';
+                } else {
+                    icon.className = 'fas fa-sun';
+                }
+            }
+            
+            function updateLanguage(lang) {
+                currentLang = lang;
+                const t = texts[lang];
+                
+                // Cập nhật dropdown
+                currentLangText.textContent = t.langName;
+                currentFlag.src = t.flagUrl;
+                currentFlag.alt = t.langName;
+                
+                // Cập nhật các tiêu đề
+                document.getElementById('editorTitle').textContent = t.editorTitle;
+                document.getElementById('toolsTitle').textContent = t.toolsTitle;
+                
+                // Cập nhật placeholder
+                inputText.placeholder = t.placeholder;
+                
+                // Cập nhật số ký tự
+                updateCharCount();
+                
+                // Cập nhật các nút công cụ
+                toolButtons.forEach(btn => {
+                    const type = btn.getAttribute('data-type');
+                    btn.querySelector('span').textContent = t.buttons[type];
+                });
+                
+                // Cập nhật các nút hành động
+                copyBtn.querySelector('span').textContent = t.buttons.copy;
+                clearBtn.querySelector('span').textContent = t.buttons.clear;
+                resetBtn.querySelector('span').textContent = t.buttons.reset;
+                
+                // Cập nhật footer
+                footerText.textContent = t.footerText;
+                
+                // Cập nhật liên kết liên hệ
+                contactLink.textContent = t.contactLink;
+                
+                // Cập nhật modal liên hệ nếu đang mở
+                const contactModal = document.querySelector('#contactModal');
+                if (contactModal) {
+                    contactModal.querySelector('.modal-title').textContent = t.contactTitle;
+                    contactModal.querySelector('.modal-body > p').textContent = t.contactIntro;
+                    
+                    const formLabels = contactModal.querySelectorAll('.form-label');
+                    formLabels[0].textContent = t.formLabels.name;
+                    formLabels[1].textContent = t.formLabels.email;
+                    formLabels[2].textContent = t.formLabels.subject;
+                    formLabels[3].textContent = t.formLabels.message;
+                    
+                    const submitBtn = contactModal.querySelector('.form-submit .btn span');
+                    submitBtn.textContent = t.formLabels.submit;
+                }
+            }
+            
+            function showToast(message, type = 'success') {
+                toastMessage.textContent = message;
+                
+                toast.className = 'toast';
+                toast.classList.add(type);
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+            
+            // Khởi tạo
+            updateCharCount();
+            updateLanguage(currentLang);
         });
     </script>
 </body>

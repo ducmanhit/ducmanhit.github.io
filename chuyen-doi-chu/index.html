@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextMorph Glass - Công cụ chuyển đổi văn bản</title>
+    <title>Chuyển Đổi Văn Bản</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -879,7 +879,7 @@
                 <div class="logo">
                     <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image">
                 </div>
-                <span class="logo-text">TextMorph</span>
+                <span class="logo-text" id="appName">Text Conversion</span>
             </a>
             
             <div class="navbar-actions">
@@ -1079,6 +1079,7 @@
             const currentFlag = document.getElementById('currentFlag');
             const toolButtons = document.querySelectorAll('.tool-btn');
             const footerText = document.getElementById('footerText');
+            const appName = document.getElementById('appName');
             
             // Modal elements
             const contactLink = document.getElementById('contactLink');
@@ -1094,6 +1095,7 @@
             // Đa ngôn ngữ
             const texts = {
                 vi: {
+                    appName: "Chuyển Đổi Chữ",
                     langName: "Tiếng Việt",
                     flagUrl: "https://flagcdn.com/w20/vn.png",
                     editorTitle: "Trình soạn thảo",
@@ -1137,6 +1139,7 @@
                     }
                 },
                 en: {
+                    appName: "Text Conversion",
                     langName: "English",
                     flagUrl: "https://flagcdn.com/w20/gb.png",
                     editorTitle: "Editor",
@@ -1433,6 +1436,9 @@
             function updateLanguage(lang) {
                 currentLang = lang;
                 const t = texts[lang];
+                
+                // Cập nhật tên ứng dụng
+                appName.textContent = t.appName;
                 
                 // Cập nhật dropdown
                 currentLangText.textContent = t.langName;

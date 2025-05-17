@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="vi"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Tạo Mã 2FA - DucManh</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* --- Light Mode Variables (Apple Inspired) --- */
+            --lm-bg: #F5F5F7;
+            --lm-card-bg: rgba(255, 255, 255, 0.8); 
+            --lm-card-border: rgba(0, 0, 0, 0.09); 
+            --lm-text-primary: #1D1D1F;
+            --lm-text-secondary: #6E6E73;
+            --lm-text-placeholder: #AEAEB2;
+            --lm-accent: #007AFF; 
+            --lm-accent-hover: #0071E3;
+            --lm-accent-glow: rgba(0, 122, 255, 0.15); 
+            --lm-input-bg: #FFFFFF;
+            --lm-input-border: #D1D1D6;
+            --lm-input-border-hover: #C7C7CC; 
+            --lm-input-border-focus: var(--lm-accent);
+            --lm-btn-secondary-bg: #EFEFF0;
+            --lm-btn-secondary-text: #1D1D1F; 
+            --lm-btn-secondary-hover-bg: #E5E5E7;
+            --lm-theme-toggle-icon-color: var(--lm-accent);
+            --lm-clear-btn-color: var(--lm-text-placeholder);
+            --lm-clear-btn-hover-color: var(--lm-text-secondary);
+            --lm-success-color: #34C759; 
+            --lm-error-color: #FF3B30; 
+            --lm-dot-red: #FF5F57;
+            --lm-dot-yellow: #FEBC2E;
+            --lm-dot-green: #28C840;
+            --lm-dot-border: rgba(0,0,0,0.07);
+            --lm-footer-text: #6E6E73;
+            --lm-footer-link: var(--lm-accent);
+            --lm-footer-link-hover: var(--lm-accent-hover);
+
+            /* --- Dark Mode Variables (Apple Inspired) --- */
+            --dm-bg: #000000; 
+            --dm-card-bg: rgba(28, 28, 30, 0.8); 
+            --dm-card-border: rgba(255, 255, 255, 0.15); 
+            --dm-text-primary: #FFFFFF;
+            --dm-text-secondary: #8E8E93;
+            --dm-text-placeholder: #5A5A5F;
+            --dm-accent: #0A84FF; 
+            --dm-accent-hover: #0979F2;
+            --dm-accent-glow: rgba(10, 132, 255, 0.28); 
+            --dm-input-bg: #1C1C1E;
+            --dm-input-border: #3A3A3C;
+            --dm-input-border-hover: #48484A; 
+            --dm-input-border-focus: var(--dm-accent);
+            --dm-btn-secondary-bg: #2C2C2E;
+            --dm-btn-secondary-text: var(--dm-text-primary);
+            --dm-btn-secondary-hover-bg: #3A3A3C;
+            --dm-theme-toggle-icon-color: var(--dm-accent);
+            --dm-clear-btn-color: var(--dm-text-placeholder);
+            --dm-clear-btn-hover-color: var(--dm-text-secondary);
+            --dm-success-color: #30D158;
+            --dm-error-color: #FF453A;
+            --dm-dot-red: #FF605C;
+            --dm-dot-yellow: #FFBD44;
+            --dm-dot-green: #00CA4E;
+            --dm-dot-border: rgba(255,255,255,0.07);
+            --dm-footer-text: #8E8E93;
+            --dm-footer-link: var(--dm-accent);
+            --dm-footer-link-hover: #3B9BFF; 
+        }
+        
+        .app-wrapper { animation: fadeInApp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeInApp { to { opacity: 1; } }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.35s ease, color 0.35s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body { background-color: var(--lm-bg); color: var(--lm-text-primary); }
+        html.dark body { background-color: var(--dm-bg); color: var(--dm-text-primary); }
+
+        .container {
+            backdrop-filter: blur(26px) saturate(180%);
+            -webkit-backdrop-filter: blur(26px) saturate(180%);
+            border-radius: 18px; 
+            padding: 0;
+            width: 100%;
+            max-width: 420px; /* **TĂNG CHIỀU NGANG CHO MOBILE** */
+            animation: fadeInContainer 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
+            transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative; 
+        }
+        body:not(.dark) .container {
+            background-color: var(--lm-card-bg);
+            border: 0.5px solid var(--lm-card-border); 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0,0,0,0.03);
+        }
+        html.dark .container {
+            background-color: var(--dm-card-bg);
+            border: 0.5px solid var(--dm-card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 0.5px var(--dm-card-border);
+        }
+        
+        .traffic-lights {
+            position: absolute; top: 14px; left: 14px; /* Adjusted for slightly larger container */
+            display: flex; gap: 8px; z-index: 5; 
+        }
+        .traffic-dot {
+            width: 11px; height: 11px; /* Slightly larger dots */
+            border-radius: 50%;
+            border-width: 0.5px; border-style: solid;
+            transition: filter 0.2s ease-out; 
+        }
+        .traffic-dot:hover { filter: brightness(1.2); }
+        body:not(.dark) .traffic-dot { border-color: var(--lm-dot-border); }
+        html.dark .traffic-dot { border-color: var(--dm-dot-border); }
+        body:not(.dark) .dot-red { background-color: var(--lm-dot-red); }
+        body:not(.dark) .dot-yellow { background-color: var(--lm-dot-yellow); }
+        body:not(.dark) .dot-green { background-color: var(--lm-dot-green); }
+        html.dark .dot-red { background-color: var(--dm-dot-red); }
+        html.dark .dot-yellow { background-color: var(--dm-dot-yellow); }
+        html.dark .dot-green { background-color: var(--dm-dot-green); }
+
+        @media (min-width: 768px) { /* **TĂNG CHIỀU NGANG CHO DESKTOP** md breakpoint */
+            .container { flex-direction: row; max-width: 760px; } /* Increased from 700px */
+            .input-section, .output-section-wrapper { width: 50%; }
+            .input-section { border-right-width: 0.5px; transition: border-color 0.35s ease; }
+            body:not(.dark) .input-section { border-right-color: var(--lm-card-border); }
+            html.dark .input-section { border-right-color: var(--dm-card-border); }
+            .traffic-lights { top: 16px; left: 16px; } 
+        }
+
+        .input-section, .output-section-wrapper {
+            padding: 2.25rem; /* Increased padding */
+            padding-top: 3rem; /* Space for traffic lights */
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        @media (min-width: 768px) { .input-section, .output-section-wrapper { padding-top: 2.25rem; } }
+        .output-section-wrapper { min-height: 280px; } /* Slightly taller */
+        body:not(.dark) .output-section-wrapper { background-color: rgba(249, 250, 251, 0.6); } 
+        html.dark .output-section-wrapper { background-color: rgba(22, 22, 23, 0.3); }
+
+
+        .title {
+            font-size: 1.625rem; /* 26px */
+            font-weight: 600; margin-bottom: 1.75rem; 
+            text-align: center; letter-spacing: -0.01em; 
+        }
+        body:not(.dark) .title { color: var(--lm-text-primary); }
+        html.dark .title { color: var(--dm-text-primary); }
+
+        .input-label {
+            font-size: 0.8125rem; /* 13px */
+            font-weight: 500; margin-bottom: 0.5rem; text-align: left;
+        }
+        body:not(.dark) .input-label { color: var(--lm-text-secondary); }
+        html.dark .input-label { color: var(--dm-text-secondary); }
+
+        .input-wrapper { position: relative; margin-bottom: 0.5rem; } /* Increased margin */
+
+        #secretKeyInput {
+            width: 100%; padding: 0.8rem 2.8rem 0.8rem 1rem; /* Adjusted padding for clear button */
+            border-width: 1px; border-radius: 8px; 
+            font-size: 0.9rem; /* Slightly larger */
+            text-transform: uppercase;
+            transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
+            outline: none; 
+        }
+        body:not(.dark) #secretKeyInput {
+            background-color: var(--lm-input-bg); border-color: var(--lm-input-border); color: var(--lm-text-primary);
+        }
+        body:not(.dark) #secretKeyInput::placeholder { color: var(--lm-text-placeholder); }
+        body:not(.dark) #secretKeyInput:hover { border-color: var(--lm-input-border-hover); }
+        body:not(.dark) #secretKeyInput:focus {
+            border-color: var(--lm-input-border-focus); box-shadow: 0 0 0 3px var(--lm-accent-glow); 
+        }
+        html.dark #secretKeyInput {
+            background-color: var(--dm-input-bg); border-color: var(--dm-input-border); color: var(--dm-text-primary);
+        }
+        html.dark #secretKeyInput::placeholder { color: var(--dm-text-placeholder); }
+        html.dark #secretKeyInput:hover { border-color: var(--dm-input-border-hover); }
+        html.dark #secretKeyInput:focus {
+            border-color: var(--dm-input-border-focus); box-shadow: 0 0 0 3px var(--dm-accent-glow);
+        }
+
+        #clearSecretBtn {
+            position: absolute; right: 0.6rem; top: 50%; transform: translateY(-50%);
+            padding: 0.4rem; border-radius: 50%; cursor: pointer; display: none; 
+            transition: color 0.2s ease-out, background-color 0.2s ease-out, transform 0.1s ease-out;
+        }
+        #clearSecretBtn:hover { transform: translateY(-50%) scale(1.1); }
+        #clearSecretBtn:active { transform: translateY(-50%) scale(0.95); }
+        #clearSecretBtn svg { width: 1rem; height: 1rem; } /* Larger clear icon */
+
+        body:not(.dark) #clearSecretBtn { color: var(--lm-clear-btn-color); }
+        body:not(.dark) #clearSecretBtn:hover { color: var(--lm-clear-btn-hover-color); background-color: rgba(0,0,0,0.05); }
+        html.dark #clearSecretBtn { color: var(--dm-clear-btn-color); }
+        html.dark #clearSecretBtn:hover { color: var(--dm-clear-btn-hover-color); background-color: rgba(255,255,255,0.05); }
+        
+        .btn {
+            gap: 0.5rem; font-weight: 500; font-size: 0.875rem; /* 14px */
+            padding: 0.75rem 0.9rem; border-radius: 8px; border: none;
+            transition: background-color 0.2s ease-out, transform 0.15s ease-out, box-shadow 0.2s ease-out;
+        }
+        .btn:active { transform: scale(0.97); } 
+        
+        .otp-display-wrapper {
+            margin: 0; opacity: 0; transform: translateY(12px) scale(0.985);
+            transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+        .otp-display-wrapper.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        .otp-code-label {
+            font-size: 0.8rem; font-weight: 500; margin-bottom: 0.6rem; text-align: center;
+        }
+        body:not(.dark) .otp-code-label { color: var(--lm-text-secondary); }
+        html.dark .otp-code-label { color: var(--dm-text-secondary); }
+
+        #otpCode {
+            font-family: 'Inter', monospace; font-size: 2.75rem; /* 44px */
+            font-weight: 600; letter-spacing: 3px; padding: 0.8rem; 
+            border-radius: 10px; margin-bottom: 1.25rem; border-width: 1px;
+            font-variant-numeric: tabular-nums; text-align: center; line-height: 1.2;
+        }
+        body:not(.dark) #otpCode {
+            background-color: var(--lm-input-bg); border-color: var(--lm-input-border); color: var(--lm-text-primary);
+        }
+        html.dark #otpCode {
+            background-color: var(--dm-input-bg); border-color: var(--dm-input-border); color: var(--dm-text-primary);
+        }
+
+        .btn-copy { font-weight: 500; }
+        body:not(.dark) .btn-copy {
+            background-color: var(--lm-accent); color: white;
+            box-shadow: 0 2px 6px rgba(0,122,255,0.2);
+        }
+        body:not(.dark) .btn-copy:hover { background-color: var(--lm-accent-hover); box-shadow: 0 3px 8px rgba(0,113,227,0.25); transform: translateY(-1px); }
+        body:not(.dark) .btn-copy.copied { background-color: var(--lm-success-color); color: white; box-shadow: 0 2px 6px rgba(52,199,89,0.2); }
+
+        html.dark .btn-copy {
+            background-color: var(--dm-accent); color: var(--dm-bg); 
+            box-shadow: 0 2px 6px rgba(10,132,255,0.25);
+        }
+        html.dark .btn-copy:hover { background-color: var(--dm-accent-hover); box-shadow: 0 3px 8px rgba(9,121,242,0.3); transform: translateY(-1px); }
+        html.dark .btn-copy.copied { background-color: var(--dm-success-color); color: var(--dm-bg); box-shadow: 0 2px 6px rgba(48,209,88,0.25); }
+
+
+        .progress-bar-wrapper { 
+            position: relative; height: 5px; /* Slightly thicker */
+            margin: 1.5rem 0 0.5rem 0; 
+            border-radius: 2.5px; overflow: hidden; 
+        }
+        body:not(.dark) .progress-bar-wrapper { background-color: var(--lm-btn-secondary-bg); }
+        html.dark .progress-bar-wrapper { background-color: var(--dm-btn-secondary-bg); }
+
+        .progress-bar {
+            height: 100%; width: 100%; transition: width 1s linear; border-radius: 2.5px; 
+        }
+        body:not(.dark) .progress-bar { background-color: var(--lm-accent); }
+        html.dark .progress-bar { background-color: var(--dm-accent); }
+        
+        .timer-text {
+            font-size: 0.75rem; font-weight: 500; text-align: center; margin-top: 0.4rem; 
+        }
+        body:not(.dark) .timer-text { color: var(--lm-text-secondary); }
+        html.dark .timer-text { color: var(--dm-text-secondary); }
+
+        .message-box {
+            font-size: 0.8rem; margin-top: 1rem; padding: 0.8rem 1rem; 
+            border-radius: 8px; text-align: left; border-width: 1px;
+            opacity: 0; transform: translateY(6px);
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .message-box.visible { opacity: 1; transform: translateY(0); }
+        
+        body:not(.dark) .error-message {
+            background-color: rgba(255, 59, 48, 0.08); color: var(--lm-error-color); border-color: rgba(255, 59, 48, 0.2);
+        }
+        html.dark .error-message {
+            background-color: rgba(255, 69, 58, 0.15); color: var(--dm-error-color); border-color: rgba(255, 69, 58, 0.3);
+        }
+        body:not(.dark) .info-box {
+            background-color: rgba(0, 122, 255, 0.05); color: var(--lm-accent); border-color: rgba(0, 122, 255, 0.2);
+        }
+        html.dark .info-box {
+            background-color: rgba(10, 132, 255, 0.1); color: var(--dm-accent); border-color: rgba(10, 132, 255, 0.25);
+        }
+        body:not(.dark) .info-box strong { color: var(--lm-text-primary); }
+        html.dark .info-box strong { color: var(--dm-text-primary); }
+        
+        .icon { width: 1rem; height: 1rem; } 
+        
+        .helper-text {
+            margin-top: 0.4rem; font-size: 0.75rem; opacity: 0.9; text-align: left;
+        }
+        body:not(.dark) .helper-text { color: var(--lm-text-secondary); }
+        html.dark .helper-text { color: var(--dm-text-secondary); }
+
+        /* --- Theme Toggle Button --- */
+        .theme-toggle-button-wrapper {
+            position: absolute; top: 12px; right: 12px; z-index: 10;
+        }
+        @media (min-width: 700px) { .theme-toggle-button-wrapper { top: 14px; right: 14px; } }
+        .theme-toggle-button {
+            padding: 0.35rem; border-radius: 7px; cursor: pointer;
+            transition: background-color 0.2s ease-out, color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.15s ease-out;
+            border: 1px solid transparent; display: flex; align-items: center; justify-content: center;
+            position: relative; width: 26px; height: 26px; /* Slightly larger for easier tap */
+        }
+        .theme-toggle-button:hover { transform: scale(1.1); } 
+        .theme-toggle-button:active { transform: scale(0.92); } 
+        .theme-toggle-button svg {
+            width: 1rem; height: 1rem; /* Slightly larger icon */
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        body:not(.dark) .theme-toggle-button {
+            background-color: var(--lm-btn-secondary-bg);
+            color: var(--lm-theme-toggle-icon-color); 
+            border-color: var(--lm-card-border);
+        }
+        html.dark .theme-toggle-button {
+            background-color: var(--dm-btn-secondary-bg);
+            color: var(--dm-theme-toggle-icon-color); 
+            border-color: var(--dm-card-border);
+        }
+        
+        .sun-icon, .moon-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        body:not(.dark) .sun-icon { opacity: 0; transform: translate(-50%, -50%) rotate(-90deg) scale(0); }
+        body:not(.dark) .moon-icon { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+        html.dark .sun-icon { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+        html.dark .moon-icon { opacity: 0; transform: translate(-50%, -50%) rotate(90deg) scale(0); }
+
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: translateY(12px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* Footer Styles */
+        .app-footer {
+            text-align: center; padding: 1.25rem 0 0.75rem 0; font-size: 0.75rem; 
+            transition: color 0.4s ease;
+        }
+        body:not(.dark) .app-footer { color: var(--lm-footer-text); }
+        html.dark .app-footer { color: var(--dm-footer-text); }
+
+        .footer-link {
+            font-weight: 500; text-decoration: none;
+            transition: color 0.2s ease, opacity 0.2s ease;
+        }
+        .footer-link:hover { opacity: 0.75; }
+        body:not(.dark) .footer-link { color: var(--lm-footer-link); }
+        html.dark .footer-link { color: var(--dm-footer-link); }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper"> 
+        <div class="container-wrapper flex flex-col justify-center items-center min-h-screen p-4">
+            <div class="container">
+                <div class="traffic-lights">
+                    <div class="traffic-dot dot-red"></div>
+                    <div class="traffic-dot dot-yellow"></div>
+                    <div class="traffic-dot dot-green"></div>
+                </div>
+                 <div class="theme-toggle-button-wrapper">
+                    <button id="themeToggleBtn" class="theme-toggle-button" aria-label="Chuyển đổi chế độ hiển thị">
+                        </button>
+                </div>
+
+                <div class="input-section">
+                    <h1 class="title">Trình Tạo Mã 2FA</h1>
+                    <div class="mb-6">
+                        <label for="secretKeyInput" class="input-label">Mã Bí Mật (Base32)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="secretKeyInput"
+                                   placeholder="Nhập mã bí mật của bạn"
+                                   aria-describedby="secretHelp">
+                            <button id="clearSecretBtn" aria-label="Xóa mã bí mật">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"> 
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p id="secretHelp" class="helper-text">Mã sẽ tự động được cập nhật khi nhập.</p>
+                    </div>
+                     <div id="errorMessage" class="message-box error-message mb-4" style="display: none;"></div>
+                     <div id="timeSyncInfo" class="message-box info-box" style="display: none;">
+                        <strong>Lưu ý:</strong> Đồng hồ thiết bị <strong>PHẢI</strong> đồng bộ (NTP) để mã chính xác.
+                    </div>
+                </div>
+
+                <div class="output-section-wrapper">
+                    <div id="otpDisplayWrapper" class="otp-display-wrapper w-full">
+                        <div id="otpDisplay" class="hidden">
+                            <p class="otp-code-label">Mã Xác Thực:</p>
+                            <div id="otpCode">------</div>
+                            
+                            <button id="copyBtn" class="btn btn-copy w-full mb-6">
+                                <svg class="icon icon-copy" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"> 
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125V15L6.75 12l-1.875.938M6.75 9.75h.008v.008H6.75V9.75Z" />
+                                </svg>
+                                <svg class="icon icon-copied hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                                <span id="copyBtnText">Sao Chép</span>
+                            </button>
+
+                            <div class="progress-bar-wrapper">
+                                <div id="progressBar" class="progress-bar"></div>
+                            </div>
+                            <p id="timerText" class="timer-text">Làm mới: <span id="countdown">30</span>s</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="app-footer">
+                Thiết kế bởi: <a href="https://ducmanhit.github.io/" target="_blank" rel="noopener noreferrer" class="footer-link">Ducmanh</a>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const htmlElement = document.documentElement;
+        const appWrapper = document.querySelector('.app-wrapper'); 
+        const secretKeyInput = document.getElementById('secretKeyInput');
+        const clearSecretBtn = document.getElementById('clearSecretBtn'); 
+        const otpDisplayWrapper = document.getElementById('otpDisplayWrapper');
+        const otpDisplayDiv = document.getElementById('otpDisplay');
+        const otpCodeDiv = document.getElementById('otpCode');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyBtnText = document.getElementById('copyBtnText');
+        const iconCopyElements = copyBtn.querySelectorAll('.icon-copy');
+        const iconCopiedElements = copyBtn.querySelectorAll('.icon-copied');
+        const progressBar = document.getElementById('progressBar');
+        const countdownSpan = document.getElementById('countdown');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const timeSyncInfoDiv = document.getElementById('timeSyncInfo');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+        const iconCopy = iconCopyElements.length > 0 ? iconCopyElements[0] : null;
+        const iconCopied = iconCopiedElements.length > 0 ? iconCopiedElements[0] : null;
+
+        appWrapper.style.opacity = '1';
+        appWrapper.style.animation = 'none';
+
+        const sunIconSVG = `
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+            </svg>`;
+        const moonIconSVG = `
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+            </svg>`;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+            localStorage.setItem('theme-apple-compact-v4-final', theme); 
+        }
+        
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+
+        themeToggleBtn.innerHTML = sunIconSVG + moonIconSVG; 
+        
+        const savedTheme = localStorage.getItem('theme-apple-compact-v4-final'); 
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+        // TOTP Logic
+        const TIME_STEP = 30;
+        const MIN_SECRET_LENGTH = 8; 
+        let currentSecretBase32 = null;
+        let otpInterval = null;
+        let inputTimeout = null;
+
+        function base32Decode(base32) {
+            const base32Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+            const BITS_PER_CHAR = 5;
+            let cleanBase32 = base32.toUpperCase().replace(/=+$/, "").replace(/\s/g, "");
+            if (cleanBase32.length === 0) return new Uint8Array(0);
+            let bitString = "";
+            for (let i = 0; i < cleanBase32.length; i++) {
+                let charIndex = base32Chars.indexOf(cleanBase32[i]);
+                if (charIndex === -1) throw new Error("Mã bí mật chứa ký tự Base32 không hợp lệ: " + cleanBase32[i]);
+                bitString += charIndex.toString(2).padStart(BITS_PER_CHAR, '0');
+            }
+            let numBytes = Math.floor(bitString.length / 8);
+            let resultBytes = new Uint8Array(numBytes);
+            for (let i = 0; i < numBytes; i++) {
+                let byteString = bitString.substring(i * 8, (i + 1) * 8);
+                resultBytes[i] = parseInt(byteString, 2);
+            }
+            return resultBytes;
+        }
+
+        function Uint8ArrayToHex(uint8Array) {
+            let hex = "";
+            for (let i = 0; i < uint8Array.length; i++) {
+                hex += uint8Array[i].toString(16).padStart(2, '0');
+            }
+            return hex;
+        }
+
+        function generateTOTP(secretHex) {
+            const key = CryptoJS.enc.Hex.parse(secretHex);
+            const epochSeconds = Math.floor(Date.now() / 1000);
+            const counter = Math.floor(epochSeconds / TIME_STEP);
+            let hexCounter = counter.toString(16);
+            while (hexCounter.length < 16) hexCounter = "0" + hexCounter;
+            const message = CryptoJS.enc.Hex.parse(hexCounter);
+            const hmac = CryptoJS.HmacSHA1(message, key);
+            const hmacBytes = [];
+            for (let i = 0; i < hmac.sigBytes; i++) {
+                hmacBytes.push((hmac.words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff);
+            }
+            const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
+            const binary =
+                ((hmacBytes[offset] & 0x7f) << 24) |
+                ((hmacBytes[offset + 1] & 0xff) << 16) |
+                ((hmacBytes[offset + 2] & 0xff) << 8) |
+                (hmacBytes[offset + 3] & 0xff);
+            let otp = binary % 1000000;
+            return otp.toString().padStart(6, '0');
+        }
+
+        function updateOtpAndTimer() {
+            if (!currentSecretBase32) return;
+            try {
+                const secretBytes = base32Decode(currentSecretBase32);
+                if (secretBytes.length === 0) throw new Error("Giải mã bí mật không hợp lệ.");
+                const secretHex = Uint8ArrayToHex(secretBytes);
+                const otp = generateTOTP(secretHex);
+                otpCodeDiv.textContent = otp;
+                const secondsRemaining = TIME_STEP - (Math.floor(Date.now() / 1000) % TIME_STEP);
+                countdownSpan.textContent = secondsRemaining;
+                const progressPercentage = (secondsRemaining / TIME_STEP) * 100;
+                if (secondsRemaining === TIME_STEP) {
+                    progressBar.style.transition = 'none'; 
+                    progressBar.style.width = '100%';
+                    void progressBar.offsetWidth; 
+                    progressBar.style.transition = 'width 1s linear';
+                } else {
+                    progressBar.style.width = progressPercentage + '%';
+                }
+                errorMessageDiv.classList.remove('visible');
+                errorMessageDiv.style.display = 'none';
+            } catch (error) {
+                console.error("Lỗi cập nhật OTP:", error);
+                errorMessageDiv.textContent = error.message || "Mã bí mật không hợp lệ.";
+                errorMessageDiv.style.display = 'block';
+                errorMessageDiv.classList.add('visible');
+                stopOtpGeneration();
+                otpCodeDiv.textContent = "LỖI";
+            }
+        }
+
+        function startOtpGeneration(secret) {
+            stopOtpGeneration();
+            currentSecretBase32 = secret;
+            errorMessageDiv.textContent = "";
+            errorMessageDiv.style.display = 'none';
+            errorMessageDiv.classList.remove('visible');
+            
+            otpDisplayDiv.classList.remove('hidden');
+            otpDisplayWrapper.classList.add('visible'); 
+
+            timeSyncInfoDiv.style.display = 'block';
+            timeSyncInfoDiv.classList.add('visible');
+            updateOtpAndTimer(); 
+            otpInterval = setInterval(updateOtpAndTimer, 1000);
+        }
+
+        function stopOtpGeneration() {
+            if (otpInterval) {
+                clearInterval(otpInterval);
+                otpInterval = null;
+            }
+            if (!currentSecretBase32 || currentSecretBase32.length < MIN_SECRET_LENGTH) {
+                 otpCodeDiv.textContent = "------";
+            }
+        }
+        
+        function hideOtpDisplayCompletely() {
+            otpDisplayDiv.classList.add('hidden');
+            otpDisplayWrapper.classList.remove('visible');
+            timeSyncInfoDiv.style.display = 'none';
+            timeSyncInfoDiv.classList.remove('visible');
+            errorMessageDiv.style.display = 'none';
+            errorMessageDiv.classList.remove('visible');
+            otpCodeDiv.textContent = "------";
+            stopOtpGeneration();
+        }
+
+        secretKeyInput.addEventListener('input', () => {
+            const secret = secretKeyInput.value.trim().toUpperCase();
+            clearTimeout(inputTimeout);
+
+            if (secret.length > 0) {
+                clearSecretBtn.style.display = 'block';
+            } else {
+                clearSecretBtn.style.display = 'none';
+                hideOtpDisplayCompletely();
+                currentSecretBase32 = null; 
+                return;
+            }
+
+            if (!/^[A-Z2-7]+=*$/i.test(secret) && secret.length > 0) {
+                 errorMessageDiv.textContent = "Mã chứa ký tự không hợp lệ.";
+                 errorMessageDiv.style.display = 'block';
+                 errorMessageDiv.classList.add('visible');
+                 stopOtpGeneration(); 
+                 otpCodeDiv.textContent = "LỖI";
+                 otpDisplayDiv.classList.remove('hidden');
+                 otpDisplayWrapper.classList.add('visible');
+                 return;
+            } else {
+                 errorMessageDiv.style.display = 'none';
+                 errorMessageDiv.classList.remove('visible');
+            }
+
+            if (secret.length >= MIN_SECRET_LENGTH) {
+                inputTimeout = setTimeout(() => {
+                    startOtpGeneration(secret);
+                }, 250); 
+            } else {
+                stopOtpGeneration();
+                otpCodeDiv.textContent = "------";
+                if (!otpDisplayWrapper.classList.contains('visible')) {
+                    otpDisplayDiv.classList.remove('hidden');
+                    otpDisplayWrapper.classList.add('visible');
+                    timeSyncInfoDiv.style.display = 'block';
+                    timeSyncInfoDiv.classList.add('visible');
+                }
+            }
+        });
+        
+        clearSecretBtn.addEventListener('click', () => {
+            secretKeyInput.value = '';
+            clearSecretBtn.style.display = 'none';
+            hideOtpDisplayCompletely();
+            currentSecretBase32 = null;
+            secretKeyInput.focus(); 
+        });
+
+
+        copyBtn.addEventListener('click', () => {
+            const codeToCopy = otpCodeDiv.textContent;
+            if (codeToCopy && codeToCopy !== "------" && codeToCopy !== "LỖI") {
+                navigator.clipboard.writeText(codeToCopy).then(() => {
+                    copyBtnText.textContent = 'Đã Sao Chép!';
+                    copyBtn.classList.add('copied');
+                    if (iconCopy) iconCopy.style.display = 'none';
+                    if (iconCopied) iconCopied.style.display = 'inline-block';
+                    
+                    setTimeout(() => {
+                        copyBtnText.textContent = 'Sao Chép';
+                        copyBtn.classList.remove('copied');
+                        if (iconCopy) iconCopy.style.display = 'inline-block';
+                        if (iconCopied) iconCopied.style.display = 'none';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Không thể sao chép: ', err);
+                    errorMessageDiv.textContent = "Không thể sao chép mã.";
+                    errorMessageDiv.style.display = 'block';
+                    errorMessageDiv.classList.add('visible');
+                });
+            }
+        });
+
+        secretKeyInput.addEventListener('input', function(event) {
+            const originalSelectionStart = event.target.selectionStart;
+            const originalSelectionEnd = event.target.selectionEnd;
+            event.target.value = event.target.value.toUpperCase();
+            event.target.setSelectionRange(originalSelectionStart, originalSelectionEnd);
+        });
+
+        if (iconCopy) iconCopy.style.display = 'inline-block';
+        if (iconCopied) iconCopied.style.display = 'none';
+    </script>
+</body>
+</html>

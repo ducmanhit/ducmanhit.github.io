@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Get 2FA Code</title>
-        <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -21,6 +21,7 @@
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-radius: 20px;
             --btn-radius: 12px;
+            --primary-blue: #0d6efd;
         }
 
         * {
@@ -573,6 +574,13 @@
             display: block;
         }
 
+        /* Period select styling - SỬA PHẦN NÀY */
+        select#period {
+            background-color: #0d6efd !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
         /* Modal */
         .modal {
             position: fixed;
@@ -653,6 +661,96 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+        }
+
+        /* Confirmation Modal - ĐÃ SỬA ĐẸP HƠN */
+        #confirmDeleteModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #confirmDeleteModal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirm-modal-content {
+            background-color: white;
+            border-radius: 8px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        #confirmDeleteModal.active .confirm-modal-content {
+            transform: scale(1);
+        }
+
+        .confirm-modal-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .confirm-modal-title {
+            font-size: 16px;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .confirm-modal-body {
+            padding: 20px;
+            color: #212529;
+        }
+
+        .confirm-modal-footer {
+            display: flex;
+            justify-content: center;
+            padding: 15px 20px;
+            gap: 20px;
+        }
+
+        .confirm-btn {
+            width: 80px;
+            padding: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-ok {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-ok:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-cancel {
+            background-color: #adb5bd;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #98a2ac;
         }
 
         /* Notification */
@@ -829,11 +927,40 @@
 
                     <div class="input-group">
                         <label class="input-label" for="period">Period (seconds)</label>
-                        <select class="glass-input" id="period">
+                        <select class="glass-input" id="period" style="background-color: #0d6efd; color: white; font-weight: bold;">
                             <option value="30">30 seconds (Default)</option>
                             <option value="60">60 seconds</option>
                             <option value="90">90 seconds</option>
                         </select>
+                    </div>
+
+                    <!-- Added server sync settings -->
+                    <div class="input-group">
+                        <label class="input-label">Sync with Server</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button class="glass-btn" id="exportBtn">
+                                <i class="fas fa-upload"></i> Export to Server
+                            </button>
+                            <button class="glass-btn" id="importBtn">
+                                <i class="fas fa-download"></i> Import from Server
+                            </button>
+                        </div>
+                        <input type="text" id="serverUrl" class="glass-input" placeholder="Server URL (e.g., https://your-api.com/2fa)">
+                        <input type="password" id="apiKey" class="glass-input" placeholder="API Key (optional)" style="margin-top: 10px;">
+                    </div>
+
+                    <!-- Backup & Restore Section -->
+                    <div class="input-group">
+                        <label class="input-label">Backup & Restore</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button class="glass-btn" id="backupBtn">
+                                <i class="fas fa-download"></i> Create Backup
+                            </button>
+                            <button class="glass-btn" id="restoreBtn">
+                                <i class="fas fa-upload"></i> Restore Backup
+                            </button>
+                        </div>
+                        <div id="lastBackupInfo" style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;"></div>
                     </div>
                 </div>
             </div>
@@ -864,6 +991,22 @@
         </div>
     </div>
 
+    <!-- Thêm mới: Xác nhận xóa modal (ĐÃ SỬA ĐẸP HƠN)-->
+    <div id="confirmDeleteModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">
+                <div class="confirm-modal-title">Trang này cho biết</div>
+            </div>
+            <div class="confirm-modal-body">
+                <p id="deleteConfirmMessage">Delete "B" from saved codes?</p>
+            </div>
+            <div class="confirm-modal-footer">
+                <button class="confirm-btn btn-ok" id="confirmDeleteBtn">OK</button>
+                <button class="confirm-btn btn-cancel" id="cancelDeleteBtn">Huỷ</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
@@ -874,6 +1017,45 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <script>
+        // Ngăn chặn view source
+        document.addEventListener('keydown', function(event) {
+            // Chặn F12
+            if (event.keyCode === 123) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Chặn Ctrl+U
+            if (event.ctrlKey && event.keyCode === 85) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Chặn Ctrl+Shift+I
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 73) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Chặn Ctrl+Shift+J
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 74) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Chặn Ctrl+Shift+C
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 67) {
+                event.preventDefault();
+                return false;
+            }
+        });
+        
+        // Vô hiệu hóa chuột phải
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            return false;
+        });
+
         // DOM Elements
         const secretInput = document.getElementById('secretInput');
         const token = document.getElementById('token');
@@ -902,12 +1084,29 @@
         const saveNewBtn = document.getElementById('saveNewBtn');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
+        
+        // Các phần tử mới thêm vào
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const serverUrl = document.getElementById('serverUrl');
+        const apiKey = document.getElementById('apiKey');
+        const backupBtn = document.getElementById('backupBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        const lastBackupInfo = document.getElementById('lastBackupInfo');
+        
+        // Elements cho confirm dialog
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
+        let codeToDelete = -1; // Lưu index của mã sẽ xóa
 
         // Variables
         let timer;
         let currentToken = '';
         let lastSecretInput = '';
         let savedCodes = [];
+        let autoSaveTimer; // Timer cho việc tự động sao lưu
 
         // Base32 decoding
         function base32ToHex(base32) {
@@ -1168,7 +1367,7 @@
                 savedCodes.unshift(newCode);
                 
                 // Save to localStorage
-                localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
+                saveToLocalStorage();
                 
                 // Update UI
                 updateSavedCodesList();
@@ -1300,17 +1499,15 @@
             }
         }
 
-        // Delete a saved code
+        // Delete a saved code - ĐÃ SỬA
         function deleteSavedCode(index) {
             const code = savedCodes[index];
             if (!code) return;
             
-            if (confirm(`Delete "${code.label}" from saved codes?`)) {
-                savedCodes.splice(index, 1);
-                localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
-                updateSavedCodesList();
-                showNotification('Code deleted', 'success');
-            }
+            // Hiển thị hộp thoại xác nhận tùy chỉnh
+            codeToDelete = index;
+            deleteConfirmMessage.textContent = `Delete "${code.label}" from saved codes?`;
+            confirmDeleteModal.classList.add('active');
         }
 
         // Show saved codes tab
@@ -1332,19 +1529,318 @@
             settingsContent.style.display = 'block';
         }
 
-        // Initialize saved codes
+        // Initialize saved codes - ĐÃ ĐƯỢC SỬA ĐỔI
         function initSavedCodes() {
-            // Clear any existing saved codes
-            localStorage.removeItem('savedCodes');
+            // Tải mã đã lưu từ localStorage
+            const savedCodesStr = localStorage.getItem('savedCodes');
             
-            // Initialize empty array
-            savedCodes = [];
+            if (savedCodesStr) {
+                try {
+                    savedCodes = JSON.parse(savedCodesStr);
+                    emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
+                    showNotification('Loaded saved codes from browser storage', 'success');
+                } catch (e) {
+                    console.error('Error loading saved codes:', e);
+                    
+                    // Thử phục hồi từ bản sao lưu
+                    const backupCodesStr = localStorage.getItem('savedCodes_backup');
+                    if (backupCodesStr) {
+                        try {
+                            savedCodes = JSON.parse(backupCodesStr);
+                            localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
+                            emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
+                            showNotification('Restored codes from backup', 'success');
+                        } catch (e) {
+                            console.error('Error loading backup:', e);
+                            savedCodes = [];
+                            emptyState.style.display = 'block';
+                        }
+                    } else {
+                        savedCodes = [];
+                        emptyState.style.display = 'block';
+                    }
+                }
+            } else {
+                // Thử phục hồi từ bản sao lưu nếu không có dữ liệu chính
+                const backupCodesStr = localStorage.getItem('savedCodes_backup');
+                if (backupCodesStr) {
+                    try {
+                        savedCodes = JSON.parse(backupCodesStr);
+                        localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
+                        emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
+                        showNotification('Restored from backup', 'success');
+                    } catch (e) {
+                        console.error('Error loading backup:', e);
+                        savedCodes = [];
+                        emptyState.style.display = 'block';
+                    }
+                } else {
+                    savedCodes = [];
+                    emptyState.style.display = 'block';
+                }
+            }
             
-            // Make sure the empty state is shown
-            emptyState.style.display = 'block';
+            // Cập nhật thông tin bản sao lưu
+            updateBackupInfo();
         }
 
-        // Event listeners
+        // Tải cài đặt server
+        function loadServerSettings() {
+            serverUrl.value = localStorage.getItem('2fa_server_url') || '';
+            apiKey.value = localStorage.getItem('2fa_server_key') || '';
+        }
+
+        // Lưu cài đặt server
+        function saveServerSettings() {
+            localStorage.setItem('2fa_server_url', serverUrl.value);
+            localStorage.setItem('2fa_server_key', apiKey.value);
+            showNotification('Server settings saved', 'success');
+        }
+
+        // Lưu vào localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
+            
+            // Tạo bản sao lưu tự động
+            createBackup(false);
+        }
+
+        // Tạo bản sao lưu
+        function createBackup(showMessage = true) {
+            if (savedCodes.length > 0) {
+                const now = new Date();
+                const backupData = {
+                    codes: savedCodes,
+                    timestamp: now.getTime(),
+                    date: now.toLocaleString()
+                };
+                
+                localStorage.setItem('savedCodes_backup', JSON.stringify(backupData));
+                
+                if (showMessage) {
+                    showNotification('Backup created successfully', 'success');
+                }
+                
+                updateBackupInfo();
+            } else {
+                if (showMessage) {
+                    showNotification('No codes to backup', 'error');
+                }
+            }
+        }
+
+        // Phục hồi từ bản sao lưu
+        function restoreFromBackup() {
+            const backupStr = localStorage.getItem('savedCodes_backup');
+            
+            if (!backupStr) {
+                showNotification('No backup found', 'error');
+                return;
+            }
+            
+            try {
+                const backupData = JSON.parse(backupStr);
+                
+                if (!backupData.codes || !Array.isArray(backupData.codes)) {
+                    showNotification('Invalid backup data', 'error');
+                    return;
+                }
+                
+                // Xác nhận phục hồi
+                if (confirm(`Restore backup from ${backupData.date || 'unknown time'}?`)) {
+                    savedCodes = backupData.codes;
+                    saveToLocalStorage();
+                    updateSavedCodesList();
+                    showNotification('Backup restored successfully', 'success');
+                }
+            } catch (e) {
+                console.error('Error restoring backup:', e);
+                showNotification('Failed to restore backup', 'error');
+            }
+        }
+
+        // Cập nhật thông tin bản sao lưu
+        function updateBackupInfo() {
+            const backupStr = localStorage.getItem('savedCodes_backup');
+            
+            if (backupStr) {
+                try {
+                    const backupData = JSON.parse(backupStr);
+                    if (backupData.date) {
+                        lastBackupInfo.textContent = `Last backup: ${backupData.date}`;
+                    } else {
+                        lastBackupInfo.textContent = 'Backup available (unknown date)';
+                    }
+                } catch (e) {
+                    lastBackupInfo.textContent = 'Backup data corrupted';
+                }
+            } else {
+                lastBackupInfo.textContent = 'No backup available';
+            }
+        }
+
+        // Xuất dữ liệu lên server
+        function exportToServer() {
+            const url = serverUrl.value.trim();
+            if (!url) {
+                showNotification('Please enter server URL', 'error');
+                return;
+            }
+            
+            saveServerSettings();
+            
+            // Chuẩn bị dữ liệu để xuất
+            const exportData = {
+                codes: savedCodes,
+                timestamp: new Date().getTime(),
+                deviceInfo: navigator.userAgent
+            };
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : ''
+                },
+                body: JSON.stringify(exportData)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Server responded with an error');
+                return response.json();
+            })
+            .then(data => {
+                showNotification('Successfully exported to server', 'success');
+            })
+            .catch(error => {
+                console.error('Export error:', error);
+                showNotification('Failed to export: ' + error.message, 'error');
+            });
+        }
+
+        // Nhập dữ liệu từ server
+        function importFromServer() {
+            const url = serverUrl.value.trim();
+            if (!url) {
+                showNotification('Please enter server URL', 'error');
+                return;
+            }
+            
+            saveServerSettings();
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : ''
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Server responded with an error');
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.codes && Array.isArray(data.codes)) {
+                    if (confirm('Replace current codes with server data?')) {
+                        // Tạo bản sao lưu trước khi thay thế
+                        createBackup(false);
+                        
+                        savedCodes = data.codes;
+                        saveToLocalStorage();
+                        updateSavedCodesList();
+                        showNotification('Successfully imported from server', 'success');
+                    }
+                } else {
+                    throw new Error('Invalid data format');
+                }
+            })
+            .catch(error => {
+                console.error('Import error:', error);
+                showNotification('Failed to import: ' + error.message, 'error');
+            });
+        }
+
+        // Thiết lập tự động sao lưu định kỳ
+        function setupAutoBackup() {
+            // Xóa timer hiện tại nếu có
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            
+            // Tạo timer mới - sao lưu mỗi 5 phút
+            autoSaveTimer = setInterval(() => {
+                if (savedCodes.length > 0) {
+                    createBackup(false);
+                    console.log('Auto backup completed at ' + new Date().toLocaleTimeString());
+                }
+            }, 5 * 60 * 1000); // 5 phút
+        }
+
+        // Thêm event listeners cho nút xác nhận và hủy trong hộp thoại xác nhận xóa
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (codeToDelete >= 0) {
+                savedCodes.splice(codeToDelete, 1);
+                saveToLocalStorage();
+                updateSavedCodesList();
+                showNotification('Code deleted', 'success');
+                confirmDeleteModal.classList.remove('active');
+                codeToDelete = -1;
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            confirmDeleteModal.classList.remove('active');
+            codeToDelete = -1;
+        });
+
+        // Event listeners mới
+        exportBtn.addEventListener('click', exportToServer);
+        importBtn.addEventListener('click', importFromServer);
+        backupBtn.addEventListener('click', () => createBackup(true));
+        restoreBtn.addEventListener('click', restoreFromBackup);
+
+        // Sửa event listeners cho cài đặt
+        algorithmSelect.addEventListener('change', () => {
+            startTokenUpdates();
+            
+            // Hỏi xem có muốn áp dụng cho tất cả mã đã lưu không
+            if (savedCodes.length > 0 && confirm('Apply this algorithm to all saved codes?')) {
+                savedCodes.forEach(code => {
+                    code.algorithm = algorithmSelect.value;
+                });
+                saveToLocalStorage();
+                updateSavedCodesList();
+                showNotification('Updated algorithm for all codes', 'success');
+            }
+        });
+
+        digitsSelect.addEventListener('change', () => {
+            startTokenUpdates();
+            
+            if (savedCodes.length > 0 && confirm('Apply this digit setting to all saved codes?')) {
+                const digits = parseInt(digitsSelect.value);
+                savedCodes.forEach(code => {
+                    code.digits = digits;
+                });
+                saveToLocalStorage();
+                updateSavedCodesList();
+                showNotification('Updated digits for all codes', 'success');
+            }
+        });
+
+        periodSelect.addEventListener('change', () => {
+            startTokenUpdates();
+            
+            if (savedCodes.length > 0 && confirm('Apply this period setting to all saved codes?')) {
+                const period = parseInt(periodSelect.value);
+                savedCodes.forEach(code => {
+                    code.period = period;
+                });
+                saveToLocalStorage();
+                updateSavedCodesList();
+                showNotification('Updated period for all codes', 'success');
+            }
+        });
+
+        // Event listeners hiện có
         secretInput.addEventListener('input', () => {
             clearTimeout(window.debounceTimer);
             window.debounceTimer = setTimeout(() => {
@@ -1378,11 +1874,6 @@
         tabs[0].addEventListener('click', showSavedCodesTab);
         tabs[1].addEventListener('click', showSettingsTab);
 
-        // Settings change
-        algorithmSelect.addEventListener('change', startTokenUpdates);
-        digitsSelect.addEventListener('change', startTokenUpdates);
-        periodSelect.addEventListener('change', startTokenUpdates);
-
         // Add new code button
         addNewBtn.addEventListener('click', openModal);
 
@@ -1400,8 +1891,11 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize with empty saved codes
+            // Tải mã đã lưu
             initSavedCodes();
+            
+            // Tải cài đặt server
+            loadServerSettings();
             
             // Show saved codes tab initially
             showSavedCodesTab();
@@ -1417,6 +1911,16 @@
                     updateSavedCodesList();
                 }
             }, 1000);
+            
+            // Thiết lập tự động sao lưu
+            setupAutoBackup();
+            
+            // Kiểm tra khi trang đóng để sao lưu
+            window.addEventListener('beforeunload', () => {
+                if (savedCodes.length > 0) {
+                    createBackup(false);
+                }
+            });
         });
     </script>
 </body>

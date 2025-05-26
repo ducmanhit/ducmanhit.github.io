@@ -21,7 +21,10 @@
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-radius: 20px;
             --btn-radius: 12px;
-            --primary-blue: #0d6efd;
+            --primary-blue: #0d6efd; /* User defined for period select */
+            --primary-dark: #0a2a80; /* Darker blue for option backgrounds */
+            --primary: #0e5bae;     /* Primary color for hover */
+            --primary-light: #0e8bd5;/* Lighter blue for checked option */
         }
 
         * {
@@ -248,6 +251,23 @@
             -webkit-backdrop-filter: blur(10px);
         }
 
+        select.glass-input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 10px; /* Adjusted arrow size */
+            padding-right: 40px; /* Make space for custom arrow */
+        }
+        /* Remove default arrow in Firefox */
+        select.glass-input::-moz-focus-inner { border: 0; }
+        select.glass-input:-moz-focusring { color: transparent; text-shadow: 0 0 0 var(--text-color); }
+        /* Remove default arrow in IE */
+        select.glass-input::-ms-expand { display: none; }
+
+
         .glass-input:focus {
             outline: none;
             border-color: var(--primary-glow);
@@ -257,6 +277,22 @@
         .glass-input::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
+
+        /* Styling for <option> elements */
+        select.glass-input option {
+            background: var(--primary-dark, #0a2a80); /* Dark theme background for options */
+            color: var(--text-color, #ffffff);       /* White text */
+            padding: 8px 15px; /* Consistent padding */
+        }
+
+        select.glass-input option:hover { /* Browser support for option hover is limited */
+            background: var(--primary, #0e5bae);
+        }
+        
+        select.glass-input option:checked { /* Browser support for option checked is limited */
+            background: var(--primary-light, #0e8bd5);
+        }
+
 
         /* Token display */
         .token-display {
@@ -302,7 +338,7 @@
             height: 100%;
             background: linear-gradient(to right, var(--primary-glow), var(--accent-glow));
             border-radius: 3px;
-            transition: width 1s linear;
+            transition: width 1s linear; 
             box-shadow: 0 0 8px rgba(90, 200, 250, 0.5);
         }
 
@@ -386,6 +422,7 @@
             background: none;
             border: none;
             text-align: center;
+            flex: 1; 
         }
 
         .tab.active {
@@ -397,7 +434,7 @@
             bottom: -1px;
             left: 0;
             height: 3px;
-            width: 50%;
+            width: 50%; 
             background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow));
             transition: transform 0.3s ease;
             border-radius: 3px 3px 0 0;
@@ -453,6 +490,7 @@
             font-size: 15px;
             color: var(--text-color);
             font-weight: 500;
+            word-break: break-all; 
         }
 
         .saved-code-time {
@@ -462,6 +500,7 @@
             padding: 4px 12px;
             border-radius: 50px;
             font-weight: 500;
+            white-space: nowrap; 
         }
 
         .saved-code-value {
@@ -574,12 +613,25 @@
             display: block;
         }
 
-        /* Period select styling - SỬA PHẦN NÀY */
+        /* Period select styling - USER OVERRIDE + Custom Arrow Compatibility */
         select#period {
-            background-color: #0d6efd !important;
+            background-color: var(--primary-blue) !important; 
             color: white !important;
             font-weight: bold !important;
+            /* Ensure custom arrow is visible and correctly positioned */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+            background-repeat: no-repeat !important;
+            background-position: right 15px center !important;
+            background-size: 10px !important;
+            padding-right: 40px !important;
         }
+
+        .settings-content .input-group .button-pair { 
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
 
         /* Modal */
         .modal {
@@ -663,7 +715,7 @@
             gap: 10px;
         }
 
-        /* Confirmation Modal - ĐÃ SỬA ĐẸP HƠN */
+        /* Confirmation Modal */
         #confirmDeleteModal {
             position: fixed;
             top: 0;
@@ -686,10 +738,10 @@
         }
 
         .confirm-modal-content {
-            background-color: white;
+            background-color: white; 
             border-radius: 8px;
             max-width: 350px;
-            width: 100%;
+            width: calc(100% - 40px); 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             transform: scale(0.95);
             transition: transform 0.3s ease;
@@ -715,17 +767,19 @@
         .confirm-modal-body {
             padding: 20px;
             color: #212529;
+            font-size: 15px;
         }
 
         .confirm-modal-footer {
             display: flex;
-            justify-content: center;
+            justify-content: center; 
             padding: 15px 20px;
-            gap: 20px;
+            gap: 10px; 
         }
 
         .confirm-btn {
-            width: 80px;
+            flex: 1; 
+            max-width: 120px; 
             padding: 8px 0;
             border: none;
             border-radius: 4px;
@@ -735,29 +789,30 @@
             transition: all 0.2s ease;
         }
 
-        .btn-ok {
-            background-color: #6c757d;
+        .btn-ok { 
+            background-color: #dc3545; 
             color: white;
         }
 
         .btn-ok:hover {
-            background-color: #5a6268;
+            background-color: #c82333;
         }
 
         .btn-cancel {
-            background-color: #adb5bd;
+            background-color: #6c757d; 
             color: white;
         }
 
         .btn-cancel:hover {
-            background-color: #98a2ac;
+            background-color: #5a6268;
         }
 
         /* Notification */
         .notification {
             position: fixed;
             bottom: 30px;
-            right: 30px;
+            left: 50%; 
+            transform: translateX(-50%) translateY(30px); 
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -769,15 +824,15 @@
             align-items: center;
             gap: 10px;
             color: var(--text-color);
-            transform: translateY(30px);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             z-index: 1000;
-            max-width: 350px;
+            max-width: calc(100% - 40px); 
+            width: auto; 
         }
 
         .notification.show {
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0); 
             opacity: 1;
         }
 
@@ -810,21 +865,65 @@
             }
             
             .app-title {
-                font-size: 36px;
+                font-size: 32px; 
+            }
+            .app-subtitle {
+                font-size: 14px;
             }
             
             .token-value {
-                font-size: 34px;
+                font-size: 32px; 
+                letter-spacing: 3px;
             }
             
             .saved-code-value {
-                font-size: 24px;
+                font-size: 26px; 
+                letter-spacing: 2px;
+            }
+            .button-group {
+                flex-wrap: wrap; 
+            }
+            .glass-btn {
+                 flex-basis: calc(50% - 5px); 
+                 font-size: 14px;
+            }
+            .tabs {
+                font-size: 14px;
+            }
+            .tab {
+                padding: 12px 10px;
+            }
+            .settings-content .input-group .button-pair { 
+                flex-direction: column;
+            }
+            .notification {
+                bottom: 20px; 
+                width: calc(100% - 40px); 
+            }
+        }
+        @media (max-width: 480px) {
+            .app-title {
+                font-size: 28px;
+            }
+            .token-value {
+                font-size: 28px;
+            }
+            .saved-code-value {
+                font-size: 22px;
+            }
+             .button-group .glass-btn { 
+                 flex-basis: 100%; 
+            }
+            .saved-code-actions {
+                flex-direction: column; 
+            }
+            .action-btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background elements -->
     <div class="bg-elements">
         <div class="bg-circle circle-1"></div>
         <div class="bg-circle circle-2"></div>
@@ -834,15 +933,12 @@
     </div>
 
     <div class="container">
-        <!-- App header -->
         <div class="app-header">
             <h1 class="app-title">Get 2FA Code</h1>
             <p class="app-subtitle">Generate and manage two-factor authentication codes.</p>
         </div>
 
-        <!-- Main content - split layout -->
         <div class="split-layout">
-            <!-- Generator section -->
             <div class="glass-card generator-section">
                 <div class="section-title">
                     <i class="fas fa-key"></i> Generate Code
@@ -879,7 +975,6 @@
                 </div>
             </div>
 
-            <!-- Saved codes section -->
             <div class="glass-card">
                 <div class="tabs">
                     <button class="tab active" data-tab="saved">Saved Codes</button>
@@ -887,25 +982,18 @@
                     <div class="tab-indicator"></div>
                 </div>
 
-                <!-- Saved codes content -->
-                <div class="saved-codes-content">
-                    <div class="saved-codes-list" id="savedCodesList">
-                        <!-- Empty state will show by default -->
+                <div class="saved-codes-content active"> <div class="saved-codes-list" id="savedCodesList">
                         <div class="empty-state" id="emptyState">
                             <i class="fas fa-folder-open"></i>
                             <p>No saved codes yet</p>
                             <p style="font-size: 14px; opacity: 0.7;">Save codes using the Save button</p>
                         </div>
-                        
-                        <!-- Saved codes will be added here dynamically -->
                     </div>
-
                     <button class="add-code-btn" id="addNewBtn">
                         <i class="fas fa-plus"></i> Add New Code
                     </button>
                 </div>
 
-                <!-- Settings content -->
                 <div class="settings-content">
                     <div class="input-group">
                         <label class="input-label" for="algorithm">Algorithm</label>
@@ -927,17 +1015,16 @@
 
                     <div class="input-group">
                         <label class="input-label" for="period">Period (seconds)</label>
-                        <select class="glass-input" id="period" style="background-color: #0d6efd; color: white; font-weight: bold;">
+                        <select class="glass-input" id="period" style="background-color: var(--primary-blue) !important; color: white !important; font-weight: bold !important;">
                             <option value="30">30 seconds (Default)</option>
                             <option value="60">60 seconds</option>
                             <option value="90">90 seconds</option>
                         </select>
                     </div>
-
-                    <!-- Added server sync settings -->
+                    
                     <div class="input-group">
                         <label class="input-label">Sync with Server</label>
-                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <div class="button-pair">
                             <button class="glass-btn" id="exportBtn">
                                 <i class="fas fa-upload"></i> Export to Server
                             </button>
@@ -949,10 +1036,9 @@
                         <input type="password" id="apiKey" class="glass-input" placeholder="API Key (optional)" style="margin-top: 10px;">
                     </div>
 
-                    <!-- Backup & Restore Section -->
                     <div class="input-group">
                         <label class="input-label">Backup & Restore</label>
-                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                         <div class="button-pair">
                             <button class="glass-btn" id="backupBtn">
                                 <i class="fas fa-download"></i> Create Backup
                             </button>
@@ -967,7 +1053,6 @@
         </div>
     </div>
 
-    <!-- Add code modal -->
     <div class="modal" id="addModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -991,72 +1076,40 @@
         </div>
     </div>
 
-    <!-- Thêm mới: Xác nhận xóa modal (ĐÃ SỬA ĐẸP HƠN)-->
     <div id="confirmDeleteModal">
         <div class="confirm-modal-content">
             <div class="confirm-modal-header">
-                <div class="confirm-modal-title">Trang này cho biết</div>
+                <div class="confirm-modal-title">Confirm Deletion</div>
             </div>
             <div class="confirm-modal-body">
-                <p id="deleteConfirmMessage">Delete "B" from saved codes?</p>
+                <p id="deleteConfirmMessage">Are you sure you want to delete this code?</p>
             </div>
             <div class="confirm-modal-footer">
-                <button class="confirm-btn btn-ok" id="confirmDeleteBtn">OK</button>
-                <button class="confirm-btn btn-cancel" id="cancelDeleteBtn">Huỷ</button>
+                <button class="confirm-btn btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                <button class="confirm-btn btn-ok" id="confirmDeleteBtn">Delete</button>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
         <span id="notificationText">Notification message</span>
     </div>
 
-    <!-- Include crypto-js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <script>
-        // Ngăn chặn view source
         document.addEventListener('keydown', function(event) {
-            // Chặn F12
-            if (event.keyCode === 123) {
-                event.preventDefault();
-                return false;
-            }
-            
-            // Chặn Ctrl+U
-            if (event.ctrlKey && event.keyCode === 85) {
-                event.preventDefault();
-                return false;
-            }
-            
-            // Chặn Ctrl+Shift+I
-            if (event.ctrlKey && event.shiftKey && event.keyCode === 73) {
-                event.preventDefault();
-                return false;
-            }
-            
-            // Chặn Ctrl+Shift+J
-            if (event.ctrlKey && event.shiftKey && event.keyCode === 74) {
-                event.preventDefault();
-                return false;
-            }
-            
-            // Chặn Ctrl+Shift+C
-            if (event.ctrlKey && event.shiftKey && event.keyCode === 67) {
+            if (event.keyCode === 123 || (event.ctrlKey && event.keyCode === 85) || (event.ctrlKey && event.shiftKey && event.keyCode === 73) || (event.ctrlKey && event.shiftKey && event.keyCode === 74) || (event.ctrlKey && event.shiftKey && event.keyCode === 67)) {
                 event.preventDefault();
                 return false;
             }
         });
-        
-        // Vô hiệu hóa chuột phải
         document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
             return false;
         });
 
-        // DOM Elements
         const secretInput = document.getElementById('secretInput');
         const token = document.getElementById('token');
         const timerBar = document.getElementById('timerBar');
@@ -1084,8 +1137,6 @@
         const saveNewBtn = document.getElementById('saveNewBtn');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
-        
-        // Các phần tử mới thêm vào
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const serverUrl = document.getElementById('serverUrl');
@@ -1093,186 +1144,120 @@
         const backupBtn = document.getElementById('backupBtn');
         const restoreBtn = document.getElementById('restoreBtn');
         const lastBackupInfo = document.getElementById('lastBackupInfo');
-        
-        // Elements cho confirm dialog
         const confirmDeleteModal = document.getElementById('confirmDeleteModal');
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
         const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
-        let codeToDelete = -1; // Lưu index của mã sẽ xóa
+        let codeToDelete = -1; 
 
-        // Variables
-        let timer;
+        let mainTimer;
+        let savedCodesRefreshTimer;
         let currentToken = '';
         let lastSecretInput = '';
         let savedCodes = [];
-        let autoSaveTimer; // Timer cho việc tự động sao lưu
+        let autoSaveTimer;
 
-        // Base32 decoding
         function base32ToHex(base32) {
-            // Base32 character set
             const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-            
-            // Remove spaces and padding, convert to uppercase
             base32 = base32.replace(/\s+/g, '').toUpperCase().replace(/=+$/, '');
-            
-            // Validate characters
-            if (!base32.match(/^[A-Z2-7]+$/i)) {
-                throw new Error('Invalid base32 characters');
+            if (!/^[A-Z2-7]+$/.test(base32)) { 
+                 console.error('Invalid base32 characters in secret:', base32);
+                 throw new Error('Invalid base32 characters');
             }
-            
             let bits = '';
             let hex = '';
-            
-            // Convert to bits
             for (let i = 0; i < base32.length; i++) {
                 const val = base32chars.indexOf(base32[i]);
                 bits += val.toString(2).padStart(5, '0');
             }
-            
-            // Convert bits to hex
             for (let i = 0; i + 4 <= bits.length; i += 4) {
                 const chunk = bits.substring(i, i + 4);
                 hex += parseInt(chunk, 2).toString(16);
             }
-            
             return hex;
         }
 
-        // Generate TOTP code
         function generateTOTP(secret, period = 30, digits = 6, algorithm = 'SHA-1') {
             try {
-                // Convert secret to hex
+                if (!secret || typeof secret !== 'string' || secret.trim() === '') {
+                    throw new Error('Secret key is empty or invalid');
+                }
                 const hexSecret = base32ToHex(secret);
-                
-                // Calculate counter value (floor(current Unix time / period))
                 const epoch = Math.floor(Date.now() / 1000);
                 const counter = Math.floor(epoch / period);
-                
-                // Convert counter to hex and pad to 16 characters
                 const counterHex = counter.toString(16).padStart(16, '0');
-                
-                // Create word arrays for HMAC
                 const secretWordArray = CryptoJS.enc.Hex.parse(hexSecret);
                 const counterWordArray = CryptoJS.enc.Hex.parse(counterHex);
-                
-                // Compute HMAC
                 let hmacObj;
-                if (algorithm === 'SHA-1') {
-                    hmacObj = CryptoJS.HmacSHA1(counterWordArray, secretWordArray);
-                } else if (algorithm === 'SHA-256') {
-                    hmacObj = CryptoJS.HmacSHA256(counterWordArray, secretWordArray);
-                } else if (algorithm === 'SHA-512') {
-                    hmacObj = CryptoJS.HmacSHA512(counterWordArray, secretWordArray);
-                }
-                
+                if (algorithm === 'SHA-1') hmacObj = CryptoJS.HmacSHA1(counterWordArray, secretWordArray);
+                else if (algorithm === 'SHA-256') hmacObj = CryptoJS.HmacSHA256(counterWordArray, secretWordArray);
+                else if (algorithm === 'SHA-512') hmacObj = CryptoJS.HmacSHA512(counterWordArray, secretWordArray);
+                else throw new Error('Unsupported algorithm: ' + algorithm);
                 const hmac = hmacObj.toString(CryptoJS.enc.Hex);
-                
-                // Dynamic truncation
                 const offset = parseInt(hmac.substr(hmac.length - 1), 16);
                 const binary = parseInt(hmac.substr(offset * 2, 8), 16) & 0x7fffffff;
-                
-                // Calculate TOTP value
                 const otp = binary % Math.pow(10, digits);
                 const code = otp.toString().padStart(digits, '0');
-                
-                // Calculate remaining time
                 const secondsRemaining = period - (epoch % period);
-                
-                return {
-                    code,
-                    secondsRemaining
-                };
+                return { code, secondsRemaining };
             } catch (error) {
-                console.error('TOTP generation failed:', error);
+                console.error('TOTP generation error:', error.message, 'Secret (partial):', String(secret).substring(0,5) + "...");
                 return null;
             }
         }
 
-        // Update timer display
-        function updateTimer(secondsRemaining, period) {
-            // Update timer bar
+        function updateMainTimerDisplay(secondsRemaining, period) {
             const percentage = (secondsRemaining / period) * 100;
             timerBar.style.width = `${percentage}%`;
             secondsCounter.textContent = secondsRemaining;
-            
-            // Change color when close to expiration
-            if (secondsRemaining <= 5) {
-                timerBar.style.background = 'linear-gradient(to right, #ff2d55, #ff9500)';
-            } else {
-                timerBar.style.background = 'linear-gradient(to right, #007aff, #5ac8fa)';
-            }
+            if (secondsRemaining <= 5) timerBar.style.background = 'linear-gradient(to right, var(--danger-glow), #ff9500)';
+            else timerBar.style.background = 'linear-gradient(to right, var(--primary-glow), var(--accent-glow))';
         }
 
-        // Generate and display token
-        function generateToken() {
+        function generateMainToken() {
             const secret = secretInput.value.trim().replace(/\s+/g, '');
-            
             if (!secret) {
                 token.textContent = '------';
-                clearInterval(timer);
-                timerBar.style.width = '0%';
+                if(mainTimer) clearInterval(mainTimer); 
+                updateMainTimerDisplay(0, parseInt(periodSelect.value || 30));
                 return;
             }
-            
             const period = parseInt(periodSelect.value);
             const digits = parseInt(digitsSelect.value);
             const algorithm = algorithmSelect.value;
-            
             try {
                 const result = generateTOTP(secret, period, digits, algorithm);
-                
                 if (!result) {
                     token.textContent = 'ERROR';
+                    updateMainTimerDisplay(0, period);
                     return;
                 }
-                
-                const { code, secondsRemaining } = result;
-                
-                // Update only if token changes
-                if (code !== currentToken) {
+                if (result.code !== currentToken) {
                     token.style.opacity = '0';
                     setTimeout(() => {
-                        currentToken = code;
-                        token.textContent = code;
+                        currentToken = result.code;
+                        token.textContent = result.code;
                         token.style.opacity = '1';
-                        token.style.transition = 'opacity 0.3s ease';
-                    }, 100);
+                    }, 100); 
                 }
-                
-                updateTimer(secondsRemaining, period);
+                updateMainTimerDisplay(result.secondsRemaining, period);
                 lastSecretInput = secret;
-                
-                return result;
             } catch (error) {
-                console.error('Token generation failed:', error);
                 token.textContent = 'ERROR';
-                return null;
+                updateMainTimerDisplay(0, period);
             }
         }
 
-        // Start continuous token updates
-        function startTokenUpdates() {
-            // Clear existing timer
-            if (timer) {
-                clearInterval(timer);
-            }
-            
-            // Generate initial token
-            const result = generateToken();
-            if (!result) return;
-            
-            // Set up timer for updates
-            timer = setInterval(generateToken, 1000);
+        function startMainTokenUpdates() {
+            if (mainTimer) clearInterval(mainTimer);
+            generateMainToken(); 
+            mainTimer = setInterval(generateMainToken, 1000);
         }
 
-        // Copy token to clipboard
         function copyToClipboard() {
             if (currentToken && currentToken !== '------' && currentToken !== 'ERROR') {
                 navigator.clipboard.writeText(currentToken)
-                    .then(() => {
-                        showNotification('Code copied to clipboard', 'success');
-                    })
+                    .then(() => showNotification('Code copied to clipboard', 'success'))
                     .catch(err => {
                         console.error('Copy failed:', err);
                         showNotification('Failed to copy code', 'error');
@@ -1281,647 +1266,425 @@
                 showNotification('No valid code to copy', 'error');
             }
         }
+        
+        function updateSavedCodesListDOM() {
+            savedCodesList.innerHTML = ''; 
+            if (savedCodes.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
 
-        // Save current code
+            savedCodes.forEach((code, index) => {
+                const codeItem = document.createElement('div');
+                codeItem.className = 'saved-code-item';
+                codeItem.setAttribute('data-index', index);
+                codeItem.setAttribute('data-id', code.id); 
+
+                codeItem.innerHTML = `
+                    <div class="saved-code-header">
+                        <div class="saved-code-label">${code.label}</div>
+                        <div class="saved-code-time" id="saved-time-${code.id}">--s</div>
+                    </div>
+                    <div class="saved-code-value" id="saved-token-${code.id}">------</div>
+                    <div class="saved-code-actions">
+                        <button class="action-btn btn-load" data-index="${index}"><i class="fas fa-sync-alt"></i> Load</button>
+                        <button class="action-btn btn-copy" data-code="------" id="saved-copy-${code.id}"><i class="fas fa-copy"></i> Copy</button>
+                        <button class="action-btn btn-delete" data-index="${index}"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                `;
+                savedCodesList.appendChild(codeItem);
+            });
+            addButtonEventListeners();
+            refreshLiveSavedCodes(); 
+        }
+
+        function refreshLiveSavedCodes() {
+            if (savedCodesContent.style.display === 'none' || savedCodes.length === 0) {
+                return; 
+            }
+            savedCodes.forEach((codeData) => { 
+                 const item = savedCodesList.querySelector(`.saved-code-item[data-id="${codeData.id}"]`);
+                 if (!item) return; 
+
+                const result = generateTOTP(
+                    codeData.secret,
+                    codeData.period || 30,
+                    codeData.digits || 6,
+                    codeData.algorithm || 'SHA-1'
+                );
+
+                const tokenEl = item.querySelector(`#saved-token-${codeData.id}`);
+                const timeEl = item.querySelector(`#saved-time-${codeData.id}`);
+                const copyBtnEl = item.querySelector(`#saved-copy-${codeData.id}`);
+
+                if (result) {
+                    if (tokenEl && tokenEl.textContent !== result.code) tokenEl.textContent = result.code;
+                    if (timeEl) timeEl.textContent = `${result.secondsRemaining}s`;
+                    if (copyBtnEl) copyBtnEl.setAttribute('data-code', result.code);
+                } else {
+                    if (tokenEl) tokenEl.textContent = 'ERROR';
+                    if (timeEl) timeEl.textContent = 'Error';
+                    if (copyBtnEl) copyBtnEl.setAttribute('data-code', 'ERROR');
+                }
+            });
+        }
+
+
         function saveCurrentCode() {
             if (currentToken && currentToken !== '------' && currentToken !== 'ERROR') {
                 newSecret.value = secretInput.value.trim();
-                newLabel.value = '';
-                openModal();
+                newLabel.value = ''; 
+                openAddModal();
             } else {
                 showNotification('Generate a valid code first', 'error');
             }
         }
 
-        // Clear input and token
         function clearAll() {
             secretInput.value = '';
             token.textContent = '------';
             currentToken = '';
-            timerBar.style.width = '0%';
-            clearInterval(timer);
+            if(mainTimer) clearInterval(mainTimer);
+            updateMainTimerDisplay(0, parseInt(periodSelect.value || 30));
             showNotification('Input cleared', 'success');
         }
 
-        // Show notification
         function showNotification(message, type = 'success') {
-            notification.className = 'notification';
+            notification.className = 'notification'; 
             notification.classList.add(`notification-${type}`);
-            
-            if (type === 'success') {
-                notification.querySelector('i').className = 'fas fa-check-circle';
-            } else {
-                notification.querySelector('i').className = 'fas fa-exclamation-circle';
-            }
-            
+            notification.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
             notificationText.textContent = message;
             notification.classList.add('show');
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
-        // Open modal
-        function openModal() {
+        function openAddModal() {
             addModal.classList.add('active');
-            setTimeout(() => newLabel.focus(), 300);
+            setTimeout(() => newLabel.focus(), 50);
         }
 
-        // Close modal
-        function closeModal() {
+        function closeAddModal() {
             addModal.classList.remove('active');
         }
-
-        // Add new code to saved list
-        function addNewCode() {
-            const label = newLabel.value.trim() || 'Unnamed';
+        
+        function addNewCodeToList() {
+            const label = newLabel.value.trim() || 'Unnamed Code';
             const secret = newSecret.value.trim();
-            
             if (!secret) {
                 showNotification('Secret key is required', 'error');
                 return;
             }
-            
-            // Validate by generating a code
             try {
-                const result = generateTOTP(secret);
-                
-                if (!result) {
-                    showNotification('Invalid secret key', 'error');
+                const result = generateTOTP(secret); 
+                if (!result) { 
+                    showNotification('Invalid secret key or parameters', 'error');
                     return;
                 }
-                
-                // Create new code object
-                const newCode = {
-                    id: Date.now(),
+                const newCodeEntry = {
+                    id: Date.now(), 
                     label,
                     secret,
-                    algorithm: algorithmSelect.value,
+                    algorithm: algorithmSelect.value, 
                     digits: parseInt(digitsSelect.value),
                     period: parseInt(periodSelect.value)
                 };
-                
-                // Add to start of array
-                savedCodes.unshift(newCode);
-                
-                // Save to localStorage
-                saveToLocalStorage();
-                
-                // Update UI
-                updateSavedCodesList();
-                
-                // Close modal
-                closeModal();
-                
-                showNotification(`Code saved: ${label}`, 'success');
-                
-                // Switch to saved codes tab if needed
-                showSavedCodesTab();
-            } catch (error) {
-                console.error('Validation error:', error);
-                showNotification('Invalid secret key', 'error');
+                savedCodes.unshift(newCodeEntry); 
+                saveCodesToLocalStorage();
+                updateSavedCodesListDOM(); 
+                closeAddModal();
+                showNotification(`Code "${label}" saved`, 'success');
+                showTab('saved'); 
+            } catch (error) { 
+                showNotification('Invalid secret key format', 'error');
+                console.error("Error adding new code:", error);
             }
         }
 
-        // Update saved codes list in UI
-        function updateSavedCodesList() {
-            // Remove existing code items
-            const codeItems = savedCodesList.querySelectorAll('.saved-code-item');
-            codeItems.forEach(item => item.remove());
-            
-            // Show empty state if no codes
-            if (savedCodes.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            // Hide empty state
-            emptyState.style.display = 'none';
-            
-            // Add each saved code
-            savedCodes.forEach((code, index) => {
-                // Generate current code value
-                const result = generateTOTP(
-                    code.secret,
-                    code.period || 30,
-                    code.digits || 6,
-                    code.algorithm || 'SHA-1'
-                );
-                
-                const currentCode = result ? result.code : 'ERROR';
-                const secondsRemaining = result ? result.secondsRemaining : 0;
-                
-                const codeItem = document.createElement('div');
-                codeItem.className = 'saved-code-item';
-                codeItem.innerHTML = `
-                    <div class="saved-code-header">
-                        <div class="saved-code-label">${code.label}</div>
-                        <div class="saved-code-time">${secondsRemaining}s</div>
-                    </div>
-                    <div class="saved-code-value">${currentCode}</div>
-                    <div class="saved-code-actions">
-                        <button class="action-btn btn-load" data-index="${index}">
-                            <i class="fas fa-sync-alt"></i> Load
-                        </button>
-                        <button class="action-btn btn-copy" data-code="${currentCode}">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                        <button class="action-btn btn-delete" data-index="${index}">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                `;
-                
-                savedCodesList.appendChild(codeItem);
-            });
-            
-            // Add event listeners to buttons
-            addButtonEventListeners();
-        }
-
-        // Add event listeners to saved code buttons
         function addButtonEventListeners() {
-            document.querySelectorAll('.btn-load').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
-                    loadSavedCode(index);
-                });
+            savedCodesList.querySelectorAll('.btn-load').forEach(btn => {
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', (e) => loadSavedCode(parseInt(e.currentTarget.getAttribute('data-index'))));
             });
-            
-            document.querySelectorAll('.btn-copy').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    const code = e.currentTarget.getAttribute('data-code');
-                    copySavedCode(code);
-                });
+            savedCodesList.querySelectorAll('.btn-copy').forEach(btn => {
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', (e) => copySavedCodeValue(e.currentTarget.getAttribute('data-code')));
             });
-            
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
-                    deleteSavedCode(index);
-                });
+             savedCodesList.querySelectorAll('.btn-delete').forEach(btn => {
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', (e) => confirmDeletion(parseInt(e.currentTarget.getAttribute('data-index'))));
             });
         }
 
-        // Load saved code to generator
         function loadSavedCode(index) {
             const code = savedCodes[index];
             if (!code) return;
-            
             secretInput.value = code.secret;
-            
-            // Apply settings if they exist
-            if (code.algorithm) algorithmSelect.value = code.algorithm;
-            if (code.digits) digitsSelect.value = code.digits;
-            if (code.period) periodSelect.value = code.period;
-            
-            // Generate token
-            startTokenUpdates();
-            
+            algorithmSelect.value = code.algorithm || 'SHA-1';
+            digitsSelect.value = code.digits || 6;
+            periodSelect.value = code.period || 30;
+            startMainTokenUpdates();
             showNotification(`Loaded: ${code.label}`, 'success');
         }
 
-        // Copy a saved code
-        function copySavedCode(code) {
-            if (code && code !== 'ERROR') {
-                navigator.clipboard.writeText(code)
-                    .then(() => {
-                        showNotification('Code copied to clipboard', 'success');
-                    })
-                    .catch(err => {
-                        console.error('Copy failed:', err);
-                        showNotification('Failed to copy code', 'error');
-                    });
+        function copySavedCodeValue(codeToCopy) {
+            if (codeToCopy && codeToCopy !== 'ERROR' && codeToCopy !== '------') {
+                navigator.clipboard.writeText(codeToCopy)
+                    .then(() => showNotification('Code copied', 'success'))
+                    .catch(err => showNotification('Copy failed', 'error'));
             } else {
-                showNotification('Invalid code', 'error');
+                showNotification('No valid code to copy', 'error');
             }
         }
 
-        // Delete a saved code - ĐÃ SỬA
-        function deleteSavedCode(index) {
+        function confirmDeletion(index) {
             const code = savedCodes[index];
             if (!code) return;
-            
-            // Hiển thị hộp thoại xác nhận tùy chỉnh
-            codeToDelete = index;
-            deleteConfirmMessage.textContent = `Delete "${code.label}" from saved codes?`;
+            codeToDelete = index; 
+            deleteConfirmMessage.textContent = `Delete "${code.label}"?`;
             confirmDeleteModal.classList.add('active');
         }
-
-        // Show saved codes tab
-        function showSavedCodesTab() {
-            tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
-            tabIndicator.style.transform = 'translateX(0)';
-            savedCodesContent.style.display = 'block';
-            settingsContent.style.display = 'none';
-            updateSavedCodesList();
-        }
-
-        // Show settings tab
-        function showSettingsTab() {
-            tabs[0].classList.remove('active');
-            tabs[1].classList.add('active');
-            tabIndicator.style.transform = 'translateX(100%)';
-            savedCodesContent.style.display = 'none';
-            settingsContent.style.display = 'block';
-        }
-
-        // Initialize saved codes - ĐÃ ĐƯỢC SỬA ĐỔI
-        function initSavedCodes() {
-            // Tải mã đã lưu từ localStorage
-            const savedCodesStr = localStorage.getItem('savedCodes');
+        
+        function showTab(tabName) {
+            tabs.forEach(t => t.classList.remove('active'));
+            const activeTabButton = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (activeTabButton) activeTabButton.classList.add('active');
             
+            const tabIndex = Array.from(tabs).findIndex(t => t.getAttribute('data-tab') === tabName);
+            if (tabIndicator) tabIndicator.style.transform = `translateX(${tabIndex * 100}%)`;
+
+            if (savedCodesContent) savedCodesContent.style.display = tabName === 'saved' ? 'block' : 'none';
+            if (settingsContent) settingsContent.style.display = tabName === 'settings' ? 'block' : 'none';
+
+            if(tabName === 'saved' && typeof updateSavedCodesListDOM === 'function') {
+                 updateSavedCodesListDOM(); 
+            }
+        }
+
+        function loadCodesFromLocalStorage() {
+            const savedCodesStr = localStorage.getItem('savedCodes_v2'); 
             if (savedCodesStr) {
                 try {
                     savedCodes = JSON.parse(savedCodesStr);
-                    emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
-                    showNotification('Loaded saved codes from browser storage', 'success');
                 } catch (e) {
                     console.error('Error loading saved codes:', e);
-                    
-                    // Thử phục hồi từ bản sao lưu
-                    const backupCodesStr = localStorage.getItem('savedCodes_backup');
-                    if (backupCodesStr) {
-                        try {
-                            savedCodes = JSON.parse(backupCodesStr);
-                            localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
-                            emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
-                            showNotification('Restored codes from backup', 'success');
-                        } catch (e) {
-                            console.error('Error loading backup:', e);
-                            savedCodes = [];
-                            emptyState.style.display = 'block';
-                        }
-                    } else {
-                        savedCodes = [];
-                        emptyState.style.display = 'block';
-                    }
+                    savedCodes = [];
                 }
             } else {
-                // Thử phục hồi từ bản sao lưu nếu không có dữ liệu chính
-                const backupCodesStr = localStorage.getItem('savedCodes_backup');
-                if (backupCodesStr) {
+                const oldCodesStr = localStorage.getItem('savedCodes');
+                if (oldCodesStr) {
                     try {
-                        savedCodes = JSON.parse(backupCodesStr);
-                        localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
-                        emptyState.style.display = savedCodes.length > 0 ? 'none' : 'block';
-                        showNotification('Restored from backup', 'success');
-                    } catch (e) {
-                        console.error('Error loading backup:', e);
-                        savedCodes = [];
-                        emptyState.style.display = 'block';
-                    }
+                        const oldCodes = JSON.parse(oldCodesStr);
+                        savedCodes = oldCodes.map((code, index) => ({
+                            id: code.id || Date.now() + index, 
+                            label: code.label || `Code ${index + 1}`,
+                            secret: code.secret,
+                            algorithm: code.algorithm || 'SHA-1',
+                            digits: code.digits || 6,
+                            period: code.period || 30
+                        }));
+                        saveCodesToLocalStorage(); 
+                        localStorage.removeItem('savedCodes'); 
+                        showNotification('Migrated codes to new format.', 'success');
+                    } catch (e) { savedCodes = []; }
                 } else {
                     savedCodes = [];
-                    emptyState.style.display = 'block';
                 }
             }
-            
-            // Cập nhật thông tin bản sao lưu
-            updateBackupInfo();
+            // updateSavedCodesListDOM(); // Call after DOM is fully ready or when tab is shown
+            updateBackupInfo(); 
         }
 
-        // Tải cài đặt server
-        function loadServerSettings() {
-            serverUrl.value = localStorage.getItem('2fa_server_url') || '';
-            apiKey.value = localStorage.getItem('2fa_server_key') || '';
+        function saveCodesToLocalStorage() {
+            localStorage.setItem('savedCodes_v2', JSON.stringify(savedCodes));
+            createBackup(false); 
         }
 
-        // Lưu cài đặt server
-        function saveServerSettings() {
-            localStorage.setItem('2fa_server_url', serverUrl.value);
-            localStorage.setItem('2fa_server_key', apiKey.value);
-            showNotification('Server settings saved', 'success');
-        }
-
-        // Lưu vào localStorage
-        function saveToLocalStorage() {
-            localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
-            
-            // Tạo bản sao lưu tự động
-            createBackup(false);
-        }
-
-        // Tạo bản sao lưu
         function createBackup(showMessage = true) {
             if (savedCodes.length > 0) {
                 const now = new Date();
-                const backupData = {
-                    codes: savedCodes,
-                    timestamp: now.getTime(),
-                    date: now.toLocaleString()
-                };
-                
-                localStorage.setItem('savedCodes_backup', JSON.stringify(backupData));
-                
-                if (showMessage) {
-                    showNotification('Backup created successfully', 'success');
-                }
-                
+                const backupData = { codes: savedCodes, timestamp: now.getTime(), date: now.toLocaleString() };
+                localStorage.setItem('savedCodes_backup_v2', JSON.stringify(backupData));
+                if (showMessage) showNotification('Backup created successfully', 'success');
                 updateBackupInfo();
             } else {
-                if (showMessage) {
-                    showNotification('No codes to backup', 'error');
-                }
+                if (showMessage) showNotification('No codes to backup', 'error');
             }
         }
 
-        // Phục hồi từ bản sao lưu
         function restoreFromBackup() {
-            const backupStr = localStorage.getItem('savedCodes_backup');
-            
+            const backupStr = localStorage.getItem('savedCodes_backup_v2');
             if (!backupStr) {
                 showNotification('No backup found', 'error');
                 return;
             }
-            
             try {
                 const backupData = JSON.parse(backupStr);
-                
                 if (!backupData.codes || !Array.isArray(backupData.codes)) {
                     showNotification('Invalid backup data', 'error');
                     return;
                 }
-                
-                // Xác nhận phục hồi
-                if (confirm(`Restore backup from ${backupData.date || 'unknown time'}?`)) {
+                if (confirm(`Restore backup from ${backupData.date || new Date(backupData.timestamp).toLocaleString()}? This will overwrite current codes.`)) {
                     savedCodes = backupData.codes;
-                    saveToLocalStorage();
-                    updateSavedCodesList();
+                    saveCodesToLocalStorage(); 
+                    updateSavedCodesListDOM();
                     showNotification('Backup restored successfully', 'success');
                 }
             } catch (e) {
-                console.error('Error restoring backup:', e);
                 showNotification('Failed to restore backup', 'error');
             }
         }
-
-        // Cập nhật thông tin bản sao lưu
-        function updateBackupInfo() {
-            const backupStr = localStorage.getItem('savedCodes_backup');
-            
-            if (backupStr) {
+         function updateBackupInfo() {
+            const backupStr = localStorage.getItem('savedCodes_backup_v2');
+            if (lastBackupInfo && backupStr) { // Check if lastBackupInfo exists
                 try {
                     const backupData = JSON.parse(backupStr);
-                    if (backupData.date) {
-                        lastBackupInfo.textContent = `Last backup: ${backupData.date}`;
-                    } else {
-                        lastBackupInfo.textContent = 'Backup available (unknown date)';
-                    }
-                } catch (e) {
-                    lastBackupInfo.textContent = 'Backup data corrupted';
-                }
-            } else {
-                lastBackupInfo.textContent = 'No backup available';
+                    lastBackupInfo.textContent = `Last backup: ${backupData.date || new Date(backupData.timestamp).toLocaleString() || 'Unknown'}`;
+                } catch { lastBackupInfo.textContent = 'Backup data may be corrupted.'; }
+            } else if (lastBackupInfo) {
+                lastBackupInfo.textContent = 'No backup available.';
             }
         }
 
-        // Xuất dữ liệu lên server
         function exportToServer() {
             const url = serverUrl.value.trim();
-            if (!url) {
-                showNotification('Please enter server URL', 'error');
-                return;
-            }
-            
-            saveServerSettings();
-            
-            // Chuẩn bị dữ liệu để xuất
-            const exportData = {
-                codes: savedCodes,
-                timestamp: new Date().getTime(),
-                deviceInfo: navigator.userAgent
-            };
-            
+            if (!url) { showNotification('Server URL is required', 'error'); return; }
+            saveServerSettings(); 
+            const exportData = { codes: savedCodes, timestamp: Date.now(), deviceInfo: navigator.userAgent };
             fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : ''
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : '' },
                 body: JSON.stringify(exportData)
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Server responded with an error');
-                return response.json();
-            })
-            .then(data => {
-                showNotification('Successfully exported to server', 'success');
-            })
-            .catch(error => {
-                console.error('Export error:', error);
-                showNotification('Failed to export: ' + error.message, 'error');
-            });
+            .then(response => response.ok ? response.json() : Promise.reject(new Error('Server error: ' + response.statusText)))
+            .then(() => showNotification('Exported to server', 'success'))
+            .catch(error => showNotification('Export failed: ' + error.message, 'error'));
         }
 
-        // Nhập dữ liệu từ server
         function importFromServer() {
             const url = serverUrl.value.trim();
-            if (!url) {
-                showNotification('Please enter server URL', 'error');
-                return;
-            }
-            
-            saveServerSettings();
-            
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : ''
-                }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Server responded with an error');
-                return response.json();
-            })
+            if (!url) { showNotification('Server URL is required', 'error'); return; }
+            saveServerSettings(); 
+            fetch(url, { method: 'GET', headers: { 'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : '' }})
+            .then(response => response.ok ? response.json() : Promise.reject(new Error('Server error: ' + response.statusText)))
             .then(data => {
                 if (data && data.codes && Array.isArray(data.codes)) {
-                    if (confirm('Replace current codes with server data?')) {
-                        // Tạo bản sao lưu trước khi thay thế
-                        createBackup(false);
-                        
+                    if (confirm('Replace current codes with data from server? (Current codes will be backed up)')) {
+                        createBackup(false); 
                         savedCodes = data.codes;
-                        saveToLocalStorage();
-                        updateSavedCodesList();
-                        showNotification('Successfully imported from server', 'success');
+                        saveCodesToLocalStorage();
+                        updateSavedCodesListDOM();
+                        showNotification('Imported from server', 'success');
                     }
-                } else {
-                    throw new Error('Invalid data format');
-                }
+                } else { throw new Error('Invalid data format from server'); }
             })
-            .catch(error => {
-                console.error('Import error:', error);
-                showNotification('Failed to import: ' + error.message, 'error');
-            });
+            .catch(error => showNotification('Import failed: ' + error.message, 'error'));
+        }
+        
+        function loadServerSettings() {
+            if(serverUrl) serverUrl.value = localStorage.getItem('2fa_server_url') || '';
+            if(apiKey) apiKey.value = localStorage.getItem('2fa_api_key') || ''; 
         }
 
-        // Thiết lập tự động sao lưu định kỳ
-        function setupAutoBackup() {
-            // Xóa timer hiện tại nếu có
-            if (autoSaveTimer) {
-                clearInterval(autoSaveTimer);
-            }
-            
-            // Tạo timer mới - sao lưu mỗi 5 phút
-            autoSaveTimer = setInterval(() => {
-                if (savedCodes.length > 0) {
-                    createBackup(false);
-                    console.log('Auto backup completed at ' + new Date().toLocaleTimeString());
-                }
-            }, 5 * 60 * 1000); // 5 phút
+        function saveServerSettings() {
+            if(serverUrl) localStorage.setItem('2fa_server_url', serverUrl.value.trim());
+            if(apiKey) localStorage.setItem('2fa_api_key', apiKey.value.trim()); 
         }
-
-        // Thêm event listeners cho nút xác nhận và hủy trong hộp thoại xác nhận xóa
+        
         confirmDeleteBtn.addEventListener('click', () => {
-            if (codeToDelete >= 0) {
+            if (codeToDelete >= 0 && codeToDelete < savedCodes.length) {
                 savedCodes.splice(codeToDelete, 1);
-                saveToLocalStorage();
-                updateSavedCodesList();
+                saveCodesToLocalStorage();
+                updateSavedCodesListDOM();
                 showNotification('Code deleted', 'success');
-                confirmDeleteModal.classList.remove('active');
-                codeToDelete = -1;
             }
+            confirmDeleteModal.classList.remove('active');
+            codeToDelete = -1;
         });
-
         cancelDeleteBtn.addEventListener('click', () => {
             confirmDeleteModal.classList.remove('active');
             codeToDelete = -1;
         });
 
-        // Event listeners mới
-        exportBtn.addEventListener('click', exportToServer);
-        importBtn.addEventListener('click', importFromServer);
-        backupBtn.addEventListener('click', () => createBackup(true));
-        restoreBtn.addEventListener('click', restoreFromBackup);
+        if(exportBtn) exportBtn.addEventListener('click', exportToServer);
+        if(importBtn) importBtn.addEventListener('click', importFromServer);
+        if(backupBtn) backupBtn.addEventListener('click', () => createBackup(true));
+        if(restoreBtn) restoreBtn.addEventListener('click', restoreFromBackup);
 
-        // Sửa event listeners cho cài đặt
-        algorithmSelect.addEventListener('change', () => {
-            startTokenUpdates();
-            
-            // Hỏi xem có muốn áp dụng cho tất cả mã đã lưu không
-            if (savedCodes.length > 0 && confirm('Apply this algorithm to all saved codes?')) {
+        const applySettingToAll = (settingType, value) => {
+             if (savedCodes.length > 0 && confirm(`Apply this ${settingType.toLowerCase()} setting to all saved codes?`)) {
                 savedCodes.forEach(code => {
-                    code.algorithm = algorithmSelect.value;
+                    code[settingType.toLowerCase()] = value; 
                 });
-                saveToLocalStorage();
-                updateSavedCodesList();
-                showNotification('Updated algorithm for all codes', 'success');
+                saveCodesToLocalStorage();
+                updateSavedCodesListDOM(); 
+                refreshLiveSavedCodes(); 
+                showNotification(`Updated ${settingType.toLowerCase()} for all codes`, 'success');
             }
+        };
+
+        if(algorithmSelect) algorithmSelect.addEventListener('change', () => {
+            startMainTokenUpdates();
+            applySettingToAll('Algorithm', algorithmSelect.value);
+        });
+        if(digitsSelect) digitsSelect.addEventListener('change', () => {
+            startMainTokenUpdates();
+            applySettingToAll('Digits', parseInt(digitsSelect.value));
+        });
+        if(periodSelect) periodSelect.addEventListener('change', () => {
+            startMainTokenUpdates();
+            applySettingToAll('Period', parseInt(periodSelect.value));
         });
 
-        digitsSelect.addEventListener('change', () => {
-            startTokenUpdates();
-            
-            if (savedCodes.length > 0 && confirm('Apply this digit setting to all saved codes?')) {
-                const digits = parseInt(digitsSelect.value);
-                savedCodes.forEach(code => {
-                    code.digits = digits;
-                });
-                saveToLocalStorage();
-                updateSavedCodesList();
-                showNotification('Updated digits for all codes', 'success');
-            }
-        });
-
-        periodSelect.addEventListener('change', () => {
-            startTokenUpdates();
-            
-            if (savedCodes.length > 0 && confirm('Apply this period setting to all saved codes?')) {
-                const period = parseInt(periodSelect.value);
-                savedCodes.forEach(code => {
-                    code.period = period;
-                });
-                saveToLocalStorage();
-                updateSavedCodesList();
-                showNotification('Updated period for all codes', 'success');
-            }
-        });
-
-        // Event listeners hiện có
         secretInput.addEventListener('input', () => {
             clearTimeout(window.debounceTimer);
             window.debounceTimer = setTimeout(() => {
-                if (secretInput.value.trim() !== lastSecretInput) {
-                    startTokenUpdates();
-                }
+                if (secretInput.value.trim() !== lastSecretInput) startMainTokenUpdates();
             }, 300);
         });
-
-        // Auto-generate when pasting
-        secretInput.addEventListener('paste', () => {
-            setTimeout(startTokenUpdates, 100);
-        });
-
-        // Generate button
-        generateBtn.addEventListener('click', startTokenUpdates);
-
-        // Copy button
+        secretInput.addEventListener('paste', () => setTimeout(startMainTokenUpdates, 50)); 
+        generateBtn.addEventListener('click', startMainTokenUpdates);
         copyBtn.addEventListener('click', copyToClipboard);
-
-        // Save button
         saveBtn.addEventListener('click', saveCurrentCode);
-
-        // Clear button
         clearBtn.addEventListener('click', clearAll);
-
-        // Click on token to copy
         tokenDisplay.addEventListener('click', copyToClipboard);
-
-        // Tab switching
-        tabs[0].addEventListener('click', showSavedCodesTab);
-        tabs[1].addEventListener('click', showSettingsTab);
-
-        // Add new code button
-        addNewBtn.addEventListener('click', openModal);
-
-        // Modal buttons
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-        saveNewBtn.addEventListener('click', addNewCode);
-
-        // Close modal when clicking outside
-        addModal.addEventListener('click', e => {
-            if (e.target === addModal) {
-                closeModal();
-            }
+        tabs.forEach((tab) => { 
+            tab.addEventListener('click', () => showTab(tab.getAttribute('data-tab')));
         });
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Tải mã đã lưu
-            initSavedCodes();
-            
-            // Tải cài đặt server
-            loadServerSettings();
-            
-            // Show saved codes tab initially
-            showSavedCodesTab();
-            
-            // Start token generation if input has value
-            if (secretInput.value.trim()) {
-                startTokenUpdates();
-            }
-            
-            // Update saved codes every second
-            setInterval(() => {
-                if (savedCodesContent.style.display !== 'none' && savedCodes.length > 0) {
-                    updateSavedCodesList();
-                }
-            }, 1000);
-            
-            // Thiết lập tự động sao lưu
-            setupAutoBackup();
-            
-            // Kiểm tra khi trang đóng để sao lưu
-            window.addEventListener('beforeunload', () => {
+        addNewBtn.addEventListener('click', openAddModal);
+        closeModalBtn.addEventListener('click', closeAddModal);
+        cancelBtn.addEventListener('click', closeAddModal);
+        saveNewBtn.addEventListener('click', addNewCodeToList);
+        addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); }); 
+        
+        function setupAutoBackup() {
+            if (autoSaveTimer) clearInterval(autoSaveTimer);
+            autoSaveTimer = setInterval(() => {
                 if (savedCodes.length > 0) {
-                    createBackup(false);
+                    createBackup(false); 
+                    console.log('Auto backup performed at ' + new Date().toLocaleTimeString());
                 }
-            });
+            }, 5 * 60 * 1000); 
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (savedCodes.length > 0) createBackup(false); 
         });
+
+
+        // Initialize
+        loadCodesFromLocalStorage();
+        loadServerSettings();
+        showTab('saved'); 
+        if (secretInput.value.trim()) startMainTokenUpdates();
+        
+        if (!savedCodesRefreshTimer) { 
+            savedCodesRefreshTimer = setInterval(refreshLiveSavedCodes, 1000);
+        }
+        setupAutoBackup();
     </script>
 </body>
 </html>

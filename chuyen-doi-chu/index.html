@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chuyển Đổi Văn Bản</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://placehold.co/32x32/0e5bae/ffffff?text=TC" onerror="this.onerror=null; this.src='https://placehold.co/32x32/000000/ffffff?text=Err';">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -612,19 +612,22 @@
         
         .toast i {
             font-size: 1.25rem;
-            color: #0e8bd5;
+            /* Color is set by .toast.success i and .toast.warning i */
         }
         
         .toast.success {
-            border-left-color: #0e8bd5;
+            border-left-color: #0e8bd5; 
+        }
+         .toast.success i {
+            color: #0e8bd5; /* Ensure icon color matches border */
         }
         
         .toast.warning {
-            border-left-color: #f72585;
+            border-left-color: #f72585; 
         }
         
         .toast.warning i {
-            color: #f72585;
+            color: #f72585; /* Ensure icon color matches border */
         }
         
         .footer {
@@ -864,20 +867,17 @@
         }
     </style>
 </head>
-<body class="light">
-    <!-- Các hình cầu trang trí -->
-    <div class="sphere sphere-1"></div>
+<body class="light"> <div class="sphere sphere-1"></div>
     <div class="sphere sphere-2"></div>
     <div class="sphere sphere-3"></div>
     
-    <!-- Hiệu ứng ánh sáng -->
     <div class="light-beam"></div>
     
     <nav class="navbar">
         <div class="container navbar-container">
             <a href="#" class="logo-link">
                 <div class="logo">
-                    <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image">
+                    <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image" onerror="this.onerror=null; this.src='https://placehold.co/40x40/0e5bae/ffffff?text=L';">
                 </div>
                 <span class="logo-text" id="appName">Text Conversion</span>
             </a>
@@ -885,25 +885,24 @@
             <div class="navbar-actions">
                 <div class="lang-dropdown" id="langDropdown">
                     <button class="lang-btn" id="langBtn">
-                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" id="currentFlag">
+                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" id="currentFlag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';">
                         <span id="currentLang">Tiếng Việt</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="lang-dropdown-content">
                         <a href="#" class="lang-option" data-lang="vi">
-                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag">
+                            <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';">
                             <span>Tiếng Việt</span>
                         </a>
                         <a href="#" class="lang-option" data-lang="en">
-                            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="lang-flag">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=EN';">
                             <span>English</span>
                         </a>
                     </div>
                 </div>
                 
                 <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
+                    <i class="fas fa-moon"></i> </button>
             </div>
         </div>
     </nav>
@@ -928,17 +927,17 @@
                         <div class="editor-actions">
                             <button class="btn btn-primary" id="copyBtn">
                                 <i class="far fa-copy"></i>
-                                <span>Sao chép</span>
+                                <span data-lang-key="buttons.copy">Sao chép</span>
                             </button>
                             
                             <button class="btn btn-secondary" id="resetBtn">
                                 <i class="fas fa-history"></i>
-                                <span>Khôi phục</span>
+                                <span data-lang-key="buttons.reset">Khôi phục</span>
                             </button>
                             
                             <button class="btn btn-outline" id="clearBtn">
                                 <i class="far fa-trash-alt"></i>
-                                <span>Xóa</span>
+                                <span data-lang-key="buttons.clear">Xóa</span>
                             </button>
                         </div>
                     </div>
@@ -956,42 +955,42 @@
                         <div class="tools-grid">
                             <button class="tool-btn" data-type="uppercase">
                                 <i class="fas fa-arrow-up"></i>
-                                <span>CHỮ HOA</span>
+                                <span data-lang-key="buttons.uppercase">CHỮ HOA</span>
                             </button>
                             
                             <button class="tool-btn" data-type="lowercase">
                                 <i class="fas fa-arrow-down"></i>
-                                <span>chữ thường</span>
+                                <span data-lang-key="buttons.lowercase">chữ thường</span>
                             </button>
                             
                             <button class="tool-btn" data-type="capitalizeWords">
                                 <i class="fas fa-heading"></i>
-                                <span>Viết Hoa Đầu Từ</span>
+                                <span data-lang-key="buttons.capitalizeWords">Viết Hoa Đầu Từ</span>
                             </button>
                             
                             <button class="tool-btn" data-type="capitalizeSentences">
                                 <i class="fas fa-paragraph"></i>
-                                <span>Viết hoa câu</span>
+                                <span data-lang-key="buttons.capitalizeSentences">Viết hoa câu</span>
                             </button>
                             
                             <button class="tool-btn" data-type="toggleCase">
                                 <i class="fas fa-random"></i>
-                                <span>cHữ XeN kẼ</span>
+                                <span data-lang-key="buttons.toggleCase">cHữ XeN kẼ</span>
                             </button>
                             
                             <button class="tool-btn" data-type="slug">
                                 <i class="fas fa-link"></i>
-                                <span>Slug URL</span>
+                                <span data-lang-key="buttons.slug">Slug URL</span>
                             </button>
                             
                             <button class="tool-btn" data-type="removeAccents">
                                 <i class="fas fa-eraser"></i>
-                                <span>Xóa dấu</span>
+                                <span data-lang-key="buttons.removeAccents">Xóa dấu</span>
                             </button>
                             
                             <button class="tool-btn" data-type="normal">
                                 <i class="fas fa-font"></i>
-                                <span>Bình thường</span>
+                                <span data-lang-key="buttons.normal">Bình thường</span>
                             </button>
                         </div>
                     </div>
@@ -1001,11 +1000,7 @@
     </main>
     
     <div class="toast-container">
-        <div class="toast" id="toast">
-            <i class="fas fa-check-circle"></i>
-            <span id="toastMessage">Đã sao chép!</span>
         </div>
-    </div>
     
     <footer class="footer">
         <div class="container">
@@ -1013,47 +1008,46 @@
                 <p class="footer-text" id="footerText">Thiết kế bởi DucManh.</p>
                 
                 <div class="footer-links">
-                    <a class="footer-link" id="contactLink">Liên hệ</a>
+                    <a class="footer-link" id="contactLink" data-lang-key="contactLink">Liên hệ</a>
                 </div>
             </div>
         </div>
     </footer>
     
-    <!-- Modal Liên hệ -->
     <div class="modal-overlay" id="contactModal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">Liên hệ với chúng tôi</h2>
+                <h2 class="modal-title" data-lang-key="contactTitle">Liên hệ với chúng tôi</h2>
                 <button class="modal-close" data-modal="contactModal">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.</p>
+                <p data-lang-key="contactIntro">Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.</p>
                 
                 <form id="contactForm">
                     <div class="form-group">
-                        <label for="name" class="form-label">Họ và tên</label>
+                        <label for="name" class="form-label" data-lang-key="formLabels.name">Họ và tên</label>
                         <input type="text" id="name" name="name" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label" data-lang-key="formLabels.email">Email</label>
                         <input type="email" id="email" name="email" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="subject" class="form-label">Chủ đề</label>
+                        <label for="subject" class="form-label" data-lang-key="formLabels.subject">Chủ đề</label>
                         <input type="text" id="subject" name="subject" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="message" class="form-label">Nội dung</label>
+                        <label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label>
                         <textarea id="message" name="message" class="form-control" required></textarea>
                     </div>
                     
                     <div class="form-submit">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i>
-                            <span>Gửi tin nhắn</span>
+                            <span data-lang-key="formLabels.submit">Gửi tin nhắn</span>
                         </button>
                     </div>
                 </form>
@@ -1063,11 +1057,10 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Các phần tử DOM
+            // DOM Elements
             const inputText = document.getElementById('inputText');
             const charCount = document.getElementById('charCount');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
+            const toastContainer = document.querySelector('.toast-container');
             const copyBtn = document.getElementById('copyBtn');
             const clearBtn = document.getElementById('clearBtn');
             const resetBtn = document.getElementById('resetBtn');
@@ -1078,8 +1071,6 @@
             const currentLangText = document.getElementById('currentLang');
             const currentFlag = document.getElementById('currentFlag');
             const toolButtons = document.querySelectorAll('.tool-btn');
-            const footerText = document.getElementById('footerText');
-            const appName = document.getElementById('appName');
             
             // Modal elements
             const contactLink = document.getElementById('contactLink');
@@ -1087,12 +1078,12 @@
             const modalCloseButtons = document.querySelectorAll('.modal-close');
             const contactForm = document.getElementById('contactForm');
             
-            // Biến lưu trữ
-            let currentType = null;
-            let originalText = '';
-            let currentLang = 'vi';
-            
-            // Đa ngôn ngữ
+            // State Variables
+            let currentType = null; // Stores the currently active conversion type (e.g., 'uppercase')
+            let originalText = inputText.value; // Text at session start or after last clear
+            let currentLang = 'vi'; // Default language
+
+            // Language Text Object
             const texts = {
                 vi: {
                     appName: "Chuyển Đổi Chữ",
@@ -1106,37 +1097,9 @@
                     contactTitle: "Liên hệ với chúng tôi",
                     contactIntro: "Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
                     contactLink: "Liên hệ",
-                    formLabels: {
-                        name: "Họ và tên",
-                        email: "Email",
-                        subject: "Chủ đề",
-                        message: "Nội dung",
-                        submit: "Gửi tin nhắn"
-                    },
-                    buttons: {
-                        uppercase: "CHỮ HOA",
-                        lowercase: "chữ thường",
-                        capitalizeWords: "Viết Hoa Đầu Từ",
-                        capitalizeSentences: "Viết hoa câu",
-                        toggleCase: "cHữ XeN kẼ",
-                        slug: "Slug URL",
-                        removeAccents: "Xóa dấu",
-                        normal: "Bình thường",
-                        copy: "Sao chép",
-                        clear: "Xóa",
-                        reset: "Khôi phục",
-                        lightMode: "Chế độ sáng",
-                        darkMode: "Chế độ tối"
-                    },
-                    toast: {
-                        copied: "Đã sao chép vào clipboard!",
-                        cleared: "Đã xóa văn bản!",
-                        reset: "Đã khôi phục văn bản gốc!",
-                        converted: "Đã chuyển đổi thành công!",
-                        error: "Lỗi khi chuyển đổi văn bản!",
-                        noText: "Không có văn bản để sao chép!",
-                        messageSent: "Tin nhắn đã được gửi thành công!"
-                    }
+                    formLabels: { name: "Họ và tên", email: "Email", subject: "Chủ đề", message: "Nội dung", submit: "Gửi tin nhắn" },
+                    buttons: { uppercase: "CHỮ HOA", lowercase: "chữ thường", capitalizeWords: "Viết Hoa Đầu Từ", capitalizeSentences: "Viết hoa câu", toggleCase: "cHữ XeN kẼ", slug: "Slug URL", removeAccents: "Xóa dấu", normal: "Bình thường", copy: "Sao chép", clear: "Xóa", reset: "Khôi phục" },
+                    toast: { copied: "Đã sao chép vào clipboard!", cleared: "Đã xóa văn bản!", reset: "Đã khôi phục văn bản gốc!", converted: "Đã chuyển đổi thành công!", error: "Lỗi khi chuyển đổi văn bản!", noText: "Không có văn bản!", messageSent: "Tin nhắn đã được gửi thành công!"}
                 },
                 en: {
                     appName: "Text Conversion",
@@ -1150,71 +1113,112 @@
                     contactTitle: "Contact Us",
                     contactIntro: "Please fill out the form below to send us a message. We will respond as soon as possible.",
                     contactLink: "Contact",
-                    formLabels: {
-                        name: "Full Name",
-                        email: "Email",
-                        subject: "Subject",
-                        message: "Message",
-                        submit: "Send Message"
-                    },
-                    buttons: {
-                        uppercase: "UPPERCASE",
-                        lowercase: "lowercase",
-                        capitalizeWords: "Capitalize Words",
-                        capitalizeSentences: "Capitalize Sentences",
-                        toggleCase: "tOgGlE cAsE",
-                        slug: "Slug URL",
-                        removeAccents: "Remove Accents",
-                        normal: "Normal",
-                        copy: "Copy",
-                        clear: "Clear",
-                        reset: "Reset",
-                        lightMode: "Light Mode",
-                        darkMode: "Dark Mode"
-                    },
-                    toast: {
-                        copied: "Copied to clipboard!",
-                        cleared: "Text cleared!",
-                        reset: "Reset to original text!",
-                        converted: "Conversion successful!",
-                        error: "Error converting text!",
-                        noText: "No text to copy!",
-                        messageSent: "Message sent successfully!"
-                    }
+                    formLabels: { name: "Full Name", email: "Email", subject: "Subject", message: "Message", submit: "Send Message" },
+                    buttons: { uppercase: "UPPERCASE", lowercase: "lowercase", capitalizeWords: "Capitalize Words", capitalizeSentences: "Capitalize Sentences", toggleCase: "tOgGlE cAsE", slug: "Slug URL", removeAccents: "Remove Accents", normal: "Normal", copy: "Copy", clear: "Clear", reset: "Reset" },
+                    toast: { copied: "Copied to clipboard!", cleared: "Text cleared!", reset: "Reset to original text!", converted: "Conversion successful!", error: "Error converting text!", noText: "No text to process!", messageSent: "Message sent successfully!"}
                 }
             };
-            
-            // Lưu trạng thái ban đầu khi paste
-            inputText.addEventListener('paste', function() {
-                setTimeout(() => {
-                    originalText = inputText.value;
-                    updateCharCount();
-                }, 100);
-            });
-            
-            // Lưu trạng thái ban đầu khi nhập
+
+            // --- Event Listeners ---
+
+            // Text Input Area Listeners
             inputText.addEventListener('input', function() {
-                if (!originalText && inputText.value.trim() !== '') {
-                    originalText = inputText.value;
+                if (originalText === '' && inputText.value.trim() !== '') {
+                    originalText = inputText.value; 
                 }
+                currentType = null; 
+                updateActiveToolButtonStates();
                 updateCharCount();
             });
+
+            inputText.addEventListener('paste', function() {
+                setTimeout(() => { 
+                    originalText = inputText.value; 
+                    currentType = null;
+                    updateActiveToolButtonStates();
+                    updateCharCount();
+                }, 0);
+            });
+
+            // Action Buttons
+            copyBtn.addEventListener('click', copyText);
+
+            clearBtn.addEventListener('click', function() {
+                inputText.value = '';
+                originalText = ''; 
+                currentType = null;
+                updateActiveToolButtonStates();
+                updateCharCount();
+                showToast(texts[currentLang].toast.cleared, 'success');
+            });
+
+            resetBtn.addEventListener('click', function() {
+                const textBeforeReset = inputText.value;
+                if (textBeforeReset !== originalText) {
+                    inputText.value = originalText;
+                    showToast(texts[currentLang].toast.reset, 'success');
+                } else if (textBeforeReset === '' && originalText === '') {
+                    showToast(texts[currentLang].toast.noText, 'warning');
+                    return;
+                }
+                currentType = null; 
+                updateActiveToolButtonStates(); 
+                updateCharCount();
+            });
+
+            // Tool Buttons
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const clickedButtonType = this.getAttribute('data-type');
+                    const textBeforeOperation = inputText.value;
+                    let toastMessageKey = '';
+                    let toastType = 'success'; // Default toast type
+
+                    if (this.classList.contains('active') && clickedButtonType !== 'normal') {
+                        // Case 1: Clicking an already active (non-Normal) button -> revert to originalText
+                        inputText.value = originalText;
+                        currentType = null; 
+                        toastMessageKey = 'reset';
+                    } else if (clickedButtonType === 'normal') {
+                        // Case 2: Clicking the "Normal" button
+                        inputText.value = originalText;
+                        currentType = 'normal';
+                        if (textBeforeOperation !== originalText) {
+                            toastMessageKey = 'reset';
+                        }
+                    } else {
+                        // Case 3: Clicking a new/different conversion, or an inactive button (that isn't "Normal")
+                        convertText(clickedButtonType); 
+                        currentType = clickedButtonType;
+                        if (textBeforeOperation !== inputText.value) {
+                            toastMessageKey = 'converted';
+                        }
+                    }
+
+                    if (toastMessageKey) {
+                        showToast(texts[currentLang].toast[toastMessageKey], toastType);
+                    }
+                    updateActiveToolButtonStates();
+                    updateCharCount();
+                });
+            });
             
-            // Gán sự kiện cho dropdown ngôn ngữ
+            // Theme Toggle
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Language Dropdown
             langBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 langDropdown.classList.toggle('active');
-                e.stopPropagation();
+                e.stopPropagation(); 
             });
-            
-            // Đóng dropdown khi click bên ngoài
-            document.addEventListener('click', function(e) {
+
+            document.addEventListener('click', function(e) { 
                 if (!langDropdown.contains(e.target)) {
                     langDropdown.classList.remove('active');
                 }
             });
-            
-            // Gán sự kiện cho các tùy chọn ngôn ngữ
+
             langOptions.forEach(option => {
                 option.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1223,78 +1227,28 @@
                     langDropdown.classList.remove('active');
                 });
             });
-            
-            // Gán sự kiện cho các nút công cụ
-            toolButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    
-                    // Đặt tất cả các nút về trạng thái không active
-                    toolButtons.forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // Nếu nhấp vào cùng một nút đã active, hủy active
-                    if (currentType === type && type !== 'normal') {
-                        currentType = null;
-                    } else {
-                        // Đặt nút được chọn thành active
-                        this.classList.add('active');
-                        currentType = type;
-                    }
-                    
-                    convertText(type);
-                });
-            });
-            
-            // Gán sự kiện cho nút sao chép
-            copyBtn.addEventListener('click', copyText);
-            
-            // Gán sự kiện cho nút xóa
-            clearBtn.addEventListener('click', clearText);
-            
-            // Gán sự kiện cho nút khôi phục
-            resetBtn.addEventListener('click', resetText);
-            
-            // Gán sự kiện cho nút chuyển đổi chế độ sáng/tối
-            themeToggle.addEventListener('click', toggleTheme);
-            
-            // Gán sự kiện cho liên kết liên hệ
-            contactLink.addEventListener('click', function() {
-                openModal('contactModal');
-            });
-            
-            // Gán sự kiện cho nút đóng modal
+
+            // Modal Handling
+            contactLink.addEventListener('click', function() { openModal('contactModal'); });
+
             modalCloseButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const modalId = this.getAttribute('data-modal');
-                    closeModal(modalId);
+                    closeModal(this.getAttribute('data-modal'));
                 });
             });
-            
-            // Đóng modal khi click bên ngoài
+
             modalOverlays.forEach(overlay => {
                 overlay.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        const modalId = this.id;
-                        closeModal(modalId);
-                    }
+                    if (e.target === this) closeModal(this.id);
                 });
             });
-            
-            // Ngăn chặn sự kiện click trên modal lan ra ngoài
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
+             document.querySelectorAll('.modal').forEach(modal => { 
+                modal.addEventListener('click', e => e.stopPropagation());
             });
-            
-            // Gán sự kiện cho form liên hệ
+
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
-                    // Giả lập gửi form
                     setTimeout(() => {
                         showToast(texts[currentLang].toast.messageSent, 'success');
                         closeModal('contactModal');
@@ -1302,224 +1256,216 @@
                     }, 1000);
                 });
             }
-            
+
+            // --- Helper Functions ---
+
             function updateCharCount() {
                 const count = inputText.value.length;
-                const t = texts[currentLang];
-                charCount.textContent = `${count} ${t.charCount}`;
+                charCount.textContent = `${count} ${texts[currentLang].charCount}`;
             }
-            
-            function convertText(type) {
+
+            function convertText(type) { 
                 let text = inputText.value;
-                let originalTextBeforeConversion = text;
-                
+                const textBeforeThisConversion = text; 
                 try {
                     switch(type) {
-                        case 'normal':
-                            // Giữ nguyên văn bản
+                        case 'uppercase': 
+                            inputText.value = text.toLocaleUpperCase('vi-VN'); 
                             break;
-                        case 'uppercase':
-                            inputText.value = text.toUpperCase();
+                        case 'lowercase': 
+                            inputText.value = text.toLocaleLowerCase('vi-VN'); 
                             break;
-                        case 'lowercase':
-                            inputText.value = text.toLowerCase();
+                        case 'capitalizeWords': 
+                            inputText.value = text.normalize('NFC').toLocaleLowerCase('vi-VN')
+                                .split(/(\s+)/) // Split by spaces, keeping the spaces
+                                .map(wordOrSpace => {
+                                    if (wordOrSpace.match(/\s+/)) { // If it's a space, keep it
+                                        return wordOrSpace;
+                                    }
+                                    // If it's a word, capitalize its first letter
+                                    return wordOrSpace.length > 0 ? wordOrSpace.charAt(0).toLocaleUpperCase('vi-VN') + wordOrSpace.slice(1) : '';
+                                })
+                                .join('');
                             break;
-                        case 'capitalizeWords':
-                            inputText.value = text.replace(/\b\w/g, function(c) {
-                                return c.toUpperCase();
-                            });
-                            break;
-                        case 'capitalizeSentences':
-                            inputText.value = text.replace(/(^\s*\w|[.!?]\s*\w)/g, function(c) {
-                                return c.toUpperCase();
-                            });
+                        case 'capitalizeSentences': 
+                            inputText.value = text.normalize('NFC').toLocaleLowerCase('vi-VN').replace(/(^\s*\p{L}|[.!?]\s*\p{L})/gu, c => c.toLocaleUpperCase('vi-VN'));
                             break;
                         case 'toggleCase':
                             let toggled = '';
                             for(let i=0; i<text.length; i++) {
-                                let c = text.charAt(i);
-                                toggled += c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+                                let char = text.charAt(i);
+                                // Use locale-specific comparison for robustness if needed, but direct comparison often works
+                                if (char === char.toLocaleUpperCase('vi-VN') && char !== char.toLocaleLowerCase('vi-VN')) { // It's an uppercase letter that has a lowercase form
+                                    toggled += char.toLocaleLowerCase('vi-VN');
+                                } else if (char === char.toLocaleLowerCase('vi-VN') && char !== char.toLocaleUpperCase('vi-VN')) { // It's a lowercase letter that has an uppercase form
+                                    toggled += char.toLocaleUpperCase('vi-VN');
+                                } else { // Not a cased letter (e.g. punctuation, number) or a letter with no case difference
+                                    toggled += char;
+                                }
                             }
                             inputText.value = toggled;
                             break;
                         case 'slug':
-                            inputText.value = text.toLowerCase()
-                                .normalize('NFD')
-                                .replace(/[\u0300-\u036f]/g, '')
-                                .replace(/đ/g, 'd').replace(/Đ/g, 'd')
-                                .replace(/[^a-z0-9\s-]/g, '')
-                                .trim()
-                                .replace(/\s+/g, '-')
-                                .replace(/-+/g, '-');
+                            inputText.value = text.toLocaleLowerCase('vi-VN') // Start with locale-specific lowercase
+                                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') 
+                                .replace(/đ/g, 'd') // Explicitly handle 'đ' after NFD
+                                .replace(/[^a-z0-9\s-]/g, '').trim() 
+                                .replace(/\s+/g, '-').replace(/-+/g, '-'); 
                             break;
                         case 'removeAccents':
-                            inputText.value = text
-                                .normalize('NFD')
-                                .replace(/[\u0300-\u036f]/g, '')
-                                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+                            inputText.value = text.normalize('NFD') 
+                                .replace(/[\u0300-\u036f]/g, '') 
+                                .replace(/đ/g, 'd').replace(/Đ/g, 'D'); 
                             break;
                     }
-                    
-                    if (inputText.value !== originalTextBeforeConversion || type === 'normal') {
-                        showToast(texts[currentLang].toast.converted, 'success');
-                    }
-                    
-                    updateCharCount();
                 } catch (error) {
-                    showToast(texts[currentLang].toast.error, 'warning');
                     console.error('Lỗi chuyển đổi:', error);
+                    showToast(texts[currentLang].toast.error, 'warning'); 
+                    inputText.value = textBeforeThisConversion; 
                 }
             }
-            
+
             function copyText() {
-                if (inputText.value) {
-                    try {
-                        navigator.clipboard.writeText(inputText.value).then(() => {
-                            showToast(texts[currentLang].toast.copied, 'success');
-                        }).catch(err => {
-                            fallbackCopyText();
-                        });
-                    } catch (err) {
-                        fallbackCopyText();
-                    }
-                } else {
+                if (!inputText.value) {
                     showToast(texts[currentLang].toast.noText, 'warning');
+                    return;
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(inputText.value).then(() => {
+                        showToast(texts[currentLang].toast.copied, 'success');
+                    }).catch(err => {
+                        console.warn("Async clipboard copy failed, using fallback:", err);
+                        fallbackCopyText();
+                    });
+                } else {
+                     console.warn("Async clipboard API not available, using fallback.");
+                    fallbackCopyText();
                 }
             }
             
             function fallbackCopyText() {
-                inputText.select();
-                inputText.setSelectionRange(0, 99999);
-                document.execCommand('copy');
-                showToast(texts[currentLang].toast.copied, 'success');
-            }
-            
-            function clearText() {
-                inputText.value = '';
-                updateCharCount();
-                showToast(texts[currentLang].toast.cleared, 'success');
-                
-                toolButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                currentType = null;
-            }
-            
-            function resetText() {
-                if (originalText) {
-                    inputText.value = originalText;
-                    updateCharCount();
-                    showToast(texts[currentLang].toast.reset, 'success');
-                    
-                    toolButtons.forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    currentType = null;
-                } else {
-                    showToast(texts[currentLang].toast.noText, 'warning');
+                try {
+                    inputText.select();
+                    inputText.setSelectionRange(0, 99999); 
+                    document.execCommand('copy');
+                    showToast(texts[currentLang].toast.copied, 'success');
+                    inputText.setSelectionRange(0,0); 
+                } catch (err) {
+                    console.error("Fallback copy method failed:", err);
+                    showToast(texts[currentLang].toast.error, 'warning'); 
                 }
             }
-            
+
             function toggleTheme() {
                 const body = document.body;
-                const hasLightClass = body.classList.toggle('light');
-                
+                body.classList.toggle('light'); 
                 const icon = themeToggle.querySelector('i');
-                
-                if (hasLightClass) {
-                    icon.className = 'fas fa-moon';
+                if (body.classList.contains('light')) {
+                    icon.className = 'fas fa-moon'; 
                 } else {
-                    icon.className = 'fas fa-sun';
+                    icon.className = 'fas fa-sun'; 
                 }
             }
             
             function updateLanguage(lang) {
                 currentLang = lang;
                 const t = texts[lang];
-                
-                // Cập nhật tên ứng dụng
-                appName.textContent = t.appName;
-                
-                // Cập nhật dropdown
+
+                document.getElementById('appName').textContent = t.appName;
                 currentLangText.textContent = t.langName;
                 currentFlag.src = t.flagUrl;
                 currentFlag.alt = t.langName;
-                
-                // Cập nhật các tiêu đề
                 document.getElementById('editorTitle').textContent = t.editorTitle;
                 document.getElementById('toolsTitle').textContent = t.toolsTitle;
-                
-                // Cập nhật placeholder
                 inputText.placeholder = t.placeholder;
-                
-                // Cập nhật số ký tự
-                updateCharCount();
-                
-                // Cập nhật các nút công cụ
-                toolButtons.forEach(btn => {
-                    const type = btn.getAttribute('data-type');
-                    btn.querySelector('span').textContent = t.buttons[type];
+                updateCharCount(); 
+
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const keyParts = el.getAttribute('data-lang-key').split('.');
+                    let textValue = t;
+                    keyParts.forEach(part => {
+                        if (textValue && typeof textValue === 'object') {
+                            textValue = textValue[part];
+                        } else {
+                            textValue = undefined; 
+                        }
+                    });
+                    if (typeof textValue === 'string') {
+                        el.textContent = textValue;
+                    }
                 });
-                
-                // Cập nhật các nút hành động
-                copyBtn.querySelector('span').textContent = t.buttons.copy;
-                clearBtn.querySelector('span').textContent = t.buttons.clear;
-                resetBtn.querySelector('span').textContent = t.buttons.reset;
-                
-                // Cập nhật footer
-                footerText.textContent = t.footerText;
-                
-                // Cập nhật liên kết liên hệ
-                contactLink.textContent = t.contactLink;
-                
-                // Cập nhật modal liên hệ nếu đang mở
-                const contactModal = document.querySelector('#contactModal');
-                if (contactModal) {
-                    contactModal.querySelector('.modal-title').textContent = t.contactTitle;
-                    contactModal.querySelector('.modal-body > p').textContent = t.contactIntro;
-                    
-                    const formLabels = contactModal.querySelectorAll('.form-label');
-                    formLabels[0].textContent = t.formLabels.name;
-                    formLabels[1].textContent = t.formLabels.email;
-                    formLabels[2].textContent = t.formLabels.subject;
-                    formLabels[3].textContent = t.formLabels.message;
-                    
-                    const submitBtn = contactModal.querySelector('.form-submit .btn span');
-                    submitBtn.textContent = t.formLabels.submit;
-                }
             }
-            
+
             function showToast(message, type = 'success') {
-                toastMessage.textContent = message;
+                const toastEl = document.createElement('div');
+                toastEl.className = `toast ${type}`;
                 
-                toast.className = 'toast';
-                toast.classList.add(type);
-                toast.classList.add('show');
+                const iconEl = document.createElement('i');
+                if (type === 'success') {
+                    iconEl.className = 'fas fa-check-circle';
+                } else if (type === 'warning') {
+                    iconEl.className = 'fas fa-exclamation-triangle'; 
+                } else { 
+                     iconEl.className = 'fas fa-info-circle';
+                }
                 
+                const messageEl = document.createElement('span');
+                messageEl.textContent = message;
+                
+                toastEl.appendChild(iconEl);
+                toastEl.appendChild(messageEl);
+                toastContainer.appendChild(toastEl);
+ 
+                toastEl.offsetHeight; 
+                toastEl.classList.add('show');
+
                 setTimeout(() => {
-                    toast.classList.remove('show');
+                    toastEl.classList.remove('show');
+                    setTimeout(() => { 
+                        toastEl.remove();
+                    }, 500); 
                 }, 3000);
             }
-            
+
             function openModal(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+                    document.body.style.overflow = 'hidden'; 
                 }
             }
-            
+
             function closeModal(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.classList.remove('active');
-                    document.body.style.overflow = '';
+                    document.body.style.overflow = ''; 
                 }
             }
-            
-            // Khởi tạo
+
+            function updateActiveToolButtonStates() {
+                toolButtons.forEach(btn => btn.classList.remove('active'));
+
+                if (currentType) { 
+                    const activeButton = document.querySelector(`.tool-btn[data-type="${currentType}"]`);
+                    if (activeButton) activeButton.classList.add('active');
+                } else {
+                    if (inputText.value === originalText) {
+                        const normalButton = document.querySelector('.tool-btn[data-type="normal"]');
+                        if (normalButton) normalButton.classList.add('active');
+                    }
+                }
+            }
+
+            // --- Initializations ---
+            if (document.body.classList.contains('light')) {
+                 themeToggle.querySelector('i').className = 'fas fa-moon';
+            } else {
+                 themeToggle.querySelector('i').className = 'fas fa-sun';
+            }
+            updateLanguage(currentLang); 
             updateCharCount();
-            updateLanguage(currentLang);
+            updateActiveToolButtonStates(); 
         });
     </script>
 </body>

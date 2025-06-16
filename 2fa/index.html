@@ -8,23 +8,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-highlight: rgba(255, 255, 255, 0.3);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            /* Light Theme (Default) */
+            --bg-gradient: linear-gradient(125deg, #e0eafc, #d2d8f0, #cfdef3);
+            --text-color: #212529;
+            --text-color-on-primary: #ffffff;
+            --text-color-on-danger-light: #ffffff; /* Text on solid danger button in light theme */
+            --text-color-on-action-special-light: #0056b3; /* For specific action buttons in light theme */
+            --text-secondary: #5a6268;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --card-highlight: rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --input-border: rgba(0, 0, 0, 0.15);
+            --input-placeholder-color: #6c757d;
+            --input-focus-border: var(--primary-glow);
+            --input-focus-shadow: rgba(0, 122, 255, 0.2);
+
+            --btn-bg: rgba(255, 255, 255, 0.7); /* Slightly more opaque for better text contrast */
+            --btn-border: rgba(0, 0, 0, 0.15);
+            --btn-hover-bg: rgba(0, 0, 0, 0.1);
+            --btn-text-color: #004085; /* Darker blue for default glass buttons in light theme */
+
+            /* Glows and Accents */
             --primary-glow: #007aff;
             --secondary-glow: #5856d6;
             --accent-glow: #5ac8fa;
-            --danger-glow: #ff2d55;
+            --danger-glow: #ff3b30;
             --success-glow: #34c759;
-            --text-color: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+
             --border-radius: 20px;
             --btn-radius: 12px;
-            --primary-blue: #0d6efd; /* User defined for period select */
-            --primary-dark: #0a2a80; /* Darker blue for option backgrounds */
-            --primary: #0e5bae;     /* Primary color for hover */
-            --primary-light: #0e8bd5;/* Lighter blue for checked option */
+            --primary-blue: #0d6efd;
+            --primary-dark: #0a2a80;
+            --primary: #0e5bae;
+            --primary-light: #0e8bd5;
+        }
+
+        body.dark-theme {
+            --bg-gradient: linear-gradient(125deg, #1e3c72, #2a5298, #2b32b2);
+            --text-color: #ffffff;
+            --text-color-on-primary: #ffffff;
+            --text-color-on-danger-light: #ffffff; /* Not directly used in dark theme but defined */
+            --text-color-on-action-special-light: #0056b3; /* Not directly used */
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --card-highlight: rgba(255, 255, 255, 0.3);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: var(--card-border);
+            --input-placeholder-color: rgba(255, 255, 255, 0.4);
+            --input-focus-shadow: rgba(0, 122, 255, 0.3);
+
+            --btn-bg: rgba(255, 255, 255, 0.1);
+            --btn-border: var(--card-border);
+            --btn-hover-bg: rgba(255, 255, 255, 0.2);
+            --btn-text-color: var(--text-color);
         }
 
         * {
@@ -35,13 +77,15 @@
         }
 
         body {
-            background: linear-gradient(125deg, #1e3c72, #2a5298, #2b32b2);
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Background elements */
@@ -60,36 +104,15 @@
             border-radius: 50%;
             background: radial-gradient(circle, var(--primary-glow) 10%, transparent 70%);
             filter: blur(30px);
+            transition: opacity 0.3s ease;
         }
+        body:not(.dark-theme) .bg-circle { opacity: 0.6; }
+        body.dark-theme .bg-circle { opacity: 0.4; }
 
-        .circle-1 {
-            top: 15%;
-            left: 10%;
-            width: 300px;
-            height: 300px;
-            opacity: 0.4;
-            animation: float 25s infinite alternate ease-in-out;
-        }
 
-        .circle-2 {
-            bottom: 10%;
-            right: 15%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--secondary-glow) 10%, transparent 70%);
-            opacity: 0.3;
-            animation: float 30s infinite alternate-reverse ease-in-out;
-        }
-
-        .circle-3 {
-            top: 40%;
-            right: 25%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, var(--accent-glow) 10%, transparent 70%);
-            opacity: 0.2;
-            animation: float 20s infinite alternate ease-in-out;
-        }
+        .circle-1 { top: 15%; left: 10%; width: 300px; height: 300px; animation: float 25s infinite alternate ease-in-out; }
+        .circle-2 { bottom: 10%; right: 15%; width: 400px; height: 400px; background: radial-gradient(circle, var(--secondary-glow) 10%, transparent 70%); animation: float 30s infinite alternate-reverse ease-in-out; }
+        .circle-3 { top: 40%; right: 25%; width: 250px; height: 250px; background: radial-gradient(circle, var(--accent-glow) 10%, transparent 70%); animation: float 20s infinite alternate ease-in-out; }
 
         .glass-sphere {
             position: absolute;
@@ -98,39 +121,18 @@
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0) 70%);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+        body.dark-theme .glass-sphere {
+             background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05) 60%, transparent 70%);
         }
 
-        .sphere-1 {
-            top: 20%;
-            left: 5%;
-            animation: bounce 15s infinite alternate ease-in-out;
-        }
 
-        .sphere-2 {
-            bottom: 15%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            animation: bounce 12s infinite alternate-reverse ease-in-out;
-        }
+        .sphere-1 { top: 20%; left: 5%; animation: bounce 15s infinite alternate ease-in-out; }
+        .sphere-2 { bottom: 15%; right: 10%; width: 80px; height: 80px; animation: bounce 12s infinite alternate-reverse ease-in-out; }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translate(0, 0);
-            }
-            50% {
-                transform: translate(30px, -30px);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-40px);
-            }
-        }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, -30px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-40px); } }
 
         /* Main container */
         .container {
@@ -145,18 +147,18 @@
 
         /* Glass card */
         .glass-card {
-            background: var(--glass-bg);
+            background: var(--card-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--card-border);
             border-radius: var(--border-radius);
-            box-shadow: var(--glass-shadow);
+            box-shadow: var(--card-shadow);
             padding: 30px;
             position: relative;
             overflow: hidden;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Glass shine effect */
         .glass-card::before {
             content: '';
             position: absolute;
@@ -164,84 +166,28 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--glass-highlight),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, var(--card-highlight), transparent);
             transition: 0.5s;
         }
-
-        .glass-card:hover::before {
-            left: 100%;
-        }
+        .glass-card:hover::before { left: 100%; }
 
         /* App header */
-        .app-header {
-            text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 20px;
-        }
+        .app-header { text-align: center; margin-bottom: 10px; padding-bottom: 20px; }
+        .app-title { font-size: 42px; font-weight: 700; color: var(--text-color); margin-bottom: 10px; letter-spacing: -0.5px; text-shadow: 0 0 15px var(--card-highlight); }
+        .app-subtitle { font-size: 16px; color: var(--text-secondary); }
 
-        .app-title {
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .app-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
-
-        /* Split layout for generator and saved codes */
-        .split-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        /* Generator section */
-        .generator-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: var(--accent-glow);
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-        }
+        /* Split layout */
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .generator-section { display: flex; flex-direction: column; gap: 20px; }
+        .section-title { font-size: 20px; font-weight: 600; color: var(--text-color); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--accent-glow); }
+        .input-group { margin-bottom: 20px; }
+        .input-label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 14px; font-weight: 500; }
 
         .glass-input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: var(--btn-radius);
             padding: 15px;
             color: var(--text-color);
@@ -250,677 +196,280 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-
         select.glass-input {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 10px; /* Adjusted arrow size */
-            padding-right: 40px; /* Make space for custom arrow */
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat; background-position: right 15px center; background-size: 10px;
+            padding-right: 40px;
         }
-        /* Remove default arrow in Firefox */
+        body.dark-theme select.glass-input {
+             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+        }
+
         select.glass-input::-moz-focus-inner { border: 0; }
         select.glass-input:-moz-focusring { color: transparent; text-shadow: 0 0 0 var(--text-color); }
-        /* Remove default arrow in IE */
         select.glass-input::-ms-expand { display: none; }
+        .glass-input:focus { outline: none; border-color: var(--input-focus-border); box-shadow: 0 0 0 3px var(--input-focus-shadow); }
+        .glass-input::placeholder { color: var(--input-placeholder-color); }
 
-
-        .glass-input:focus {
-            outline: none;
-            border-color: var(--primary-glow);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
-        }
-
-        .glass-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Styling for <option> elements */
         select.glass-input option {
-            background: var(--primary-dark, #0a2a80); /* Dark theme background for options */
-            color: var(--text-color, #ffffff);       /* White text */
-            padding: 8px 15px; /* Consistent padding */
+            background: #ffffff;
+            color: #212529;
+            padding: 8px 15px;
         }
-
-        select.glass-input option:hover { /* Browser support for option hover is limited */
-            background: var(--primary, #0e5bae);
+        body.dark-theme select.glass-input option {
+            background: var(--primary-dark);
+            color: #FFFFFF;
         }
-        
-        select.glass-input option:checked { /* Browser support for option checked is limited */
-            background: var(--primary-light, #0e8bd5);
-        }
+        select.glass-input option:hover { background: #e9ecef; }
+        body.dark-theme select.glass-input option:hover { background: var(--primary); }
+        select.glass-input option:checked { background: var(--primary-blue); color: white; }
+        body.dark-theme select.glass-input option:checked { background: var(--primary-light); }
 
 
         /* Token display */
-        .token-display {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--btn-radius);
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .token-display:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .token-value {
-            font-family: 'SF Mono', 'Consolas', monospace;
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--text-color);
-            letter-spacing: 5px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-        }
-
-        .timer-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .timer-bar {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary-glow), var(--accent-glow));
-            border-radius: 3px;
-            transition: width 1s linear; 
-            box-shadow: 0 0 8px rgba(90, 200, 250, 0.5);
-        }
-
-        .timer-text {
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-        }
+        .token-display { background: var(--input-bg); border-radius: var(--btn-radius); padding: 30px 20px; text-align: center; position: relative; overflow: hidden; cursor: pointer; border: 1px solid var(--input-border); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .token-display:hover { background: var(--btn-hover-bg); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
+        .token-value { font-family: 'SF Mono', 'Consolas', monospace; font-size: 42px; font-weight: 700; color: var(--text-color); letter-spacing: 5px; margin-bottom: 20px; text-shadow: 0 0 15px var(--card-highlight); }
+        .timer-container { width: 100%; height: 6px; background: rgba(0, 0, 0, 0.2); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+        .timer-bar { height: 100%; background: linear-gradient(to right, var(--primary-glow), var(--accent-glow)); border-radius: 3px; transition: width 1s linear, background 0.3s ease; box-shadow: 0 0 8px rgba(90, 200, 250, 0.5); }
+        .timer-text { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
 
         /* Button styles */
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
+        .button-group { display: flex; gap: 10px; margin-top: 10px; }
+        .glass-btn { flex: 1; padding: 12px 15px; border-radius: var(--btn-radius); border: 1px solid var(--btn-border); background: var(--btn-bg); color: var(--btn-text-color); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .glass-btn i { font-size: 14px; color: inherit; }
+        .glass-btn:hover { background: var(--btn-hover-bg); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
 
-        .glass-btn {
-            flex: 1;
-            padding: 12px 15px;
-            border-radius: var(--btn-radius);
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); border: none; box-shadow: 0 5px 15px rgba(0, 122, 255, 0.4); color: var(--text-color-on-primary); }
+        .btn-primary:hover { box-shadow: 0 8px 25px rgba(0, 122, 255, 0.5); }
 
-        .glass-btn i {
-            font-size: 14px;
-        }
+        .btn-danger { background: var(--danger-glow); color: var(--text-color-on-danger-light); border: none; box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3); }
+        body.dark-theme .btn-danger { background: rgba(255, 59, 48, 0.3); color: #ffd0cc; border-color: rgba(255,59,48,0.4); box-shadow: 0 5px 15px rgba(255, 59, 48, 0.2); }
+        .btn-danger:hover { opacity: 0.85; box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4); }
+        .btn-danger i { color: inherit; }
 
-        .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
-            border: none;
-            box-shadow: 0 5px 15px rgba(0, 122, 255, 0.4);
-        }
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--input-border); margin-bottom: 20px; position: relative; }
+        .tab { padding: 15px 20px; color: var(--text-secondary); font-size: 16px; font-weight: 500; cursor: pointer; transition: color 0.3s ease; position: relative; background: none; border: none; text-align: center; flex: 1; }
+        .tab.active { color: var(--text-color); }
+        .tab-indicator { position: absolute; bottom: -1px; left: 0; height: 3px; width: 50%; background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow)); transition: transform 0.3s ease; border-radius: 3px 3px 0 0; }
 
-        .btn-primary:hover {
-            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.5);
-        }
+        /* Saved codes */
+        .saved-codes-list { max-height: 500px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
+        .saved-codes-list::-webkit-scrollbar { width: 6px; }
+        .saved-codes-list::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 3px; }
+        .saved-codes-list::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 3px; }
+        .saved-code-item { background: var(--input-bg); border-radius: var(--btn-radius); padding: 20px; margin-bottom: 15px; transition: all 0.3s ease; border: 1px solid var(--input-border); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .saved-code-item:hover { background: var(--btn-hover-bg); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
+        .saved-code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .saved-code-label { font-size: 15px; color: var(--text-color); font-weight: 500; word-break: break-all; }
+        .saved-code-time { font-size: 14px; color: var(--text-color); background: rgba(0, 122, 255, 0.3); padding: 4px 12px; border-radius: 50px; font-weight: 500; white-space: nowrap; }
+        body:not(.dark-theme) .saved-code-time { background: rgba(0,122,255,0.1); color: var(--primary-blue); }
+        .saved-code-value { font-family: 'SF Mono', 'Consolas', monospace; font-size: 30px; font-weight: 700; color: var(--text-color); margin-bottom: 15px; letter-spacing: 3px; text-shadow: 0 0 10px var(--card-highlight); }
+        .saved-code-actions { display: flex; gap: 8px; }
+        .action-btn { flex: 1; padding: 10px; border-radius: var(--btn-radius); background: var(--btn-bg); color: var(--btn-text-color); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--btn-border); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .action-btn i { color: inherit; }
+        .action-btn:hover { background: var(--btn-hover-bg); transform: translateY(-2px); }
 
-        .btn-danger {
-            background: rgba(255, 45, 85, 0.2);
-            color: #ffb3c0;
-        }
+        .btn-load { color: var(--btn-text-color); } /* Default color from var */
+        body:not(.dark-theme) .btn-load { background: rgba(0,122,255,0.08); color: var(--primary-blue); }
+        body:not(.dark-theme) .btn-load i { color: var(--primary-blue); }
+        .btn-load:hover { background: rgba(0, 122, 255, 0.3); } body:not(.dark-theme) .btn-load:hover { background: rgba(0,122,255,0.15); }
 
-        .btn-danger:hover {
-            background: rgba(255, 45, 85, 0.3);
-        }
+        .btn-copy { color: var(--btn-text-color); }
+        body:not(.dark-theme) .btn-copy { background: rgba(90,200,250,0.08); color: var(--text-color-on-action-special-light); }
+        body:not(.dark-theme) .btn-copy i { color: var(--text-color-on-action-special-light); }
+        .btn-copy:hover { background: rgba(90, 200, 250, 0.3); } body:not(.dark-theme) .btn-copy:hover { background: rgba(90,200,250,0.15); }
 
-        /* Tab navigation for saved codes section */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-            position: relative;
-        }
+        .btn-delete { color: #ffb3c0; } /* Default dark theme delete text color */
+        body:not(.dark-theme) .btn-delete { background: rgba(255,45,85,0.08); color: #a71d2a; } /* Darker red for light theme */
+        body:not(.dark-theme) .btn-delete i { color: #a71d2a; }
+        .btn-delete:hover { background: rgba(255, 45, 85, 0.3); } body:not(.dark-theme) .btn-delete:hover { background: rgba(255,45,85,0.15); }
 
-        .tab {
-            padding: 15px 20px;
-            color: var(--text-secondary);
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            background: none;
-            border: none;
-            text-align: center;
-            flex: 1; 
-        }
+        .add-code-btn { background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); color: white; border: none; border-radius: var(--btn-radius); padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 122, 255, 0.3); }
+        .add-code-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4); }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.5; }
+        .empty-state p { margin-bottom: 5px; }
 
-        .tab.active {
-            color: var(--text-color);
-        }
-
-        .tab-indicator {
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            height: 3px;
-            width: 50%; 
-            background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow));
-            transition: transform 0.3s ease;
-            border-radius: 3px 3px 0 0;
-        }
-
-        /* Saved codes section */
-        .saved-codes-list {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 5px;
-            margin-bottom: 20px;
-        }
-
-        .saved-codes-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .saved-codes-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-
-        .saved-codes-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-        }
-
-        .saved-code-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--btn-radius);
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .saved-code-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .saved-code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .saved-code-label {
-            font-size: 15px;
-            color: var(--text-color);
-            font-weight: 500;
-            word-break: break-all; 
-        }
-
-        .saved-code-time {
-            font-size: 14px;
-            color: var(--text-color);
-            background: rgba(0, 122, 255, 0.3);
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-weight: 500;
-            white-space: nowrap; 
-        }
-
-        .saved-code-value {
-            font-family: 'SF Mono', 'Consolas', monospace;
-            font-size: 30px;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 15px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        .saved-code-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: var(--btn-radius);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-load {
-            background: rgba(0, 122, 255, 0.2);
-        }
-
-        .btn-load:hover {
-            background: rgba(0, 122, 255, 0.3);
-        }
-
-        .btn-copy {
-            background: rgba(90, 200, 250, 0.2);
-        }
-
-        .btn-copy:hover {
-            background: rgba(90, 200, 250, 0.3);
-        }
-
-        .btn-delete {
-            background: rgba(255, 45, 85, 0.2);
-        }
-
-        .btn-delete:hover {
-            background: rgba(255, 45, 85, 0.3);
-        }
-
-        .add-code-btn {
-            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
-            color: white;
-            border: none;
-            border-radius: var(--btn-radius);
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 122, 255, 0.3);
-        }
-
-        .add-code-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 40px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        .empty-state p {
-            margin-bottom: 5px;
-        }
-
-        /* Settings section */
-        .settings-content {
-            display: none;
-        }
-
-        .settings-content.active {
-            display: block;
-        }
-
-        /* Period select styling - USER OVERRIDE + Custom Arrow Compatibility */
+        /* Settings */
+        .settings-content { display: none; }
+        .settings-content.active { display: block; }
         select#period {
-            background-color: var(--primary-blue) !important; 
+            background-color: var(--primary-blue) !important;
             color: white !important;
             font-weight: bold !important;
-            /* Ensure custom arrow is visible and correctly positioned */
             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
             background-repeat: no-repeat !important;
             background-position: right 15px center !important;
             background-size: 10px !important;
             padding-right: 40px !important;
         }
-
-        .settings-content .input-group .button-pair { 
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+        select#period option {
+             background: var(--primary-blue) !important;
+             color: white !important;
+        }
+        select#period option:hover {
+            background: var(--primary-dark) !important;
+        }
+         select#period option:checked {
+            background: var(--primary-light) !important;
         }
 
 
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+        .settings-content .input-group .button-pair { display: flex; gap: 10px; margin-bottom: 15px; }
+
+        /* Modals */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: var(--border-radius); width: 90%; max-width: 450px; box-shadow: var(--card-shadow); transform: scale(0.95); opacity: 0; transition: all 0.3s ease .1s; }
+        .modal.active .modal-content { transform: scale(1); opacity: 1; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--input-border); display: flex; align-items: center; justify-content: space-between; }
+        .modal-title { font-size: 18px; font-weight: 600; color: var(--text-color); }
+        .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; transition: all 0.3s ease; }
+        .modal-close:hover { color: var(--text-color); }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 20px; border-top: 1px solid var(--input-border); display: flex; justify-content: flex-end; gap: 10px; }
+
+        #confirmDeleteModal { background-color: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); } /* Ensure this is displayed like other modals */
+        #confirmDeleteModal.modal { /* Add modal class for consistency if not already handled */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        #confirmDeleteModal.modal.active { opacity: 1; visibility: visible; }
+
+        .confirm-modal-content {
+            background: var(--card-bg); /* Use theme variable */
+            backdrop-filter: blur(16px); /* Consistent glass effect */
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border); /* Use theme variable */
+            border-radius: var(--border-radius); /* Consistent radius */
+            max-width: 380px; /* Adjusted for better content fit */
+            width: calc(100% - 40px);
+            box-shadow: var(--card-shadow); /* Use theme variable */
+            transform: scale(0.95);
+            opacity: 0; /* Add for transition */
+            transition: all 0.3s ease .1s; /* Consistent transition */
+            overflow: hidden;
+        }
+        #confirmDeleteModal.modal.active .confirm-modal-content {
+            transform: scale(1);
+            opacity: 1; /* Add for transition */
+        }
+
+        .confirm-modal-header {
+            padding: 18px 20px; /* Adjusted padding */
+            border-bottom: 1px solid var(--input-border); /* Use theme variable */
+            display: flex; align-items: center; justify-content: space-between; /* For potential close button */
+        }
+        .confirm-modal-title {
+            font-size: 17px; /* Adjusted size */
+            color: var(--text-color); /* Use theme variable */
+            font-weight: 600; /* Consistent weight */
+        }
+        .confirm-modal-body {
+            padding: 25px 20px; /* Adjusted padding */
+            color: var(--text-color); /* Use theme variable */
+            font-size: 15px;
+            line-height: 1.6; /* Improved readability */
+        }
+        .confirm-modal-footer {
+            display: flex;
+            justify-content: flex-end; /* Align to right like other modals */
+            padding: 18px 20px; /* Adjusted padding */
+            gap: 10px;
+            border-top: 1px solid var(--input-border); /* Use theme variable */
+        }
+        .confirm-btn { /* General styling for confirm buttons */
+            flex-grow: 0; /* Don't grow to fill space unless specified */
+            padding: 10px 20px; /* Consistent padding */
+            border: none;
+            border-radius: var(--btn-radius); /* Consistent radius */
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px; /* Consistent font size */
+            transition: all 0.2s ease;
+        }
+        .btn-ok { /* Specific to OK/Confirm Delete */
+            background-color: var(--danger-glow);
+            color: var(--text-color-on-danger-light); /* Use theme variable */
+        }
+         body.dark-theme .btn-ok {
+            background-color: var(--danger-glow); /* Or a slightly adjusted dark theme danger */
+            color: white;
+        }
+        .btn-ok:hover { opacity: 0.85; }
+
+        .btn-cancel { /* Specific to Cancel */
+            background-color: var(--btn-bg); /* Use theme variable for secondary button */
+            color: var(--btn-text-color); /* Use theme variable */
+            border: 1px solid var(--btn-border); /* Add border for glass effect consistency */
+        }
+        .btn-cancel:hover { background: var(--btn-hover-bg); opacity: 0.85; }
+
+
+        /* Notification */
+        .notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(30px); background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px 20px; box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 10px; color: var(--text-color); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); z-index: 1000; max-width: calc(100% - 40px); width: auto; }
+        .notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .notification-success { border-left: 4px solid var(--success-glow); }
+        .notification-success i { color: var(--success-glow); font-size: 20px; }
+        .notification-error { border-left: 4px solid var(--danger-glow); }
+        .notification-error i { color: var(--danger-glow); font-size: 20px; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .split-layout { grid-template-columns: 1fr; }
+            .glass-card { padding: 20px; }
+            .app-title { font-size: 32px; }
+            .app-subtitle { font-size: 14px; }
+            .token-value { font-size: 32px; letter-spacing: 3px; }
+            .saved-code-value { font-size: 26px; letter-spacing: 2px; }
+            .button-group { flex-wrap: wrap; }
+            .button-group .glass-btn { flex-basis: calc(50% - 5px); font-size: 14px; }
+            .tabs { font-size: 14px; }
+            .tab { padding: 12px 10px; }
+            .settings-content .input-group .button-pair { flex-direction: column; }
+            .notification { bottom: 20px; width: calc(100% - 40px); }
+        }
+        @media (max-width: 480px) {
+            .app-title { font-size: 28px; }
+            .token-value { font-size: 28px; }
+            .saved-code-value { font-size: 22px; }
+            .button-group .glass-btn { flex-basis: 100%; } /* Stack generator buttons */
+            .saved-code-actions { flex-direction: column; } /* Stack saved code action buttons */
+            .action-btn { width: 100%; }
+            .navbar-actions { gap: 0.5rem;}
+            .theme-toggle-btn { padding: 0.6rem; font-size: 1rem; width: 40px; height: 40px; }
+        }
+
+        /* Theme Toggle Button Specific Style */
+        .theme-toggle-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-color); /* Text color for the icon */
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            border-radius: var(--btn-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            width: 42px;
+            height: 42px;
         }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
+        .theme-toggle-btn:hover {
+            background: var(--btn-hover-bg);
+            transform: translateY(-2px);
         }
-
-        .modal-content {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 450px;
-            box-shadow: var(--glass-shadow);
-            transform: scale(0.95);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: var(--text-color);
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        /* Confirmation Modal */
-        #confirmDeleteModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        #confirmDeleteModal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .confirm-modal-content {
-            background-color: white; 
-            border-radius: 8px;
-            max-width: 350px;
-            width: calc(100% - 40px); 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-
-        #confirmDeleteModal.active .confirm-modal-content {
-            transform: scale(1);
-        }
-
-        .confirm-modal-header {
-            padding: 15px 20px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .confirm-modal-title {
-            font-size: 16px;
-            color: #212529;
-            font-weight: 500;
-        }
-
-        .confirm-modal-body {
-            padding: 20px;
-            color: #212529;
-            font-size: 15px;
-        }
-
-        .confirm-modal-footer {
-            display: flex;
-            justify-content: center; 
-            padding: 15px 20px;
-            gap: 10px; 
-        }
-
-        .confirm-btn {
-            flex: 1; 
-            max-width: 120px; 
-            padding: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .btn-ok { 
-            background-color: #dc3545; 
-            color: white;
-        }
-
-        .btn-ok:hover {
-            background-color: #c82333;
-        }
-
-        .btn-cancel {
-            background-color: #6c757d; 
-            color: white;
-        }
-
-        .btn-cancel:hover {
-            background-color: #5a6268;
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%; 
-            transform: translateX(-50%) translateY(30px); 
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 15px 20px;
-            box-shadow: var(--glass-shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-color);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            z-index: 1000;
-            max-width: calc(100% - 40px); 
-            width: auto; 
-        }
-
-        .notification.show {
-            transform: translateX(-50%) translateY(0); 
-            opacity: 1;
-        }
-
-        .notification-success {
-            border-left: 4px solid var(--success-glow);
-        }
-
-        .notification-success i {
-            color: var(--success-glow);
-            font-size: 20px;
-        }
-
-        .notification-error {
-            border-left: 4px solid var(--danger-glow);
-        }
-
-        .notification-error i {
-            color: var(--danger-glow);
-            font-size: 20px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .split-layout {
-                grid-template-columns: 1fr;
-            }
-            
-            .glass-card {
-                padding: 20px;
-            }
-            
-            .app-title {
-                font-size: 32px; 
-            }
-            .app-subtitle {
-                font-size: 14px;
-            }
-            
-            .token-value {
-                font-size: 32px; 
-                letter-spacing: 3px;
-            }
-            
-            .saved-code-value {
-                font-size: 26px; 
-                letter-spacing: 2px;
-            }
-            .button-group {
-                flex-wrap: wrap; 
-            }
-            .glass-btn {
-                 flex-basis: calc(50% - 5px); 
-                 font-size: 14px;
-            }
-            .tabs {
-                font-size: 14px;
-            }
-            .tab {
-                padding: 12px 10px;
-            }
-            .settings-content .input-group .button-pair { 
-                flex-direction: column;
-            }
-            .notification {
-                bottom: 20px; 
-                width: calc(100% - 40px); 
-            }
-        }
-        @media (max-width: 480px) {
-            .app-title {
-                font-size: 28px;
-            }
-            .token-value {
-                font-size: 28px;
-            }
-            .saved-code-value {
-                font-size: 22px;
-            }
-             .button-group .glass-btn { 
-                 flex-basis: 100%; 
-            }
-            .saved-code-actions {
-                flex-direction: column; 
-            }
-            .action-btn {
-                width: 100%;
-            }
-        }
+         .theme-toggle-btn i {
+             color: var(--text-color); /* Ensure icon color matches theme text color */
+         }
     </style>
 </head>
 <body>
@@ -938,12 +487,18 @@
             <p class="app-subtitle">Generate and manage two-factor authentication codes.</p>
         </div>
 
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-bottom: 20px; padding: 0 10px;" class="navbar-actions">
+             <button class="theme-toggle-btn" id="themeToggleBtn">
+                <i class="fas fa-moon"></i> </button>
+        </div>
+
+
         <div class="split-layout">
             <div class="glass-card generator-section">
                 <div class="section-title">
                     <i class="fas fa-key"></i> Generate Code
                 </div>
-                
+
                 <div class="input-group">
                     <label class="input-label" for="secretInput">Secret Key</label>
                     <input type="text" id="secretInput" class="glass-input" placeholder="Enter your 2FA secret key" autocomplete="off">
@@ -982,7 +537,8 @@
                     <div class="tab-indicator"></div>
                 </div>
 
-                <div class="saved-codes-content active"> <div class="saved-codes-list" id="savedCodesList">
+                <div class="saved-codes-content active">
+                    <div class="saved-codes-list" id="savedCodesList">
                         <div class="empty-state" id="emptyState">
                             <i class="fas fa-folder-open"></i>
                             <p>No saved codes yet</p>
@@ -1021,7 +577,7 @@
                             <option value="90">90 seconds</option>
                         </select>
                     </div>
-                    
+
                     <div class="input-group">
                         <label class="input-label">Sync with Server</label>
                         <div class="button-pair">
@@ -1076,13 +632,12 @@
         </div>
     </div>
 
-    <div id="confirmDeleteModal">
-        <div class="confirm-modal-content">
-            <div class="confirm-modal-header">
+    <div class="modal" id="confirmDeleteModal">
+        <div class="confirm-modal-content"> <div class="confirm-modal-header">
                 <div class="confirm-modal-title">Confirm Deletion</div>
-            </div>
+                </div>
             <div class="confirm-modal-body">
-                <p id="deleteConfirmMessage">Are you sure you want to delete this code?</p>
+                <p id="deleteConfirmMessage"></p>
             </div>
             <div class="confirm-modal-footer">
                 <button class="confirm-btn btn-cancel" id="cancelDeleteBtn">Cancel</button>
@@ -1099,6 +654,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <script>
+        // Anti-debug / anti-view-source (user's original code)
+        // ********* THIS IS LIKELY CAUSING ISSUES ON MOBILE - TRY COMMENTING IT OUT *********
+        /*
         document.addEventListener('keydown', function(event) {
             if (event.keyCode === 123 || (event.ctrlKey && event.keyCode === 85) || (event.ctrlKey && event.shiftKey && event.keyCode === 73) || (event.ctrlKey && event.shiftKey && event.keyCode === 74) || (event.ctrlKey && event.shiftKey && event.keyCode === 67)) {
                 event.preventDefault();
@@ -1109,7 +667,10 @@
             event.preventDefault();
             return false;
         });
+        */
+        // ***********************************************************************************
 
+        // DOM Elements
         const secretInput = document.getElementById('secretInput');
         const token = document.getElementById('token');
         const timerBar = document.getElementById('timerBar');
@@ -1144,12 +705,13 @@
         const backupBtn = document.getElementById('backupBtn');
         const restoreBtn = document.getElementById('restoreBtn');
         const lastBackupInfo = document.getElementById('lastBackupInfo');
-        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal'); // This is now a .modal
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
         const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
-        let codeToDelete = -1; 
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
 
+        let codeToDelete = -1;
         let mainTimer;
         let savedCodesRefreshTimer;
         let currentToken = '';
@@ -1157,10 +719,29 @@
         let savedCodes = [];
         let autoSaveTimer;
 
+        // --- THEME TOGGLE ---
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const currentThemeIsDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('theme', currentThemeIsDark ? 'dark' : 'light');
+            applyTheme(currentThemeIsDark ? 'dark' : 'light');
+        });
+
+
         function base32ToHex(base32) {
             const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             base32 = base32.replace(/\s+/g, '').toUpperCase().replace(/=+$/, '');
-            if (!/^[A-Z2-7]+$/.test(base32)) { 
+            if (!/^[A-Z2-7]+$/.test(base32)) {
                  console.error('Invalid base32 characters in secret:', base32);
                  throw new Error('Invalid base32 characters');
             }
@@ -1181,6 +762,11 @@
             try {
                 if (!secret || typeof secret !== 'string' || secret.trim() === '') {
                     throw new Error('Secret key is empty or invalid');
+                }
+                // Ensure CryptoJS is loaded
+                if (typeof CryptoJS === 'undefined') {
+                    console.error('CryptoJS library is not loaded.');
+                    throw new Error('CryptoJS library is not loaded.');
                 }
                 const hexSecret = base32ToHex(secret);
                 const epoch = Math.floor(Date.now() / 1000);
@@ -1218,7 +804,7 @@
             const secret = secretInput.value.trim().replace(/\s+/g, '');
             if (!secret) {
                 token.textContent = '------';
-                if(mainTimer) clearInterval(mainTimer); 
+                if(mainTimer) clearInterval(mainTimer);
                 updateMainTimerDisplay(0, parseInt(periodSelect.value || 30));
                 return;
             }
@@ -1238,7 +824,7 @@
                         currentToken = result.code;
                         token.textContent = result.code;
                         token.style.opacity = '1';
-                    }, 100); 
+                    }, 100);
                 }
                 updateMainTimerDisplay(result.secondsRemaining, period);
                 lastSecretInput = secret;
@@ -1250,25 +836,41 @@
 
         function startMainTokenUpdates() {
             if (mainTimer) clearInterval(mainTimer);
-            generateMainToken(); 
+            generateMainToken();
             mainTimer = setInterval(generateMainToken, 1000);
         }
 
         function copyToClipboard() {
             if (currentToken && currentToken !== '------' && currentToken !== 'ERROR') {
-                navigator.clipboard.writeText(currentToken)
-                    .then(() => showNotification('Code copied to clipboard', 'success'))
-                    .catch(err => {
-                        console.error('Copy failed:', err);
-                        showNotification('Failed to copy code', 'error');
-                    });
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentToken)
+                        .then(() => showNotification('Code copied to clipboard', 'success'))
+                        .catch(err => {
+                            console.error('Copy failed:', err);
+                            showNotification('Failed to copy code (modern method)', 'error');
+                        });
+                } else {
+                    // Fallback for older browsers or non-HTTPS contexts (less common now)
+                    const textArea = document.createElement("textarea");
+                    textArea.value = currentToken;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('Code copied (fallback method)', 'success');
+                    } catch (err) {
+                        showNotification('Failed to copy code (fallback method)', 'error');
+                    }
+                    document.body.removeChild(textArea);
+                }
             } else {
                 showNotification('No valid code to copy', 'error');
             }
         }
-        
+
         function updateSavedCodesListDOM() {
-            savedCodesList.innerHTML = ''; 
+            savedCodesList.innerHTML = '';
             if (savedCodes.length === 0) {
                 emptyState.style.display = 'block';
                 return;
@@ -1279,7 +881,7 @@
                 const codeItem = document.createElement('div');
                 codeItem.className = 'saved-code-item';
                 codeItem.setAttribute('data-index', index);
-                codeItem.setAttribute('data-id', code.id); 
+                codeItem.setAttribute('data-id', code.id);
 
                 codeItem.innerHTML = `
                     <div class="saved-code-header">
@@ -1295,17 +897,18 @@
                 `;
                 savedCodesList.appendChild(codeItem);
             });
-            addButtonEventListeners();
-            refreshLiveSavedCodes(); 
+            addButtonEventListeners(); // Consider event delegation later for performance
+            refreshLiveSavedCodes();
         }
 
         function refreshLiveSavedCodes() {
-            if (savedCodesContent.style.display === 'none' || savedCodes.length === 0) {
-                return; 
+            if ( (settingsContent.style.display === 'block' && savedCodesContent.style.display === 'none') || savedCodes.length === 0) { // only run if saved tab is active or no codes
+                 return;
             }
-            savedCodes.forEach((codeData) => { 
+
+            savedCodes.forEach((codeData) => {
                  const item = savedCodesList.querySelector(`.saved-code-item[data-id="${codeData.id}"]`);
-                 if (!item) return; 
+                 if (!item) return;
 
                 const result = generateTOTP(
                     codeData.secret,
@@ -1334,7 +937,7 @@
         function saveCurrentCode() {
             if (currentToken && currentToken !== '------' && currentToken !== 'ERROR') {
                 newSecret.value = secretInput.value.trim();
-                newLabel.value = ''; 
+                newLabel.value = '';
                 openAddModal();
             } else {
                 showNotification('Generate a valid code first', 'error');
@@ -1351,7 +954,7 @@
         }
 
         function showNotification(message, type = 'success') {
-            notification.className = 'notification'; 
+            notification.className = 'notification';
             notification.classList.add(`notification-${type}`);
             notification.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
             notificationText.textContent = message;
@@ -1359,15 +962,23 @@
             setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
+        function openModal(modalElement) {
+            if(modalElement) modalElement.classList.add('active');
+        }
+
+        function closeModal(modalElement) {
+            if(modalElement) modalElement.classList.remove('active');
+        }
+
         function openAddModal() {
-            addModal.classList.add('active');
-            setTimeout(() => newLabel.focus(), 50);
+            openModal(addModal);
+            setTimeout(() => newLabel.focus(), 50); // Focus might be tricky on mobile, test this
         }
 
         function closeAddModal() {
-            addModal.classList.remove('active');
+            closeModal(addModal);
         }
-        
+
         function addNewCodeToList() {
             const label = newLabel.value.trim() || 'Unnamed Code';
             const secret = newSecret.value.trim();
@@ -1376,32 +987,33 @@
                 return;
             }
             try {
-                const result = generateTOTP(secret); 
-                if (!result) { 
+                const result = generateTOTP(secret);
+                if (!result) {
                     showNotification('Invalid secret key or parameters', 'error');
                     return;
                 }
                 const newCodeEntry = {
-                    id: Date.now(), 
+                    id: Date.now(),
                     label,
                     secret,
-                    algorithm: algorithmSelect.value, 
+                    algorithm: algorithmSelect.value,
                     digits: parseInt(digitsSelect.value),
                     period: parseInt(periodSelect.value)
                 };
-                savedCodes.unshift(newCodeEntry); 
+                savedCodes.unshift(newCodeEntry);
                 saveCodesToLocalStorage();
-                updateSavedCodesListDOM(); 
+                updateSavedCodesListDOM();
                 closeAddModal();
                 showNotification(`Code "${label}" saved`, 'success');
-                showTab('saved'); 
-            } catch (error) { 
+                showTab('saved');
+            } catch (error) {
                 showNotification('Invalid secret key format', 'error');
                 console.error("Error adding new code:", error);
             }
         }
 
         function addButtonEventListeners() {
+            // Consider event delegation for better performance with many items
             savedCodesList.querySelectorAll('.btn-load').forEach(btn => {
                 const newBtn = btn.cloneNode(true);
                 btn.parentNode.replaceChild(newBtn, btn);
@@ -1420,6 +1032,7 @@
         }
 
         function loadSavedCode(index) {
+            if (index < 0 || index >= savedCodes.length) return;
             const code = savedCodes[index];
             if (!code) return;
             secretInput.value = code.secret;
@@ -1432,27 +1045,49 @@
 
         function copySavedCodeValue(codeToCopy) {
             if (codeToCopy && codeToCopy !== 'ERROR' && codeToCopy !== '------') {
-                navigator.clipboard.writeText(codeToCopy)
-                    .then(() => showNotification('Code copied', 'success'))
-                    .catch(err => showNotification('Copy failed', 'error'));
+                 if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(codeToCopy)
+                        .then(() => showNotification('Code copied', 'success'))
+                        .catch(err => showNotification('Copy failed', 'error'));
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement("textarea");
+                    textArea.value = codeToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('Code copied (fallback)', 'success');
+                    } catch (err) {
+                        showNotification('Copy failed (fallback)', 'error');
+                    }
+                    document.body.removeChild(textArea);
+                }
             } else {
                 showNotification('No valid code to copy', 'error');
             }
         }
 
         function confirmDeletion(index) {
+            if (index < 0 || index >= savedCodes.length) {
+                 console.error("Code to delete at index " + index + " not found.");
+                 return;
+            }
             const code = savedCodes[index];
             if (!code) return;
-            codeToDelete = index; 
-            deleteConfirmMessage.textContent = `Delete "${code.label}"?`;
-            confirmDeleteModal.classList.add('active');
+
+            codeToDelete = index;
+            const labelText = code.label || 'this code';
+            deleteConfirmMessage.textContent = `Delete "${labelText}"? This action cannot be undone.`;
+            openModal(confirmDeleteModal); // Use generic openModal
         }
-        
+
         function showTab(tabName) {
             tabs.forEach(t => t.classList.remove('active'));
             const activeTabButton = document.querySelector(`.tab[data-tab="${tabName}"]`);
             if (activeTabButton) activeTabButton.classList.add('active');
-            
+
             const tabIndex = Array.from(tabs).findIndex(t => t.getAttribute('data-tab') === tabName);
             if (tabIndicator) tabIndicator.style.transform = `translateX(${tabIndex * 100}%)`;
 
@@ -1460,12 +1095,23 @@
             if (settingsContent) settingsContent.style.display = tabName === 'settings' ? 'block' : 'none';
 
             if(tabName === 'saved' && typeof updateSavedCodesListDOM === 'function') {
-                 updateSavedCodesListDOM(); 
+                 updateSavedCodesListDOM();
+            }
+             if(tabName === 'saved') {
+                refreshLiveSavedCodes(); // Refresh when tab becomes active
+                if (!savedCodesRefreshTimer) {
+                    savedCodesRefreshTimer = setInterval(refreshLiveSavedCodes, 1000);
+                }
+            } else {
+                if (savedCodesRefreshTimer) {
+                    clearInterval(savedCodesRefreshTimer);
+                    savedCodesRefreshTimer = null;
+                }
             }
         }
 
         function loadCodesFromLocalStorage() {
-            const savedCodesStr = localStorage.getItem('savedCodes_v2'); 
+            const savedCodesStr = localStorage.getItem('savedCodes_v2');
             if (savedCodesStr) {
                 try {
                     savedCodes = JSON.parse(savedCodesStr);
@@ -1479,28 +1125,27 @@
                     try {
                         const oldCodes = JSON.parse(oldCodesStr);
                         savedCodes = oldCodes.map((code, index) => ({
-                            id: code.id || Date.now() + index, 
+                            id: code.id || Date.now() + index,
                             label: code.label || `Code ${index + 1}`,
                             secret: code.secret,
                             algorithm: code.algorithm || 'SHA-1',
                             digits: code.digits || 6,
                             period: code.period || 30
                         }));
-                        saveCodesToLocalStorage(); 
-                        localStorage.removeItem('savedCodes'); 
+                        saveCodesToLocalStorage();
+                        localStorage.removeItem('savedCodes');
                         showNotification('Migrated codes to new format.', 'success');
                     } catch (e) { savedCodes = []; }
                 } else {
                     savedCodes = [];
                 }
             }
-            // updateSavedCodesListDOM(); // Call after DOM is fully ready or when tab is shown
-            updateBackupInfo(); 
+            updateBackupInfo();
         }
 
         function saveCodesToLocalStorage() {
             localStorage.setItem('savedCodes_v2', JSON.stringify(savedCodes));
-            createBackup(false); 
+            createBackup(false);
         }
 
         function createBackup(showMessage = true) {
@@ -1529,7 +1174,7 @@
                 }
                 if (confirm(`Restore backup from ${backupData.date || new Date(backupData.timestamp).toLocaleString()}? This will overwrite current codes.`)) {
                     savedCodes = backupData.codes;
-                    saveCodesToLocalStorage(); 
+                    saveCodesToLocalStorage();
                     updateSavedCodesListDOM();
                     showNotification('Backup restored successfully', 'success');
                 }
@@ -1539,7 +1184,7 @@
         }
          function updateBackupInfo() {
             const backupStr = localStorage.getItem('savedCodes_backup_v2');
-            if (lastBackupInfo && backupStr) { // Check if lastBackupInfo exists
+            if (lastBackupInfo && backupStr) {
                 try {
                     const backupData = JSON.parse(backupStr);
                     lastBackupInfo.textContent = `Last backup: ${backupData.date || new Date(backupData.timestamp).toLocaleString() || 'Unknown'}`;
@@ -1552,14 +1197,17 @@
         function exportToServer() {
             const url = serverUrl.value.trim();
             if (!url) { showNotification('Server URL is required', 'error'); return; }
-            saveServerSettings(); 
+            saveServerSettings();
             const exportData = { codes: savedCodes, timestamp: Date.now(), deviceInfo: navigator.userAgent };
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : '' },
                 body: JSON.stringify(exportData)
             })
-            .then(response => response.ok ? response.json() : Promise.reject(new Error('Server error: ' + response.statusText)))
+            .then(response => {
+                if (!response.ok) return response.text().then(text => { throw new Error('Server error: ' + response.status + " " + text) });
+                return response.json();
+            })
             .then(() => showNotification('Exported to server', 'success'))
             .catch(error => showNotification('Export failed: ' + error.message, 'error'));
         }
@@ -1567,13 +1215,16 @@
         function importFromServer() {
             const url = serverUrl.value.trim();
             if (!url) { showNotification('Server URL is required', 'error'); return; }
-            saveServerSettings(); 
+            saveServerSettings();
             fetch(url, { method: 'GET', headers: { 'Authorization': apiKey.value ? `Bearer ${apiKey.value}` : '' }})
-            .then(response => response.ok ? response.json() : Promise.reject(new Error('Server error: ' + response.statusText)))
+            .then(response => {
+                if (!response.ok) return response.text().then(text => { throw new Error('Server error: ' + response.status + " " + text) });
+                return response.json();
+            })
             .then(data => {
                 if (data && data.codes && Array.isArray(data.codes)) {
                     if (confirm('Replace current codes with data from server? (Current codes will be backed up)')) {
-                        createBackup(false); 
+                        createBackup(false);
                         savedCodes = data.codes;
                         saveCodesToLocalStorage();
                         updateSavedCodesListDOM();
@@ -1583,17 +1234,17 @@
             })
             .catch(error => showNotification('Import failed: ' + error.message, 'error'));
         }
-        
+
         function loadServerSettings() {
             if(serverUrl) serverUrl.value = localStorage.getItem('2fa_server_url') || '';
-            if(apiKey) apiKey.value = localStorage.getItem('2fa_api_key') || ''; 
+            if(apiKey) apiKey.value = localStorage.getItem('2fa_api_key') || '';
         }
 
         function saveServerSettings() {
             if(serverUrl) localStorage.setItem('2fa_server_url', serverUrl.value.trim());
-            if(apiKey) localStorage.setItem('2fa_api_key', apiKey.value.trim()); 
+            if(apiKey) localStorage.setItem('2fa_api_key', apiKey.value.trim());
         }
-        
+
         confirmDeleteBtn.addEventListener('click', () => {
             if (codeToDelete >= 0 && codeToDelete < savedCodes.length) {
                 savedCodes.splice(codeToDelete, 1);
@@ -1601,11 +1252,11 @@
                 updateSavedCodesListDOM();
                 showNotification('Code deleted', 'success');
             }
-            confirmDeleteModal.classList.remove('active');
+            closeModal(confirmDeleteModal); // Use generic closeModal
             codeToDelete = -1;
         });
         cancelDeleteBtn.addEventListener('click', () => {
-            confirmDeleteModal.classList.remove('active');
+            closeModal(confirmDeleteModal); // Use generic closeModal
             codeToDelete = -1;
         });
 
@@ -1617,11 +1268,11 @@
         const applySettingToAll = (settingType, value) => {
              if (savedCodes.length > 0 && confirm(`Apply this ${settingType.toLowerCase()} setting to all saved codes?`)) {
                 savedCodes.forEach(code => {
-                    code[settingType.toLowerCase()] = value; 
+                    code[settingType.toLowerCase()] = value;
                 });
                 saveCodesToLocalStorage();
-                updateSavedCodesListDOM(); 
-                refreshLiveSavedCodes(); 
+                updateSavedCodesListDOM();
+                refreshLiveSavedCodes();
                 showNotification(`Updated ${settingType.toLowerCase()} for all codes`, 'success');
             }
         };
@@ -1645,46 +1296,52 @@
                 if (secretInput.value.trim() !== lastSecretInput) startMainTokenUpdates();
             }, 300);
         });
-        secretInput.addEventListener('paste', () => setTimeout(startMainTokenUpdates, 50)); 
+        secretInput.addEventListener('paste', () => setTimeout(startMainTokenUpdates, 50));
         generateBtn.addEventListener('click', startMainTokenUpdates);
         copyBtn.addEventListener('click', copyToClipboard);
         saveBtn.addEventListener('click', saveCurrentCode);
         clearBtn.addEventListener('click', clearAll);
         tokenDisplay.addEventListener('click', copyToClipboard);
-        tabs.forEach((tab) => { 
+        tabs.forEach((tab) => {
             tab.addEventListener('click', () => showTab(tab.getAttribute('data-tab')));
         });
         addNewBtn.addEventListener('click', openAddModal);
         closeModalBtn.addEventListener('click', closeAddModal);
         cancelBtn.addEventListener('click', closeAddModal);
         saveNewBtn.addEventListener('click', addNewCodeToList);
-        addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); }); 
-        
+        addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); });
+        confirmDeleteModal.addEventListener('click', e => { if (e.target === confirmDeleteModal) closeModal(confirmDeleteModal); });
+
+
         function setupAutoBackup() {
             if (autoSaveTimer) clearInterval(autoSaveTimer);
             autoSaveTimer = setInterval(() => {
                 if (savedCodes.length > 0) {
-                    createBackup(false); 
+                    createBackup(false);
                     console.log('Auto backup performed at ' + new Date().toLocaleTimeString());
                 }
-            }, 5 * 60 * 1000); 
+            }, 5 * 60 * 1000);
         }
 
         window.addEventListener('beforeunload', () => {
-            if (savedCodes.length > 0) createBackup(false); 
+            if (savedCodes.length > 0) createBackup(false);
         });
 
 
         // Initialize
+        const preferredTheme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(preferredTheme);
+
         loadCodesFromLocalStorage();
         loadServerSettings();
-        showTab('saved'); 
+        showTab('saved'); // Show saved tab first, which will init its timer
         if (secretInput.value.trim()) startMainTokenUpdates();
-        
-        if (!savedCodesRefreshTimer) { 
-            savedCodesRefreshTimer = setInterval(refreshLiveSavedCodes, 1000);
+
+        // Initial call to refresh live codes if saved tab is active
+        if (savedCodesContent.classList.contains('active')) {
+            refreshLiveSavedCodes();
         }
         setupAutoBackup();
     </script>
 </body>
-</html>
+</html> 

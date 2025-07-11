@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coppy & Save </title>
+    <title>Dán & Gửi đi - Giao diện 3D Glass</title>
     <link rel="icon" href="favicon.ico">
     <style>
         /* --- Google Fonts --- */
@@ -96,10 +96,21 @@
             box-shadow: 
                 inset 5px 5px 10px var(--glass-shadow-dark),
                 inset -5px -5px 10px var(--glass-shadow-light);
+            cursor: pointer; /* Thêm con trỏ chuột */
+            border: 2px solid transparent; /* Thêm viền trong suốt để chuyển đổi mượt mà */
         }
         
+        #paste-box:hover:not(.has-content) {
+            transform: scale(1.01);
+            box-shadow: 
+                inset 5px 5px 10px var(--glass-shadow-dark),
+                inset -5px -5px 10px var(--glass-shadow-light),
+                0 0 25px rgba(0, 122, 255, 0.25); /* Hiệu ứng tỏa sáng */
+        }
+
         #paste-box.has-content {
              border: 2px solid var(--primary-color);
+             cursor: default; /* Trả lại con trỏ mặc định khi có nội dung */
         }
 
         #placeholder-content {
@@ -108,7 +119,6 @@
             align-items: center;
             gap: 15px;
             pointer-events: none;
-            transition: opacity 0.3s ease;
         }
 
         #placeholder-content svg {
@@ -166,7 +176,7 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
-            height: auto;
+            height: 50px; /* Đặt chiều cao cố định để không bị giật layout */
         }
 
         .btn {
@@ -194,6 +204,7 @@
         .btn.hidden {
             transform: scale(0);
             opacity: 0;
+            pointer-events: none; /* Ngăn tương tác khi ẩn */
         }
         
         .btn:not(.hidden) {
@@ -263,16 +274,12 @@
                     <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
                 </svg>
-                <span>Dán hoặc chờ tải tệp lên...</span>
+                <span>Nhấn để tải tệp lên hoặc dán (Ctrl+V)</span>
             </div>
             <div id="output-content"></div>
         </div>
 
         <div class="action-buttons">
-            <button id="upload-btn" class="btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <span>Tải lên</span>
-            </button>
             <a id="download-btn" class="btn hidden" download>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Tải xuống</span>
@@ -306,7 +313,6 @@
         const pasteBox = document.getElementById('paste-box');
         const placeholder = document.getElementById('placeholder-content');
         const outputContent = document.getElementById('output-content');
-        const uploadBtn = document.getElementById('upload-btn');
         const fileInput = document.getElementById('file-input');
         const downloadBtn = document.getElementById('download-btn');
         const sendTelegramBtn = document.getElementById('send-telegram-btn');
@@ -396,7 +402,7 @@
 
         // Update UI
         function updateUIForNewContent(url, filename) {
-            placeholder.style.opacity = '0';
+            placeholder.style.display = 'none'; // Ẩn placeholder
             pasteBox.classList.add('has-content');
             
             downloadBtn.href = url;
@@ -405,7 +411,6 @@
             downloadBtn.classList.remove('hidden');
             sendTelegramBtn.classList.remove('hidden');
             clearBtn.classList.remove('hidden');
-            uploadBtn.classList.add('hidden');
         }
 
         function clearContent() {
@@ -413,13 +418,12 @@
             objectURL = null;
             pastedContent = { type: null, data: null };
             outputContent.innerHTML = '';
-            placeholder.style.opacity = '1';
+            placeholder.style.display = 'flex'; // Hiện lại placeholder
             pasteBox.classList.remove('has-content');
             
             downloadBtn.classList.add('hidden');
             sendTelegramBtn.classList.add('hidden');
             clearBtn.classList.add('hidden');
-            uploadBtn.classList.remove('hidden');
             
             if (fileInput) {
                 fileInput.value = null;
@@ -485,7 +489,12 @@
 
         // --- Event Listeners ---
         window.addEventListener('paste', handlePaste);
-        uploadBtn.addEventListener('click', () => fileInput.click());
+        pasteBox.addEventListener('click', () => {
+            // Chỉ kích hoạt chọn tệp khi khung dán đang trống
+            if (!outputContent.hasChildNodes()) {
+                fileInput.click();
+            }
+        });
         fileInput.addEventListener('change', handleFileSelect);
         clearBtn.addEventListener('click', clearContent);
         sendTelegramBtn.addEventListener('click', sendToTelegram);

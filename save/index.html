@@ -176,7 +176,7 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
-            height: 50px; /* Đặt chiều cao cố định để không bị giật layout */
+            height: auto; /* Cho phép co giãn chiều cao */
         }
 
         .btn {
@@ -205,6 +205,9 @@
             transform: scale(0);
             opacity: 0;
             pointer-events: none; /* Ngăn tương tác khi ẩn */
+            width: 0; /* Thu nhỏ khi ẩn để không chiếm không gian */
+            padding: 0;
+            margin: 0;
         }
         
         .btn:not(.hidden) {
@@ -259,6 +262,33 @@
         }
         #notification.success { background: var(--success-color); }
         #notification.error { background: var(--danger-color); }
+
+        /* --- Tối ưu cho di động --- */
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+            .action-buttons {
+                flex-direction: column; /* Xếp chồng theo chiều dọc */
+                align-items: center; /* Căn giữa các nút */
+                height: auto;
+                gap: 15px;
+            }
+            .btn {
+                width: 100%; /* Các nút chiếm toàn bộ chiều rộng */
+                max-width: 300px; /* Giới hạn chiều rộng tối đa */
+            }
+            .btn.hidden {
+                display: none; /* Ẩn hoàn toàn nút khi không cần thiết */
+            }
+        }
+
     </style>
 </head>
 <body>

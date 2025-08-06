@@ -1,0 +1,137 @@
+<!-- Font đẹp -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600&amp;display=swap" rel="stylesheet">
+
+<style>
+/* Wrapper co dãn theo khung cha */
+.slider-box {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 4 / 5.25; /* Tỷ lệ 420x525 */
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #000;
+  margin: auto;
+}
+
+/* Slide ảnh */
+.slider-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: fadeZoom 5s ease-in-out infinite;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Hai ảnh với delay lệch nhau */
+.slider-image:nth-child(1) {
+  background-image: url('https://w.ladicdn.com/5ff2d3af064d8400117263d3/z6817029869675_6a299cd7eadc5e9f3702f3584424fe72-20250718085320-y9bom.jpg');
+  animation-delay: 0s;
+}
+.slider-image:nth-child(2) {
+  background-image: url('https://w.ladicdn.com/5ff2d3af064d8400117263d3/491508102_18381352372187205_4809401630960367652_n-20250704041103-udsol.jpg');
+  animation-delay: 2.5s;
+}
+.slider-image:nth-child(2) {
+  background-image: url('https://w.ladicdn.com/5ff2d3af064d8400117263d3/509896390_18389122246187205_4007271968784152190_n-20250716081201-uhas5.jpg');
+  animation-delay: 5s;
+}
+/* Keyframe hiệu ứng */
+@keyframes fadeZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Nút SHOP NOW */
+.shop-button-on-image {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #111111;
+  background-color: #ffffff;
+  border: 1.5px solid #111111;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  z-index: 2;
+}
+
+.shop-button-on-image .arrow {
+  font-size: 16px;
+  transition: transform 0.35s ease;
+}
+
+.shop-button-on-image:hover {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+.shop-button-on-image:hover .arrow {
+  transform: translateX(6px);
+}
+
+/* Responsive nhỏ hơn */
+@media (max-width: 480px) {
+  .shop-button-on-image {
+    font-size: 12px;
+    padding: 9px 20px;
+  }
+  .shop-button-on-image .arrow {
+    font-size: 14px;
+  }
+}
+</style>
+
+<!-- HTML -->
+<div class="slider-box">
+  <div class="slider-image"></div>
+  <div class="slider-image"></div>
+  <a href="#sp" class="shop-button-on-image">
+    Shop now <span class="arrow">→</span>
+  </a>
+</div>
+
+<!-- Scroll mượt -->
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>

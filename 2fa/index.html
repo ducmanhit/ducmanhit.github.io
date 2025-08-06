@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lấy mã bảo mật 2FA</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Lấy mã bảo ật 2FA</title>
+    <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +30,7 @@
             height: 100%;
             z-index: -1;
             filter: url(#goo); /* Apply the gooey filter */
+            pointer-events: none; /* FIX: Allow clicks to pass through */
         }
 
         /* Interactive Blobs Animations */
@@ -46,8 +47,7 @@
             50% { transform: translate(15vw, -30vh) scale(1.2); }
         }
         @keyframes move-blob-4 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-15vw, 30vh) scale(1.2); }
+            0%, 100% { transform: translate(-15vw, 30vh) scale(1.2); }
         }
 
         .gradient-blob {
@@ -113,28 +113,26 @@
             transform: translateY(1px) scale(0.97);
         }
         .btn-primary {
-            background-color: #3b82f6; /* blue-500 */
+            background-color: #60a5fa; /* blue-400 */
             color: white;
         }
         .btn-primary:not(:disabled):hover {
-            background-color: #2563eb; /* blue-600 */
-            transform: translateY(-2px);
+            background-color: #3b82f6; /* blue-500 */
             box-shadow: 0 7px 14px rgba(59, 130, 246, 0.15);
         }
         .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: #f3f4f6; /* gray-100 */
             color: #374151; /* gray-700 */
-            border-color: rgba(209, 213, 219, 0.8);
         }
         .btn-secondary:not(:disabled):hover {
-            background-color: rgba(255, 255, 255, 1);
+            background-color: #e5e7eb; /* gray-200 */
         }
         .btn-danger {
-            background-color: rgba(254, 226, 226, 0.8);
-            color: #b91c1c; /* red-700 */
+            background-color: #fee2e2; /* red-100 */
+            color: #ef4444; /* red-500 */
         }
         .btn-danger:not(:disabled):hover {
-            background-color: #fee2e2;
+            background-color: #fecaca; /* red-200 */
         }
         .icon {
             width: 1.25rem;
@@ -150,10 +148,10 @@
             transform: scale(0.9) translateY(20px);
             opacity: 0;
         }
-        #saveModal.open .modal-backdrop {
+        .modal.open .modal-backdrop {
             opacity: 1;
         }
-        #saveModal.open .modal-content {
+        .modal.open .modal-content {
             transform: scale(1) translateY(0);
             opacity: 1;
         }
@@ -171,8 +169,8 @@
             transform: scale(0.95);
         }
         #secretKey {
-             background-color: rgba(249, 250, 251, 0.8);
-             border-color: #d1d5db;
+             background-color: rgba(243, 244, 246, 0.7); /* gray-100/70 */
+             border-color: #e5e7eb; /* gray-200 */
              transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         #secretKey:focus {
@@ -216,7 +214,7 @@
       </defs>
     </svg>
 
-    <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 z-10">
+    <div class="relative w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 z-10">
         <!-- Left Panel: Generator -->
         <div class="card p-8 space-y-6 flex flex-col">
             <div class="flex items-center text-xl font-bold text-gray-800">
@@ -240,15 +238,15 @@
             </div>
             
             <div id="generatorActions" class="grid grid-cols-3 gap-3">
-                <button id="copyBtn" class="btn btn-secondary" disabled>
+                <button id="copyBtn" class="btn btn-secondary !rounded-lg" disabled>
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     Sao chép
                 </button>
-                <button id="saveBtn" class="btn btn-primary" disabled>
+                <button id="saveBtn" class="btn btn-primary !rounded-lg" disabled>
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     Lưu
                 </button>
-                <button id="clearBtn" class="btn btn-danger">
+                <button id="clearBtn" class="btn btn-danger !rounded-lg">
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     Xóa
                 </button>
@@ -264,9 +262,9 @@
         </div>
     </div>
 
-    <!-- Save Modal -->
-    <div id="saveModal" class="fixed inset-0 z-50 items-center justify-center hidden">
-        <div id="modalBackdrop" class="absolute inset-0 bg-black/30 modal-backdrop"></div>
+    <!-- Modals Container -->
+    <div id="saveModal" class="fixed inset-0 z-50 items-center justify-center hidden modal">
+        <div id="modalBackdropSave" class="absolute inset-0 bg-black/30 modal-backdrop"></div>
         <div class="relative m-4 w-full max-w-md modal-content">
             <div class="card p-6 space-y-4">
                 <h3 class="text-xl font-bold text-gray-800">Lưu mã bí mật</h3>
@@ -276,8 +274,35 @@
                     <input type="text" id="modalCodeName" class="bg-gray-100/80 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Ví dụ: Tài khoản Google">
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
-                    <button id="cancelSaveBtn" class="btn btn-secondary">Hủy</button>
-                    <button id="confirmSaveBtn" class="btn btn-primary">Lưu mã</button>
+                    <button id="cancelSaveBtn" class="btn btn-secondary !rounded-lg">Hủy</button>
+                    <button id="confirmSaveBtn" class="btn btn-primary !rounded-lg">Lưu mã</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="deleteModal" class="fixed inset-0 z-50 items-center justify-center hidden modal">
+        <div id="modalBackdropDelete" class="absolute inset-0 bg-black/30 modal-backdrop"></div>
+        <div class="relative m-4 w-full max-w-md modal-content">
+            <div class="card p-6 space-y-4 text-center">
+                <h3 class="text-xl font-bold text-gray-800">Xác nhận xóa</h3>
+                <p class="text-sm text-gray-600">Bạn có chắc muốn xóa mã "<span id="deleteCodeName" class="font-bold"></span>" không?</p>
+                <div class="flex justify-center gap-3 pt-4">
+                    <button id="confirmDeleteBtn" class="btn btn-danger !rounded-lg">Xóa</button>
+                    <button id="cancelDeleteBtn" class="btn btn-secondary !rounded-lg">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="alertModal" class="fixed inset-0 z-50 items-center justify-center hidden modal">
+        <div id="modalBackdropAlert" class="absolute inset-0 bg-black/30 modal-backdrop"></div>
+        <div class="relative m-4 w-full max-w-md modal-content">
+            <div class="card p-6 space-y-4 text-center">
+                <h3 class="text-xl font-bold text-gray-800">Thông báo</h3>
+                <p id="alertMessage" class="text-sm text-gray-600"></p>
+                <div class="flex justify-center pt-4">
+                    <button id="alertOkBtn" class="btn btn-primary !rounded-lg">OK</button>
                 </div>
             </div>
         </div>
@@ -295,10 +320,21 @@
     const progressBar = document.getElementById('progressBar');
     const timerText = document.getElementById('timerText').querySelector('span');
     const savedCodesList = document.getElementById('savedCodesList');
+    
     const saveModal = document.getElementById('saveModal');
     const modalCodeNameInput = document.getElementById('modalCodeName');
     const cancelSaveBtn = document.getElementById('cancelSaveBtn');
     const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+    
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteCodeNameSpan = document.getElementById('deleteCodeName');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    const alertModal = document.getElementById('alertModal');
+    const alertMessage = document.getElementById('alertMessage');
+    const alertOkBtn = document.getElementById('alertOkBtn');
+
     const cursorBlob = document.getElementById('cursor-blob');
 
     // --- STATE ---
@@ -306,6 +342,7 @@
     let activeCodeInterval = null;
     let globalUpdateInterval = null;
     let currentOTP = "------";
+    let codeToDeleteId = null;
 
     // --- TOTP LOGIC (Robust and standard) ---
     function base32tohex(base32) {
@@ -360,17 +397,17 @@
         }
         savedCodes.forEach(code => {
             const codeDiv = document.createElement('div');
-            codeDiv.className = 'p-4 bg-white/70 rounded-xl border border-gray-200/80 space-y-3 transition-all duration-200 hover:shadow-md hover:border-gray-300';
+            codeDiv.className = 'p-4 bg-white/70 rounded-2xl border border-gray-200/80 space-y-3 transition-all duration-200';
             codeDiv.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <span class="font-bold text-gray-800">${code.name}</span>
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-gray-700">${code.name}</span>
                     <span class="text-sm font-mono text-blue-500" data-id="${code.id}-timer">30s</span>
                 </div>
-                <p class="text-3xl font-mono text-center text-gray-700" data-id="${code.id}-otp">------</p>
-                <div class="flex gap-2">
-                    <button class="btn btn-secondary flex-1 text-xs" onclick="loadCode('${code.id}')">Tải</button>
-                    <button class="btn btn-secondary flex-1 text-xs" onclick="copySavedCode(event, '${code.id}')">Sao chép</button>
-                    <button class="btn btn-danger flex-1 text-xs" onclick="deleteCode('${code.id}')">Xóa</button>
+                <p class="text-4xl font-mono text-center text-gray-800 tracking-widest" data-id="${code.id}-otp">------</p>
+                <div class="flex gap-2 pt-2">
+                    <button class="btn btn-secondary flex-1 text-xs !rounded-lg" onclick="loadCode('${code.id}')">Tải</button>
+                    <button class="btn btn-secondary flex-1 text-xs !rounded-lg" onclick="copySavedCode(event, '${code.id}')">Sao chép</button>
+                    <button class="btn btn-danger flex-1 text-xs !rounded-lg" onclick="showDeleteModal('${code.id}')">Xóa</button>
                 </div>
             `;
             savedCodesList.appendChild(codeDiv);
@@ -400,22 +437,29 @@
 
 
     // --- MODAL LOGIC ---
-    function showSaveModal() {
-        saveModal.classList.remove('hidden');
-        saveModal.classList.add('flex');
+    function showModal(modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
         setTimeout(() => {
-            saveModal.classList.add('open');
-            modalCodeNameInput.focus();
+            modal.classList.add('open');
+            const input = modal.querySelector('input');
+            if(input) input.focus();
         }, 10);
     }
 
-    function hideSaveModal() {
-        saveModal.classList.remove('open');
+    function hideModal(modal) {
+        modal.classList.remove('open');
         setTimeout(() => {
-            saveModal.classList.add('hidden');
-            saveModal.classList.remove('flex');
-            modalCodeNameInput.value = '';
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            const input = modal.querySelector('input');
+            if(input) input.value = '';
         }, 400);
+    }
+
+    function showAlert(message) {
+        alertMessage.textContent = message;
+        showModal(alertModal);
     }
 
     // --- CORE LOGIC ---
@@ -456,18 +500,18 @@
         const name = modalCodeNameInput.value.trim();
         const secret = secretKeyInput.value.trim();
         if (!name) {
-            alert("Vui lòng nhập tên gợi nhớ.");
+            showAlert("Vui lòng nhập tên gợi nhớ.");
             return;
         }
         if (savedCodes.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-             alert("Tên này đã tồn tại. Vui lòng chọn tên khác.");
+             showAlert("Tên này đã tồn tại. Vui lòng chọn tên khác.");
              return;
         }
         const newCode = { id: Date.now().toString(), name: name, secret: secret };
         savedCodes.push(newCode);
         saveToStorage();
         renderSavedCodes();
-        hideSaveModal();
+        hideModal(saveModal);
         clearGenerator();
     }
     
@@ -479,13 +523,23 @@
         }
     }
 
-    window.deleteCode = function(id) {
+    window.showDeleteModal = function(id) {
         const code = savedCodes.find(c => c.id === id);
-        if (confirm(`Bạn có chắc muốn xóa "${code.name}" không?`)) {
-            savedCodes = savedCodes.filter(c => c.id !== id);
+        if (code) {
+            codeToDeleteId = id;
+            deleteCodeNameSpan.textContent = code.name;
+            showModal(deleteModal);
+        }
+    }
+
+    function handleConfirmDelete() {
+        if(codeToDeleteId) {
+            savedCodes = savedCodes.filter(c => c.id !== codeToDeleteId);
             saveToStorage();
             renderSavedCodes();
+            codeToDeleteId = null;
         }
+        hideModal(deleteModal);
     }
 
     window.copySavedCode = async function(event, id) {
@@ -570,13 +624,20 @@
         secretKeyInput.addEventListener('input', handleRealtimeGenerate);
         copyBtn.addEventListener('click', handleCopy);
         clearBtn.addEventListener('click', clearGenerator);
-        saveBtn.addEventListener('click', showSaveModal);
-        cancelSaveBtn.addEventListener('click', hideSaveModal);
-        document.getElementById('modalBackdrop').addEventListener('click', hideSaveModal);
+        saveBtn.addEventListener('click', () => showModal(saveModal));
+        cancelSaveBtn.addEventListener('click', () => hideModal(saveModal));
+        document.getElementById('modalBackdropSave').addEventListener('click', () => hideModal(saveModal));
         confirmSaveBtn.addEventListener('click', handleConfirmSave);
         modalCodeNameInput.addEventListener('keyup', (e) => {
             if (e.key === 'Enter') handleConfirmSave();
         });
+
+        cancelDeleteBtn.addEventListener('click', () => hideModal(deleteModal));
+        document.getElementById('modalBackdropDelete').addEventListener('click', () => hideModal(deleteModal));
+        confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
+
+        alertOkBtn.addEventListener('click', () => hideModal(alertModal));
+        document.getElementById('modalBackdropAlert').addEventListener('click', () => hideModal(alertModal));
         
         // Cursor blob movement
         window.addEventListener('pointermove', (e) => {

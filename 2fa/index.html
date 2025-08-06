@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lấy mã 2FA bảo mật</title>
+    <title>Lấy mã bảo mật 2FA</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #eef2f9; /* Lighter gray background */
+            background-color: #f0f4f8; /* A very light grey, almost white */
             overflow: hidden;
         }
 
@@ -32,58 +32,63 @@
             filter: url(#goo); /* Apply the gooey filter */
         }
 
-        /* Interactive Blobs */
+        /* Interactive Blobs Animations */
         @keyframes move-blob-1 {
-            0%, 100% { transform: translate(0, 0) scale(1.2); }
-            25% { transform: translate(40vw, -10vh) scale(1.3); }
-            50% { transform: translate(20vw, 50vh) scale(1.1); }
-            75% { transform: translate(-30vw, 20vh) scale(1.4); }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30vw, 15vh) scale(1.2); }
         }
         @keyframes move-blob-2 {
-            0%, 100% { transform: translate(0, 0) scale(1.2); }
-            25% { transform: translate(-35vw, 40vh) scale(1.4); }
-            50% { transform: translate(30vw, -20vh) scale(1); }
-            75% { transform: translate(20vw, -40vh) scale(1.3); }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30vw, -15vh) scale(1.2); }
+        }
+        @keyframes move-blob-3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(15vw, -30vh) scale(1.2); }
+        }
+        @keyframes move-blob-4 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-15vw, 30vh) scale(1.2); }
         }
 
         .gradient-blob {
             position: absolute;
-            background: linear-gradient(45deg, #818cf8, #a78bfa);
             border-radius: 50%;
-            filter: blur(40px);
         }
         .blob-1 {
-            width: 350px;
-            height: 350px;
-            top: 10vh;
-            left: 10vw;
-            animation: move-blob-1 25s ease-in-out infinite;
+            width: 300px; height: 300px; top: 5vh; left: 10vw;
+            background: linear-gradient(45deg, #fecaca, #fca5a5);
+            animation: move-blob-1 20s ease-in-out infinite alternate;
         }
         .blob-2 {
-            width: 300px;
-            height: 300px;
-            bottom: 5vh;
-            right: 15vw;
-            background: linear-gradient(45deg, #7dd3fc, #60a5fa);
-            animation: move-blob-2 30s ease-in-out infinite;
+            width: 350px; height: 350px; bottom: 5vh; right: 10vw;
+            background: linear-gradient(45deg, #bfdbfe, #93c5fd);
+            animation: move-blob-2 25s ease-in-out infinite alternate;
+        }
+        .blob-3 {
+            width: 250px; height: 250px; top: 30vh; right: 20vw;
+            background: linear-gradient(45deg, #d8b4fe, #c084fc);
+            animation: move-blob-3 30s ease-in-out infinite alternate;
+        }
+        .blob-4 {
+            width: 200px; height: 200px; bottom: 25vh; left: 25vw;
+            background: linear-gradient(45deg, #a7f3d0, #6ee7b7);
+            animation: move-blob-4 22s ease-in-out infinite alternate;
         }
         .cursor-blob {
-            width: 200px;
-            height: 200px;
+            width: 150px; height: 150px;
             position: absolute;
-            background: linear-gradient(45deg, #f472b6, #ec4899);
+            background: linear-gradient(45deg, #f9a8d4, #f472b6);
             border-radius: 50%;
-            transition: transform 0.2s ease-out;
             pointer-events: none;
         }
 
         .card {
-            background-color: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(32px);
-            -webkit-backdrop-filter: blur(32px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
             border-radius: 2rem;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
         }
         .progress-bar-inner {
             transition: width 1s linear;
@@ -114,7 +119,7 @@
         .btn-primary:not(:disabled):hover {
             background-color: #2563eb; /* blue-600 */
             transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 7px 14px rgba(59, 130, 246, 0.15);
         }
         .btn-secondary {
             background-color: rgba(255, 255, 255, 0.7);
@@ -196,13 +201,15 @@
     <div class="gradient-bg">
         <div class="gradient-blob blob-1"></div>
         <div class="gradient-blob blob-2"></div>
+        <div class="gradient-blob blob-3"></div>
+        <div class="gradient-blob blob-4"></div>
         <div id="cursor-blob" class="cursor-blob"></div>
     </div>
     
     <svg class="goo-filter">
       <defs>
         <filter id="goo">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="25" result="blur" />
           <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -9" result="goo" />
           <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
         </filter>
@@ -212,7 +219,7 @@
     <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 z-10">
         <!-- Left Panel: Generator -->
         <div class="card p-8 space-y-6 flex flex-col">
-            <div class="flex items-center text-2xl font-bold text-gray-900">
+            <div class="flex items-center text-xl font-bold text-gray-800">
                 <svg class="icon text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 <span>Trình tạo mã</span>
             </div>
@@ -250,7 +257,7 @@
 
         <!-- Right Panel: Saved Codes -->
         <div class="card p-8 space-y-6">
-            <h2 class="text-2xl font-bold text-gray-900">Mã đã lưu</h2>
+            <h2 class="text-xl font-bold text-gray-800">Mã đã lưu</h2>
             <div id="savedCodesList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                 <p class="text-gray-500 text-center py-8">Chưa có mã nào được lưu.</p>
             </div>
@@ -574,9 +581,9 @@
         // Cursor blob movement
         window.addEventListener('pointermove', (e) => {
             cursorBlob.animate({
-                left: `${e.clientX}px`,
-                top: `${e.clientY}px`
-            }, { duration: 3000, fill: "forwards" });
+                left: `${e.clientX - 75}px`, // Center the blob on the cursor
+                top: `${e.clientY - 75}px`
+            }, { duration: 500, fill: "forwards" });
         });
         
         loadFromStorage();

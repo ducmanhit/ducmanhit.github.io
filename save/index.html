@@ -3,87 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dán & Gửi đi - Giao diện 3D Glass</title>
+    <title>Dán & Gửi đi</title>
     <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- Google Fonts --- */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-        /* --- Bảng màu: Giao diện 3D Glass (Light Theme) --- */
-        :root {
-            --background-color: #e4e9f2;
-            --glass-bg: rgba(240, 245, 255, 0.5);
-            --glass-shadow-light: rgba(255, 255, 255, 0.9);
-            --glass-shadow-dark: rgba(163, 177, 198, 0.6);
-            --text-color: #394257;
-            --text-color-light: #6e788c;
-            --primary-color: #007aff;
-            --danger-color: #ff3b30;
-            --success-color: #34c759;
-        }
-
-        /* --- Thiết lập chung --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: var(--text-color);
-            background-color: var(--background-color);
             padding: 20px;
-            overflow: hidden;
-            position: relative;
         }
 
-        /* --- Main Container - 3D Glass Effect --- */
+        /* Gooey Effect SVG Filter */
+        .goo-filter {
+            display: none;
+        }
+
+        /* Gradient Background Container */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: url(#goo);
+        }
+
+        /* Interactive Blobs Animations */
+        @keyframes move-blob-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20vw, 10vh) scale(1.2); }
+        }
+        @keyframes move-blob-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20vw, -10vh) scale(1.2); }
+        }
+
+        .gradient-blob {
+            position: absolute;
+            border-radius: 50%;
+        }
+        .blob-1 {
+            width: 500px; height: 500px; top: -10%; left: 5%;
+            background: #fecaca; /* red-200 */
+            animation: move-blob-1 20s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            width: 600px; height: 600px; bottom: -15%; right: 5%;
+            background: #bfdbfe; /* blue-200 */
+            animation: move-blob-2 25s ease-in-out infinite alternate;
+        }
+        .cursor-blob {
+            width: 200px; height: 200px;
+            position: absolute;
+            background: linear-gradient(45deg, #f9a8d4, #f472b6);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Main Container - Glass Effect */
         .main-container {
-            position: relative;
             width: 100%;
             max-width: 650px;
             padding: 40px;
-            background: var(--glass-bg);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 
-                10px 10px 20px var(--glass-shadow-dark),
-                -10px -10px 20px var(--glass-shadow-light),
-                inset 1px 1px 0px var(--glass-shadow-light),
-                inset -1px -1px 0px var(--glass-shadow-dark);
+            background-color: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
             text-align: center;
-            z-index: 1;
-            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .header h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 700;
+            color: #1f2937;
             margin-bottom: 8px;
         }
-
         .header h1 span {
-            color: var(--primary-color);
+            color: #3b82f6;
         }
-
         .header p {
             font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--text-color-light);
+            color: #4b5563;
             margin-bottom: 30px;
         }
 
-        /* --- Khu vực dán nội dung - Inset Effect --- */
+        /* Paste Box */
         #paste-box {
             width: 100%;
             min-height: 320px;
-            border-radius: 20px;
+            border-radius: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -92,25 +111,17 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            background: var(--background-color);
-            box-shadow: 
-                inset 5px 5px 10px var(--glass-shadow-dark),
-                inset -5px -5px 10px var(--glass-shadow-light);
-            cursor: pointer; /* Thêm con trỏ chuột */
-            border: 2px solid transparent; /* Thêm viền trong suốt để chuyển đổi mượt mà */
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            cursor: pointer;
         }
-        
         #paste-box:hover:not(.has-content) {
             transform: scale(1.01);
-            box-shadow: 
-                inset 5px 5px 10px var(--glass-shadow-dark),
-                inset -5px -5px 10px var(--glass-shadow-light),
-                0 0 25px rgba(0, 122, 255, 0.25); /* Hiệu ứng tỏa sáng */
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
         }
-
         #paste-box.has-content {
-             border: 2px solid var(--primary-color);
-             cursor: default; /* Trả lại con trỏ mặc định khi có nội dung */
+             border: 2px solid #60a5fa;
+             cursor: default;
         }
 
         #placeholder-content {
@@ -119,20 +130,18 @@
             align-items: center;
             gap: 15px;
             pointer-events: none;
+            color: #6b7280;
         }
-
         #placeholder-content svg {
             width: 50px;
             height: 50px;
-            color: var(--text-color-light);
         }
-
         #placeholder-content span {
             font-size: 1.1rem;
             font-weight: 500;
-            color: var(--text-color-light);
         }
 
+        /* Output Content Styling */
         #output-content {
             width: 100%;
             height: 100%;
@@ -140,7 +149,6 @@
             justify-content: center;
             align-items: center;
         }
-
         #output-content img {
             max-width: 100%;
             max-height: 300px;
@@ -148,7 +156,6 @@
             border-radius: 10px;
             animation: fadeIn 0.5s ease;
         }
-
         #output-content pre {
             width: 100%;
             height: 300px;
@@ -161,138 +168,125 @@
             background: transparent;
             border-radius: 10px;
             animation: fadeIn 0.5s ease;
-            color: var(--text-color);
+            color: #1f2937;
         }
-        
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* --- Cụm nút hành động - 3D Glass --- */
+        /* Action Buttons */
         .action-buttons {
             margin-top: 30px;
             display: flex;
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
-            height: auto; /* Cho phép co giãn chiều cao */
         }
-
         .btn {
-            position: relative;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 170px;
             height: 50px;
-            font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             font-weight: 600;
-            text-decoration: none;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            background: var(--glass-bg);
-            color: var(--text-color-light);
+            border-radius: 9999px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            transition: all 0.15s ease-in-out;
-            box-shadow: 
-                5px 5px 10px var(--glass-shadow-dark),
-                -5px -5px 10px var(--glass-shadow-light);
+            border: 1px solid transparent;
         }
-
         .btn.hidden {
             transform: scale(0);
             opacity: 0;
-            pointer-events: none; /* Ngăn tương tác khi ẩn */
-            width: 0; /* Thu nhỏ khi ẩn để không chiếm không gian */
+            width: 0;
             padding: 0;
             margin: 0;
+            pointer-events: none;
         }
-        
-        .btn:not(.hidden) {
-            transform: scale(1);
-            opacity: 1;
+        .btn:not(:disabled):active {
+            transform: translateY(1px) scale(0.97);
         }
-
-        .btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.5 !important;
-            box-shadow: none;
+        .btn-download {
+            background-color: #f3f4f6;
+            color: #374151;
+            border-color: #e5e7eb;
         }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
+        .btn-download:hover:not(:disabled) {
+            background-color: #e5e7eb;
         }
-
-        .btn:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 
-                inset 3px 3px 6px var(--glass-shadow-dark),
-                inset -3px -3px 6px var(--glass-shadow-light);
+        .btn-telegram {
+            background-color: #60a5fa;
+            color: white;
         }
-
+        .btn-telegram:hover:not(:disabled) {
+            background-color: #3b82f6;
+        }
+        .btn-clear {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+        .btn-clear:hover:not(:disabled) {
+            background-color: #fecaca;
+        }
         .btn svg {
             width: 20px;
             height: 20px;
             margin-right: 10px;
-            transition: color 0.2s ease;
         }
 
-        #download-btn:hover:not(:disabled) { color: var(--primary-color); }
-        #send-telegram-btn:hover:not(:disabled) { color: #229ED9; }
-        #clear-btn:hover:not(:disabled) { color: var(--danger-color); }
-
-        /* --- Notification --- */
+        /* Notification */
         #notification {
             position: fixed;
-            bottom: 20px;
+            bottom: -100px;
             left: 50%;
-            transform: translate(-50%, 200%);
+            transform: translateX(-50%);
             padding: 15px 25px;
-            border-radius: 12px;
-            background: var(--text-color);
+            border-radius: 1.5rem;
             color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.4s ease;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 2000;
+            background-color: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         #notification.show {
-            transform: translate(-50%, 0);
+            bottom: 20px;
         }
-        #notification.success { background: var(--success-color); }
-        #notification.error { background: var(--danger-color); }
+        #notification.success { background-color: rgba(52, 211, 153, 0.8); }
+        #notification.error { background-color: rgba(239, 68, 68, 0.8); }
 
-        /* --- Tối ưu cho di động --- */
+        /* Responsive */
         @media (max-width: 600px) {
-            .main-container {
-                padding: 20px;
-            }
-            .header h1 {
-                font-size: 2rem;
-            }
-            .header p {
-                font-size: 1rem;
-            }
-            .action-buttons {
-                flex-direction: column; /* Xếp chồng theo chiều dọc */
-                align-items: center; /* Căn giữa các nút */
-                height: auto;
-                gap: 15px;
-            }
-            .btn {
-                width: 100%; /* Các nút chiếm toàn bộ chiều rộng */
-                max-width: 300px; /* Giới hạn chiều rộng tối đa */
-            }
-            .btn.hidden {
-                display: none; /* Ẩn hoàn toàn nút khi không cần thiết */
-            }
+            .main-container { padding: 20px; }
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 1rem; }
+            .action-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; }
+            .btn.hidden { display: none; }
         }
-
     </style>
 </head>
 <body>
-    <div class="main-container">
+    <div class="gradient-bg">
+        <div class="gradient-blob blob-1"></div>
+        <div class="gradient-blob blob-2"></div>
+        <div id="cursor-blob" class="cursor-blob"></div>
+    </div>
+    
+    <svg class="goo-filter">
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="25" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -9" result="goo" />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="main-container z-10">
         <header class="header">
             <h1>Dán <span>&</span> Gửi đi</h1>
             <p>Dán từ clipboard (Ctrl+V) hoặc tải tệp lên</p>
@@ -310,34 +304,30 @@
         </div>
 
         <div class="action-buttons">
-            <a id="download-btn" class="btn hidden" download>
+            <a id="download-btn" class="btn btn-download hidden" download>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Tải xuống</span>
             </a>
-            <button id="send-telegram-btn" class="btn hidden">
+            <button id="send-telegram-btn" class="btn btn-telegram hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-4.718-2.984 11.898-7.538Z"/>
                 </svg>
                 <span>Gửi Telegram</span>
             </button>
-            <button id="clear-btn" class="btn hidden">
+            <button id="clear-btn" class="btn btn-clear hidden">
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                 <span>Xóa</span>
             </button>
         </div>
     </div>
     
-    <!-- Hidden file input -->
     <input type="file" id="file-input" hidden>
-
-    <!-- Notification -->
     <div id="notification"></div>
 
     <script>
         // --- CONFIGURATION ---
-        // !!! THAY THẾ THÔNG TIN CỦA BẠN VÀO ĐÂY !!!
-        const BOT_TOKEN = '8130919576:AAHwVq_MGv-zqnFn6PuHzGo6SQNyZ4_31SY'; // Dán Bot Token của bạn
-        const CHAT_ID = '1767134362';   // Dán Chat ID của bạn
+        const BOT_TOKEN = '8130919576:AAHwVq_MGv-zqnFn6PuHzGo6SQNyZ4_31SY';
+        const CHAT_ID = '1767134362';
 
         // DOM Elements
         const pasteBox = document.getElementById('paste-box');
@@ -348,21 +338,18 @@
         const sendTelegramBtn = document.getElementById('send-telegram-btn');
         const clearBtn = document.getElementById('clear-btn');
         const notification = document.getElementById('notification');
+        const cursorBlob = document.getElementById('cursor-blob');
 
         // App State
         let objectURL = null;
         let pastedContent = { type: null, data: null };
 
         // --- Functions ---
-
-        // Handle Paste Event
         function handlePaste(event) {
             event.preventDefault();
             const items = event.clipboardData.items;
             if (!items) return;
-
             clearContent();
-
             let foundImage = false;
             for (const item of items) {
                 if (item.kind === 'file' && item.type.startsWith('image/')) {
@@ -375,7 +362,6 @@
                     }
                 }
             }
-
             if (!foundImage) {
                 for (const item of items) {
                     if (item.kind === 'string' && item.type === 'text/plain') {
@@ -389,17 +375,14 @@
             }
         }
 
-        // Handle File Select Event
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             clearContent();
-
             if (file.type.startsWith('image/')) {
                 pastedContent = { type: 'image', data: file };
                 displayImage(file);
-            } else if (file.type.startsWith('text/') || file.type === '') { // Allow text-like files
+            } else if (file.type.startsWith('text/') || file.type === '') {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const text = e.target.result;
@@ -408,17 +391,16 @@
                 };
                 reader.readAsText(file);
             } else {
-                showNotification('Loại tệp không được hỗ trợ. Vui lòng chọn ảnh hoặc tệp văn bản.', 'error');
+                showNotification('Loại tệp không được hỗ trợ.', 'error');
             }
         }
 
-        // Display Content
         function displayImage(file) {
             objectURL = URL.createObjectURL(file);
             const img = document.createElement('img');
             img.src = objectURL;
             outputContent.appendChild(img);
-            updateUIForNewContent(objectURL, file.name || `anh-dan-tu-clipboard.png`);
+            updateUIForNewContent(objectURL, file.name || `image-pasted.png`);
         }
 
         function displayText(text) {
@@ -427,17 +409,14 @@
             const pre = document.createElement('pre');
             pre.textContent = text;
             outputContent.appendChild(pre);
-            updateUIForNewContent(objectURL, 'van-ban-dan.txt');
+            updateUIForNewContent(objectURL, 'text-pasted.txt');
         }
 
-        // Update UI
         function updateUIForNewContent(url, filename) {
-            placeholder.style.display = 'none'; // Ẩn placeholder
+            placeholder.style.display = 'none';
             pasteBox.classList.add('has-content');
-            
             downloadBtn.href = url;
             downloadBtn.download = filename;
-            
             downloadBtn.classList.remove('hidden');
             sendTelegramBtn.classList.remove('hidden');
             clearBtn.classList.remove('hidden');
@@ -448,16 +427,12 @@
             objectURL = null;
             pastedContent = { type: null, data: null };
             outputContent.innerHTML = '';
-            placeholder.style.display = 'flex'; // Hiện lại placeholder
+            placeholder.style.display = 'flex';
             pasteBox.classList.remove('has-content');
-            
             downloadBtn.classList.add('hidden');
             sendTelegramBtn.classList.add('hidden');
             clearBtn.classList.add('hidden');
-            
-            if (fileInput) {
-                fileInput.value = null;
-            }
+            if (fileInput) fileInput.value = null;
         }
         
         async function sendToTelegram() {
@@ -469,10 +444,8 @@
                 showNotification('Không có nội dung để gửi.', 'error');
                 return;
             }
-
             sendTelegramBtn.disabled = true;
             sendTelegramBtn.querySelector('span').textContent = 'Đang gửi...';
-
             try {
                 let response;
                 if (pastedContent.type === 'text') {
@@ -488,7 +461,6 @@
                     formData.append('photo', pastedContent.data);
                     response = await fetch(url, { method: 'POST', body: formData });
                 }
-
                 const result = await response.json();
                 if (result.ok) {
                     showNotification('Đã gửi thành công!', 'success');
@@ -503,15 +475,13 @@
             }
         }
 
-        // --- Notifications ---
         let notificationTimeout;
         function showNotification(message, type = 'info') {
             clearTimeout(notificationTimeout);
             notification.textContent = message;
-            notification.className = 'notification'; // Reset classes
+            notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-
             notificationTimeout = setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
@@ -520,7 +490,6 @@
         // --- Event Listeners ---
         window.addEventListener('paste', handlePaste);
         pasteBox.addEventListener('click', () => {
-            // Chỉ kích hoạt chọn tệp khi khung dán đang trống
             if (!outputContent.hasChildNodes()) {
                 fileInput.click();
             }
@@ -528,7 +497,12 @@
         fileInput.addEventListener('change', handleFileSelect);
         clearBtn.addEventListener('click', clearContent);
         sendTelegramBtn.addEventListener('click', sendToTelegram);
-
+        window.addEventListener('pointermove', (e) => {
+            cursorBlob.animate({
+                left: `${e.clientX - 100}px`,
+                top: `${e.clientY - 100}px`
+            }, { duration: 2000, fill: "forwards" });
+        });
     </script>
 </body>
 </html>

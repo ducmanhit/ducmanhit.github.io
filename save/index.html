@@ -13,7 +13,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             /* Thay đổi nền thành hình ảnh */
-            background-image: url('https://images.pexels.com/photos/16554762/pexels-photo-16554762.jpeg');
+            background-image: url('https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -43,16 +43,18 @@
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #ffffff;
+            color: #ffffff; /* Thay đổi màu chữ thành trắng */
             margin-bottom: 8px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Tăng độ đậm bóng chữ */
         }
         .header h1 span {
-            color: #ffffff;
+            color: #93c5fd; /* Làm sáng màu xanh dương để hợp với nền trắng */
         }
         .header p {
             font-size: 1.1rem;
-            color: #ffffff;
+            color: #e5e7eb; /* Thay đổi màu chữ thành trắng xám */
             margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Tăng độ đậm bóng chữ */
         }
 
         /* Paste Box */
@@ -87,7 +89,7 @@
             align-items: center;
             gap: 15px;
             pointer-events: none;
-            color: #dbdbdb;
+            color: #4b5563; /* Giữ màu placeholder tối để dễ nhận biết */
         }
         #placeholder-content svg {
             width: 50px;
@@ -122,10 +124,11 @@
             text-align: left;
             font-size: 1rem;
             padding: 15px;
-            background: transparent;
+            background: rgba(0,0,0,0.1); /* Thêm nền mờ cho text để dễ đọc hơn */
             border-radius: 10px;
             animation: fadeIn 0.5s ease;
-            color: #1f2937;
+            color: #ffffff; /* Thay đổi màu chữ thành trắng */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }

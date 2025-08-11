@@ -12,7 +12,11 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f4f8;
+            /* Thay đổi nền thành hình ảnh */
+            background-image: url('https://images.pexels.com/photos/16554762/pexels-photo-16554762.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -21,63 +25,16 @@
             padding: 20px;
         }
 
-        /* Gooey Effect SVG Filter */
-        .goo-filter {
-            display: none;
-        }
-
-        /* Gradient Background Container */
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            filter: url(#goo);
-        }
-
-        /* Interactive Blobs Animations */
-        @keyframes move-blob-1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(20vw, 10vh) scale(1.2); }
-        }
-        @keyframes move-blob-2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-20vw, -10vh) scale(1.2); }
-        }
-
-        .gradient-blob {
-            position: absolute;
-            border-radius: 50%;
-        }
-        .blob-1 {
-            width: 500px; height: 500px; top: -10%; left: 5%;
-            background: #fecaca; /* red-200 */
-            animation: move-blob-1 20s ease-in-out infinite alternate;
-        }
-        .blob-2 {
-            width: 600px; height: 600px; bottom: -15%; right: 5%;
-            background: #bfdbfe; /* blue-200 */
-            animation: move-blob-2 25s ease-in-out infinite alternate;
-        }
-        .cursor-blob {
-            width: 200px; height: 200px;
-            position: absolute;
-            background: linear-gradient(45deg, #f9a8d4, #f472b6);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
         /* Main Container - Glass Effect */
         .main-container {
             width: 100%;
             max-width: 650px;
             padding: 40px;
-            background-color: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(32px);
-            -webkit-backdrop-filter: blur(32px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            /* Hiệu ứng glass vẫn được giữ nguyên */
+            background-color: rgba(255, 255, 255, 0.25); /* Giảm độ mờ để nền rõ hơn */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 2rem;
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -86,15 +43,15 @@
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #1f2937;
+            color: #ffffff;
             margin-bottom: 8px;
         }
         .header h1 span {
-            color: #3b82f6;
+            color: #ffffff;
         }
         .header p {
             font-size: 1.1rem;
-            color: #4b5563;
+            color: #ffffff;
             margin-bottom: 30px;
         }
 
@@ -130,7 +87,7 @@
             align-items: center;
             gap: 15px;
             pointer-events: none;
-            color: #6b7280;
+            color: #dbdbdb;
         }
         #placeholder-content svg {
             width: 50px;
@@ -270,21 +227,7 @@
     </style>
 </head>
 <body>
-    <div class="gradient-bg">
-        <div class="gradient-blob blob-1"></div>
-        <div class="gradient-blob blob-2"></div>
-        <div id="cursor-blob" class="cursor-blob"></div>
-    </div>
-    
-    <svg class="goo-filter">
-      <defs>
-        <filter id="goo">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="25" result="blur" />
-          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -9" result="goo" />
-          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-        </filter>
-      </defs>
-    </svg>
+    <!-- Đã xóa các div bong bóng và svg filter -->
 
     <div class="main-container z-10">
         <header class="header">
@@ -338,7 +281,7 @@
         const sendTelegramBtn = document.getElementById('send-telegram-btn');
         const clearBtn = document.getElementById('clear-btn');
         const notification = document.getElementById('notification');
-        const cursorBlob = document.getElementById('cursor-blob');
+        // Đã xóa cursorBlob vì không còn sử dụng
 
         // App State
         let objectURL = null;
@@ -497,12 +440,7 @@
         fileInput.addEventListener('change', handleFileSelect);
         clearBtn.addEventListener('click', clearContent);
         sendTelegramBtn.addEventListener('click', sendToTelegram);
-        window.addEventListener('pointermove', (e) => {
-            cursorBlob.animate({
-                left: `${e.clientX - 100}px`,
-                top: `${e.clientY - 100}px`
-            }, { duration: 2000, fill: "forwards" });
-        });
+        // Đã xóa event listener cho pointermove vì không còn bong bóng con trỏ
     </script>
 </body>
 </html>

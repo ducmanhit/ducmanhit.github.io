@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-image: url('https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg');
+            background-image: url('https://sf-static.upanhlaylink.com/img/image_20250812b8d44f22915aec8719f74da4929dd986.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -208,9 +208,8 @@
         #zoom-container:active { cursor: grabbing; }
         #zoomed-img {
             position: absolute;
-            /* Thay đổi transition để mượt hơn */
-            transition: transform 0.1s linear, left 0.1s linear, top 0.1s linear;
-            transform-origin: top left; /* Đổi gốc transform để tính toán dễ hơn */
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: center center; /* Đặt gốc transform ở tâm */
             max-width: none;
         }
         #zoom-controls {
@@ -336,19 +335,24 @@
         let isDragging = false;
         let startX, startY;
         let scale = 1;
+        // Biến lưu vị trí ảnh để tính toán
+        let imgPos = { x: 0, y: 0 };
 
         // --- Functions ---
         function openZoomModal(src) {
             scale = 1;
             zoomSlider.value = 1;
-            zoomedImg.style.transform = `scale(1)`;
             
             const img = new Image();
             img.onload = () => {
                 const containerWidth = zoomContainer.offsetWidth;
                 const containerHeight = zoomContainer.offsetHeight;
-                zoomedImg.style.left = `${(containerWidth - img.width) / 2}px`;
-                zoomedImg.style.top = `${(containerHeight - img.height) / 2}px`;
+                // Đặt ảnh vào giữa lúc ban đầu
+                imgPos.x = (containerWidth - img.width) / 2;
+                imgPos.y = (containerHeight - img.height) / 2;
+                zoomedImg.style.left = `${imgPos.x}px`;
+                zoomedImg.style.top = `${imgPos.y}px`;
+                zoomedImg.style.transform = `scale(1)`;
             };
             img.src = src;
             zoomedImg.src = src;
@@ -497,65 +501,71 @@
         // --- Zoom & Drag Listeners ---
         zoomCloseBtn.addEventListener('click', closeZoomModal);
         
+        function applyZoom(newScale, mouseX, mouseY) {
+            // Nếu không có vị trí chuột, zoom vào giữa màn hình
+            const containerRect = zoomContainer.getBoundingClientRect();
+            if (mouseX === undefined) mouseX = containerRect.width / 2;
+            if (mouseY === undefined) mouseY = containerRect.height / 2;
+
+            // Tính toán vị trí tương đối của con trỏ trên ảnh
+            const imgX = (mouseX - imgPos.x) / scale;
+            const imgY = (mouseY - imgPos.y) / scale;
+
+            // Cập nhật scale
+            scale = newScale;
+            zoomSlider.value = scale;
+
+            // Tính toán vị trí mới của ảnh để điểm dưới con trỏ không đổi
+            imgPos.x = mouseX - imgX * scale;
+            imgPos.y = mouseY - imgY * scale;
+
+            // Áp dụng transform
+            zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
+        }
+
         zoomSlider.addEventListener('input', (e) => {
-            scale = parseFloat(e.target.value);
-            // Cần tính toán lại vị trí để giữ ảnh ở trung tâm khi dùng slider
-            const rect = zoomContainer.getBoundingClientRect();
-            const newWidth = zoomedImg.naturalWidth * scale;
-            const newHeight = zoomedImg.naturalHeight * scale;
-            
-            zoomedImg.style.left = `${(rect.width - newWidth) / 2}px`;
-            zoomedImg.style.top = `${(rect.height - newHeight) / 2}px`;
-            zoomedImg.style.transform = `scale(${scale})`;
+            const newScale = parseFloat(e.target.value);
+            // Khi dùng slider, luôn zoom vào giữa
+            applyZoom(newScale); 
         });
 
         zoomContainer.addEventListener('mousedown', (e) => {
             e.preventDefault();
             isDragging = true;
-            startX = e.clientX - zoomedImg.offsetLeft;
-            startY = e.clientY - zoomedImg.offsetTop;
+            // Lưu vị trí bắt đầu của chuột và ảnh
+            startX = e.clientX - imgPos.x;
+            startY = e.clientY - imgPos.y;
         });
 
         window.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
             e.preventDefault();
-            const x = e.clientX - startX;
-            const y = e.clientY - startY;
-            zoomedImg.style.left = `${x}px`;
-            zoomedImg.style.top = `${y}px`;
+            // Cập nhật vị trí ảnh khi kéo
+            imgPos.x = e.clientX - startX;
+            imgPos.y = e.clientY - startY;
+            zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
         });
 
         window.addEventListener('mouseup', () => {
             isDragging = false;
         });
         
-        // SỬA LỖI: Logic lăn chuột để zoom
         zoomContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const zoomIntensity = 0.1;
             const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
-            
             const newScale = Math.max(0.5, Math.min(5, scale + delta));
             
             const rect = zoomContainer.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-
-            // Vị trí hiện tại của ảnh
-            const imgLeft = zoomedImg.offsetLeft;
-            const imgTop = zoomedImg.offsetTop;
-
-            // Tính toán vị trí mới để giữ điểm dưới con trỏ không đổi
-            const newLeft = mouseX - (mouseX - imgLeft) * (newScale / scale);
-            const newTop = mouseY - (mouseY - imgTop) * (newScale / scale);
             
-            scale = newScale;
-            
-            zoomedImg.style.left = `${newLeft}px`;
-            zoomedImg.style.top = `${newTop}px`;
-            zoomedImg.style.transform = `scale(${scale})`;
-            zoomSlider.value = scale;
+            applyZoom(newScale, mouseX, mouseY);
         });
+        
+        // Thay đổi CSS cho ảnh để dùng translate thay vì left/top
+        zoomedImg.style.left = '0px';
+        zoomedImg.style.top = '0px';
 
     </script>
 </body>

@@ -12,7 +12,6 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            /* Thay đổi nền thành hình ảnh */
             background-image: url('https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg');
             background-size: cover;
             background-position: center;
@@ -25,39 +24,41 @@
             padding: 20px;
         }
 
-        /* Main Container - Glass Effect */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .main-container {
             width: 100%;
             max-width: 650px;
             padding: 40px;
-            /* Hiệu ứng glass vẫn được giữ nguyên */
-            background-color: rgba(255, 255, 255, 0.25); /* Giảm độ mờ để nền rõ hơn */
+            background-color: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 2rem;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
             text-align: center;
+            opacity: 0;
+            animation: slideInUp 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #ffffff; /* Thay đổi màu chữ thành trắng */
+            color: #ffffff;
             margin-bottom: 8px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Tăng độ đậm bóng chữ */
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
-        .header h1 span {
-            color: #93c5fd; /* Làm sáng màu xanh dương để hợp với nền trắng */
-        }
+        .header h1 span { color: #93c5fd; }
         .header p {
             font-size: 1.1rem;
-            color: #e5e7eb; /* Thay đổi màu chữ thành trắng xám */
+            color: #e5e7eb;
             margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Tăng độ đậm bóng chữ */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Paste Box */
         #paste-box {
             width: 100%;
             min-height: 320px;
@@ -75,8 +76,8 @@
             cursor: pointer;
         }
         #paste-box:hover:not(.has-content) {
-            transform: scale(1.01);
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(147, 197, 253, 0.3);
         }
         #paste-box.has-content {
              border: 2px solid #60a5fa;
@@ -89,18 +90,11 @@
             align-items: center;
             gap: 15px;
             pointer-events: none;
-            color: #4b5563; /* Giữ màu placeholder tối để dễ nhận biết */
+            color: #4b5563;
         }
-        #placeholder-content svg {
-            width: 50px;
-            height: 50px;
-        }
-        #placeholder-content span {
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
+        #placeholder-content svg { width: 50px; height: 50px; }
+        #placeholder-content span { font-size: 1.1rem; font-weight: 500; }
 
-        /* Output Content Styling */
         #output-content {
             width: 100%;
             height: 100%;
@@ -114,6 +108,7 @@
             object-fit: contain;
             border-radius: 10px;
             animation: fadeIn 0.5s ease;
+            cursor: zoom-in;
         }
         #output-content pre {
             width: 100%;
@@ -124,10 +119,10 @@
             text-align: left;
             font-size: 1rem;
             padding: 15px;
-            background: rgba(0,0,0,0.1); /* Thêm nền mờ cho text để dễ đọc hơn */
+            background: rgba(0,0,0,0.1);
             border-radius: 10px;
             animation: fadeIn 0.5s ease;
-            color: #ffffff; /* Thay đổi màu chữ thành trắng */
+            color: #ffffff;
             text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
         @keyframes fadeIn {
@@ -135,7 +130,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Action Buttons */
         .action-buttons {
             margin-top: 30px;
             display: flex;
@@ -155,6 +149,11 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: 1px solid transparent;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .btn.hidden {
             transform: scale(0);
@@ -164,38 +163,14 @@
             margin: 0;
             pointer-events: none;
         }
-        .btn:not(:disabled):active {
-            transform: translateY(1px) scale(0.97);
-        }
-        .btn-download {
-            background-color: #f3f4f6;
-            color: #374151;
-            border-color: #e5e7eb;
-        }
-        .btn-download:hover:not(:disabled) {
-            background-color: #e5e7eb;
-        }
-        .btn-telegram {
-            background-color: #60a5fa;
-            color: white;
-        }
-        .btn-telegram:hover:not(:disabled) {
-            background-color: #3b82f6;
-        }
-        .btn-clear {
-            background-color: #fee2e2;
-            color: #ef4444;
-        }
-        .btn-clear:hover:not(:disabled) {
-            background-color: #fecaca;
-        }
-        .btn svg {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
+        .btn:not(:disabled):active { transform: translateY(1px) scale(0.98); }
+        .btn-download { background-color: #f3f4f6; color: #374151; border-color: #e5e7eb; }
+        .btn-telegram { background-color: #3b82f6; color: white; }
+        .btn-telegram:hover:not(:disabled) { background-color: #2563eb; }
+        .btn-clear { background-color: #ef4444; color: white; }
+        .btn-clear:hover:not(:disabled) { background-color: #dc2626; }
+        .btn svg { width: 20px; height: 20px; margin-right: 10px; }
 
-        /* Notification */
         #notification {
             position: fixed;
             bottom: -100px;
@@ -205,20 +180,87 @@
             border-radius: 1.5rem;
             color: white;
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-            transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 2000;
             background-color: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
-        #notification.show {
-            bottom: 20px;
-        }
+        #notification.show { bottom: 20px; transform: translateX(-50%) scale(1); }
         #notification.success { background-color: rgba(52, 211, 153, 0.8); }
         #notification.error { background-color: rgba(239, 68, 68, 0.8); }
 
-        /* Responsive */
+        /* --- Zoom Modal --- */
+        #zoom-modal {
+            transition: opacity 0.3s ease;
+        }
+        #zoom-modal.hidden { pointer-events: none; }
+        #zoom-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            cursor: grab;
+        }
+        #zoom-container:active { cursor: grabbing; }
+        #zoomed-img {
+            position: absolute;
+            transition: transform 0.2s ease-out;
+            transform-origin: center center;
+            max-width: none; /* Bỏ giới hạn max-width để zoom */
+        }
+        #zoom-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #zoom-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 150px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            border-radius: 2px;
+        }
+        #zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #zoom-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #zoom-close-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        #zoom-close-btn:hover { background: rgba(0, 0, 0, 0.8); }
+
         @media (max-width: 600px) {
             .main-container { padding: 20px; }
             .header h1 { font-size: 2rem; }
@@ -230,52 +272,47 @@
     </style>
 </head>
 <body>
-    <!-- Đã xóa các div bong bóng và svg filter -->
-
     <div class="main-container z-10">
         <header class="header">
             <h1>Dán <span>&</span> Gửi đi</h1>
             <p>Dán từ clipboard (Ctrl+V) hoặc tải tệp lên</p>
         </header>
-
         <div id="paste-box">
             <div id="placeholder-content">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
                 <span>Nhấn để tải tệp lên hoặc dán (Ctrl+V)</span>
             </div>
             <div id="output-content"></div>
         </div>
-
         <div class="action-buttons">
-            <a id="download-btn" class="btn btn-download hidden" download>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>Tải xuống</span>
-            </a>
-            <button id="send-telegram-btn" class="btn btn-telegram hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-4.718-2.984 11.898-7.538Z"/>
-                </svg>
-                <span>Gửi Telegram</span>
-            </button>
-            <button id="clear-btn" class="btn btn-clear hidden">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                <span>Xóa</span>
-            </button>
+            <a id="download-btn" class="btn btn-download hidden" download><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Tải xuống</span></a>
+            <button id="send-telegram-btn" class="btn btn-telegram hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-4.718-2.984 11.898-7.538Z"/></svg><span>Gửi Telegram</span></button>
+            <button id="clear-btn" class="btn btn-clear hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
         </div>
     </div>
-    
     <input type="file" id="file-input" hidden>
     <div id="notification"></div>
+
+    <!-- Zoom Modal -->
+    <div id="zoom-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center opacity-0">
+        <div id="zoom-container">
+            <img id="zoomed-img" src="" alt="Zoomed Image">
+        </div>
+        <button id="zoom-close-btn" class="absolute top-5 right-5 z-20">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div id="zoom-controls">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+            <input type="range" id="zoom-slider" min="0.5" max="5" value="1" step="0.1">
+        </div>
+    </div>
 
     <script>
         // --- CONFIGURATION ---
         const BOT_TOKEN = '8130919576:AAHwVq_MGv-zqnFn6PuHzGo6SQNyZ4_31SY';
         const CHAT_ID = '1767134362';
 
-        // DOM Elements
+        // --- DOM Elements ---
         const pasteBox = document.getElementById('paste-box');
         const placeholder = document.getElementById('placeholder-content');
         const outputContent = document.getElementById('output-content');
@@ -284,13 +321,51 @@
         const sendTelegramBtn = document.getElementById('send-telegram-btn');
         const clearBtn = document.getElementById('clear-btn');
         const notification = document.getElementById('notification');
-        // Đã xóa cursorBlob vì không còn sử dụng
+        const zoomModal = document.getElementById('zoom-modal');
+        const zoomContainer = document.getElementById('zoom-container');
+        const zoomedImg = document.getElementById('zoomed-img');
+        const zoomCloseBtn = document.getElementById('zoom-close-btn');
+        const zoomSlider = document.getElementById('zoom-slider');
 
-        // App State
+        // --- App State ---
         let objectURL = null;
         let pastedContent = { type: null, data: null };
 
+        // --- Zoom & Drag State ---
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let scale = 1;
+
         // --- Functions ---
+        function openZoomModal(src) {
+            // Reset state
+            scale = 1;
+            zoomSlider.value = 1;
+            zoomedImg.style.transform = `scale(1)`;
+            
+            const img = new Image();
+            img.onload = () => {
+                // Center image initially
+                const containerWidth = zoomContainer.offsetWidth;
+                const containerHeight = zoomContainer.offsetHeight;
+                zoomedImg.style.left = `${(containerWidth - img.width) / 2}px`;
+                zoomedImg.style.top = `${(containerHeight - img.height) / 2}px`;
+            };
+            img.src = src;
+            zoomedImg.src = src;
+            
+            zoomModal.classList.remove('hidden');
+            setTimeout(() => zoomModal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeZoomModal() {
+            zoomModal.classList.add('opacity-0');
+            setTimeout(() => {
+                zoomModal.classList.add('hidden');
+                zoomedImg.src = ''; 
+            }, 300);
+        }
+
         function handlePaste(event) {
             event.preventDefault();
             const items = event.clipboardData.items;
@@ -345,6 +420,7 @@
             objectURL = URL.createObjectURL(file);
             const img = document.createElement('img');
             img.src = objectURL;
+            img.addEventListener('click', () => openZoomModal(img.src));
             outputContent.appendChild(img);
             updateUIForNewContent(objectURL, file.name || `image-pasted.png`);
         }
@@ -382,37 +458,19 @@
         }
         
         async function sendToTelegram() {
-            if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || CHAT_ID === 'YOUR_CHAT_ID_HERE') {
-                showNotification('Vui lòng điền Bot Token và Chat ID trong code.', 'error');
-                return;
-            }
-            if (!pastedContent.data) {
-                showNotification('Không có nội dung để gửi.', 'error');
-                return;
-            }
+            if (!pastedContent.data) return;
             sendTelegramBtn.disabled = true;
             sendTelegramBtn.querySelector('span').textContent = 'Đang gửi...';
             try {
-                let response;
-                if (pastedContent.type === 'text') {
-                    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-                    const formData = new FormData();
-                    formData.append('chat_id', CHAT_ID);
-                    formData.append('text', pastedContent.data);
-                    response = await fetch(url, { method: 'POST', body: formData });
-                } else if (pastedContent.type === 'image') {
-                    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-                    const formData = new FormData();
-                    formData.append('chat_id', CHAT_ID);
-                    formData.append('photo', pastedContent.data);
-                    response = await fetch(url, { method: 'POST', body: formData });
-                }
+                const url = pastedContent.type === 'text' ? `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage` : `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                const field = pastedContent.type === 'text' ? 'text' : 'photo';
+                formData.append(field, pastedContent.data);
+                const response = await fetch(url, { method: 'POST', body: formData });
                 const result = await response.json();
-                if (result.ok) {
-                    showNotification('Đã gửi thành công!', 'success');
-                } else {
-                    throw new Error(result.description || 'Lỗi không xác định');
-                }
+                if (result.ok) showNotification('Đã gửi thành công!', 'success');
+                else throw new Error(result.description || 'Lỗi không xác định');
             } catch (error) {
                 showNotification(`Lỗi: ${error.message}`, 'error');
             } finally {
@@ -426,24 +484,44 @@
             clearTimeout(notificationTimeout);
             notification.textContent = message;
             notification.className = 'notification';
-            notification.classList.add(type);
-            notification.classList.add('show');
-            notificationTimeout = setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            notification.classList.add(type, 'show');
+            notificationTimeout = setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
         // --- Event Listeners ---
         window.addEventListener('paste', handlePaste);
-        pasteBox.addEventListener('click', () => {
-            if (!outputContent.hasChildNodes()) {
-                fileInput.click();
-            }
-        });
+        pasteBox.addEventListener('click', () => !outputContent.hasChildNodes() && fileInput.click());
         fileInput.addEventListener('change', handleFileSelect);
         clearBtn.addEventListener('click', clearContent);
         sendTelegramBtn.addEventListener('click', sendToTelegram);
-        // Đã xóa event listener cho pointermove vì không còn bong bóng con trỏ
+        
+        // --- Zoom & Drag Listeners ---
+        zoomCloseBtn.addEventListener('click', closeZoomModal);
+        zoomSlider.addEventListener('input', (e) => {
+            scale = e.target.value;
+            zoomedImg.style.transform = `scale(${scale})`;
+        });
+
+        zoomContainer.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            startX = e.clientX - zoomedImg.offsetLeft;
+            startY = e.clientY - zoomedImg.offsetTop;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.clientX - startX;
+            const y = e.clientY - startY;
+            zoomedImg.style.left = `${x}px`;
+            zoomedImg.style.top = `${y}px`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
     </script>
 </body>
 </html>

@@ -208,10 +208,10 @@
         #zoom-container:active { cursor: grabbing; }
         #zoomed-img {
             position: absolute;
-            left: 0; /* Để JS kiểm soát hoàn toàn vị trí */
+            left: 0; 
             top: 0;
             transition: transform 0.1s linear;
-            transform-origin: top left; /* Gốc transform để tính toán dễ hơn */
+            transform-origin: top left;
             max-width: none;
         }
         #zoom-controls {
@@ -499,38 +499,12 @@
         // --- Zoom & Drag Listeners ---
         zoomCloseBtn.addEventListener('click', closeZoomModal);
         
-        function applyZoom(newScale, focalPoint) {
-            const containerRect = zoomContainer.getBoundingClientRect();
-            // Nếu không có điểm thu phóng, mặc định là tâm của container
-            if (!focalPoint) {
-                focalPoint = {
-                    x: containerRect.width / 2,
-                    y: containerRect.height / 2
-                };
-            }
-
-            // Tính toán vị trí tương đối của điểm thu phóng trên ảnh
-            const imgX = (focalPoint.x - imgPos.x) / scale;
-            const imgY = (focalPoint.y - imgPos.y) / scale;
-
-            // Cập nhật scale
-            scale = newScale;
-            zoomSlider.value = scale;
-
-            // Tính toán vị trí mới của ảnh để giữ điểm thu phóng cố định
-            imgPos.x = focalPoint.x - imgX * scale;
-            imgPos.y = focalPoint.y - imgY * scale;
-
-            // Áp dụng transform
-            zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
-        }
-
         zoomSlider.addEventListener('input', (e) => {
             const newScale = parseFloat(e.target.value);
-            // Khi dùng slider, luôn zoom vào giữa ảnh
+            const containerRect = zoomContainer.getBoundingClientRect();
             const focalPoint = {
-                x: imgPos.x + (zoomedImg.offsetWidth / 2),
-                y: imgPos.y + (zoomedImg.offsetHeight / 2)
+                x: containerRect.width / 2,
+                y: containerRect.height / 2
             };
             applyZoom(newScale, focalPoint);
         });
@@ -557,16 +531,40 @@
         zoomContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const zoomIntensity = 0.1;
-            const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+            const delta = e.deltaY < 0 ? zoomIntensity : -zoomIntensity;
             const newScale = Math.max(0.2, Math.min(5, scale + delta));
             
-            // Luôn zoom vào tâm của ảnh
-            const focalPoint = {
-                x: imgPos.x + (zoomedImg.offsetWidth / 2),
-                y: imgPos.y + (zoomedImg.offsetHeight / 2)
-            };
+            const rect = zoomContainer.getBoundingClientRect();
+            let focalPoint;
+
+            // Nếu thu nhỏ (delta < 0), luôn thu về giữa
+            if (delta < 0) {
+                 focalPoint = {
+                    x: rect.width / 2,
+                    y: rect.height / 2
+                };
+            } else { // Nếu phóng to, phóng tại vị trí con trỏ
+                 focalPoint = {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                };
+            }
+            
             applyZoom(newScale, focalPoint);
         });
+
+        function applyZoom(newScale, focalPoint) {
+            const imgX = (focalPoint.x - imgPos.x) / scale;
+            const imgY = (focalPoint.y - imgPos.y) / scale;
+
+            scale = newScale;
+            zoomSlider.value = scale;
+
+            imgPos.x = focalPoint.x - imgX * scale;
+            imgPos.y = focalPoint.y - imgY * scale;
+
+            zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
+        }
 
     </script>
 </body>

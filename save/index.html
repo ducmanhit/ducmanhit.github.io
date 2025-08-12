@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-image: url('https://sf-static.upanhlaylink.com/img/image_20250812b8d44f22915aec8719f74da4929dd986.jpg');
+            background-image: url('https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -208,9 +208,10 @@
         #zoom-container:active { cursor: grabbing; }
         #zoomed-img {
             position: absolute;
-            transition: transform 0.2s ease-out;
-            transform-origin: center center;
-            max-width: none; /* Bỏ giới hạn max-width để zoom */
+            /* Thay đổi transition để mượt hơn */
+            transition: transform 0.1s linear, left 0.1s linear, top 0.1s linear;
+            transform-origin: top left; /* Đổi gốc transform để tính toán dễ hơn */
+            max-width: none;
         }
         #zoom-controls {
             position: absolute;
@@ -333,19 +334,17 @@
 
         // --- Zoom & Drag State ---
         let isDragging = false;
-        let startX, startY, initialLeft, initialTop;
+        let startX, startY;
         let scale = 1;
 
         // --- Functions ---
         function openZoomModal(src) {
-            // Reset state
             scale = 1;
             zoomSlider.value = 1;
             zoomedImg.style.transform = `scale(1)`;
             
             const img = new Image();
             img.onload = () => {
-                // Center image initially
                 const containerWidth = zoomContainer.offsetWidth;
                 const containerHeight = zoomContainer.offsetHeight;
                 zoomedImg.style.left = `${(containerWidth - img.width) / 2}px`;
@@ -497,8 +496,16 @@
         
         // --- Zoom & Drag Listeners ---
         zoomCloseBtn.addEventListener('click', closeZoomModal);
+        
         zoomSlider.addEventListener('input', (e) => {
-            scale = e.target.value;
+            scale = parseFloat(e.target.value);
+            // Cần tính toán lại vị trí để giữ ảnh ở trung tâm khi dùng slider
+            const rect = zoomContainer.getBoundingClientRect();
+            const newWidth = zoomedImg.naturalWidth * scale;
+            const newHeight = zoomedImg.naturalHeight * scale;
+            
+            zoomedImg.style.left = `${(rect.width - newWidth) / 2}px`;
+            zoomedImg.style.top = `${(rect.height - newHeight) / 2}px`;
             zoomedImg.style.transform = `scale(${scale})`;
         });
 
@@ -520,6 +527,34 @@
 
         window.addEventListener('mouseup', () => {
             isDragging = false;
+        });
+        
+        // SỬA LỖI: Logic lăn chuột để zoom
+        zoomContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomIntensity = 0.1;
+            const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+            
+            const newScale = Math.max(0.5, Math.min(5, scale + delta));
+            
+            const rect = zoomContainer.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            // Vị trí hiện tại của ảnh
+            const imgLeft = zoomedImg.offsetLeft;
+            const imgTop = zoomedImg.offsetTop;
+
+            // Tính toán vị trí mới để giữ điểm dưới con trỏ không đổi
+            const newLeft = mouseX - (mouseX - imgLeft) * (newScale / scale);
+            const newTop = mouseY - (mouseY - imgTop) * (newScale / scale);
+            
+            scale = newScale;
+            
+            zoomedImg.style.left = `${newLeft}px`;
+            zoomedImg.style.top = `${newTop}px`;
+            zoomedImg.style.transform = `scale(${scale})`;
+            zoomSlider.value = scale;
         });
 
     </script>

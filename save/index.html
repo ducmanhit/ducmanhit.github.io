@@ -3,66 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dán & Gửi đi</title>
+    <title>Dán & Gửi đi - Sketch OS Pro</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #e2e8f0; /* slate-200 */
+            --primary-text: #111827; /* gray-900 */
+            --secondary-text: #4b5563; /* gray-600 */
+            --border-color: #111827;
+            --accent: #f59e0b; /* amber-500 */
+            --accent-dark: #d97706; /* amber-600 */
+            --accent-telegram: #3b82f6; /* blue-500 */
+            --accent-telegram-dark: #2563eb; /* blue-600 */
+            --success: #16a34a; /* green-600 */
+            --danger: #dc2626; /* red-600 */
+            --border-width: 3px;
+            --shadow-offset: 8px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Poppins', sans-serif;
-            background-image: url('https://sf-static.upanhlaylink.com/img/image_20250812b8d44f22915aec8719f74da4929dd986.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary-text);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            position: relative;
+            background-image:
+                linear-gradient(rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
         }
 
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .main-container {
+        /* --- WINDOW FRAME --- */
+        .sketch-window {
             width: 100%;
-            max-width: 650px;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 2rem;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            opacity: 0;
-            animation: slideInUp 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            max-width: 700px;
+            border: var(--border-width) solid var(--border-color);
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239ca3af' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color), inset 0 0 20px rgba(0,0,0,0.05);
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1;
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        .sketch-titlebar {
+            display: flex; align-items: center; padding: 0.75rem;
+            border-bottom: var(--border-width) solid var(--border-color);
+            background-color: #ffffff;
         }
-        .header h1 span { color: #93c5fd; }
-        .header p {
-            font-size: 1.1rem;
-            color: #e5e7eb;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
+        .titlebar-buttons { display: flex; gap: 0.5rem; }
+        .titlebar-btn { width: 14px; height: 14px; border-radius: 99px; border: 2px solid var(--border-color); }
+        .titlebar-btn.close { background-color: #f87171; }
+        .titlebar-btn.minimize { background-color: #fde047; }
+        .titlebar-btn.maximize { background-color: #4ade80; }
+        .titlebar-title { flex-grow: 1; text-align: center; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        /* --- COMPONENTS --- */
+        .sketch-panel { padding: 2rem; }
 
-        #paste-box {
+        .sketch-paste-box {
             width: 100%;
             min-height: 320px;
-            border-radius: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -71,243 +85,153 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 3px dashed #d1d5db;
             cursor: pointer;
         }
-        #paste-box:hover:not(.has-content) {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(147, 197, 253, 0.3);
+        .sketch-paste-box:hover:not(.has-content) { border-color: var(--accent-dark); background-color: #fefce8; }
+        .sketch-paste-box.has-content { border-style: solid; border-color: var(--border-color); cursor: default; padding: 10px; }
+        
+        #placeholder-content { display: flex; flex-direction: column; align-items: center; gap: 15px; pointer-events: none; color: #6b7280; }
+        #placeholder-content svg { width: 40px; height: 40px; }
+        #placeholder-content span { font-size: 1rem; font-weight: 600; }
+
+        #output-content { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #output-content img { max-width: 100%; max-height: 300px; object-fit: contain; animation: fadeIn 0.5s ease; cursor: zoom-in; }
+        #output-content pre { width: 100%; height: 300px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; text-align: left; font-size: 0.9rem; padding: 15px; background: #f3f4f6; border-radius: 0; animation: fadeIn 0.5s ease; color: var(--primary-text); font-family: 'JetBrains Mono', monospace;}
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Styles for file info display */
+        #file-info-content {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 1rem; color: var(--primary-text);
+            text-align: center; padding: 1rem;
         }
-        #paste-box.has-content {
-             border: 2px solid #60a5fa;
-             cursor: default;
+        #file-info-content .filename {
+            font-family: 'JetBrains Mono', monospace; font-weight: 600;
+            font-size: 1rem; word-break: break-all;
+        }
+        #file-info-content .file-type {
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+            color: var(--secondary-text); background-color: #e2e8f0;
+            padding: 4px 10px; border: var(--border-width) solid var(--border-color);
         }
 
-        #placeholder-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            pointer-events: none;
-            color: #4b5563;
+        .sketch-btn {
+            background: white; border: var(--border-width) solid var(--border-color); color: var(--primary-text); padding: 10px 20px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            transition: all 0.15s ease; font-size: 12px; display: inline-flex; align-items: center;
+            justify-content: center; gap: 8px; box-shadow: 4px 4px 0px var(--border-color);
         }
-        #placeholder-content svg { width: 50px; height: 50px; }
-        #placeholder-content span { font-size: 1.1rem; font-weight: 500; }
+        .sketch-btn:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--border-color); }
+        .sketch-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-color); }
+        .sketch-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(50%); box-shadow: none; }
+        .sketch-btn.hidden { display: none; }
+        
+        .sketch-btn-telegram { background-color: var(--accent-telegram); color: white; }
+        .sketch-btn-telegram:hover:not(:disabled) { background-color: var(--accent-telegram-dark); }
+        .sketch-btn-danger { background-color: var(--danger); color: white; }
+        .sketch-btn-success { background-color: var(--success); color: white; }
 
-        #output-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
+        .modal-content {
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+            background: white;
+            transform: scale(0.95); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        #output-content img {
-            max-width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            border-radius: 10px;
-            animation: fadeIn 0.5s ease;
-            cursor: zoom-in;
-        }
-        #output-content pre {
-            width: 100%;
-            height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            text-align: left;
-            font-size: 1rem;
-            padding: 15px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
-            animation: fadeIn 0.5s ease;
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .action-buttons {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 170px;
-            height: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 9999px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: 1px solid transparent;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .btn.hidden {
-            transform: scale(0);
-            opacity: 0;
-            width: 0;
-            padding: 0;
-            margin: 0;
-            pointer-events: none;
-        }
-        .btn:not(:disabled):active { transform: translateY(1px) scale(0.98); }
-        .btn-download { background-color: #f3f4f6; color: #374151; border-color: #e5e7eb; }
-        .btn-telegram { background-color: #3b82f6; color: white; }
-        .btn-telegram:hover:not(:disabled) { background-color: #2563eb; }
-        .btn-clear { background-color: #ef4444; color: white; }
-        .btn-clear:hover:not(:disabled) { background-color: #dc2626; }
-        .btn svg { width: 20px; height: 20px; margin-right: 10px; }
-
-        #notification {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 25px;
-            border-radius: 1.5rem;
-            color: white;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 2000;
-            background-color: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-        #notification.show { bottom: 20px; transform: translateX(-50%) scale(1); }
-        #notification.success { background-color: rgba(52, 211, 153, 0.8); }
-        #notification.error { background-color: rgba(239, 68, 68, 0.8); }
+        .modal.open .modal-content { transform: scale(1); opacity: 1; }
 
         /* --- Zoom Modal --- */
-        #zoom-modal {
-            transition: opacity 0.3s ease;
-        }
+        #zoom-modal { transition: opacity 0.3s ease; }
         #zoom-modal.hidden { pointer-events: none; }
-        #zoom-container {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            cursor: grab;
-        }
+        #zoom-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; cursor: grab; }
         #zoom-container:active { cursor: grabbing; }
-        #zoomed-img {
-            position: absolute;
-            left: 0; 
-            top: 0;
-            transition: transform 0.1s linear;
-            transform-origin: top left;
-            max-width: none;
-        }
-        #zoom-controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        #zoom-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 150px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            outline: none;
-            border-radius: 2px;
-        }
-        #zoom-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        #zoom-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        #zoom-close-btn {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s ease;
-        }
+        #zoomed-img { position: absolute; left: 0; top: 0; transition: transform 0.1s linear; transform-origin: top left; max-width: none; }
+        #zoom-controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.5); padding: 10px 20px; border-radius: 9999px; display: flex; align-items: center; gap: 15px; }
+        #zoom-slider { -webkit-appearance: none; appearance: none; width: 150px; height: 4px; background: rgba(255, 255, 255, 0.3); outline: none; border-radius: 2px; }
+        #zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: #fff; cursor: pointer; border-radius: 50%; }
+        #zoom-slider::-moz-range-thumb { width: 16px; height: 16px; background: #fff; cursor: pointer; border-radius: 50%; }
+        #zoom-close-btn { background: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; }
         #zoom-close-btn:hover { background: rgba(0, 0, 0, 0.8); }
 
-        @media (max-width: 600px) {
-            .main-container { padding: 20px; }
-            .header h1 { font-size: 2rem; }
-            .header p { font-size: 1rem; }
-            .action-buttons { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 300px; }
-            .btn.hidden { display: none; }
+        .sketch-footer {
+            position: fixed; bottom: 20px; right: 20px; z-index: 10;
         }
+        .sketch-footer a {
+            display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+            background-color: white; border: var(--border-width) solid var(--border-color);
+            box-shadow: 4px 4px 0 var(--border-color); color: var(--secondary-text); text-decoration: none;
+            font-size: 12px; font-weight: 600; transition: all 0.15s ease;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .sketch-footer a:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border-color); color: var(--primary-text); }
+        .sketch-footer a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--border-color); }
+        .sketch-footer strong { font-weight: 800; color: var(--primary-text); }
+        .sketch-footer svg { stroke: currentColor; transition: transform 0.2s ease; }
+        .sketch-footer a:hover svg { transform: translateX(2px) translateY(-2px); }
     </style>
 </head>
 <body>
-    <div class="main-container z-10">
-        <header class="header">
-            <h1>Dán <span>&</span> Gửi đi</h1>
-            <p>Dán từ clipboard (Ctrl+V) hoặc tải tệp lên</p>
-        </header>
-        <div id="paste-box">
-            <div id="placeholder-content">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
-                <span>Nhấn để tải tệp lên hoặc dán (Ctrl+V)</span>
+    <div class="sketch-window">
+        <header class="sketch-titlebar">
+            <div class="titlebar-buttons">
+                <div class="titlebar-btn close"></div>
+                <div class="titlebar-btn minimize"></div>
+                <div class="titlebar-btn maximize"></div>
             </div>
-            <div id="output-content"></div>
-        </div>
-        <div class="action-buttons">
-            <a id="download-btn" class="btn btn-download hidden" download><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Tải xuống</span></a>
-            <button id="send-telegram-btn" class="btn btn-telegram hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-4.718-2.984 11.898-7.538Z"/></svg><span>Gửi Telegram</span></button>
-            <button id="clear-btn" class="btn btn-clear hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
+            <div class="titlebar-title">Dán & Gửi đi</div>
+        </header>
+        <main class="sketch-panel space-y-6">
+            <header class="text-center">
+                <h1 class="text-2xl font-black uppercase tracking-wide">Gửi File & Text</h1>
+                <p class="text-sm text-secondary-text">Dán từ clipboard (Ctrl+V) hoặc tải tệp lên</p>
+            </header>
+
+            <div id="paste-box" class="sketch-paste-box">
+                <div id="placeholder-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+                    <span>Nhấn để tải tệp lên hoặc dán (Ctrl+V)</span>
+                </div>
+                <div id="output-content"></div>
+            </div>
+
+            <div class="action-buttons grid grid-cols-3 gap-4">
+                <a id="download-btn" class="sketch-btn hidden" download><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Tải</span></a>
+                <button id="send-telegram-btn" class="sketch-btn sketch-btn-telegram hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-4.718-2.984 11.898-7.538Z"/></svg><span>Gửi Tele</span></button>
+                <button id="clear-btn" class="sketch-btn sketch-btn-danger hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
+            </div>
+        </main>
+    </div>
+    
+    <input type="file" id="file-input" hidden>
+
+    <!-- Alert Modal (replaces notification) -->
+    <div id="alertModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="alertdialog" aria-modal="true">
+        <div class="absolute inset-0" data-modal-hide="alertModal"></div>
+        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5 text-center">
+            <h3 id="alertTitle" class="text-xl font-black">Thông báo</h3>
+            <p id="alertMessage" class="text-sm text-secondary-text"></p>
+            <button data-modal-hide="alertModal" class="sketch-btn sketch-btn-telegram w-full">Đã hiểu</button>
         </div>
     </div>
-    <input type="file" id="file-input" hidden>
-    <div id="notification"></div>
 
     <!-- Zoom Modal -->
     <div id="zoom-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center opacity-0">
-        <div id="zoom-container">
-            <img id="zoomed-img" src="" alt="Zoomed Image">
-        </div>
-        <button id="zoom-close-btn" class="absolute top-5 right-5 z-20">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
+        <div id="zoom-container"><img id="zoomed-img" src="" alt="Zoomed Image"></div>
+        <button id="zoom-close-btn" class="absolute top-5 right-5 z-20"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         <div id="zoom-controls">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
             <input type="range" id="zoom-slider" min="0.2" max="5" value="1" step="0.1">
         </div>
     </div>
+    
+    <footer class="sketch-footer">
+        <a href="https://www.facebook.com/DucManhDay" target="_blank" rel="noopener noreferrer">
+            <span>Thiết kế bởi</span> <strong>DucManh</strong>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+        </a>
+    </footer>
 
     <script>
         // --- CONFIGURATION ---
@@ -322,7 +246,10 @@
         const downloadBtn = document.getElementById('download-btn');
         const sendTelegramBtn = document.getElementById('send-telegram-btn');
         const clearBtn = document.getElementById('clear-btn');
-        const notification = document.getElementById('notification');
+        
+        const alertModal = document.getElementById('alertModal');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMessage = document.getElementById('alertMessage');
         const zoomModal = document.getElementById('zoom-modal');
         const zoomContainer = document.getElementById('zoom-container');
         const zoomedImg = document.getElementById('zoomed-img');
@@ -340,6 +267,22 @@
         let imgPos = { x: 0, y: 0 };
 
         // --- Functions ---
+        function showModal(modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+        function hideModal(modal) {
+            modal.classList.remove('open');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function showNotification(message, type = 'info') {
+            alertTitle.textContent = type === 'success' ? 'Thành công' : (type === 'error' ? 'Lỗi' : 'Thông báo');
+            alertMessage.textContent = message;
+            showModal(alertModal);
+        }
+
         function openZoomModal(src) {
             scale = 1;
             zoomSlider.value = 1;
@@ -372,27 +315,30 @@
             const items = event.clipboardData.items;
             if (!items) return;
             clearContent();
-            let foundImage = false;
+
             for (const item of items) {
-                if (item.kind === 'file' && item.type.startsWith('image/')) {
-                    const imageFile = item.getAsFile();
-                    if (imageFile) {
-                        pastedContent = { type: 'image', data: imageFile };
-                        displayImage(imageFile);
-                        foundImage = true;
-                        break;
+                if (item.kind === 'file') {
+                    const file = item.getAsFile();
+                    if (file) {
+                        if (file.type.startsWith('image/')) {
+                            pastedContent = { type: 'image', data: file };
+                            displayImage(file);
+                        } else {
+                            pastedContent = { type: 'file', data: file };
+                            displayFileInfo(file);
+                        }
+                        return; 
                     }
                 }
             }
-            if (!foundImage) {
-                for (const item of items) {
-                    if (item.kind === 'string' && item.type === 'text/plain') {
-                        item.getAsString(text => {
-                            pastedContent = { type: 'text', data: text };
-                            displayText(text);
-                        });
-                        break;
-                    }
+
+            for (const item of items) {
+                if (item.kind === 'string' && item.type === 'text/plain') {
+                    item.getAsString(text => {
+                        pastedContent = { type: 'text', data: text };
+                        displayText(text);
+                    });
+                    return; 
                 }
             }
         }
@@ -404,7 +350,7 @@
             if (file.type.startsWith('image/')) {
                 pastedContent = { type: 'image', data: file };
                 displayImage(file);
-            } else if (file.type.startsWith('text/') || file.type === '') {
+            } else if (file.type.startsWith('text/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const text = e.target.result;
@@ -413,7 +359,8 @@
                 };
                 reader.readAsText(file);
             } else {
-                showNotification('Loại tệp không được hỗ trợ.', 'error');
+                pastedContent = { type: 'file', data: file };
+                displayFileInfo(file);
             }
         }
 
@@ -433,6 +380,24 @@
             pre.textContent = text;
             outputContent.appendChild(pre);
             updateUIForNewContent(objectURL, 'text-pasted.txt');
+        }
+        
+        function displayFileInfo(file) {
+            const fileBlob = new Blob([file], { type: file.type });
+            objectURL = URL.createObjectURL(fileBlob);
+            const fileExtension = file.name.split('.').pop().toUpperCase() || 'File';
+            
+            outputContent.innerHTML = `
+                <div id="file-info-content">
+                    <svg class="w-16 h-16 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <div class="filename">${file.name}</div>
+                    <div class="file-type">${fileExtension}</div>
+                </div>
+            `;
+            updateUIForNewContent(objectURL, file.name);
         }
 
         function updateUIForNewContent(url, filename) {
@@ -462,12 +427,35 @@
             if (!pastedContent.data) return;
             sendTelegramBtn.disabled = true;
             sendTelegramBtn.querySelector('span').textContent = 'Đang gửi...';
+
+            let url;
+            let field;
+
+            switch(pastedContent.type) {
+                case 'text':
+                    url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                    field = 'text';
+                    break;
+                case 'image':
+                    url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+                    field = 'photo';
+                    break;
+                case 'file':
+                    url = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+                    field = 'document';
+                    break;
+                default:
+                    showNotification('Loại nội dung không xác định.', 'error');
+                    sendTelegramBtn.disabled = false;
+                    sendTelegramBtn.querySelector('span').textContent = 'Gửi Tele';
+                    return;
+            }
+
             try {
-                const url = pastedContent.type === 'text' ? `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage` : `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
                 const formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
-                const field = pastedContent.type === 'text' ? 'text' : 'photo';
                 formData.append(field, pastedContent.data);
+
                 const response = await fetch(url, { method: 'POST', body: formData });
                 const result = await response.json();
                 if (result.ok) showNotification('Đã gửi thành công!', 'success');
@@ -476,17 +464,8 @@
                 showNotification(`Lỗi: ${error.message}`, 'error');
             } finally {
                 sendTelegramBtn.disabled = false;
-                sendTelegramBtn.querySelector('span').textContent = 'Gửi Telegram';
+                sendTelegramBtn.querySelector('span').textContent = 'Gửi Tele';
             }
-        }
-
-        let notificationTimeout;
-        function showNotification(message, type = 'info') {
-            clearTimeout(notificationTimeout);
-            notification.textContent = message;
-            notification.className = 'notification';
-            notification.classList.add(type, 'show');
-            notificationTimeout = setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
         // --- Event Listeners ---
@@ -495,6 +474,7 @@
         fileInput.addEventListener('change', handleFileSelect);
         clearBtn.addEventListener('click', clearContent);
         sendTelegramBtn.addEventListener('click', sendToTelegram);
+        document.addEventListener('click', e => { if (e.target.dataset.modalHide) hideModal(document.getElementById(e.target.dataset.modalHide)); });
         
         // --- Zoom & Drag Listeners ---
         zoomCloseBtn.addEventListener('click', closeZoomModal);
@@ -502,67 +482,37 @@
         zoomSlider.addEventListener('input', (e) => {
             const newScale = parseFloat(e.target.value);
             const containerRect = zoomContainer.getBoundingClientRect();
-            const focalPoint = {
-                x: containerRect.width / 2,
-                y: containerRect.height / 2
-            };
+            const focalPoint = { x: containerRect.width / 2, y: containerRect.height / 2 };
             applyZoom(newScale, focalPoint);
         });
 
         zoomContainer.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            isDragging = true;
-            startX = e.clientX - imgPos.x;
-            startY = e.clientY - imgPos.y;
+            e.preventDefault(); isDragging = true;
+            startX = e.clientX - imgPos.x; startY = e.clientY - imgPos.y;
         });
-
         window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            imgPos.x = e.clientX - startX;
-            imgPos.y = e.clientY - startY;
+            if (!isDragging) return; e.preventDefault();
+            imgPos.x = e.clientX - startX; imgPos.y = e.clientY - startY;
             zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
         });
-
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
         
         zoomContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const zoomIntensity = 0.1;
             const delta = e.deltaY < 0 ? zoomIntensity : -zoomIntensity;
             const newScale = Math.max(0.2, Math.min(5, scale + delta));
-            
             const rect = zoomContainer.getBoundingClientRect();
-            let focalPoint;
-
-            // Nếu thu nhỏ (delta < 0), luôn thu về giữa
-            if (delta < 0) {
-                 focalPoint = {
-                    x: rect.width / 2,
-                    y: rect.height / 2
-                };
-            } else { // Nếu phóng to, phóng tại vị trí con trỏ
-                 focalPoint = {
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top,
-                };
-            }
-            
+            let focalPoint = (delta < 0) ? { x: rect.width / 2, y: rect.height / 2 } : { x: e.clientX - rect.left, y: e.clientY - rect.top };
             applyZoom(newScale, focalPoint);
         });
 
         function applyZoom(newScale, focalPoint) {
             const imgX = (focalPoint.x - imgPos.x) / scale;
             const imgY = (focalPoint.y - imgPos.y) / scale;
-
-            scale = newScale;
-            zoomSlider.value = scale;
-
+            scale = newScale; zoomSlider.value = scale;
             imgPos.x = focalPoint.x - imgX * scale;
             imgPos.y = focalPoint.y - imgY * scale;
-
             zoomedImg.style.transform = `translate(${imgPos.x}px, ${imgPos.y}px) scale(${scale})`;
         }
 

@@ -8,159 +8,386 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --grid-size: 40px;
+            --grid-color-light: rgba(0, 0, 0, 0.08);
+            --grid-color-dark: rgba(255, 255, 255, 0.08);
+
+            --bg-light: #F3F3F3;
+            --card-bg-light: white;
+            --border-light: #18181B;
+            --text-main-light: #18181B;
+            --text-secondary-light: #52525b;
+            --input-bg-light: white;
+            --button-primary-bg-light: #fde047;
+            --button-primary-text-light: #18181B; /* Chữ đen cho nút vàng */
+            --button-success-bg-light: #86efac;
+            --shadow-light: #18181B;
+            --result-block-bg-light: #f3f3f3;
+
+            --bg-color: var(--bg-light);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-light);
+            --text-main-color: var(--text-main-light);
+            --text-secondary-color: var(--text-secondary-light);
+            --input-bg: var(--input-bg-light);
+            --button-primary-bg: var(--button-primary-bg-light);
+            --button-primary-text: var(--button-primary-text-light);
+            --button-success-bg: var(--button-success-bg-light);
+            --shadow-color: var(--shadow-light);
+            --result-block-bg: var(--result-block-bg-light);
+            --grid-active-color: var(--grid-color-light);
+        }
+
+        body.dark-mode {
+            --bg-color: #1A1A1A;
+            --card-bg: #222222;
+            --border-color: #555555;
+            --text-main-color: #E0E0E0;
+            --text-secondary-color: #A0A0A0;
+            --input-bg: #333333;
+            --button-primary-bg: #FFD700;
+            --button-primary-text: #18181B; /* Chữ đen cho nút vàng */
+            --button-success-bg: #22C55E;
+            --shadow-color: #383838;
+            --result-block-bg: #333333;
+            --grid-active-color: var(--grid-color-dark);
+        }
+        
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f7fa;
-            /* Subtle Mesh Gradient Background */
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden;
             background-image:
-                radial-gradient(at 0% 0%, hsla(212, 45%, 98%, 1) 0px, transparent 50%),
-                radial-gradient(at 98% 99%, hsla(289, 60%, 98%, 1) 0px, transparent 50%);
+                linear-gradient(to right, var(--grid-active-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-active-color) 1px, transparent 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            animation: move-grid 15s linear infinite;
+            transition: background-color 0.3s ease;
         }
-        .gradient-text {
-            background: linear-gradient(to right, #c026d3, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
+
+        @keyframes move-grid {
+            from { background-position: 0 0; }
+            to { background-position: var(--grid-size) var(--grid-size); }
         }
-        #result-container {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+        .brutal-card { background-color: var(--card-bg); border: 3px solid var(--border-color); border-radius: 16px; color: var(--text-main-color); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .hard-shadow { box-shadow: 10px 10px 0px var(--shadow-color); transition: transform 0.2s ease, box-shadow 0.3s ease; }
+        .hard-shadow:hover { transform: translate(-5px, -5px); }
+        .card-header { display: flex; gap: 8px; padding: 12px; border-bottom: 3px solid var(--border-color); align-items: center; justify-content: space-between; transition: border-color 0.3s ease; }
+        .card-dots { display: flex; gap: 8px; }
+        .card-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border-color); }
+        #datetime-display { font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; color: var(--text-secondary-color); transition: color 0.3s ease; }
+        
+        /* --- NÚT SÁNG/TỐI MỚI, ĐƠN GIẢN VÀ THANH LỊCH --- */
+        #theme-toggle {
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--result-block-bg);
+            border: 2px solid var(--border-color);
+            transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
-        #toast {
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        #theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
         }
+        #theme-toggle:active {
+            transform: scale(0.9);
+        }
+        #theme-toggle svg {
+            color: var(--text-secondary-color);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            position: absolute; /* Cho 2 icon chồng lên nhau */
+        }
+        #moon-icon { opacity: 0; transform: scale(0.8); }
+        #sun-icon { opacity: 1; transform: scale(1); }
+        body.dark-mode #moon-icon { opacity: 1; transform: scale(1); }
+        body.dark-mode #sun-icon { opacity: 0; transform: scale(0.8); }
+        /* --- KẾT THÚC --- */
+
+        .lang-switcher { display: flex; gap: 8px; margin-bottom: 2rem; }
+        .lang-switcher button { font-family: 'IBM Plex Mono', monospace; font-weight: 700; padding: 4px 8px; border: 2px solid var(--border-color); border-radius: 6px; background-color: var(--result-block-bg); color: var(--text-main-color); transition: all 0.3s ease; }
+        .lang-switcher button.active-lang { background-color: var(--button-primary-bg); color: var(--button-primary-text); } /* Sửa lỗi chữ */
+        .brutal-input { border: 3px solid var(--border-color); background-color: var(--input-bg); border-radius: 8px; font-family: 'IBM Plex Mono', monospace; transition: all 0.3s ease; color: var(--text-main-color); }
+        .brutal-input::placeholder { color: var(--text-secondary-color); }
+        .brutal-input:focus { outline: none; box-shadow: 0px 0px 0px 4px #eab308; }
+        .brutal-button-primary { background-color: var(--button-primary-bg); border: 3px solid var(--border-color); color: var(--button-primary-text); font-weight: 700; border-radius: 8px; transition: all 0.3s ease; } /* Sửa lỗi chữ */
+        .brutal-button-secondary { background-color: var(--result-block-bg); border: 3px solid var(--border-color); color: var(--text-main-color); font-weight: 700; border-radius: 8px; position: relative; transition: all 0.3s ease; }
+        .result-wrapper { display: flex; gap: 16px; align-items: flex-start; }
+        .result-block { background-color: var(--result-block-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 16px; flex-grow: 1; min-width: 0; transition: all 0.3s ease; }
+        #result-link { font-family: 'IBM Plex Mono', monospace; word-break: break-all; color: var(--text-main-color); transition: color 0.3s ease; }
+        #qrcode-container { background-color: var(--card-bg); border: 3px solid var(--border-color); border-radius: 8px; padding: 12px; flex-shrink: 0; opacity: 0; transform: scale(0.95); transition: all 0.4s ease; }
+        #qrcode-container.visible { opacity: 1; transform: scale(1); }
+        #qrcode-container canvas { display: block; filter: invert(0); transition: filter 0.3s ease; }
+        body.dark-mode #qrcode-container canvas { filter: invert(1); }
+        #result-container { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin-top 0.4s ease-in-out; }
+        #result-container.expanded { max-height: 300px; opacity: 1; margin-top: 2rem; }
+        .toast { transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        #error-modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #error-modal.visible { opacity: 1; pointer-events: auto; }
+        .modal-backdrop { position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
+        .modal-content { position: relative; z-index: 10; transform: scale(0.95); transition: transform 0.3s ease; color: var(--text-main-color); }
+        #error-modal.visible .modal-content { transform: scale(1); }
+        #result-link .char { display: inline-block; opacity: 0; transform: translateY(5px); animation: fadeInSlideUp 0.3s forwards ease-out; }
+        @keyframes fadeInSlideUp { to { opacity: 1; transform: translateY(0); } }
+
+        .copy-button .copy-text, .copy-button .checkmark-icon { transition: opacity 0.2s ease, transform 0.2s ease; }
+        .copy-button .checkmark-icon { position: absolute; opacity: 0; transform: scale(0.5); }
+        .copy-button.is-copied { background-color: var(--button-success-bg); }
+        .copy-button.is-copied .copy-text { opacity: 0; transform: scale(0.5); }
+        .copy-button.is-copied .checkmark-icon { opacity: 1; transform: scale(1); }
+        .checkmark-path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw-check 0.3s ease-out forwards; }
+        @keyframes draw-check { to { stroke-dashoffset: 0; } }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <!-- Main Card -->
-    <div class="bg-white/80 backdrop-blur-3xl border border-gray-200/90 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-violet-900/5 w-full max-w-2xl">
-        
-        <!-- Header -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold gradient-text">Công Cụ Sửa Link Pro</h1>
-            <p class="text-gray-500 mt-2 text-sm sm:text-base">Dán link của bạn để tự động sửa lỗi định dạng.</p>
-        </div>
-
-        <!-- Input Area -->
-        <div class="flex flex-col gap-3">
-            <textarea id="linkInput" 
-                      class="bg-gray-50 text-gray-800 border-2 border-gray-200 rounded-xl w-full p-4 h-32 resize-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:bg-white transition-all duration-300 placeholder-gray-400"
-                      placeholder="Dán hoặc gõ link vào đây..."></textarea>
-            
-            <button onclick="clearInput()" class="bg-violet-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-violet-700 active:bg-violet-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-200 flex items-center justify-center gap-2 transform active:scale-[0.98]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Xoá Nội Dung
+    <div class="brutal-card hard-shadow w-full max-w-2xl">
+        <div class="card-header">
+            <div class="flex items-center gap-4">
+                <div class="card-dots">
+                    <div class="card-dot bg-red-400"></div>
+                    <div class="card-dot bg-yellow-400"></div>
+                    <div class="card-dot bg-green-400"></div>
+                </div>
+                <div id="datetime-display"></div>
+            </div>
+            <button id="theme-toggle">
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
             </button>
         </div>
+        
+        <div class="p-6 sm:p-8">
+            <div class="text-left mb-6">
+                <h1 class="text-4xl md:text-5xl font-bold" data-key="title"></h1>
+                <p class="mt-2 text-lg" data-key="subtitle"></p>
+            </div>
 
-        <!-- Result Container -->
-        <div id="result-container" class="mt-6 opacity-0 transform translate-y-2 pointer-events-none">
-            <label class="text-sm font-medium text-gray-500 mb-2 block">Link đã sửa:</label>
-            <div class="bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-between p-3 sm:p-4 gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="bg-white p-2 rounded-lg border border-gray-200 flex-shrink-0">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-violet-500"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
+            <div class="lang-switcher">
+                <button id="lang-vi">VI</button>
+                <button id="lang-en">EN</button>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <textarea id="linkInput" class="brutal-input w-full p-4 h-36 resize-none" data-key="placeholder"></textarea>
+                <button onclick="clearInput()" class="brutal-button-primary hard-shadow text-lg py-4 px-6" data-key="clearBtn"></button>
+            </div>
+
+            <div id="result-container">
+                <div class="result-wrapper">
+                    <div class="result-block">
+                        <div class="flex justify-between items-center mb-2">
+                             <label class="text-md font-bold" data-key="resultLabel"></label>
+                             <button id="copyButton" onclick="copyToClipboard(this)" class="copy-button brutal-button-secondary hard-shadow font-semibold py-1 px-3 text-sm flex items-center justify-center">
+                                 <span class="copy-text" data-key="copyBtn"></span>
+                                 <svg class="checkmark-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                     <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                 </svg>
+                             </button>
+                        </div>
+                        <a id="result-link" href="#" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium transition" title="Click to open link">...</a>
                     </div>
-                    <a id="result-link" href="#" target="_blank" rel="noopener noreferrer" class="text-violet-600 hover:text-violet-800 font-medium transition truncate" title="Click để mở link">
-                        ...
-                    </a>
+                    <div id="qrcode-container" class="hard-shadow"></div>
                 </div>
-                <button id="copyButton" onclick="copyToClipboard()" class="bg-gray-200 text-gray-700 font-semibold py-2 px-3 sm:px-4 rounded-lg hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-violet-500 transition-all duration-200 flex-shrink-0 transform active:scale-[0.98]">
-                    Sao chép
-                </button>
             </div>
         </div>
     </div>
     
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-0 right-0 md:bottom-5 md:right-5 bg-gray-900 text-white py-2 px-5 rounded-lg shadow-lg flex items-center gap-3 opacity-0 transform translate-y-10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-400"><path d="M20 6 9 17l-5-5"></path></svg>
-        <span>Đã sao chép!</span>
+    <div id="copy-toast" class="toast brutal-card hard-shadow fixed bottom-5 right-5 py-3 px-5 flex items-center gap-3 opacity-0 transform translate-y-10">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M20 6 9 17l-5-5"></path></svg>
+        <span class="font-bold" data-key="toastText"></span>
     </div>
 
+    <div id="clear-toast" class="toast brutal-card hard-shadow fixed bottom-5 right-5 py-3 px-5 flex items-center gap-3 opacity-0 transform translate-y-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+        <span class="font-bold" data-key="clearToastText"></span>
+    </div>
+
+    <div id="error-modal">
+        <div class="modal-backdrop" onclick="hideErrorModal()"></div>
+        <div class="modal-content brutal-card w-full max-w-sm p-8 text-center">
+            <div class="flex justify-center mb-4">
+                 <svg class="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-2xl font-bold" data-key="errorTitle"></h3>
+            <p class="mt-2" data-key="errorMsg"></p>
+            <button onclick="hideErrorModal()" class="brutal-button-primary hard-shadow text-lg py-3 px-6 mt-6" data-key="errorBtn"></button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
     <script>
-        // Lấy các phần tử DOM một lần để tối ưu hiệu suất
         const linkInput = document.getElementById('linkInput');
         const resultContainer = document.getElementById('result-container');
         const resultLink = document.getElementById('result-link');
-        const toast = document.getElementById('toast');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const copyToast = document.getElementById('copy-toast');
+        const clearToast = document.getElementById('clear-toast');
+        const datetimeDisplay = document.getElementById('datetime-display');
+        const errorModal = document.getElementById('error-modal');
+        const themeToggle = document.getElementById('theme-toggle');
+        let currentLang = 'vi';
+        let isDarkMode = false;
 
-        // Hàm xử lý chính khi người dùng nhập liệu
+        const translations = {
+            'vi': {
+                title: 'Trình sửa Link', subtitle: 'Công cụ đơn giản để dọn dẹp các liên kết lộn xộn.',
+                placeholder: 'Dán link của bạn vào đây...', clearBtn: 'Xóa & Làm mới',
+                resultLabel: 'Link đã sửa:', copyBtn: 'Sao chép', toastText: 'Đã sao chép!',
+                clearToastText: 'Đã xóa!',
+                errorTitle: 'Thao tác thất bại', errorMsg: 'Không thể sao chép vào clipboard. Vui lòng thử lại hoặc sao chép thủ công.', errorBtn: 'Đã hiểu'
+            },
+            'en': {
+                title: 'Link Fixer', subtitle: 'A simple tool to clean up your messy links.',
+                placeholder: 'Paste your link here...', clearBtn: 'Clear & Reset',
+                resultLabel: 'Clean Link:', copyBtn: 'Copy', toastText: 'Copied!',
+                clearToastText: 'Cleared!',
+                errorTitle: 'Action Failed', errorMsg: 'Could not copy to clipboard. Please try again or copy manually.', errorBtn: 'Got it'
+            }
+        };
+
+        const updateTime = () => {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            datetimeDisplay.textContent = now.toLocaleDateString(currentLang === 'vi' ? 'vi-VN' : 'en-US', options);
+        };
+        setInterval(updateTime, 1000); updateTime();
+
+        const setLanguage = (lang) => {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang][key]) {
+                     if (element.tagName === 'TEXTAREA') element.placeholder = translations[lang][key];
+                     else element.textContent = translations[lang][key];
+                }
+            });
+            document.getElementById('lang-vi').classList.toggle('active-lang', lang === 'vi');
+            document.getElementById('lang-en').classList.toggle('active-lang', lang === 'en');
+            updateTime();
+        };
+
+        document.getElementById('lang-vi').addEventListener('click', () => setLanguage('vi'));
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+        
+        const toggleTheme = () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            if (resultContainer.classList.contains('expanded')) {
+                const cleanedLink = resultLink.href;
+                qrcodeContainer.innerHTML = '';
+                new QRCode(qrcodeContainer, { text: cleanedLink, width: 140, height: 140, colorDark : "#18181B", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+            }
+        };
+
+        themeToggle.addEventListener('click', toggleTheme);
+
         const handleInput = () => {
             const rawLink = linkInput.value.trim();
-
-            if (rawLink === '') {
-                hideResult();
-                return;
+            if (rawLink === '') hideResult();
+            else {
+                const cleanedLink = rawLink.replace(/[\[\]\(\)\s\{\}]/g, '');
+                updateResult(cleanedLink);
+                showResult(cleanedLink);
             }
-
-            // Xóa các ký tự không hợp lệ
-            const cleanedLink = rawLink.replace(/[\[\]\(\)\s\{\}]/g, '');
-
-            // Cập nhật và hiển thị kết quả
-            updateResult(cleanedLink);
-            showResult();
         };
 
-        // Gắn sự kiện vào ô nhập liệu
         linkInput.addEventListener('input', handleInput);
-
+        
         const updateResult = (link) => {
             resultLink.href = link;
-            resultLink.textContent = link;
             resultLink.title = `Mở ${link} trong tab mới`;
+            animateTextFadeInSlideUp(resultLink, link);
         };
 
-        const showResult = () => {
-            resultContainer.style.opacity = '1';
-            resultContainer.style.transform = 'translateY(0)';
-            resultContainer.style.pointerEvents = 'auto';
+        const showResult = (cleanedLink) => {
+            resultContainer.classList.add('expanded');
+            qrcodeContainer.innerHTML = '';
+            new QRCode(qrcodeContainer, { text: cleanedLink, width: 140, height: 140, colorDark : "#18181B", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+            setTimeout(() => qrcodeContainer.classList.add('visible'), 100);
         };
         
-        const hideResult = () => {
-            resultContainer.style.opacity = '0';
-            resultContainer.style.transform = 'translateY(8px)';
-            resultContainer.style.pointerEvents = 'none';
+        const hideResult = () => { resultContainer.classList.remove('expanded'); qrcodeContainer.classList.remove('visible'); };
+        
+        const clearInput = () => { linkInput.value = ''; hideResult(); linkInput.focus(); showClearToast(); };
+
+        const fallbackCopyTextToClipboard = (text) => {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus(); textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopyToast();
+                triggerCopyAnimation(document.getElementById('copyButton'));
+            } catch (err) { showErrorModal(); }
+            document.body.removeChild(textArea);
         };
 
-        // Hàm xóa nội dung và ẩn kết quả
-        const clearInput = () => {
-            linkInput.value = '';
-            hideResult();
-            linkInput.focus(); // Tự động trỏ chuột về ô nhập liệu
-        };
-
-        // Hàm sao chép link vào clipboard
-        const copyToClipboard = () => {
-            if (!navigator.clipboard) {
-                alert("Trình duyệt của bạn không hỗ trợ chức năng này.");
-                return;
-            }
-
-            navigator.clipboard.writeText(resultLink.href).then(() => {
-                showToast();
+        const copyToClipboard = (buttonElement) => {
+            const textToCopy = resultLink.href;
+            if (buttonElement.classList.contains('is-copied')) return;
+            if (!navigator.clipboard) { fallbackCopyTextToClipboard(textToCopy); return; }
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCopyToast();
+                triggerCopyAnimation(buttonElement);
             }).catch(err => {
-                console.error('Không thể sao chép: ', err);
-                alert('Sao chép thất bại!');
+                console.warn('Async copy failed, falling back to execCommand:', err);
+                fallbackCopyTextToClipboard(textToCopy);
             });
         };
-        
-        // Hàm hiển thị thông báo "Đã sao chép"
-        const showToast = () => {
-            toast.style.opacity = '1';
-            toast.style.transform = 'translateY(0)';
-            
-            // Tự động ẩn thông báo sau 2.5 giây
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(40px)';
-            }, 2500);
+
+        const showCopyToast = () => {
+            copyToast.style.opacity = '1'; copyToast.style.transform = 'translateY(0)';
+            setTimeout(() => { copyToast.style.opacity = '0'; copyToast.style.transform = 'translateY(40px)'; }, 2500);
         };
+
+        const showClearToast = () => {
+            clearToast.style.opacity = '1'; clearToast.style.transform = 'translateY(0)';
+            setTimeout(() => { clearToast.style.opacity = '0'; clearToast.style.transform = 'translateY(40px)'; }, 2500);
+        };
+        
+        const showErrorModal = () => errorModal.classList.add('visible');
+        const hideErrorModal = () => errorModal.classList.remove('visible');
+
+        const triggerCopyAnimation = (buttonElement) => {
+            buttonElement.classList.add('is-copied');
+            setTimeout(() => {
+                buttonElement.classList.remove('is-copied');
+            }, 1500);
+        };
+
+        const animateTextFadeInSlideUp = (element, text) => {
+            element.innerHTML = '';
+            text.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = char;
+                span.style.animationDelay = `${index * 10}ms`;
+                element.appendChild(span);
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage('vi');
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                isDarkMode = true;
+                document.body.classList.add('dark-mode');
+            }
+        });
     </script>
 
 </body>
 </html>
-

@@ -3,886 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chuyển Đổi Văn Bản</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Ủng Hộ Tác Giả - DucManh Blog</title>
+    <!-- Tải font và icon -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        :root {
-            --primary-dark: #0a2a80;
-            --primary: #0e5bae;
-            --primary-light: #0e8bd5;
-            --white: #ffffff;
-            --bg: #040d2c;
-            --card-bg: rgba(255, 255, 255, 0.1);
-            --card-border: rgba(255, 255, 255, 0.2);
-            --text: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --radius-sm: 0.5rem;
-            --radius: 0.75rem;
-            --radius-md: 1rem;
-            --radius-lg: 1.5rem;
-            --radius-xl: 2rem;
-            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        body.light {
-            --bg: #f5f9ff;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(14, 91, 174, 0.2);
-            --text: #0a2a80;
-            --text-secondary: rgba(10, 42, 128, 0.7);
-            --shadow: 0 8px 32px 0 rgba(14, 91, 174, 0.15);
-        }
-        
-        * {
+        /* --- CÀI ĐẶT CHUNG --- */
+        .donate-page-body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
+            box-sizing: border-box;
             margin: 0;
-            padding: 0;
+        }
+
+        .donate-container {
+            max-width: 480px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
             box-sizing: border-box;
         }
+
+        /* --- TIÊU ĐỀ --- */
+        .donate-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: #1a1a1a;
+        }
+
+        .donate-header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin: 0 0 2rem 0;
+        }
+
+        /* --- MÃ QR --- */
+        .qr-code-section {
+            margin-bottom: 2rem;
+        }
+
+        .qr-code-image {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+            cursor: pointer; /* Thêm con trỏ để báo hiệu có thể nhấp */
+            transition: transform 0.3s ease;
+        }
+        .qr-code-image:hover {
+            transform: scale(1.05);
+        }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
+        .qr-code-section p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 1rem;
+        }
+
+        /* --- THÔNG TIN TÀI KHOẢN --- */
+        .account-info-section {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .account-info-section .bank-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+
+        .account-number-wrapper {
             display: flex;
-            flex-direction: column;
-            background: linear-gradient(135deg, var(--bg) 0%, #0a1f4d 100%);
-            position: relative;
-            overflow-x: hidden;
-            transition: background-color var(--transition), color var(--transition);
-        }
-        
-        body.light {
-            background: linear-gradient(135deg, var(--bg) 0%, #e1e9ff 100%);
-        }
-        
-        .sphere {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #0e8bd5, #0a2a80);
-            box-shadow: 0 0 60px rgba(14, 139, 213, 0.5);
-            z-index: 0;
-        }
-        
-        .sphere-1 {
-            top: 10%; left: 10%; width: 150px; height: 150px;
-            animation: float 8s ease-in-out infinite;
-        }
-        
-        .sphere-2 {
-            bottom: 10%; right: 15%; width: 200px; height: 200px;
-            animation: float 10s ease-in-out infinite 1s;
-        }
-        
-        .sphere-3 {
-            top: 60%; left: 75%; width: 100px; height: 100px;
-            animation: float 7s ease-in-out infinite 0.5s;
-        }
-        
-        body.light .sphere { opacity: 0.6; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .light-beam {
-            position: absolute;
-            top: -10%; left: 30%; width: 40%; height: 300px;
-            background: linear-gradient(to bottom, rgba(14, 139, 213, 0.3), transparent);
-            transform: rotate(15deg); filter: blur(30px); z-index: 0;
-        }
-        
-        .container {
-            width: 100%; max-width: 1200px; margin: 0 auto;
-            padding: 0 1.5rem; position: relative; z-index: 1;
-        }
-        
-        .navbar { padding: 1.5rem 0; position: relative; z-index: 10; }
-        
-        .navbar-container { display: flex; justify-content: space-between; align-items: center; }
-        
-        .logo-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-        
-        .logo {
-            width: 2.5rem; height: 2.5rem; border-radius: 25%;
-            overflow: hidden; box-shadow: 0 0 20px rgba(14, 139, 213, 0.5);
-            position: relative; display: flex; align-items: center; justify-content: center;
-        }
-        
-        .logo-image { width: 100%; height: 100%; object-fit: cover; }
-        
-        .logo-text {
-            font-weight: 700; font-size: 1.5rem; color: var(--text);
-            transition: color var(--transition);
-        }
-        
-        .navbar-actions { display: flex; align-items: center; gap: 1rem; }
-        
-        .theme-toggle {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg); color: var(--text);
-            padding: 0.5rem; font-size: 1.25rem; cursor: pointer;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); display: flex;
-            align-items: center; justify-content: center;
-        }
-        
-        .theme-toggle:hover {
-            transform: rotate(15deg); box-shadow: 0 0 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .lang-dropdown { position: relative; }
-        
-        .lang-btn {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            color: var(--text); padding: 0.5rem 1rem;
-            border-radius: var(--radius-lg); font-family: inherit;
-            font-size: 0.875rem; font-weight: 500; cursor: pointer;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); display: flex;
-            align-items: center; gap: 0.5rem;
-        }
-        
-        .lang-btn:hover { box-shadow: 0 0 15px rgba(14, 139, 213, 0.3); }
-        
-        .lang-flag { width: 20px; height: 15px; object-fit: cover; border-radius: 2px; }
-        
-        .lang-dropdown-content {
-            position: absolute; top: 100%; right: 0; margin-top: 0.5rem;
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius); overflow: hidden; min-width: 150px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--shadow); opacity: 0; visibility: hidden;
-            transform: translateY(10px); transition: all var(--transition); z-index: 100;
-        }
-        
-        .lang-dropdown.active .lang-dropdown-content {
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        
-        .lang-option {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.75rem 1rem; color: var(--text);
-            text-decoration: none; transition: background-color var(--transition);
-        }
-        
-        .lang-option:hover { background-color: rgba(14, 139, 213, 0.1); }
-        
-        .main { flex: 1; padding: 2rem 0; position: relative; z-index: 1; }
-        
-        .editor-container { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        
-        @media (min-width: 1024px) { .editor-container { grid-template-columns: 3fr 2fr; } }
-        
-        .glass-card {
-            background: var(--card-bg); border-radius: var(--radius-lg);
-            border: 1px solid var(--card-border); box-shadow: var(--shadow);
-            overflow: hidden; position: relative; backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
-        }
-        
-        .card-header {
-            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border);
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 1; transition: border-color var(--transition);
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80); color: white;
-        }
-        
-        .card-title {
-            font-size: 1.125rem; font-weight: 600; display: flex;
-            align-items: center; gap: 0.5rem; color: white;
-        }
-        
-        .card-title i { color: white; }
-        
-        .card-body { padding: 1.5rem; position: relative; z-index: 1; }
-        
-        .textarea-wrapper { position: relative; margin-bottom: 1rem; }
-        
-        .editor-textarea {
-            width: 100%; min-height: 300px; padding: 1rem;
-            border: 1px solid var(--card-border); border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.05); color: var(--text);
-            font-family: inherit; font-size: 1rem; line-height: 1.5; resize: vertical;
-            transition: all var(--transition); backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        body.light .editor-textarea { background: rgba(255, 255, 255, 0.5); }
-        
-        .editor-textarea:focus {
-            outline: none; border-color: #0e8bd5;
-            box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2);
-        }
-        
-        .char-count {
-            position: absolute; bottom: 0.75rem; right: 0.75rem; font-size: 0.75rem;
-            color: var(--text-secondary); background: rgba(0, 0, 0, 0.2);
-            padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            transition: color var(--transition), background-color var(--transition);
-        }
-        
-        body.light .char-count {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80; font-weight: 500;
-        }
-        
-        .editor-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
-        
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: var(--radius);
-            font-family: inherit; font-size: 0.875rem; font-weight: 500;
-            cursor: pointer; transition: all var(--transition);
-            position: relative; overflow: hidden;
-            border: none;
-        }
-        
-        .btn::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-        }
-        
-        .btn:hover::before { left: 100%; }
-        
-        .btn:hover { transform: translateY(-3px); }
-
-        .btn-primary, .btn-secondary {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            color: white;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .btn-primary:hover, .btn-secondary:hover { box-shadow: 0 6px 20px rgba(14, 139, 213, 0.5); }
-        
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
-            color: var(--text); 
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        body.light .btn-outline {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80;
-            border-color: rgba(14, 91, 174, 0.3); font-weight: 500;
-        }
-        
-        .btn-outline:hover {
-            border-color: #0e8bd5; box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
-        }
-        
-        body.light .btn-outline:hover { 
-            border-color: #0e5bae; 
-            color: #0e5bae; 
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border: 1px dashed #dcdcdc;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
         }
 
-        .btn-outline.active {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            border-color: #0e5bae;
-            color: white;
-        }
-        
-        /* This ensures the icon inherits the button's color in all states */
-        .btn i {
-            color: inherit;
+        #account-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            letter-spacing: 1px;
         }
 
-        .tools-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 0.75rem;
-        }
-        
-        .tool-btn {
-            display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem;
-            border-radius: var(--radius); background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border); color: var(--text);
-            font-family: inherit; font-size: 0.875rem; font-weight: 500;
-            cursor: pointer; transition: all var(--transition); position: relative;
-            overflow: hidden; backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        body.light .tool-btn {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80;
-            border-color: rgba(14, 91, 174, 0.3); font-weight: 600;
-        }
-        
-        .tool-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-        }
-        
-        .tool-btn:hover::before { left: 100%; }
-        
-        /* Specific icon colors for tool-btn, overrides .btn i */
-        .tool-btn i {
-            color: #0e8bd5; 
-        }
-        body.light .tool-btn i {
-            color: #0a2a80;
-        }
-                
-        .tool-btn:hover {
-            border-color: #0e8bd5; transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
-        }
-        
-        body.light .tool-btn:hover {
-            background: rgba(255, 255, 255, 0.9); border-color: #0e5bae;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .tool-btn.active, body.light .tool-btn.active {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            border-color: transparent; color: white;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        /* Make sure active tool-btn icon is white */
-        .tool-btn.active i {
-             color: white;
-        }
-
-        .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
-        
-        .toast {
-            background: var(--card-bg); color: var(--text);
-            border-left: 4px solid #0e8bd5; border-radius: var(--radius);
-            padding: 1rem 1.5rem; margin-top: 0.75rem; box-shadow: var(--shadow);
-            display: flex; align-items: center; gap: 0.75rem;
-            transform: translateX(calc(100% + 2rem)); opacity: 0;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .toast.show { transform: translateX(0); opacity: 1; }
-        
-        .toast i { font-size: 1.25rem; }
-        
-        .toast.success { border-left-color: #0e8bd5; }
-        .toast.success i { color: #0e8bd5; }
-        
-        .toast.warning { border-left-color: #f72585; }
-        .toast.warning i { color: #f72585; }
-        
-        .footer { padding: 1.5rem 0; position: relative; z-index: 1; }
-        
-        .footer-content {
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 1rem;
-        }
-        
-        .footer-text {
-            color: var(--text-secondary); font-size: 0.875rem;
-            transition: color var(--transition);
-        }
-        
-        .footer-links { display: flex; gap: 1.5rem; }
-        
-        .footer-link {
-            color: var(--text-secondary); font-size: 0.875rem;
-            text-decoration: none; transition: color var(--transition);
+        #copy-button {
+            border: 1px solid #007bff;
+            background-color: transparent;
+            color: #007bff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #copy-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #copy-button.copied {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
         }
         
-        .footer-link:hover { color: #0e8bd5; }
-        
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7); display: flex;
-            align-items: center; justify-content: center; z-index: 1000;
-            opacity: 0; visibility: hidden;
-            transition: opacity var(--transition), visibility var(--transition);
+        /* --- POPUP MÃ QR (MỚI) --- */
+        .qr-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: none; /* Ẩn mặc định */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             backdrop-filter: blur(5px);
-        }
-        
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        
-        .modal {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg); width: 90%; max-width: 800px;
-            max-height: 80vh; overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); transform: scale(0.95);
-            opacity: 0; transition: transform var(--transition), opacity var(--transition);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            display: flex; flex-direction: column;
-        }
-        
-        .modal-overlay.active .modal { transform: scale(1); opacity: 1; }
-        
-        .modal-header {
-            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border);
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80); color: white;
-        }
-        
-        .modal-title { font-size: 1.25rem; font-weight: 600; color: white; }
-        
-        .modal-close {
-            background: rgba(255, 255, 255, 0.2); border: none; color: white;
-            width: 32px; height: 32px; border-radius: 50%; font-size: 1.25rem;
-            cursor: pointer; transition: all var(--transition);
-            display: flex; align-items: center; justify-content: center;
-        }
-        
-        .modal-close:hover { background: rgba(255, 255, 255, 0.3); transform: rotate(90deg); }
-        
-        .modal-body { padding: 1.5rem; color: var(--text); overflow-y: auto; flex: 1; }
-        
-        .modal-body::-webkit-scrollbar { width: 10px; }
-        .modal-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-        .modal-body::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #0e8bd5, #0a2a80); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-        .modal-body::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #0a2a80, #0e8bd5); }
-        body.light .modal-body::-webkit-scrollbar-track { background: rgba(14, 91, 174, 0.1); }
-        
-        .modal-body h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: #0e8bd5; font-weight: 600; }
-        .modal-body p, .modal-body ul { margin-bottom: 1rem; }
-        .modal-body ul { padding-left: 1.5rem; }
-        .modal-body li { margin-bottom: 0.5rem; }
-        
-        .form-group { margin-bottom: 1.25rem; }
-        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text); }
-        .form-control {
-            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--card-border);
-            border-radius: var(--radius); background: rgba(255, 255, 255, 0.05);
-            color: var(--text); font-family: inherit; font-size: 1rem;
-            transition: all var(--transition); backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
         }
-        body.light .form-control { background: rgba(255, 255, 255, 0.5); color: #0a2a80; }
-        .form-control:focus { outline: none; border-color: #0e8bd5; box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2); }
-        textarea.form-control { min-height: 150px; resize: vertical; }
-        .form-submit { margin-top: 1rem; }
+
+        .qr-popup-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .qr-popup-content {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-popup-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2.5rem;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+            font-weight: 300;
+        }
+
+        .close-popup-button:hover {
+            color: #000;
+        }
+
+        .popup-qr-image {
+            max-width: 80vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            display: block;
+        }
         
-        @media (max-width: 768px) {
-            .editor-actions { flex-direction: column; }
-            .tools-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .footer-content { flex-direction: column; align-items: center; text-align: center; }
+        /* --- ĐIỀU CHỈNH CHO MÀN HÌNH NHỎ (MOBILE) --- */
+        @media (max-width: 600px) {
+            .donate-page-body {
+                padding: 1rem;
+            }
+            .donate-container {
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
 </head>
-<body class="light">
-    <div class="sphere sphere-1"></div>
-    <div class="sphere sphere-2"></div>
-    <div class="sphere sphere-3"></div>
-    <div class="light-beam"></div>
-    
-    <nav class="navbar">
-        <div class="container navbar-container">
-            <a href="#" class="logo-link">
-                <div class="logo">
-                    <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image" onerror="this.onerror=null; this.src='https://placehold.co/40x40/0e5bae/ffffff?text=L';">
-                </div>
-                <span class="logo-text" id="appName">Text Conversion</span>
-            </a>
-            <div class="navbar-actions">
-                <div class="lang-dropdown" id="langDropdown">
-                    <button class="lang-btn" id="langBtn">
-                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" id="currentFlag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';">
-                        <span id="currentLang">Tiếng Việt</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="lang-dropdown-content">
-                        <a href="#" class="lang-option" data-lang="vi"><img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';"><span>Tiếng Việt</span></a>
-                        <a href="#" class="lang-option" data-lang="en"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=EN';"><span>English</span></a>
-                    </div>
-                </div>
-                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-            </div>
+<body class="donate-page-body">
+
+    <!-- BẮT ĐẦU SAO CHÉP TỪ ĐÂY -->
+    <div class="donate-container">
+        <div class="donate-header">
+            <h1>Ủng hộ tác giả</h1>
+            <p>Sự ủng hộ của bạn là động lực lớn để tôi tiếp tục chia sẻ những nội dung hữu ích.</p>
         </div>
-    </nav>
-    
-    <main class="main">
-        <div class="container">
-            <div class="editor-container">
-                <div class="glass-card" id="editorCard">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-keyboard"></i><span id="editorTitle">Trình soạn thảo</span></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="textarea-wrapper">
-                            <textarea class="editor-textarea" id="inputText" placeholder="Nhập hoặc dán văn bản của bạn vào đây..."></textarea>
-                            <div class="char-count" id="charCount">0 ký tự</div>
-                        </div>
-                        <div class="editor-actions">
-                            <button class="btn btn-primary" id="copyBtn"><i class="far fa-copy"></i><span data-lang-key="buttons.copy">Sao chép</span></button>
-                            <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-history"></i><span data-lang-key="buttons.reset">Khôi phục</span></button>
-                            <!-- Nút Khóa Định Dạng Mới -->
-                            <button class="btn btn-outline" id="lockBtn" title="Khóa/Mở khóa định dạng"><i class="fas fa-lock-open"></i><span data-lang-key="buttons.lock">Khóa</span></button>
-                            <button class="btn btn-outline" id="clearBtn"><i class="far fa-trash-alt"></i><span data-lang-key="buttons.clear">Xóa</span></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="glass-card" id="toolsCard">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-tools"></i><span id="toolsTitle">Công cụ chuyển đổi</span></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="tools-grid">
-                            <button class="tool-btn" data-type="uppercase"><i class="fas fa-arrow-up"></i><span data-lang-key="buttons.uppercase">CHỮ HOA</span></button>
-                            <button class="tool-btn" data-type="lowercase"><i class="fas fa-arrow-down"></i><span data-lang-key="buttons.lowercase">chữ thường</span></button>
-                            <button class="tool-btn" data-type="capitalizeWords"><i class="fas fa-heading"></i><span data-lang-key="buttons.capitalizeWords">Viết Hoa Đầu Từ</span></button>
-                            <button class="tool-btn" data-type="capitalizeSentences"><i class="fas fa-paragraph"></i><span data-lang-key="buttons.capitalizeSentences">Viết hoa câu</span></button>
-                            <button class="tool-btn" data-type="toggleCase"><i class="fas fa-random"></i><span data-lang-key="buttons.toggleCase">cHữ XeN kẼ</span></button>
-                            <button class="tool-btn" data-type="slug"><i class="fas fa-link"></i><span data-lang-key="buttons.slug">Slug URL</span></button>
-                            <button class="tool-btn" data-type="removeAccents"><i class="fas fa-eraser"></i><span data-lang-key="buttons.removeAccents">Xóa dấu</span></button>
-                            <button class="tool-btn" data-type="normal"><i class="fas fa-font"></i><span data-lang-key="buttons.normal">Bình thường</span></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+        <!-- PHẦN MÃ QR -->
+        <div class="qr-code-section">
+            <!-- *** HƯỚNG DẪN: Thay link ảnh QR của bạn vào src="" *** -->
+            <img src="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-6/509606112_1908674543215824_899905257291646667_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CpbXHdYHwi8Q7kNvwFG4c4W&_nc_oc=Adkj7b_AcZLtKccbFIOgWX00cTFy96ocKz-9dbu4CYNfm28HD7KTUejxtqk-mq-YjBw&_nc_zt=23&_nc_ht=scontent.fhan5-9.fna&_nc_gid=GfQrlEdnETo8nsMZiM9bJw&oh=00_AfN560YiNqWjKUT4O9lfbmTJDhZlqapyCpkdBTkeh2ijcQ&oe=685B4D76" 
+                 alt="Mã QR ủng hộ" 
+                 id="qr-code-small"
+                 class="qr-code-image"
+                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
+            <p>Quét mã QR bằng ứng dụng ngân hàng của bạn</p>
         </div>
-    </main>
-    
-    <div class="toast-container"></div>
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text" id="footerText">Thiết kế bởi DucManh.</p>
-                <div class="footer-links">
-                    <a class="footer-link" id="contactLink" data-lang-key="contactLink">Liên hệ</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" data-lang-key="contactTitle">Liên hệ với chúng tôi</h2>
-                <button class="modal-close" data-modal="contactModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p data-lang-key="contactIntro">Vui lòng điền vào biểu mẫu dưới đây...</p>
-                <form id="contactForm">
-                    <div class="form-group"><label for="name" class="form-label" data-lang-key="formLabels.name">Họ và tên</label><input type="text" id="name" name="name" class="form-control" required></div>
-                    <div class="form-group"><label for="email" class="form-label" data-lang-key="formLabels.email">Email</label><input type="email" id="email" name="email" class="form-control" required></div>
-                    <div class="form-group"><label for="subject" class="form-label" data-lang-key="formLabels.subject">Chủ đề</label><input type="text" id="subject" name="subject" class="form-control" required></div>
-                    <div class="form-group"><label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label><textarea id="message" name="message" class="form-control" required></textarea></div>
-                    <div class="form-submit"><button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i><span data-lang-key="formLabels.submit">Gửi tin nhắn</span></button></div>
-                </form>
+
+        <!-- PHẦN SỐ TÀI KHOẢN -->
+        <div class="account-info-section">
+            <!-- *** HƯỚNG DẪN: Thay đổi thông tin ngân hàng của bạn tại đây *** -->
+            <p class="bank-name">Ngân hàng: <strong>MB BANK</strong></p>
+            <div class="account-number-wrapper">
+                <span id="account-number">0123456789</span>
+                <button id="copy-button">
+                    <i class="fa-regular fa-copy"></i>
+                    <span id="copy-text">Sao chép</span>
+                </button>
             </div>
         </div>
     </div>
     
+    <!-- CẤU TRÚC POPUP MÃ QR (MỚI) -->
+    <div id="qr-popup" class="qr-popup-overlay">
+        <div class="qr-popup-content">
+            <span id="close-popup" class="close-popup-button">&times;</span>
+            <img src="https://placehold.co/250x250/ffffff/000000?text=Ma+QR+cua+ban" 
+                 alt="Mã QR ủng hộ (phóng to)"
+                 id="qr-code-large"
+                 class="popup-qr-image"
+                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
+        </div>
+    </div>
+    <!-- KẾT THÚC SAO CHÉP TẠI ĐÂY -->
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const inputText = document.getElementById('inputText');
-            const charCount = document.getElementById('charCount');
-            const toastContainer = document.querySelector('.toast-container');
-            const copyBtn = document.getElementById('copyBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const lockBtn = document.getElementById('lockBtn'); // New lock button
-            const lockBtnIcon = lockBtn.querySelector('i');
-            const lockBtnText = lockBtn.querySelector('span');
-            const themeToggle = document.getElementById('themeToggle');
-            const langDropdown = document.getElementById('langDropdown');
-            const langBtn = document.getElementById('langBtn');
-            const langOptions = document.querySelectorAll('.lang-option');
-            const currentLangText = document.getElementById('currentLang');
-            const currentFlag = document.getElementById('currentFlag');
-            const toolButtons = document.querySelectorAll('.tool-btn');
-            const contactLink = document.getElementById('contactLink');
-            const modalOverlays = document.querySelectorAll('.modal-overlay');
-            const modalCloseButtons = document.querySelectorAll('.modal-close');
-            const contactForm = document.getElementById('contactForm');
-            
-            // State Variables
-            let currentType = null;
-            let originalText = inputText.value;
-            let isFormatLocked = false; // New state for format lock
-            let currentLang = 'vi';
+            // Script cho nút sao chép
+            const copyButton = document.getElementById('copy-button');
+            const accountNumberSpan = document.getElementById('account-number');
+            const copyTextSpan = document.getElementById('copy-text');
+            const copyIcon = copyButton.querySelector('i');
 
-            // Language Text Object
-            const texts = {
-                vi: {
-                    appName: "Chuyển Đổi Chữ", langName: "Tiếng Việt", flagUrl: "https://flagcdn.com/w20/vn.png",
-                    editorTitle: "Trình soạn thảo", toolsTitle: "Công cụ chuyển đổi",
-                    placeholder: "Nhập hoặc dán văn bản của bạn vào đây...", charCount: "ký tự",
-                    footerText: "Thiết kế bởi DucManh.", contactTitle: "Liên hệ với chúng tôi",
-                    contactIntro: "Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
-                    contactLink: "Liên hệ",
-                    formLabels: { name: "Họ và tên", email: "Email", subject: "Chủ đề", message: "Nội dung", submit: "Gửi tin nhắn" },
-                    buttons: { uppercase: "CHỮ HOA", lowercase: "chữ thường", capitalizeWords: "Viết Hoa Đầu Từ", capitalizeSentences: "Viết hoa câu", toggleCase: "cHữ XeN kẼ", slug: "Slug URL", removeAccents: "Xóa dấu", normal: "Bình thường", copy: "Sao chép", clear: "Xóa", reset: "Khôi phục", lock: "Khóa", unlock: "Mở khóa"},
-                    toast: { copied: "Đã sao chép vào clipboard!", cleared: "Đã xóa văn bản!", reset: "Đã khôi phục văn bản gốc!", converted: "Đã chuyển đổi thành công!", error: "Lỗi khi chuyển đổi văn bản!", noText: "Không có văn bản!", messageSent: "Tin nhắn đã được gửi thành công!", formatLocked: "Đã khóa định dạng!", formatUnlocked: "Đã mở khóa định dạng!"}
-                },
-                en: {
-                    appName: "Text Conversion", langName: "English", flagUrl: "https://flagcdn.com/w20/gb.png",
-                    editorTitle: "Editor", toolsTitle: "Conversion Tools",
-                    placeholder: "Enter or paste your text here...", charCount: "characters",
-                    footerText: "Design by DucManh.", contactTitle: "Contact Us",
-                    contactIntro: "Please fill out the form below to send us a message. We will respond as soon as possible.",
-                    contactLink: "Contact",
-                    formLabels: { name: "Full Name", email: "Email", subject: "Subject", message: "Message", submit: "Send Message" },
-                    buttons: { uppercase: "UPPERCASE", lowercase: "lowercase", capitalizeWords: "Capitalize Words", capitalizeSentences: "Capitalize Sentences", toggleCase: "tOgGlE cAsE", slug: "Slug URL", removeAccents: "Remove Accents", normal: "Normal", copy: "Copy", clear: "Clear", reset: "Reset", lock: "Lock", unlock: "Unlock" },
-                    toast: { copied: "Copied to clipboard!", cleared: "Text cleared!", reset: "Reset to original text!", converted: "Conversion successful!", error: "Error converting text!", noText: "No text to process!", messageSent: "Message sent successfully!", formatLocked: "Format locked!", formatUnlocked: "Format unlocked!"}
-                }
-            };
-
-            // --- Event Listeners ---
-
-            inputText.addEventListener('input', function() {
-                if (isFormatLocked && currentType && currentType !== 'normal') {
-                    convertText(currentType);
-                } else if (!isFormatLocked) {
-                    currentType = null;
-                    originalText = inputText.value;
-                    updateActiveToolButtonStates();
-                }
-                updateCharCount();
-            });
-
-            inputText.addEventListener('paste', function() {
-                setTimeout(() => { 
-                    if (isFormatLocked && currentType && currentType !== 'normal') {
-                        convertText(currentType);
-                    } else {
-                        originalText = inputText.value;
-                        if (!isFormatLocked) {
-                           currentType = null;
-                           updateActiveToolButtonStates();
-                        }
+            if (copyButton && accountNumberSpan && copyTextSpan && copyIcon) {
+                copyButton.addEventListener('click', function() {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = accountNumberSpan.textContent.trim();
+                    textArea.style.position = 'fixed';
+                    textArea.style.top = '-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyTextSpan.textContent = 'Đã chép';
+                        copyIcon.classList.remove('fa-regular', 'fa-copy');
+                        copyIcon.classList.add('fa-solid', 'fa-check');
+                        copyButton.classList.add('copied');
+                        setTimeout(function() {
+                            copyTextSpan.textContent = 'Sao chép';
+                            copyIcon.classList.remove('fa-solid', 'fa-check');
+                            copyIcon.classList.add('fa-regular', 'fa-copy');
+                            copyButton.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Không thể sao chép: ', err);
                     }
-                    updateCharCount();
-                }, 0);
-            });
+                    document.body.removeChild(textArea);
+                });
+            }
 
-            copyBtn.addEventListener('click', copyText);
+            // Script cho popup mã QR (MỚI)
+            const qrImageSmall = document.getElementById('qr-code-small');
+            const qrPopup = document.getElementById('qr-popup');
+            const closeButton = document.getElementById('close-popup');
 
-            clearBtn.addEventListener('click', function() {
-                inputText.value = '';
-                updateCharCount();
-                showToast(texts[currentLang].toast.cleared, 'success');
-                if (!isFormatLocked) {
-                    originalText = ''; 
-                    currentType = null;
-                    updateActiveToolButtonStates();
-                }
-            });
+            if (qrImageSmall && qrPopup && closeButton) {
+                // Mở popup
+                qrImageSmall.addEventListener('click', () => {
+                    qrPopup.classList.add('show');
+                });
 
-            resetBtn.addEventListener('click', function() {
-                const textBeforeReset = inputText.value;
-                if (textBeforeReset === originalText && textBeforeReset === '') {
-                   showToast(texts[currentLang].toast.noText, 'warning'); return;
-                }
-                if(textBeforeReset !== originalText) {
-                   inputText.value = originalText;
-                   showToast(texts[currentLang].toast.reset, 'success');
-                }
-                
-                if (isFormatLocked) {
-                    isFormatLocked = false;
-                    lockBtn.classList.remove('active');
-                    lockBtnIcon.className = 'fas fa-lock-open';
-                    lockBtnText.setAttribute('data-lang-key', 'buttons.lock');
-                    updateLanguage(currentLang);
-                }
+                // Đóng popup bằng nút X
+                closeButton.addEventListener('click', () => {
+                    qrPopup.classList.remove('show');
+                });
 
-                currentType = null; 
-                updateActiveToolButtonStates(); 
-                updateCharCount();
-            });
-
-            lockBtn.addEventListener('click', function() {
-                isFormatLocked = !isFormatLocked;
-                this.classList.toggle('active', isFormatLocked);
-                lockBtnIcon.className = `fas fa-${isFormatLocked ? 'lock' : 'lock-open'}`;
-                lockBtnText.setAttribute('data-lang-key', `buttons.${isFormatLocked ? 'unlock' : 'lock'}`);
-                updateLanguage(currentLang);
-                
-                const toastKey = isFormatLocked ? 'formatLocked' : 'formatUnlocked';
-                showToast(texts[currentLang].toast[toastKey], 'success');
-
-                if (isFormatLocked && inputText.value && (!currentType || currentType === 'normal')) {
-                    showToast(texts[currentLang].toast.noFormatToLock, 'warning');
-                }
-            });
-
-            toolButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const clickedButtonType = this.getAttribute('data-type');
-                    const textBeforeOperation = inputText.value;
-                    let toastMessageKey = '';
-                    
-                    if (this.classList.contains('active') && clickedButtonType !== 'normal') {
-                        inputText.value = originalText;
-                        currentType = null; 
-                        toastMessageKey = 'reset';
-                    } else if (clickedButtonType === 'normal') {
-                        inputText.value = originalText;
-                        currentType = 'normal';
-                        if (textBeforeOperation !== originalText) toastMessageKey = 'reset';
-                    } else {
-                        convertText(clickedButtonType); 
-                        currentType = clickedButtonType;
-                        if (textBeforeOperation !== inputText.value) toastMessageKey = 'converted';
+                // Đóng popup khi nhấp vào nền mờ bên ngoài
+                qrPopup.addEventListener('click', (event) => {
+                    if (event.target === qrPopup) {
+                        qrPopup.classList.remove('show');
                     }
-
-                    if (toastMessageKey) showToast(texts[currentLang].toast[toastMessageKey], 'success');
-                    updateActiveToolButtonStates();
-                    updateCharCount();
-                });
-            });
-            
-            themeToggle.addEventListener('click', toggleTheme);
-
-            langBtn.addEventListener('click', (e) => { e.preventDefault(); langDropdown.classList.toggle('active'); e.stopPropagation(); });
-            document.addEventListener('click', (e) => { if (!langDropdown.contains(e.target)) langDropdown.classList.remove('active'); });
-
-            langOptions.forEach(option => {
-                option.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    updateLanguage(this.getAttribute('data-lang'));
-                    langDropdown.classList.remove('active');
-                });
-            });
-
-            contactLink.addEventListener('click', () => openModal('contactModal'));
-            modalCloseButtons.forEach(button => button.addEventListener('click', function() { closeModal(this.getAttribute('data-modal')); }));
-            modalOverlays.forEach(overlay => overlay.addEventListener('click', function(e) { if (e.target === this) closeModal(this.id); }));
-            document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', e => e.stopPropagation()));
-
-            if (contactForm) {
-                contactForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    setTimeout(() => {
-                        showToast(texts[currentLang].toast.messageSent, 'success');
-                        closeModal('contactModal');
-                        contactForm.reset();
-                    }, 500);
                 });
             }
-
-            // --- Helper Functions ---
-
-            function updateCharCount() {
-                charCount.textContent = `${inputText.value.length} ${texts[currentLang].charCount}`;
-            }
-
-            function convertText(type) { 
-                if ((currentType === null || currentType === 'normal') && !isFormatLocked) {
-                    originalText = inputText.value;
-                }
-                const textBeforeThisConversion = inputText.value;
-                try {
-                    let text = inputText.value;
-                    switch(type) {
-                        case 'uppercase': text = text.toLocaleUpperCase('vi-VN'); break;
-                        case 'lowercase': text = text.toLocaleLowerCase('vi-VN'); break;
-                        case 'capitalizeWords': 
-                            text = text.normalize('NFC').toLocaleLowerCase('vi-VN')
-                                .split(/(\s+)/)
-                                .map(w => w.match(/\s+/) ? w : (w.length > 0 ? w.charAt(0).toLocaleUpperCase('vi-VN') + w.slice(1) : ''))
-                                .join('');
-                            break;
-                        case 'capitalizeSentences': text = text.normalize('NFC').toLocaleLowerCase('vi-VN').replace(/(^\s*\p{L}|[.!?]\s*\p{L})/gu, c => c.toLocaleUpperCase('vi-VN')); break;
-                        case 'toggleCase':
-                            text = [...text].map(char => {
-                                const upper = char.toLocaleUpperCase('vi-VN');
-                                const lower = char.toLocaleLowerCase('vi-VN');
-                                if (char === upper && char !== lower) return lower;
-                                if (char === lower && char !== upper) return upper;
-                                return char;
-                            }).join('');
-                            break;
-                        case 'slug': text = text.toLocaleLowerCase('vi-VN').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-'); break;
-                        case 'removeAccents': text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D'); break;
-                    }
-                    inputText.value = text;
-                } catch (error) {
-                    console.error('Lỗi chuyển đổi:', error);
-                    showToast(texts[currentLang].toast.error, 'warning'); 
-                    inputText.value = textBeforeThisConversion;
-                }
-            }
-
-            function copyText() {
-                if (!inputText.value) { showToast(texts[currentLang].toast.noText, 'warning'); return; }
-                navigator.clipboard.writeText(inputText.value).then(() => {
-                    showToast(texts[currentLang].toast.copied, 'success');
-                }).catch(() => fallbackCopyText());
-            }
-            
-            function fallbackCopyText() {
-                try {
-                    inputText.select();
-                    document.execCommand('copy');
-                    showToast(texts[currentLang].toast.copied, 'success');
-                    inputText.setSelectionRange(0,0); 
-                } catch (err) {
-                    showToast(texts[currentLang].toast.error, 'warning'); 
-                }
-            }
-
-            function toggleTheme() {
-                document.body.classList.toggle('light');
-                themeToggle.querySelector('i').className = document.body.classList.contains('light') ? 'fas fa-moon' : 'fas fa-sun';
-            }
-            
-            function updateLanguage(lang) {
-                currentLang = lang;
-                const t = texts[lang];
-                document.documentElement.lang = lang;
-                document.getElementById('appName').textContent = t.appName;
-                currentLangText.textContent = t.langName;
-                currentFlag.src = t.flagUrl;
-                currentFlag.alt = t.langName;
-                document.getElementById('editorTitle').textContent = t.editorTitle;
-                document.getElementById('toolsTitle').textContent = t.toolsTitle;
-                inputText.placeholder = t.placeholder;
-                updateCharCount(); 
-
-                document.querySelectorAll('[data-lang-key]').forEach(el => {
-                    const keyParts = el.getAttribute('data-lang-key').split('.');
-                    let textValue = t;
-                    keyParts.forEach(part => { if (textValue) textValue = textValue[part]; });
-                    if (typeof textValue === 'string') el.textContent = textValue;
-                });
-            }
-
-            function showToast(message, type = 'success') {
-                const toastEl = document.createElement('div');
-                toastEl.className = `toast ${type}`;
-                const iconClass = type === 'success' ? 'fa-check-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle');
-                toastEl.innerHTML = `<i class="fas ${iconClass}"></i><span>${message}</span>`;
-                toastContainer.appendChild(toastEl);
-                requestAnimationFrame(() => toastEl.classList.add('show'));
-                setTimeout(() => {
-                    toastEl.classList.remove('show');
-                    toastEl.addEventListener('transitionend', () => toastEl.remove());
-                }, 3000);
-            }
-
-            function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; } }
-            function closeModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.remove('active'); document.body.style.overflow = ''; } }
-
-            function updateActiveToolButtonStates() {
-                toolButtons.forEach(btn => btn.classList.remove('active'));
-                const typeToActivate = currentType || 'normal';
-                const activeButton = document.querySelector(`.tool-btn[data-type="${typeToActivate}"]`);
-                if (activeButton) activeButton.classList.add('active');
-            }
-
-            // --- Initializations ---
-            themeToggle.querySelector('i').className = document.body.classList.contains('light') ? 'fas fa-moon' : 'fas fa-sun';
-            updateLanguage(currentLang); 
-            updateCharCount();
-            updateActiveToolButtonStates(); 
         });
     </script>
 </body>

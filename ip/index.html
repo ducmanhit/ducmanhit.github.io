@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<!-- NÂNG CẤP: Thêm lang="vi" -->
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- NÂNG CẤP: Thêm data-i18n cho title -->
+    <title data-i18n="title">IP Dashboard</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            --bg-color: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(255, 255, 255, 0.15);
+            --icon-bg: rgba(255, 255, 255, 0.05);
+            --icon-border: rgba(255, 255, 255, 0.1);
+            --icon-color: rgba(255, 255, 255, 0.7);
+            --icon-color-hover: #ffffff;
+            --grid-line: rgba(255, 255, 255, 0.02);
+            --loader-bg: rgba(255, 255, 255, 0.1);
+            --loader-accent: #3b82f6;
+            --shine-color: rgba(255, 255, 255, 0.05);
+            --ip-card-gradient: linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(168,85,247,0.2) 100%);
+            --copy-btn-bg: rgba(255,255,255,0.08);
+            --copy-btn-border: rgba(255,255,255,0.15);
+            --copy-btn-color: rgba(255,255,255,0.9);
+            
+            /* NÂNG CẤP: Biến cho modal */
+            --modal-bg: rgba(20, 20, 20, 0.7);
+            --modal-card-bg: #1a1a1a;
+
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-mode {
+            --bg-color: #f4f4f5;
+            --text-primary: #18181b;
+            --text-secondary: #52525b;
+            --text-tertiary: #71717a;
+            --card-bg: #ffffff;
+            --card-border: #e4e4e7;
+            --card-border-hover: #d4d4d8;
+            --stat-item-bg: #fafafa;
+            --stat-item-border: #e4e4e7;
+            --icon-bg: #ffffff;
+            --icon-border: #e4e4e7;
+            --icon-color: #52525b;
+            --icon-color-hover: #18181b;
+            --grid-line: rgba(0, 0, 0, 0.04);
+            --loader-bg: rgba(0, 0, 0, 0.05);
+            --loader-accent: #3b82f6; 
+            --shine-color: rgba(0, 0, 0, 0.03);
+            --ip-card-gradient: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(168,85,247,0.15) 100%);
+            --copy-btn-bg: rgba(0, 0, 0, 0.05);
+            --copy-btn-border: rgba(0, 0, 0, 0.1);
+            --copy-btn-color: #18181b;
+            
+            /* NÂNG CẤP: Biến modal cho light mode */
+            --modal-bg: rgba(244, 244, 245, 0.7);
+            --modal-card-bg: #ffffff;
+        }
+
+        /* --- Nền và Hiệu ứng --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+            top: -250px;
+            right: 10%;
+            filter: blur(80px);
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+            bottom: -200px;
+            left: 15%;
+            filter: blur(80px);
+            animation: float2 18s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 50px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-80px, -60px); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Header --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 0 5px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-primary);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .datetime {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            line-height: 1.5;
+            min-width: 170px;
+        }
+
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            background: var(--icon-bg);
+            border: 1px solid var(--icon-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-button:hover {
+            background: var(--card-bg);
+            color: var(--icon-color-hover);
+        }
+        
+        /* NÂNG CẤP: Ẩn/hiện icon theme */
+        .theme-toggle svg { display: none; }
+        body[data-theme-mode="dark"] .icon-moon { display: block; }
+        body[data-theme-mode="light"] .icon-sun { display: block; }
+        body[data-theme-mode="auto"] .icon-auto { display: block; }
+
+        /* NÂNG CẤP: CSS cho nút ngôn ngữ */
+        .lang-toggle {
+            width: 44px; /* Hơi rộng hơn 1 chút */
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1.5fr; 
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* --- Thẻ (Card) --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px; 
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+
+            opacity: 0;
+            transform: translateY(10px);
+            animation: cardFadeIn 0.5s ease 0.3s forwards;
+        }
+
+        @keyframes cardFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card:hover {
+            border-color: var(--card-border-hover);
+        }
+
+        .ip-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            animation: cardFadeIn 0.5s ease 0.1s forwards;
+            z-index: 1;
+        }
+
+        .ip-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--ip-card-gradient);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite;
+            opacity: 1; 
+            z-index: 2; 
+            border-radius: 24px;
+            transition: background 0.5s ease, opacity 0.3s ease;
+        }
+
+        .ip-card > * {
+            position: relative;
+            z-index: 3; /* Lớp 3 (trên cùng) */
+        }
+
+
+        .ip-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .ip-number {
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            word-break: break-all;
+        }
+
+        .ip-location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .ip-location .country-flag {
+            width: 24px;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .ip-copy {
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--copy-btn-bg);
+            border: 1px solid var(--copy-btn-border);
+            border-radius: 12px;
+            color: var(--copy-btn-color);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ip-copy:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        .country-flag {
+            width: 32px;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Grid chi tiết --- */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px;
+            height: 100%; 
+            
+            opacity: 0;
+            transform: translateY(10px);
+            animation: cardFadeIn 0.5s ease 0.3s forwards;
+        }
+
+        .detail-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            /* NÂNG CẤP: Thêm cursor pointer */
+            cursor: pointer;
+        }
+
+        .detail-box:hover {
+            background: var(--stat-item-bg);
+            border-color: var(--card-border-hover);
+            transform: scale(1.02);
+        }
+
+        /* Nâng cấp: Animation delay so le cho 9 box */
+        .detail-box:nth-child(1) { animation-delay: 0.3s; }
+        .detail-box:nth-child(2) { animation-delay: 0.35s; }
+        .detail-box:nth-child(3) { animation-delay: 0.4s; }
+        .detail-box:nth-child(4) { animation-delay: 0.45s; }
+        .detail-box:nth-child(5) { animation-delay: 0.5s; }
+        .detail-box:nth-child(6) { animation-delay: 0.55s; }
+        .detail-box:nth-child(7) { animation-delay: 0.6s; }
+        .detail-box:nth-child(8) { animation-delay: 0.65s; }
+        .detail-box:nth-child(9) { animation-delay: 0.7s; }
+
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            
+            transform: scale(0);
+            opacity: 0;
+            animation: iconPopIn 0.5s ease forwards;
+        }
+        
+        @keyframes iconPopIn {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .detail-box:nth-child(1) .detail-icon { animation-delay: 0.5s; }
+        .detail-box:nth-child(2) .detail-icon { animation-delay: 0.55s; }
+        .detail-box:nth-child(3) .detail-icon { animation-delay: 0.6s; }
+        .detail-box:nth-child(4) .detail-icon { animation-delay: 0.65s; }
+        .detail-box:nth-child(5) .detail-icon { animation-delay: 0.7s; }
+        .detail-box:nth-child(6) .detail-icon { animation-delay: 0.75s; }
+        .detail-box:nth-child(7) .detail-icon { animation-delay: 0.8s; }
+        .detail-box:nth-child(8) .detail-icon { animation-delay: 0.85s; }
+        .detail-box:nth-child(9) .detail-icon { animation-delay: 0.9s; }
+
+
+        .detail-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+        .box-1 .detail-icon { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .box-2 .detail-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .box-3 .detail-icon { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+        .box-4 .detail-icon { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .box-5 .detail-icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .box-6 .detail-icon { background: rgba(20, 184, 166, 0.1); color: #14b8a6; }
+        .box-7 .detail-icon { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        .box-8 .detail-icon { background: rgba(217, 70, 239, 0.1); color: #d946ef; }
+        .box-9 .detail-icon { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+
+
+        .detail-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            margin-bottom: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+            
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .detail-value.country-detail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .country-flag-small {
+            width: 18px;
+            height: auto;
+            border-radius: 3px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* NÂNG CẤP: CSS cho Modal (Popup) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-bg);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            
+            /* Logic animation "mượt mà" */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--modal-card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            /* NÂNG CẤP: Giảm padding */
+            padding: 25px;
+            /* NÂNG CẤP: Bỏ max-width, thêm min-width */
+            min-width: 250px;
+            max-width: 90vw; /* Giới hạn chiều rộng */
+            width: auto; /* Tự co giãn */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            
+            /* Logic animation "mượt mà" */
+            transform: scale(0.95) translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            
+            /* NÂNG CẤP: Thêm flex để căn giữa */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        
+        /* NÂNG CẤP: Thêm container cho icon */
+        #modalIconContainer {
+            margin-bottom: 15px;
+            /* Tăng kích thước icon trong modal */
+            transform: scale(1.2); 
+        }
+
+        #modalTitle {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #modalValue {
+            /* NÂNG CẤP: Tăng font, căn giữa */
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            word-wrap: break-word;
+            line-height: 1.4;
+            text-align: center;
+            
+            /* NÂNG CẤP: Thêm flex cho cờ */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #modalCloseButton {
+            margin-top: 25px;
+            padding: 10px 25px; /* NÂNG CẤP: Sửa padding */
+            background: var(--copy-btn-bg);
+            border: 1px solid var(--copy-btn-border);
+            border-radius: 12px;
+            color: var(--copy-btn-color);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: auto; /* NÂNG CẤP: Bỏ width 100% */
+        }
+
+        #modalCloseButton:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.25);
+        }
+        
+        body.light-mode #modalCloseButton:hover {
+            background: rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.15);
+        }
+
+
+        /* --- Trạng thái tải --- */
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--text-secondary);
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 20px;
+            border: 3px solid var(--loader-bg);
+            border-top-color: var(--loader-accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) { 
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .ip-card {
+                height: auto;
+                min-height: 280px;
+            }
+            .ip-number {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 30px 25px;
+            }
+            .header-right {
+                gap: 10px;
+            }
+            .datetime {
+                min-width: 0;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<!-- NÂNG CẤP: Thêm data-theme-mode -->
+<body data-theme-mode="auto">
+    <div class="bg-grid"></div>
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                </svg>
+                <!-- NÂNG CẤP: Thêm data-i18n -->
+                <span data-i18n="logo">NETWORK</span>
+            </div>
+            <div class="header-right">
+                <div class="datetime" id="datetime"></div>
+                
+                <!-- NÂNG CẤP: Thêm icon-auto -->
+                <div class="icon-button theme-toggle" id="themeToggle" title="Đổi giao diện">
+                    <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-auto" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                
+                <!-- NÂNG CẤP: Thêm nút Ngôn ngữ -->
+                <div class="icon-button lang-toggle" id="langToggle" title="Đổi ngôn ngữ">
+                    <span id="langIndicator">VI</span>
+                </div>
+                
+                <div class="icon-button refresh-icon" id="refreshIcon" onclick="location.reload()" title="Tải lại dữ liệu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div id="content" class="main-grid">
+            <div class="loading">
+                <div class="loader"></div>
+                <!-- NÂNG CẤP: Thêm ID và data-i18n -->
+                <div id="loadingText" data-i18n="loading_text">Đang tải thông tin mạng...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NÂNG CẤP: Thêm cấu trúc Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <!-- NÂNG CẤP: Thêm container cho icon -->
+            <div id="modalIconContainer"></div>
+            <h3 id="modalTitle"></h3>
+            <!-- NÂNG CẤP: Đổi <p> thành <div> -->
+            <div id="modalValue"></div>
+            <button id="modalCloseButton">
+                <span id="modalCloseText" data-i18n="modal_close">Đóng</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // NÂNG CẤP: Toàn bộ script được cấu trúc lại
+        
+        // --- BIẾN TOÀN CỤC VÀ DỮ LIỆU DỊCH ---
+        let currentLang = 'vi';
+        let currentTheme = 'auto';
+        let apiData = null;      // Lưu trữ dữ liệu từ API
+        let clientInfo = null; // Lưu trữ OS/Browser
+
+        const translations = {
+            'en': {
+                'title': 'IP Dashboard',
+                'logo': 'NETWORK',
+                'time_amlich': 'Lunar:',
+                'time_weekdays': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                'refresh_title': 'Refresh Data',
+                'theme_title_auto': 'Theme: Auto',
+                'theme_title_light': 'Theme: Light',
+                'theme_title_dark': 'Theme: Dark',
+                'lang_title': 'Change Language (VI/EN)',
+                'loading_text': 'Loading network information...',
+                'load_error': 'Failed to load data. Please try refreshing.',
+                'ip_label': 'IP Address',
+                'ip_copy_btn': 'Copy Address',
+                'ip_copied_btn': 'Copied!',
+                'detail_country': 'Country',
+                'detail_timezone': 'Timezone',
+                'detail_coords': 'Coordinates',
+                'detail_postal': 'Postal',
+                'detail_os': 'Operating System',
+                'detail_browser': 'Browser',
+                'detail_hostname': 'Hostname',
+                'detail_provider': 'Provider',
+                'detail_region': 'Region',
+                'na': 'N/A',
+                'modal_close': 'Close'
+            },
+            'vi': {
+                'title': 'Bảng điều khiển IP',
+                'logo': 'NETWORK',
+                'time_amlich': 'Âm lịch:',
+                'time_weekdays': ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"],
+                'refresh_title': 'Tải lại dữ liệu',
+                'theme_title_auto': 'Giao diện: Tự động',
+                'theme_title_light': 'Giao diện: Sáng',
+                'theme_title_dark': 'Giao diện: Tối',
+                'lang_title': 'Đổi ngôn ngữ (VI/EN)',
+                'loading_text': 'Đang tải thông tin mạng...',
+                'load_error': 'Không thể tải dữ liệu. Vui lòng thử lại.',
+                'ip_label': 'Địa chỉ IP',
+                'ip_copy_btn': 'Sao chép địa chỉ',
+                'ip_copied_btn': 'Đã sao chép!',
+                'detail_country': 'Quốc gia',
+                'detail_timezone': 'Múi giờ',
+                'detail_coords': 'Toạ độ',
+                'detail_postal': 'Mã bưu chính',
+                'detail_os': 'Hệ điều hành',
+                'detail_browser': 'Trình duyệt',
+                'detail_hostname': 'Tên máy chủ',
+                'detail_provider': 'Nhà cung cấp',
+                'detail_region': 'Khu vực',
+                'na': 'Không có',
+                'modal_close': 'Đóng'
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const langToggle = document.getElementById('langToggle');
+        const langIndicator = document.getElementById('langIndicator');
+        const refreshIcon = document.getElementById('refreshIcon');
+        const datetimeEl = document.getElementById('datetime');
+        const contentEl = document.getElementById('content');
+        
+        // NÂNG CẤP: Thêm DOM cho Modal
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalIconContainer = document.getElementById('modalIconContainer');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalValue = document.getElementById('modalValue');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+
+        // --- LOGIC GIAO DIỆN (THEME) ---
+        function setVisualTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+            } else {
+                body.classList.remove('light-mode');
+            }
+        }
+
+        function applyThemeSetting(setting) {
+            currentTheme = setting;
+            localStorage.setItem('theme', setting);
+            body.setAttribute('data-theme-mode', setting);
+            
+            updateThemeTitle(); // Cập nhật title
+
+            if (setting === 'auto') {
+                const hour = new Date().getHours();
+                setVisualTheme(hour >= 6 && hour < 18 ? 'light' : 'dark');
+            } else {
+                setVisualTheme(setting);
+            }
+        }
+        
+        function updateThemeTitle() {
+            const tr = translations[currentLang];
+            if (currentTheme === 'auto') themeToggle.title = tr.theme_title_auto;
+            else if (currentTheme === 'light') themeToggle.title = tr.theme_title_light;
+            else themeToggle.title = tr.theme_title_dark;
+        }
+
+        // --- LOGIC NGÔN NGỮ (i18n) ---
+        function updateLanguage() {
+            const lang = currentLang;
+            const tr = translations[lang];
+
+            // Cập nhật HTML lang
+            document.documentElement.lang = lang;
+            
+            // Cập nhật tất cả các phần tử tĩnh
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (tr[key]) {
+                    el.innerText = tr[key];
+                }
+            });
+
+            // Cập nhật Tiêu đề
+            updateThemeTitle(); // Cập nhật title của theme
+            langToggle.title = tr.lang_title;
+            refreshIcon.title = tr.refresh_title;
+
+            // Cập nhật văn bản động (đồng hồ, dữ liệu api)
+            updateTime();
+            renderData(); // Re-render data với ngôn ngữ mới
+        }
+
+        // --- LOGIC MODAL ---
+        // NÂNG CẤP: Sửa hàm showModal
+        function showModal(title, valueHtml, iconHtml) {
+            modalTitle.innerText = title;
+            modalValue.innerHTML = valueHtml; // Dùng innerHTML để render cờ
+            modalIconContainer.innerHTML = iconHtml; // Render toàn bộ icon
+            modalOverlay.classList.add('active');
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        // --- LOGIC CẬP NHẬT DỮ LIỆU VÀ THỜI GIAN ---
+        function updateTime() {
+            // 1. Logic tự động đổi theme
+            if (currentTheme === 'auto') {
+                const hour = new Date().getHours();
+                setVisualTheme(hour >= 6 && hour < 18 ? 'light' : 'dark');
+            }
+
+            // 2. Logic đồng hồ
+            const now = new Date();
+            const tr = translations[currentLang];
+            const weekdays = tr.time_weekdays;
+            
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${h}:${m}:${s}`;
+            
+            const day = weekdays[now.getDay()];
+            const date = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const solarDateString = `${day}, ${date}/${month}/${year}`;
+            
+            try {
+                const lunarFormatter = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { day: '2-digit', month: '2-digit' });
+                const lunarDateParts = lunarFormatter.formatToParts(now);
+                let lunarDay = String(lunarDateParts.find(part => part.type === 'day')?.value).padStart(2, '0');
+                let lunarMonth = String(lunarDateParts.find(part => part.type === 'month')?.value).padStart(2, '0');
+                const lunarDateString = `${tr.time_amlich} ${lunarDay}/${lunarMonth}`;
+                
+                if (datetimeEl) {
+                    datetimeEl.innerHTML = `${timeString}<br>${solarDateString}<br>${lunarDateString}`;
+                }
+            } catch (e) {
+                if (datetimeEl) {
+                    datetimeEl.innerHTML = `${timeString}<br>${solarDateString}`;
+                }
+            }
+        }
+        
+        function getClientInfo() {
+            let os = 'N/A';
+            let browser = 'N/A';
+            try {
+                if (navigator.userAgentData?.platform) {
+                    os = navigator.userAgentData.platform;
+                } else {
+                    const ua = navigator.userAgent;
+                    if (ua.includes("Win")) os = "Windows";
+                    else if (ua.includes("Mac")) os = "macOS";
+                    else if (ua.includes("Linux")) os = "Linux";
+                    else if (ua.includes("Android")) os = "Android";
+                    else if (ua.includes("like Mac")) os = "iOS";
+                    else os = navigator.platform || 'N/A';
+                }
+
+                if (navigator.userAgentData?.brands) {
+                    const brands = navigator.userAgentData.brands;
+                    const mainBrand = brands.find(b => b.brand !== "Not A;Brand" && b.brand !== "Chromium");
+                    if (mainBrand) {
+                        browser = `${mainBrand.brand} ${mainBrand.version}`;
+                    } else if (brands.length > 0) {
+                        browser = `${brands[0].brand} ${brands[0].version}`;
+                    }
+                } else {
+                    const ua = navigator.userAgent;
+                    let match;
+                    if ((match = ua.match(/(Firefox)\/([\d\.]+)/))) browser = `${match[1]} ${match[2]}`;
+                    else if ((match = ua.match(/(Edg)\/([\d\.]+)/))) browser = `Edge ${match[2]}`;
+                    else if ((match = ua.match(/(Chrome)\/([\d\.]+) Safari/))) browser = `Chrome ${match[2]}`;
+                    else if ((match = ua.match(/(Safari)\/([\d\.]+) (?!Chrome)/))) browser = `Safari ${match[2]}`;
+                }
+            } catch (e) { console.error("Error getting client info:", e); }
+            
+            if (os !== 'N/A') os = os.charAt(0).toUpperCase() + os.slice(1);
+            return { os, browser };
+        }
+
+        // NÂNG CẤP: Tách riêng hàm render
+        function renderData() {
+            if (!apiData) return; // Chưa có dữ liệu
+            
+            const tr = translations[currentLang];
+            const data = apiData;
+            const { os, browser } = clientInfo;
+            const na = tr.na;
+
+            const [lat, lon] = data.loc ? data.loc.split(',') : [na, na];
+            const hostname = data.hostname || na;
+            const countryCode = data.country ? data.country.toLowerCase() : '';
+            
+            let fullCountryName = na;
+            if (data.country) {
+                try {
+                    // NÂNG CẤP: Dịch tên quốc gia
+                    const regionNames = new Intl.DisplayNames([currentLang], { type: 'region' });
+                    fullCountryName = regionNames.of(data.country);
+                } catch (e) {
+                    fullCountryName = data.country;
+                }
+            }
+
+            const flagImgHtml = countryCode 
+                ? `<img src="https://flagcdn.com/w40/${countryCode}.png" alt="${fullCountryName} flag" class="country-flag" onerror="this.style.display='none'">` 
+                : '';
+            const flagImgSmallHtml = countryCode 
+                ? `<img src="https://flagcdn.com/w20/${countryCode}.png" alt="${fullCountryName} flag" class="country-flag-small" onerror="this.style.display='none'">`
+                : '';
+
+            contentEl.innerHTML = `
+                <div class="card ip-card" id="ipCard">
+                    <div class="ip-label" data-i18n="ip_label">${tr.ip_label}</div>
+                    <div class="ip-number">${data.ip}</div>
+                    <div class="ip-location">
+                        ${flagImgHtml}
+                        <span>${data.city || na}, ${fullCountryName}</span>
+                    </div>
+                    <!-- NÂNG CẤP: Truyền text đã dịch vào hàm copy -->
+                    <div class="ip-copy" onclick="copyIP('${data.ip}', this, '${tr.ip_copy_btn}', '${tr.ip_copied_btn}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span data-i18n="ip_copy_btn">${tr.ip_copy_btn}</span>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <!-- NÂNG CẤP: Thêm data-full-value và data-i18n-label -->
+                    <div class="detail-box box-1" data-full-value="${fullCountryName}" data-i18n-label="detail_country">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_country">${tr.detail_country}</div>
+                        <div class="detail-value country-detail">
+                            ${flagImgSmallHtml}
+                            <span>${fullCountryName}</span>
+                        </div>
+                    </div>
+                    <div class="detail-box box-2" data-full-value="${data.timezone || na}" data-i18n-label="detail_timezone">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_timezone">${tr.detail_timezone}</div>
+                        <div class="detail-value">${data.timezone || na}</div>
+                    </div>
+                    <div class="detail-box box-3" data-full-value="${lat}, ${lon}" data-i18n-label="detail_coords">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_coords">${tr.detail_coords}</div>
+                        <div class="detail-value">${lat}, ${lon}</div>
+                    </div>
+                    <div class="detail-box box-4" data-full-value="${data.postal || na}" data-i18n-label="detail_postal">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_postal">${tr.detail_postal}</div>
+                        <div class="detail-value">${data.postal || na}</div>
+                    </div>
+                    <div class="detail-box box-5" data-full-value="${os}" data-i18n-label="detail_os">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_os">${tr.detail_os}</div>
+                        <div class="detail-value" title="${os}">${os}</div>
+                    </div>
+                    <div class="detail-box box-6" data-full-value="${browser}" data-i18n-label="detail_browser">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" y1="8" x2="12" y2="8"></line><line x1="3.95" y1="6.06" x2="8.54" y2="14"></line><line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_browser">${tr.detail_browser}</div>
+                        <div class="detail-value" title="${browser}">${browser}</div>
+                    </div>
+                    <div class="detail-box box-7" data-full-value="${hostname}" data-i18n-label="detail_hostname">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_hostname">${tr.detail_hostname}</div>
+                        <div class="detail-value" title="${hostname}">${hostname}</div>
+                    </div>
+                    <div class="detail-box box-8" data-full-value="${data.org || na}" data-i18n-label="detail_provider">
+                        <div class="detail-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path><path d="M9 21v-8h6v8M9 9h6v3H9zM9 5h6v3H9z"></path>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_provider">${tr.detail_provider}</div>
+                        <div class="detail-value" title="${data.org || na}">${data.org || na}</div>
+                    </div>
+                    <div class="detail-box box-9" data-full-value="${data.region || na}" data-i18n-label="detail_region">
+                        <div class="detail-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.5 10c0 7-9.5 13-9.5 13S2.5 17 2.5 10a9.5 9.5 0 0 1 19 0z"></path><circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="detail-label" data-i18n="detail_region">${tr.detail_region}</div>
+                        <div class="detail-value" title="${data.region || na}">${data.region || na}</div>
+                    </div>
+                </div>
+            `;
+            
+            // NÂNG CẤP: Gắn listener cho các box sau khi render
+            contentEl.querySelectorAll('.detail-box').forEach(box => {
+                box.addEventListener('click', () => {
+                    // NÂNG CẤP: Lấy HTML của icon và value
+                    const title = box.querySelector('.detail-label').innerText;
+                    const iconHtml = box.querySelector('.detail-icon').outerHTML;
+                    let valueHtml;
+                    
+                    if (box.getAttribute('data-i18n-label') === 'detail_country') {
+                        // Lấy HTML của cờ và tên
+                        valueHtml = box.querySelector('.detail-value').innerHTML;
+                    } else {
+                        // Lấy text giá trị đầy đủ
+                        valueHtml = box.getAttribute('data-full-value');
+                    }
+                    
+                    showModal(title, valueHtml, iconHtml);
+                });
+            });
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                if (!res.ok) throw new Error('Failed to fetch IP');
+                const ipData = await res.json();
+                const ip = ipData.ip;
+
+                const detailRes = await fetch(`https://ipinfo.io/${ip}/json`);
+                if (!detailRes.ok) throw new Error('Failed to fetch IP details');
+                
+                apiData = await detailRes.json(); // Lưu dữ liệu vào biến toàn cục
+                
+                if (apiData && apiData.ip) {
+                    renderData(); // Gọi hàm render
+                } else {
+                     throw new Error(apiData.message || 'Failed to fetch IP details');
+                }
+            } catch (error) {
+                console.error("Error loading data:", error);
+                contentEl.innerHTML = `<div class="loading">${translations[currentLang].load_error}</div>`;
+            }
+        }
+
+        // NÂNG CẤP: Hàm copy chấp nhận text đã dịch
+        function copyIP(ip, btnElement, copyText, copiedText) {
+            navigator.clipboard.writeText(ip).then(() => {
+                const originalText = copyText; // Dùng text đã dịch
+                const originalIcon = btnElement.querySelector('svg').outerHTML;
+                btnElement.querySelector('span').textContent = copiedText; // Dùng text đã dịch
+                btnElement.querySelector('svg').outerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                `;
+                setTimeout(() => {
+                    btnElement.querySelector('span').textContent = originalText;
+                    btnElement.querySelector('svg').outerHTML = originalIcon;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // --- KHỞI CHẠY ỨNG DỤNG ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Lấy thông tin OS/Browser (chỉ 1 lần)
+            clientInfo = getClientInfo();
+
+            // 2. Cài đặt Theme
+            const savedTheme = localStorage.getItem('theme') || 'auto';
+            applyThemeSetting(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                let newTheme;
+                if (currentTheme === 'auto') newTheme = 'light';
+                else if (currentTheme === 'light') newTheme = 'dark';
+                else newTheme = 'auto';
+                applyThemeSetting(newTheme);
+            });
+
+            // 3. Cài đặt Ngôn ngữ
+            const savedLang = localStorage.getItem('lang') || 'vi';
+            currentLang = savedLang;
+            langIndicator.innerText = currentLang.toUpperCase();
+            updateLanguage(); // Cập nhật toàn bộ text lần đầu
+
+            langToggle.addEventListener('click', () => {
+                currentLang = (currentLang === 'vi') ? 'en' : 'vi';
+                localStorage.setItem('lang', currentLang);
+                langIndicator.innerText = currentLang.toUpperCase();
+                updateLanguage();
+            });
+
+            // 4. Khởi chạy Đồng hồ (cũng tự động cập nhật theme)
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // 5. Tải dữ liệu
+            loadData();
+            
+            // NÂNG CẤP: Thêm listener cho modal
+            modalCloseButton.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                // Chỉ đóng nếu click vào lớp phủ (background), không phải content
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

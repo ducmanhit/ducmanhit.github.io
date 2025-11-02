@@ -26,7 +26,6 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
             --text-tertiary: rgba(255, 255, 255, 0.4);
-            --card-bg: rgba(255, 255, 255, 0.04);
             --card-bg-hover: rgba(255, 255, 255, 0.06);
             --card-border: rgba(255, 255, 255, 0.1);
             --card-border-hover: rgba(255, 255, 255, 0.2);
@@ -325,16 +324,16 @@
         }
 
         /* ============================================
-           ELEGANT DOTS LOADING ANIMATION
+           REFINED DOTS LOADING - SUBTLE & COMPACT
            ============================================ */
-        @keyframes dotScale {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
+        @keyframes dotBounce {
+            0%, 80%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
             }
-            50% {
-                transform: scale(1.8);
-                opacity: 0.3;
+            40% {
+                transform: translateY(-8px) scale(1.1);
+                opacity: 1;
             }
         }
 
@@ -981,7 +980,7 @@
         }
 
         /* ============================================
-           ELEGANT DOTS LOADING - SCALE & FADE
+           REFINED SUBTLE DOTS LOADING
            ============================================ */
         .loading {
             grid-column: 1 / -1;
@@ -993,61 +992,67 @@
             padding: 60px 20px;
         }
 
-        /* Dots Container */
+        /* Compact Dots Container */
         .loader {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 40px;
+            gap: 10px;
+            margin-bottom: 32px;
         }
 
-        /* Individual Dot */
+        /* Smaller, Subtle Dots */
         .loader-dot {
-            width: 18px;
-            height: 18px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            animation: dotScale 1.4s ease-in-out infinite;
+            animation: dotBounce 1s ease-in-out infinite;
         }
 
-        /* Colorful Dots - Giống hình bạn gửi */
+        /* Elegant Color Palette */
         .loader-dot:nth-child(1) {
-            background: #5B8DEF;
+            background: linear-gradient(135deg, #5B8DEF, #4A7FE8);
             animation-delay: 0s;
+            box-shadow: 0 2px 8px rgba(91, 141, 239, 0.4);
         }
 
         .loader-dot:nth-child(2) {
-            background: #7EC8E3;
-            animation-delay: 0.2s;
+            background: linear-gradient(135deg, #7EC8E3, #6DB9D9);
+            animation-delay: 0.15s;
+            box-shadow: 0 2px 8px rgba(126, 200, 227, 0.4);
         }
 
         .loader-dot:nth-child(3) {
-            background: #9B7EBD;
-            animation-delay: 0.4s;
+            background: linear-gradient(135deg, #9B7EBD, #8A6FB0);
+            animation-delay: 0.3s;
+            box-shadow: 0 2px 8px rgba(155, 126, 189, 0.4);
         }
 
         .loader-dot:nth-child(4) {
-            background: #D291BC;
-            animation-delay: 0.6s;
+            background: linear-gradient(135deg, #D291BC, #C682AE);
+            animation-delay: 0.45s;
+            box-shadow: 0 2px 8px rgba(210, 145, 188, 0.4);
         }
 
         .loader-dot:nth-child(5) {
-            background: #EE9CA7;
-            animation-delay: 0.8s;
+            background: linear-gradient(135deg, #EE9CA7, #E58D98);
+            animation-delay: 0.6s;
+            box-shadow: 0 2px 8px rgba(238, 156, 167, 0.4);
         }
 
-        /* Loading Text */
+        /* Minimalist Loading Text */
         #loadingText {
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             animation: textFadeIn 0.6s ease;
+            letter-spacing: 0.5px;
         }
 
-        /* Status Text */
+        /* Subtle Status Text */
         .loading-status {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-tertiary);
             font-weight: 500;
             animation: textFadeIn 0.6s ease 0.2s backwards;
@@ -1260,12 +1265,12 @@
             }
 
             .loader-dot {
-                width: 16px;
-                height: 16px;
+                width: 10px;
+                height: 10px;
             }
 
             #loadingText {
-                font-size: 16px;
+                font-size: 15px;
             }
         }
 
@@ -1312,16 +1317,16 @@
             }
 
             .loader-dot {
-                width: 14px;
-                height: 14px;
+                width: 9px;
+                height: 9px;
             }
 
             .loader {
-                gap: 12px;
+                gap: 8px;
             }
 
             #loadingText {
-                font-size: 15px;
+                font-size: 14px;
             }
 
             .loading {
@@ -1453,7 +1458,7 @@
 
         <div class="footer">
             <div class="footer-content">
-                <span class="footer-text" data-i18n="footer_text">Powered by IP Dashboard Pro</span>
+                <span class="footer-text" data-i18n="footer_text">Design by DucManh</span>
                 <span class="footer-text">•</span>
                 <span class="footer-text" data-i18n="footer_version">Version 2.0</span>
             </div>
@@ -1532,7 +1537,7 @@
                 'detail_country': 'Country', 'detail_timezone': 'Timezone', 'detail_coords': 'Coordinates',
                 'detail_postal': 'Postal', 'detail_os': 'Operating System', 'detail_browser': 'Browser',
                 'detail_hostname': 'Hostname', 'detail_provider': 'Provider', 'detail_region': 'Region',
-                'na': 'N/A', 'modal_close': 'Close', 'footer_text': 'Powered by IP Dashboard Pro', 'footer_version': 'Version 2.0'
+                'na': 'N/A', 'modal_close': 'Close', 'footer_text': 'Design by Duc Manh', 'footer_version': 'Version 2.0'
             },
             'vi': {
                 'title': 'Bảng điều khiển IP Pro', 'logo': 'NETWORK', 'status_online': 'TRỰC TUYẾN',
@@ -1545,7 +1550,7 @@
                 'detail_country': 'Quốc gia', 'detail_timezone': 'Múi giờ', 'detail_coords': 'Toạ độ',
                 'detail_postal': 'Mã bưu chính', 'detail_os': 'Hệ điều hành', 'detail_browser': 'Trình duyệt',
                 'detail_hostname': 'Tên máy chủ', 'detail_provider': 'Nhà cung cấp', 'detail_region': 'Khu vực',
-                'na': 'Không có', 'modal_close': 'Đóng', 'footer_text': 'Được hỗ trợ bởi IP Dashboard Pro', 'footer_version': 'Phiên bản 2.0'
+                'na': 'Không có', 'modal_close': 'Đóng', 'footer_text': 'Thiết kế bởi Đức Mạnh', 'footer_version': 'Phiên bản 2.0'
             }
         };
 

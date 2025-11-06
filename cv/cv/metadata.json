@@ -1,5 +1,0 @@
-{
-  "name": "UK Teaching License Generator",
-  "description": "An application to generate fictional UK teaching license documents for Canva for Education verification. It uses AI to create unique data and styles for each generation.",
-  "requestFramePermissions": []
-}

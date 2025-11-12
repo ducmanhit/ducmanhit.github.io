@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< Updated upstream
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -29,9 +30,63 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--primary-text);
+=======
+<html lang="vi" class="dark-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình tạo mã 2FA - Phong cách Apple</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --accent-blue: #007aff;
+            --accent-purple: #5856d6;
+            --accent-red: #ff3b30;
+            --accent-green: #34c759;
+            --button-secondary-bg: #e8e8ea;
+            --input-bg: rgba(118, 118, 128, 0.12);
+            --border-radius-lg: 20px;
+            --border-radius-md: 12px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        html.dark-theme {
+            --bg-color: #000000;
+            --card-bg: rgba(28, 28, 30, 0.75);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --button-secondary-bg: #3a3a3c;
+            --input-bg: rgba(118, 118, 128, 0.24);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+>>>>>>> Stashed changes
             min-height: 100vh;
             display: flex;
             align-items: center;
+<<<<<<< Updated upstream
             justify-content: center;
             padding: 20px;
             position: relative;
@@ -715,3 +770,894 @@
 </body>
 </html>
 
+=======
+            padding: 1.5rem;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            z-index: 1;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .navbar-actions { display: flex; justify-content: flex-end; margin-bottom: 1.5rem; }
+
+        .ui-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s ease;
+        }
+        
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title i { color: var(--text-secondary); }
+
+        .input-group { margin-bottom: 1.25rem; }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .ui-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-main);
+            transition: all 0.3s ease;
+        }
+        .ui-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+        }
+
+        .generator-output-wrapper {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-top: 0;
+        }
+
+        .generator-output-wrapper.active {
+            max-height: 500px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 1.5rem;
+        }
+        
+        .token-display {
+            background: var(--input-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .token-display:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--card-border);
+        }
+        html.dark-theme .token-display:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .token-value {
+            font-family: var(--font-main);
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            transition: opacity 0.2s ease-in-out;
+            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
+        }
+        
+        .timer-ring-container {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-ring {
+            width: 24px;
+            height: 24px;
+            transform: rotate(-90deg);
+        }
+        
+        .timer-ring__circle {
+            transition: stroke-dashoffset 1s linear;
+            stroke: var(--accent-blue);
+            stroke-width: 3;
+            fill: transparent;
+        }
+        
+        .timer-ring__background {
+            stroke: rgba(120, 120, 128, 0.16);
+            stroke-width: 3;
+            fill: transparent;
+        }
+
+        .timer-text { font-size: 0.875rem; color: var(--text-secondary); font-weight: 500; margin-left: 0.5rem; }
+
+        .button-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1.5rem;}
+        .ui-btn {
+            padding: 0.875rem 1rem;
+            border-radius: var(--border-radius-md);
+            border: none;
+            background: var(--button-secondary-bg);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .ui-btn:hover { filter: brightness(0.95); }
+        .dark-theme .ui-btn:hover { filter: brightness(1.15); }
+        .ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-primary {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        
+        .btn-danger { background: var(--accent-red); color: #fff; }
+
+        .custom-select-wrapper {
+            position: relative;
+        }
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+        .custom-select-trigger .fa-chevron-down {
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+        }
+        .custom-select-wrapper.open .custom-select-trigger .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .custom-select-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--card-shadow);
+            z-index: 10;
+            padding: 0.5rem;
+            list-style: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .custom-select-wrapper.open .custom-select-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-select-options li {
+            padding: 0.75rem 1rem;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-weight: 500;
+        }
+        .custom-select-options li:hover {
+            background-color: var(--input-bg);
+        }
+        .custom-select-options li.selected {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .tabs { 
+            display: flex; 
+            background: var(--input-bg);
+            border-radius: var(--border-radius-md);
+            padding: 4px;
+            margin-bottom: 1.5rem; 
+            position: relative;
+        }
+        .tab {
+            flex: 1;
+            padding: 0.6rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: transparent;
+            border: none;
+            border-radius: 9px;
+            z-index: 1;
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            background: var(--card-bg);
+            border-radius: 9px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+        
+        .saved-codes-list { max-height: 400px; overflow-y: auto; }
+        .saved-code-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius-md);
+            position: relative;
+        }
+        .saved-code-item:hover { background: var(--input-bg); }
+        .saved-code-info { flex-grow: 1; }
+        .saved-code-label { font-size: 1rem; font-weight: 500; }
+        .saved-code-value {
+            font-family: 'Menlo', 'Consolas', monospace;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .saved-code-live { text-align: right; }
+        .saved-code-live .code {
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .saved-code-item .timer-ring {
+            width: 20px;
+            height: 20px;
+        }
+        .saved-code-item .timer-ring__circle {
+             stroke-width: 2.5;
+        }
+        .saved-code-item .timer-ring__background {
+             stroke-width: 2.5;
+        }
+        .saved-code-timer-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .saved-code-timer-container .time {
+             font-size: 0.8rem;
+             color: var(--text-secondary);
+             min-width: 20px;
+        }
+        
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
+        }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            width: 90%; max-width: 480px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: scale(0.95); opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .modal.active .modal-content { transform: scale(1); opacity: 1; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border); }
+        .modal-title { font-size: 1.125rem; font-weight: 600; text-align: center;}
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { padding: 1rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        
+        .notification {
+            position: fixed; top: 1.5rem; left: 50%;
+            transform: translateX(-50%) translateY(-2rem);
+            background: var(--card-bg);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: var(--border-radius-lg);
+            padding: 0.875rem 1.25rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex; align-items: center; gap: 0.75rem;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+        .notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        @media (max-width: 900px) {
+            .split-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 1rem; }
+            .app-title { font-size: 2rem; }
+            .token-value { font-size: 2.5rem; }
+            .button-grid { grid-template-columns: 1fr; }
+            .saved-code-item { flex-direction: column; align-items: flex-start; gap: 0.5rem;}
+            .saved-code-live { text-align: left; }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <header class="app-header">
+            <h1 class="app-title">Trình xác thực</h1>
+        </header>
+
+        <div class="navbar-actions">
+             <button class="ui-btn" id="themeToggleBtn" aria-label="Chuyển đổi giao diện" style="width: 44px; height: 44px; border-radius: 50%;">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+
+        <main class="split-layout">
+            <section class="ui-card generator-section">
+                <h2 class="section-title"><i class="fa-solid fa-key"></i> Tạo mã mới</h2>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label class="input-label" for="secretInput">Khóa thiết lập</label>
+                    <input type="text" id="secretInput" class="ui-input" placeholder="Dán khóa của bạn vào đây" autocomplete="off">
+                </div>
+                
+                <div class="generator-output-wrapper" id="generatorOutput">
+                    <div class="token-display" id="tokenDisplay" title="Nhấn để sao chép mã">
+                        <p class="token-value" id="token">------</p>
+                        <div class="timer-ring-container">
+                            <svg class="timer-ring" id="main-timer-ring">
+                               <circle class="timer-ring__background" r="9" cx="12" cy="12"></circle>
+                               <circle class="timer-ring__circle" r="9" cx="12" cy="12"></circle>
+                            </svg>
+                            <p class="timer-text">
+                                Làm mới sau <span id="secondsCounter">30</span> giây
+                            </p>
+                        </div>
+                    </div>
+                    <div class="button-grid">
+                        <button class="ui-btn" id="copyBtn"><i class="fa-solid fa-copy"></i> Sao chép</button>
+                        <button class="ui-btn btn-primary" id="saveBtn"><i class="fa-solid fa-save"></i> Lưu</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ui-card">
+                <div class="tabs">
+                    <div class="tab-indicator"></div>
+                    <button class="tab active" data-tab="saved">Đã lưu</button>
+                    <button class="tab" data-tab="settings">Cài đặt</button>
+                </div>
+                <div class="tab-content saved-codes-content active" data-content="saved">
+                    <div class="saved-codes-list" id="savedCodesList">
+                         <!-- Các mã đã lưu sẽ được render tại đây bằng JS -->
+                    </div>
+                     <button class="ui-btn" id="addNewBtn" style="width: 100%; margin-top: 1rem;"><i class="fa-solid fa-plus"></i> Thêm mã mới</button>
+                </div>
+                <div class="tab-content settings-content" data-content="settings" style="display: none;">
+                    <div class="input-group">
+                        <label class="input-label">Thuật toán</label>
+                        <div class="custom-select-wrapper" id="algorithm-select-wrapper">
+                            <button class="ui-input custom-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span id="algorithm-selected-value">SHA-1 (Mặc định)</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <ul class="custom-select-options" role="listbox">
+                                <li role="option" data-value="SHA-1" class="selected">SHA-1 (Mặc định)</li>
+                                <li role="option" data-value="SHA-256">SHA-256</li>
+                                <li role="option" data-value="SHA-512">SHA-512</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <!-- [REVERTED] Chức năng Sao lưu & Khôi phục cục bộ -->
+                     <div class="input-group">
+                        <label class="input-label">Dữ liệu</label>
+                         <div style="display: flex; gap: 0.75rem;">
+                            <button class="ui-btn" id="backupBtn" style="flex:1;"><i class="fa-solid fa-download"></i> Sao lưu</button>
+                            <button class="ui-btn" id="restoreBtn" style="flex:1;"><i class="fa-solid fa-upload"></i> Khôi phục</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <header class="modal-header"><h3 class="modal-title">Thêm mã mới</h3></header>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label" for="newLabel">Nhãn</label>
+                    <input type="text" id="newLabel" class="ui-input" placeholder="Ví dụ: Tài khoản Google">
+                </div>
+                <div class="input-group">
+                    <label class="input-label" for="newSecret">Khóa thiết lập</label>
+                    <input type="text" id="newSecret" class="ui-input" placeholder="Dán khóa của bạn vào đây">
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button class="ui-btn" id="cancelBtn">Hủy</button>
+                <button class="ui-btn btn-primary" id="saveNewBtn">Lưu</button>
+            </footer>
+        </div>
+    </div>
+    <div class="modal" id="confirmDeleteModal">
+         <div class="modal-content">
+            <header class="modal-header"><h3 class="modal-title">Xóa mã</h3></header>
+            <div class="modal-body" style="text-align: center;">
+                <p id="deleteConfirmMessage" style="color: var(--text-secondary);"></p>
+            </div>
+            <footer class="modal-footer">
+                <button class="ui-btn" id="cancelDeleteBtn">Hủy</button>
+                <button class="ui-btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fa-solid"></i><span id="notificationText"></span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const TwoFactorApp = {
+                els: {
+                    secretInput: document.getElementById('secretInput'),
+                    token: document.getElementById('token'),
+                    secondsCounter: document.getElementById('secondsCounter'),
+                    mainTimerRing: document.querySelector('#main-timer-ring .timer-ring__circle'),
+                    copyBtn: document.getElementById('copyBtn'),
+                    saveBtn: document.getElementById('saveBtn'),
+                    tokenDisplay: document.getElementById('tokenDisplay'),
+                    generatorOutput: document.getElementById('generatorOutput'),
+                    savedCodesList: document.getElementById('savedCodesList'),
+                    addNewBtn: document.getElementById('addNewBtn'),
+                    tabs: document.querySelectorAll('.tab'),
+                    tabIndicator: document.querySelector('.tab-indicator'),
+                    tabContents: document.querySelectorAll('.tab-content'),
+                    algorithmSelectWrapper: document.getElementById('algorithm-select-wrapper'),
+                    algorithmSelectedValue: document.getElementById('algorithm-selected-value'),
+                    addModal: document.getElementById('addModal'),
+                    newLabel: document.getElementById('newLabel'),
+                    newSecret: document.getElementById('newSecret'),
+                    cancelBtn: document.getElementById('cancelBtn'),
+                    saveNewBtn: document.getElementById('saveNewBtn'),
+                    notification: document.getElementById('notification'),
+                    notificationText: document.getElementById('notificationText'),
+                    notificationIcon: document.querySelector('#notification .fa-solid'),
+                    backupBtn: document.getElementById('backupBtn'),
+                    restoreBtn: document.getElementById('restoreBtn'),
+                    confirmDeleteModal: document.getElementById('confirmDeleteModal'),
+                    confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
+                    cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
+                    deleteConfirmMessage: document.getElementById('deleteConfirmMessage'),
+                    themeToggleBtn: document.getElementById('themeToggleBtn'),
+                },
+                state: {
+                    mainTimer: null, savedCodesRefreshTimer: null, currentToken: '',
+                    savedCodes: [], codeToDeleteIndex: -1, notificationTimer: null,
+                    algorithm: 'SHA-1',
+                },
+                
+                init() {
+                    this.setupSvgCircle(this.els.mainTimerRing, 9);
+                    this.loadTheme();
+                    this.loadCodesFromLocalStorage();
+                    this.bindEvents();
+                    this.renderSavedCodes();
+                    this.startSavedCodesRefresh();
+                },
+                
+                setupSvgCircle(circleElement, radius) {
+                    if(!circleElement) return;
+                    const circumference = 2 * Math.PI * radius;
+                    circleElement.style.strokeDasharray = `${circumference} ${circumference}`;
+                    circleElement.style.strokeDashoffset = circumference;
+                    circleElement.dataset.circumference = circumference;
+                },
+                
+                bindEvents() {
+                    if (this.els.copyBtn) this.els.copyBtn.addEventListener('click', () => this.copyToClipboard(this.state.currentToken, 'Đã sao chép mã'));
+                    if (this.els.saveBtn) this.els.saveBtn.addEventListener('click', () => this.openAddModalWithCurrentSecret());
+                    if (this.els.tokenDisplay) this.els.tokenDisplay.addEventListener('click', () => this.copyToClipboard(this.state.currentToken, 'Đã sao chép mã'));
+                    
+                    if (this.els.secretInput) this.els.secretInput.addEventListener('input', () => {
+                        clearTimeout(this.debounceTimer);
+                        this.debounceTimer = setTimeout(() => {
+                            if (this.els.secretInput.value.trim().length > 2) {
+                                this.startMainTokenUpdates();
+                                this.els.generatorOutput.classList.add('active');
+                            } else {
+                                this.clearMainGenerator();
+                                this.els.generatorOutput.classList.remove('active');
+                            }
+                        }, 100);
+                    });
+
+                    const wrapper = this.els.algorithmSelectWrapper;
+                    if (wrapper) {
+                        const trigger = wrapper.querySelector('.custom-select-trigger');
+                        const options = wrapper.querySelectorAll('.custom-select-options li');
+
+                        if(trigger) trigger.addEventListener('click', () => {
+                            wrapper.classList.toggle('open');
+                            trigger.setAttribute('aria-expanded', wrapper.classList.contains('open'));
+                        });
+
+                        if(options) options.forEach(option => {
+                            option.addEventListener('click', () => {
+                                this.state.algorithm = option.dataset.value;
+                                this.els.algorithmSelectedValue.textContent = option.textContent;
+                                options.forEach(opt => opt.classList.remove('selected'));
+                                option.classList.add('selected');
+                                wrapper.classList.remove('open');
+                                if(trigger) trigger.setAttribute('aria-expanded', 'false');
+                                this.startMainTokenUpdates();
+                            });
+                        });
+                        
+                        document.addEventListener('click', (e) => {
+                            if (wrapper && !wrapper.contains(e.target)) {
+                                wrapper.classList.remove('open');
+                                if(trigger) trigger.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                    }
+
+                    if (this.els.themeToggleBtn) this.els.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+                    if (this.els.tabs) this.els.tabs.forEach(tab => tab.addEventListener('click', () => this.showTab(tab.dataset.tab)));
+                    if (this.els.savedCodesList) this.els.savedCodesList.addEventListener('click', e => {
+                        const item = e.target.closest('.saved-code-item');
+                        if(!item) return;
+                        if(e.target.closest('.delete-btn')) {
+                             e.stopPropagation();
+                             this.confirmDeletion(parseInt(item.dataset.index, 10));
+                        } else {
+                            this.loadSavedCode(parseInt(item.dataset.index, 10));
+                        }
+                    });
+                    if (this.els.addNewBtn) this.els.addNewBtn.addEventListener('click', () => this.openModal(this.els.addModal));
+                    if (this.els.cancelBtn) this.els.cancelBtn.addEventListener('click', () => this.closeModal(this.els.addModal));
+                    if (this.els.saveNewBtn) this.els.saveNewBtn.addEventListener('click', () => this.addNewCodeToList());
+                    if (this.els.confirmDeleteBtn) this.els.confirmDeleteBtn.addEventListener('click', () => this.deleteCode());
+                    if (this.els.cancelDeleteBtn) this.els.cancelDeleteBtn.addEventListener('click', () => this.closeModal(this.els.confirmDeleteModal));
+                    if (this.els.addModal) this.els.addModal.addEventListener('click', e => { if (e.target === this.els.addModal) this.closeModal(this.els.addModal) });
+                    if (this.els.confirmDeleteModal) this.els.confirmDeleteModal.addEventListener('click', e => { if (e.target === this.els.confirmDeleteModal) this.closeModal(this.els.confirmDeleteModal) });
+                    
+                    if (this.els.backupBtn) this.els.backupBtn.addEventListener('click', () => this.createBackup());
+                    if (this.els.restoreBtn) this.els.restoreBtn.addEventListener('click', () => this.restoreFromBackup());
+                },
+                base32ToHex(base32) {
+                    const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+                    base32 = base32.replace(/\s+/g, '').toUpperCase().replace(/=+$/, '');
+                    if (!/^[A-Z2-7]+$/.test(base32)) throw new Error('Invalid Base32');
+                    let bits = '';
+                    for (let i = 0; i < base32.length; i++) bits += base32chars.indexOf(base32[i]).toString(2).padStart(5, '0');
+                    let hex = '';
+                    for (let i = 0; i + 4 <= bits.length; i += 4) hex += parseInt(bits.substring(i, i + 4), 2).toString(16);
+                    return hex;
+                },
+                generateTOTP({ secret, period = 30, digits = 6, algorithm = 'SHA-1' }) {
+                    try {
+                        if (!secret) return null;
+                        const hexSecret = this.base32ToHex(secret);
+                        const epoch = Math.floor(Date.now() / 1000);
+                        const counter = Math.floor(epoch / period);
+                        const counterHex = counter.toString(16).padStart(16, '0');
+                        const secretWordArray = CryptoJS.enc.Hex.parse(hexSecret);
+                        const counterWordArray = CryptoJS.enc.Hex.parse(counterHex);
+                        const algoMap = { 'SHA-1': CryptoJS.HmacSHA1, 'SHA-256': CryptoJS.HmacSHA256, 'SHA-512': CryptoJS.HmacSHA512 };
+                        const hmac = algoMap[algorithm](counterWordArray, secretWordArray);
+                        const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+                        const offset = parseInt(hmacHex.slice(-1), 16);
+                        const binary = parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff;
+                        const otp = binary % Math.pow(10, digits);
+                        return { code: otp.toString().padStart(digits, '0'), secondsRemaining: period - (epoch % period) };
+                    } catch (error) { return null; }
+                },
+                startMainTokenUpdates() {
+                    if (this.state.mainTimer) clearInterval(this.state.mainTimer);
+                    this.updateMainToken();
+                    this.state.mainTimer = setInterval(() => this.updateMainToken(), 1000);
+                },
+                updateMainToken() {
+                    const secret = this.els.secretInput.value.trim();
+                    const options = { secret, period: 30, digits: 6, algorithm: this.state.algorithm };
+                    const result = this.generateTOTP(options);
+                    if (!result) { this.els.token.textContent = 'Lỗi Khóa'; this.updateMainTimerDisplay(0, options.period); return; }
+                    if (result.code !== this.state.currentToken) {
+                        this.state.currentToken = result.code;
+                        const tokenEl = this.els.token;
+                        tokenEl.style.opacity = '0';
+                        setTimeout(() => {
+                            tokenEl.textContent = result.code.match(/.{1,3}/g).join(' ');
+                            tokenEl.style.opacity = '1';
+                        }, 200);
+                    }
+                    this.updateMainTimerDisplay(result.secondsRemaining, options.period);
+                },
+                updateMainTimerDisplay(seconds, period) {
+                    if (this.els.secondsCounter) this.els.secondsCounter.textContent = seconds;
+                    if (this.els.mainTimerRing) {
+                        const circumference = this.els.mainTimerRing.dataset.circumference;
+                        const offset = circumference - (seconds / period) * circumference;
+                        this.els.mainTimerRing.style.strokeDashoffset = offset;
+                        this.els.mainTimerRing.style.stroke = seconds <= 5 ? 'var(--accent-red)' : 'var(--accent-blue)';
+                    }
+                },
+                clearMainGenerator() {
+                    const tokenEl = this.els.token;
+                    if(tokenEl) {
+                        tokenEl.style.opacity = '0';
+                        setTimeout(() => {
+                            tokenEl.textContent = '------';
+                            tokenEl.style.opacity = '1';
+                        }, 200);
+                    }
+                    this.state.currentToken = '';
+                    if (this.state.mainTimer) clearInterval(this.state.mainTimer);
+                    this.updateMainTimerDisplay(0, 30);
+                },
+                renderSavedCodes() {
+                    if (!this.els.savedCodesList) return;
+                    if (this.state.savedCodes.length === 0) {
+                        this.els.savedCodesList.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">Chưa có mã nào được lưu</div>`;
+                    } else {
+                        this.els.savedCodesList.innerHTML = this.state.savedCodes.map((code, index) => `
+                            <div class="saved-code-item" data-index="${index}" data-id="${code.id}" title="Nhấn để tải lại mã này">
+                                <div class="saved-code-info">
+                                    <div class="saved-code-label">${code.label}</div>
+                                    <div class="saved-code-value" id="saved-token-static-${code.id}">------</div>
+                                </div>
+                                <div class="saved-code-live">
+                                    <div class="code" id="saved-token-${code.id}">------</div>
+                                    <div class="saved-code-timer-container">
+                                       <svg class="timer-ring" id="timer-ring-${code.id}">
+                                           <circle class="timer-ring__background" r="8" cx="10" cy="10"></circle>
+                                           <circle class="timer-ring__circle" r="8" cx="10" cy="10"></circle>
+                                       </svg>
+                                       <span class="time" id="saved-time-${code.id}">--s</span>
+                                    </div>
+                                </div>
+                                <button class="delete-btn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1rem; margin-left:1rem; opacity:0.5; transition: opacity 0.2s ease;" title="Xóa mã">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>`).join('');
+                    }
+                    this.state.savedCodes.forEach(code => {
+                        this.setupSvgCircle(document.querySelector(`#timer-ring-${code.id} .timer-ring__circle`), 8);
+                    });
+                },
+                refreshLiveSavedCodes() {
+                    this.state.savedCodes.forEach(codeData => {
+                        const result = this.generateTOTP(codeData);
+                        const tokenEl = document.getElementById(`saved-token-${codeData.id}`);
+                        const timeEl = document.getElementById(`saved-time-${codeData.id}`);
+                        const staticTokenEl = document.getElementById(`saved-token-static-${codeData.id}`);
+                        const ringEl = document.querySelector(`#timer-ring-${codeData.id} .timer-ring__circle`);
+
+                        if (result && tokenEl && timeEl && ringEl) {
+                            tokenEl.textContent = result.code.match(/.{1,3}/g).join(' ');
+                            timeEl.textContent = `${result.secondsRemaining}s`;
+                            
+                            const circumference = ringEl.dataset.circumference;
+                            const offset = circumference - (result.secondsRemaining / (codeData.period || 30)) * circumference;
+                            ringEl.style.strokeDashoffset = offset;
+                            ringEl.style.stroke = result.secondsRemaining <= 5 ? 'var(--accent-red)' : 'var(--accent-blue)';
+                            
+                            if(staticTokenEl.textContent === '------') {
+                                staticTokenEl.textContent = codeData.secret.substring(0, 4) + '...' + codeData.secret.substring(codeData.secret.length - 4);
+                            }
+                        }
+                    });
+                },
+                startSavedCodesRefresh() {
+                    if (this.state.savedCodesRefreshTimer) clearInterval(this.state.savedCodesRefreshTimer);
+                    this.refreshLiveSavedCodes();
+                    this.state.savedCodesRefreshTimer = setInterval(() => this.refreshLiveSavedCodes(), 1000);
+                },
+                stopSavedCodesRefresh() {
+                    if (this.state.savedCodesRefreshTimer) clearInterval(this.state.savedCodesRefreshTimer);
+                    this.state.savedCodesRefreshTimer = null;
+                },
+                loadSavedCode(index) {
+                    const code = this.state.savedCodes[index];
+                    if (!code || !this.els.secretInput || !this.els.algorithmSelectWrapper) return;
+                    this.els.secretInput.value = code.secret;
+                    this.state.algorithm = code.algorithm || 'SHA-1';
+                    const selectedOption = this.els.algorithmSelectWrapper.querySelector(`li[data-value="${this.state.algorithm}"]`);
+                    if(selectedOption) {
+                        this.els.algorithmSelectedValue.textContent = selectedOption.textContent;
+                        this.els.algorithmSelectWrapper.querySelectorAll('li').forEach(opt => opt.classList.remove('selected'));
+                        selectedOption.classList.add('selected');
+                    }
+                    this.els.secretInput.dispatchEvent(new Event('input'));
+                },
+                openModal(modal) { if(modal) modal.classList.add('active'); },
+                closeModal(modal) { if(modal) modal.classList.remove('active'); },
+                openAddModalWithCurrentSecret() {
+                    const secret = this.els.secretInput.value.trim();
+                    if (secret && this.state.currentToken && this.state.currentToken.indexOf('-') === -1 && this.state.currentToken.indexOf('Lỗi') === -1) {
+                        this.els.newSecret.value = secret;
+                        this.els.newLabel.value = '';
+                        this.openModal(this.els.addModal);
+                        this.els.newLabel.focus();
+                    } else { this.showNotification('Tạo mã hợp lệ trước khi lưu', 'error'); }
+                },
+                addNewCodeToList() {
+                    const label = this.els.newLabel.value.trim() || 'Chưa đặt tên';
+                    const secret = this.els.newSecret.value.trim();
+                    if (!secret) { this.showNotification('Cần có khóa thiết lập', 'error'); return; }
+                    try {
+                        if (!this.generateTOTP({ secret })) throw new Error('Invalid secret');
+                        this.state.savedCodes.unshift({ id: Date.now(), label, secret, algorithm: 'SHA-1', digits: 6, period: 30 });
+                        this.saveCodesToLocalStorage();
+                        this.showNotification(`Đã lưu mã "${label}"`, 'success');
+                        this.showTab('saved');
+                        this.closeModal(this.els.addModal);
+                    } catch (error) { this.showNotification('Khóa thiết lập không hợp lệ', 'error'); }
+                },
+                confirmDeletion(index) {
+                    const code = this.state.savedCodes[index];
+                    if (!code) return;
+                    this.state.codeToDeleteIndex = index;
+                    this.els.deleteConfirmMessage.innerHTML = `Bạn có chắc muốn xóa <strong>${code.label}</strong> không?`;
+                    this.openModal(this.els.confirmDeleteModal);
+                },
+                deleteCode() {
+                    const index = this.state.codeToDeleteIndex;
+                    if (index > -1) {
+                        this.state.savedCodes.splice(index, 1);
+                        this.saveCodesToLocalStorage();
+                        this.renderSavedCodes();
+                        this.showNotification('Đã xóa mã', 'success');
+                    }
+                    this.closeModal(this.els.confirmDeleteModal);
+                    this.state.codeToDeleteIndex = -1;
+                },
+                saveCodesToLocalStorage() { localStorage.setItem('2fa_codes_apple_v1', JSON.stringify(this.state.savedCodes)); },
+                loadCodesFromLocalStorage() {
+                    try {
+                        const codes = localStorage.getItem('2fa_codes_apple_v1');
+                        this.state.savedCodes = codes ? JSON.parse(codes) : [];
+                    } catch (e) { this.state.savedCodes = []; }
+                },
+                createBackup() { 
+                    if (this.state.savedCodes.length === 0) { this.showNotification('Không có mã để sao lưu', 'error'); return; }
+                    const data = JSON.stringify(this.state.savedCodes, null, 2);
+                    const blob = new Blob([data], { type: 'application/json' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `2fa_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                    this.showNotification('Đã tạo tệp sao lưu', 'success');
+                },
+                restoreFromBackup() { 
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.json';
+                    input.onchange = e => {
+                        const file = e.target.files[0]; if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = event => {
+                            try {
+                                const restored = JSON.parse(event.target.result);
+                                if (Array.isArray(restored) && confirm('Thay thế các mã hiện tại bằng tệp sao lưu?')) {
+                                    this.state.savedCodes = restored;
+                                    this.saveCodesToLocalStorage();
+                                    this.renderSavedCodes();
+                                    this.showNotification('Đã khôi phục từ tệp sao lưu', 'success');
+                                } else { throw new Error('Invalid format'); }
+                            } catch (error) { this.showNotification('Tệp sao lưu không hợp lệ', 'error'); }
+                        };
+                        reader.readAsText(file);
+                    };
+                    input.click();
+                },
+                toggleTheme() {
+                    const isLight = document.documentElement.classList.toggle('light-theme');
+                    document.documentElement.classList.toggle('dark-theme', !isLight);
+                    localStorage.setItem('2fa_theme_apple', isLight ? 'light' : 'dark');
+                    this.updateThemeIcon(isLight);
+                },
+                loadTheme() {
+                    const theme = localStorage.getItem('2fa_theme_apple') || 'dark';
+                    const isLight = theme === 'light';
+                    document.documentElement.classList.toggle('light-theme', isLight);
+                    document.documentElement.classList.toggle('dark-theme', !isLight);
+                    this.updateThemeIcon(isLight);
+                },
+                updateThemeIcon(isLight) { if(this.els.themeToggleBtn) this.els.themeToggleBtn.innerHTML = `<i class="fa-solid ${isLight ? 'fa-moon' : 'fa-sun'}"></i>`; },
+                showTab(tabName) {
+                    if(!this.els.tabIndicator || !this.els.tabs || !this.els.tabContents) return;
+                    const tabIndex = Array.from(this.els.tabs).findIndex(t => t.dataset.tab === tabName);
+                    this.els.tabIndicator.style.transform = `translateX(${tabIndex * 100}%)`;
+                    this.els.tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+                    this.els.tabContents.forEach(c => c.style.display = c.dataset.content === tabName ? 'block' : 'none');
+                    tabName === 'saved' ? this.startSavedCodesRefresh() : this.stopSavedCodesRefresh();
+                },
+                showNotification(message, type = 'success') {
+                    if(!this.els.notification) return;
+                    if (this.state.notificationTimer) { clearTimeout(this.state.notificationTimer); this.els.notification.classList.remove('show'); }
+                    this.els.notification.className = 'notification';
+                    this.els.notification.classList.add(type);
+                    this.els.notificationText.textContent = message;
+                    this.els.notificationIcon.className = `fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}`;
+                    setTimeout(() => this.els.notification.classList.add('show'), 10);
+                    this.state.notificationTimer = setTimeout(() => this.els.notification.classList.remove('show'), 3000);
+                },
+                async copyToClipboard(text, successMessage) {
+                    if (!text || text.includes('-') || text.includes('Lỗi')) { this.showNotification('Không có mã hợp lệ để sao chép', 'error'); return; }
+                    try { await navigator.clipboard.writeText(text.replace(/\s/g, '')); this.showNotification(successMessage, 'success'); } 
+                    catch (err) { this.showNotification('Không thể sao chép', 'error'); }
+                }
+            };
+            TwoFactorApp.init();
+        });
+    </script>
+</body>
+</html>
+>>>>>>> Stashed changes

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Chuyển Đổi Chữ - Sketch OS Pro</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -212,10 +213,248 @@
                     <div class="form-group mb-4"><label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label><textarea id="message" name="message" class="form-control" required rows="4"></textarea></div>
                     <div class="form-submit"><button type="submit" class="sketch-btn sketch-btn-primary w-full"><i class="fas fa-paper-plane"></i><span data-lang-key="formLabels.submit">Gửi tin nhắn</span></button></div>
                 </form>
+=======
+    <title>Ủng Hộ Tác Giả - DucManh Blog</title>
+    <!-- Tải font và icon -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- CÀI ĐẶT CHUNG --- */
+        .donate-page-body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        .donate-container {
+            max-width: 480px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* --- TIÊU ĐỀ --- */
+        .donate-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: #1a1a1a;
+        }
+
+        .donate-header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin: 0 0 2rem 0;
+        }
+
+        /* --- MÃ QR --- */
+        .qr-code-section {
+            margin-bottom: 2rem;
+        }
+
+        .qr-code-image {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+            cursor: pointer; /* Thêm con trỏ để báo hiệu có thể nhấp */
+            transition: transform 0.3s ease;
+        }
+        .qr-code-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .qr-code-section p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 1rem;
+        }
+
+        /* --- THÔNG TIN TÀI KHOẢN --- */
+        .account-info-section {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .account-info-section .bank-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+
+        .account-number-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border: 1px dashed #dcdcdc;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        #account-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            letter-spacing: 1px;
+        }
+
+        #copy-button {
+            border: 1px solid #007bff;
+            background-color: transparent;
+            color: #007bff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #copy-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #copy-button.copied {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+        
+        /* --- POPUP MÃ QR (MỚI) --- */
+        .qr-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: none; /* Ẩn mặc định */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .qr-popup-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .qr-popup-content {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-popup-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2.5rem;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+            font-weight: 300;
+        }
+
+        .close-popup-button:hover {
+            color: #000;
+        }
+
+        .popup-qr-image {
+            max-width: 80vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            display: block;
+        }
+        
+        /* --- ĐIỀU CHỈNH CHO MÀN HÌNH NHỎ (MOBILE) --- */
+        @media (max-width: 600px) {
+            .donate-page-body {
+                padding: 1rem;
+            }
+            .donate-container {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="donate-page-body">
+
+    <!-- BẮT ĐẦU SAO CHÉP TỪ ĐÂY -->
+    <div class="donate-container">
+        <div class="donate-header">
+            <h1>Ủng hộ tác giả</h1>
+            <p>Sự ủng hộ của bạn là động lực lớn để tôi tiếp tục chia sẻ những nội dung hữu ích.</p>
+        </div>
+
+        <!-- PHẦN MÃ QR -->
+        <div class="qr-code-section">
+            <!-- *** HƯỚNG DẪN: Thay link ảnh QR của bạn vào src="" *** -->
+            <img src="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-6/509606112_1908674543215824_899905257291646667_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CpbXHdYHwi8Q7kNvwFG4c4W&_nc_oc=Adkj7b_AcZLtKccbFIOgWX00cTFy96ocKz-9dbu4CYNfm28HD7KTUejxtqk-mq-YjBw&_nc_zt=23&_nc_ht=scontent.fhan5-9.fna&_nc_gid=GfQrlEdnETo8nsMZiM9bJw&oh=00_AfN560YiNqWjKUT4O9lfbmTJDhZlqapyCpkdBTkeh2ijcQ&oe=685B4D76" 
+                 alt="Mã QR ủng hộ" 
+                 id="qr-code-small"
+                 class="qr-code-image"
+                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
+            <p>Quét mã QR bằng ứng dụng ngân hàng của bạn</p>
+        </div>
+
+        <!-- PHẦN SỐ TÀI KHOẢN -->
+        <div class="account-info-section">
+            <!-- *** HƯỚNG DẪN: Thay đổi thông tin ngân hàng của bạn tại đây *** -->
+            <p class="bank-name">Ngân hàng: <strong>MB BANK</strong></p>
+            <div class="account-number-wrapper">
+                <span id="account-number">0123456789</span>
+                <button id="copy-button">
+                    <i class="fa-regular fa-copy"></i>
+                    <span id="copy-text">Sao chép</span>
+                </button>
+>>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
             </div>
         </div>
     </div>
     
+<<<<<<< HEAD
     <footer class="sketch-footer">
         <a href="#" id="contactLink">
             <span>Liên hệ</span>
@@ -271,13 +510,62 @@
                            currentType = null;
                            updateActiveToolButtonStates();
                         }
+=======
+    <!-- CẤU TRÚC POPUP MÃ QR (MỚI) -->
+    <div id="qr-popup" class="qr-popup-overlay">
+        <div class="qr-popup-content">
+            <span id="close-popup" class="close-popup-button">&times;</span>
+            <img src="https://placehold.co/250x250/ffffff/000000?text=Ma+QR+cua+ban" 
+                 alt="Mã QR ủng hộ (phóng to)"
+                 id="qr-code-large"
+                 class="popup-qr-image"
+                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
+        </div>
+    </div>
+    <!-- KẾT THÚC SAO CHÉP TẠI ĐÂY -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Script cho nút sao chép
+            const copyButton = document.getElementById('copy-button');
+            const accountNumberSpan = document.getElementById('account-number');
+            const copyTextSpan = document.getElementById('copy-text');
+            const copyIcon = copyButton.querySelector('i');
+
+            if (copyButton && accountNumberSpan && copyTextSpan && copyIcon) {
+                copyButton.addEventListener('click', function() {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = accountNumberSpan.textContent.trim();
+                    textArea.style.position = 'fixed';
+                    textArea.style.top = '-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyTextSpan.textContent = 'Đã chép';
+                        copyIcon.classList.remove('fa-regular', 'fa-copy');
+                        copyIcon.classList.add('fa-solid', 'fa-check');
+                        copyButton.classList.add('copied');
+                        setTimeout(function() {
+                            copyTextSpan.textContent = 'Sao chép';
+                            copyIcon.classList.remove('fa-solid', 'fa-check');
+                            copyIcon.classList.add('fa-regular', 'fa-copy');
+                            copyButton.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Không thể sao chép: ', err);
+>>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
                     }
-                    updateCharCount();
-                }, 0);
-            });
+                    document.body.removeChild(textArea);
+                });
+            }
 
-            copyBtn.addEventListener('click', copyText);
+            // Script cho popup mã QR (MỚI)
+            const qrImageSmall = document.getElementById('qr-code-small');
+            const qrPopup = document.getElementById('qr-popup');
+            const closeButton = document.getElementById('close-popup');
 
+<<<<<<< HEAD
             clearBtn.addEventListener('click', function() {
                 inputText.value = '';
                 updateCharCount();
@@ -443,6 +731,26 @@
             // --- Initializations ---
             updateCharCount();
             updateActiveToolButtonStates(); 
+=======
+            if (qrImageSmall && qrPopup && closeButton) {
+                // Mở popup
+                qrImageSmall.addEventListener('click', () => {
+                    qrPopup.classList.add('show');
+                });
+
+                // Đóng popup bằng nút X
+                closeButton.addEventListener('click', () => {
+                    qrPopup.classList.remove('show');
+                });
+
+                // Đóng popup khi nhấp vào nền mờ bên ngoài
+                qrPopup.addEventListener('click', (event) => {
+                    if (event.target === qrPopup) {
+                        qrPopup.classList.remove('show');
+                    }
+                });
+            }
+>>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
         });
     </script>
 </body>

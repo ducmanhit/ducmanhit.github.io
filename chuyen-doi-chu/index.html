@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Chuyển Đổi Chữ - Sketch OS Pro</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,19 +12,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #e2e8f0; /* slate-200 */
-            --primary-text: #111827; /* gray-900 */
-            --secondary-text: #4b5563; /* gray-600 */
+            --bg: #e2e8f0;
+            --primary-text: #111827;
+            --secondary-text: #4b5563;
             --border-color: #111827;
-            --accent: #f59e0b; /* amber-500 */
-            --accent-dark: #d97706; /* amber-600 */
-            --success: #16a34a; /* green-600 */
-            --danger: #dc2626; /* red-600 */
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --info: #3b82f6;
             --border-width: 3px;
             --shadow-offset: 8px;
+            --transition-speed: 0.2s;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -36,7 +42,6 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            position: relative;
             background-image:
                 linear-gradient(rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px),
                 linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px);
@@ -49,35 +54,98 @@
             gap: 2rem;
             width: 100%;
             max-width: 1400px;
-            align-items: stretch; 
+            align-items: stretch;
         }
+        
         @media (min-width: 1024px) {
-            .main-layout { grid-template-columns: 3fr 2fr; }
+            .main-layout {
+                grid-template-columns: 3fr 2fr;
+            }
         }
 
         .sketch-window {
-            width: 100%; height: 100%; display: flex; flex-direction: column;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
             border: var(--border-width) solid var(--border-color);
             background-color: white;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239ca3af' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color), inset 0 0 20px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
             animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 1;
         }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
-        .sketch-window > main { flex-grow: 1; display: flex; flex-direction: column; }
-        .sketch-titlebar { display: flex; align-items: center; padding: 0.75rem; border-bottom: var(--border-width) solid var(--border-color); background-color: #ffffff; flex-shrink: 0; }
-        .titlebar-buttons { display: flex; gap: 0.5rem; }
-        .titlebar-btn { width: 14px; height: 14px; border-radius: 99px; border: 2px solid var(--border-color); }
-        .titlebar-btn.close { background-color: #f87171; }
-        .titlebar-btn.minimize { background-color: #fde047; }
-        .titlebar-btn.maximize { background-color: #4ade80; }
-        .titlebar-title { flex-grow: 1; text-align: center; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
         
-        .sketch-panel { padding: 2rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .sketch-titlebar {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: var(--border-width) solid var(--border-color);
+            background-color: #ffffff;
+        }
         
-        .textarea-wrapper { position: relative; flex-grow: 1; display: flex; flex-direction: column; }
+        .titlebar-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .titlebar-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            transition: transform var(--transition-speed);
+        }
+        
+        .titlebar-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .titlebar-btn.close {
+            background-color: #f87171;
+        }
+        
+        .titlebar-btn.minimize {
+            background-color: #fde047;
+        }
+        
+        .titlebar-btn.maximize {
+            background-color: #4ade80;
+        }
+        
+        .titlebar-title {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .sketch-panel {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .textarea-wrapper {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
         .editor-textarea {
             width: 100%;
             flex-grow: 1;
@@ -87,56 +155,553 @@
             color: var(--primary-text);
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
-            line-height: 1.5;
-            resize: none;
-            transition: all 0.2s ease;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all var(--transition-speed);
+            min-height: 200px;
         }
-        .editor-textarea:focus { outline: none; box-shadow: 0 0 0 3px var(--accent); }
+        
+        .editor-textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .editor-textarea:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
         .char-count {
             text-align: right;
             font-size: 0.75rem;
             padding-top: 0.5rem;
             color: var(--secondary-text);
             font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .format-indicator {
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .sketch-btn {
-            background: white; border: var(--border-width) solid var(--border-color); color: var(--primary-text); padding: 10px 20px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
-            transition: all 0.15s ease; font-size: 12px; display: inline-flex; align-items: center;
-            justify-content: center; gap: 8px; box-shadow: 4px 4px 0px var(--border-color);
+            background: white;
+            border: var(--border-width) solid var(--border-color);
+            color: var(--primary-text);
+            padding: 12px 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 4px 4px 0px var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
-        .sketch-btn:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--border-color); }
-        .sketch-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-color); }
-        .sketch-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(50%); box-shadow: none; }
-        .sketch-btn.hidden { display: none; }
         
-        .sketch-btn-primary { background-color: var(--accent); }
-        .sketch-btn-primary:hover:not(:disabled) { background-color: var(--accent-dark); }
-        .sketch-btn-danger { background-color: var(--danger); color: white; }
-        .sketch-btn-success { background-color: var(--success); color: white; }
-        .sketch-btn.active { background-color: var(--accent); }
-        .sketch-btn svg, .sketch-btn i { transition: transform 0.2s ease; }
-        .sketch-btn:hover:not(:disabled) svg, .sketch-btn:hover:not(:disabled) i { transform: scale(1.1); }
+        .sketch-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
         
-        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .sketch-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
         
-        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
-        .modal-content { border: var(--border-width) solid var(--border-color); box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color); background: white; transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .modal.open .modal-content { transform: scale(1); opacity: 1; }
+        .sketch-btn:hover:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--border-color);
+        }
+        
+        .sketch-btn:active:not(:disabled) {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--border-color);
+        }
+        
+        .sketch-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(50%);
+        }
+        
+        .sketch-btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .sketch-btn-primary:hover:not(:disabled) {
+            background-color: var(--accent-dark);
+        }
+        
+        .sketch-btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .sketch-btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .sketch-btn.active {
+            background-color: var(--accent);
+            color: white;
+            box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sketch-btn.active:hover {
+            transform: none;
+        }
+        
+        .editor-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        @media (min-width: 768px) {
+            .editor-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        @media (max-width: 640px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-        .form-label { display: block; font-size: 12px; font-weight: 800; color: var(--primary-text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .form-control { width: 100%; border: var(--border-width) solid var(--border-color); padding: 12px 16px; font-size: 14px; background: white; color: var(--primary-text); transition: all 0.2s ease; }
-        .form-control:focus { outline: none; box-shadow: 0 0 0 3px var(--accent); }
+        /* Stats Section */
+        .stats-section {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: var(--border-width) solid var(--border-color);
+        }
 
-        .sketch-footer { position: fixed; bottom: 20px; right: 20px; z-index: 10; }
-        .sketch-footer a { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background-color: white; border: var(--border-width) solid var(--border-color); box-shadow: 4px 4px 0 var(--border-color); color: var(--secondary-text); text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.15s ease; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sketch-footer a:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border-color); color: var(--primary-text); }
-        .sketch-footer a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--border-color); }
-        .sketch-footer strong { font-weight: 800; color: var(--primary-text); }
-        .sketch-footer svg { stroke: currentColor; transition: transform 0.2s ease; }
-        .sketch-footer a:hover svg { transform: translateX(2px) translateY(-2px); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
 
+        .stat-card {
+            background: white;
+            border: var(--border-width) solid var(--border-color);
+            padding: 1rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all var(--transition-speed);
+            box-shadow: 3px 3px 0 var(--border-color);
+        }
+
+        .stat-card:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--secondary-text);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary-text);
+        }
+
+        .stat-icon {
+            font-size: 1.25rem;
+        }
+
+        .stat-card.accent .stat-value {
+            color: var(--accent);
+        }
+
+        .stat-card.success .stat-value {
+            color: var(--success);
+        }
+
+        .stat-card.info .stat-value {
+            color: var(--info);
+        }
+
+        .stat-card.danger .stat-value {
+            color: var(--danger);
+        }
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.open {
+            display: flex;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            animation: backdropFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes backdropFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .modal-content {
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+            background: white;
+            transform: scale(0.8) translateY(30px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 51;
+        }
+        
+        .modal.open .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg);
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 300;
+            border: var(--border-width) solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            box-shadow: 2px 2px 0 var(--border-color);
+        }
+        
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--primary-text);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-control {
+            width: 100%;
+            border: var(--border-width) solid var(--border-color);
+            padding: 12px 16px;
+            font-size: 14px;
+            background: white;
+            color: var(--primary-text);
+            transition: all var(--transition-speed);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent);
+        }
+
+        .sketch-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .footer-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px;
+            background-color: white;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 6px 6px 0 var(--border-color);
+            color: var(--primary-text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .footer-link:hover::before {
+            left: 100%;
+        }
+        
+        .footer-link:hover {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0 var(--border-color);
+            color: var(--accent);
+        }
+        
+        .footer-link:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0 0 0 var(--border-color);
+        }
+        
+        .footer-link .arrow-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-link:hover .arrow-icon {
+            transform: rotate(45deg) scale(1.1);
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        .footer-link .arrow-icon i {
+            font-size: 10px;
+        }
+
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 6px 6px 0 var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 280px;
+            max-width: 400px;
+            pointer-events: all;
+            transform: translateX(450px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast.hide {
+            transform: translateX(450px);
+            opacity: 0;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        
+        .toast.success {
+            border-color: var(--success);
+        }
+        
+        .toast.success .toast-icon {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .toast.error {
+            border-color: var(--danger);
+        }
+        
+        .toast.error .toast-icon {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .toast.warning {
+            border-color: var(--warning);
+        }
+        
+        .toast.warning .toast-icon {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .toast-message {
+            flex: 1;
+            color: var(--primary-text);
+        }
+
+        .loading {
+            pointer-events: none;
+            opacity: 0.6;
+            position: relative;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            
+            .sketch-panel {
+                padding: 1.25rem;
+            }
+            
+            .main-layout {
+                gap: 1rem;
+            }
+            
+            .sketch-footer {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .footer-link {
+                padding: 12px 18px;
+                font-size: 11px;
+            }
+            
+            #toastContainer {
+                right: 10px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .toast {
+                min-width: auto;
+                max-width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
@@ -149,21 +714,45 @@
                     <div class="titlebar-btn minimize"></div>
                     <div class="titlebar-btn maximize"></div>
                 </div>
-                <div class="titlebar-title" id="editorTitle">Trình soạn thảo</div>
+                <div class="titlebar-title">Trình soạn thảo</div>
             </header>
-            <main class="sketch-panel space-y-6">
+            <main class="sketch-panel">
                 <div class="textarea-wrapper">
-                    <textarea class="editor-textarea" id="inputText" placeholder="Nhập hoặc dán văn bản của bạn vào đây..."></textarea>
-                    <div class="char-count" id="charCount">0 ký tự</div>
+                    <textarea 
+                        class="editor-textarea" 
+                        id="inputText" 
+                        placeholder="Nhập hoặc dán văn bản của bạn vào đây..."
+                        spellcheck="false"
+                    ></textarea>
+                    <div class="char-count">
+                        <span class="format-indicator" id="formatIndicator">
+                            <i class="fas fa-font"></i>
+                            <span id="formatText">Chưa định dạng</span>
+                        </span>
+                        <span id="charCount">0 ký tự</span>
+                    </div>
                 </div>
-                <div class="editor-actions grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button class="sketch-btn sketch-btn-primary" id="copyBtn"><i class="far fa-copy"></i><span>Sao chép</span></button>
-                    <button class="sketch-btn" id="resetBtn"><i class="fas fa-history"></i><span>Khôi phục</span></button>
-                    <button class="sketch-btn" id="lockBtn" title="Khóa/Mở khóa định dạng"><i class="fas fa-lock-open"></i><span>Khóa</span></button>
-                    <button class="sketch-btn sketch-btn-danger" id="clearBtn"><i class="far fa-trash-alt"></i><span>Xóa</span></button>
+                <div class="editor-actions">
+                    <button class="sketch-btn sketch-btn-primary" id="copyBtn">
+                        <i class="far fa-copy"></i>
+                        <span>Sao chép</span>
+                    </button>
+                    <button class="sketch-btn" id="resetBtn">
+                        <i class="fas fa-undo"></i>
+                        <span>Khôi phục</span>
+                    </button>
+                    <button class="sketch-btn" id="lockBtn" title="Khóa/Mở khóa định dạng">
+                        <i class="fas fa-lock-open"></i>
+                        <span>Khóa</span>
+                    </button>
+                    <button class="sketch-btn sketch-btn-danger" id="clearBtn">
+                        <i class="far fa-trash-alt"></i>
+                        <span>Xóa</span>
+                    </button>
                 </div>
             </main>
         </div>
+
         <!-- Tools Panel -->
         <div class="sketch-window">
             <header class="sketch-titlebar">
@@ -172,507 +761,249 @@
                     <div class="titlebar-btn minimize"></div>
                     <div class="titlebar-btn maximize"></div>
                 </div>
-                <div class="titlebar-title" id="toolsTitle">Công cụ</div>
+                <div class="titlebar-title">Công cụ</div>
             </header>
             <main class="sketch-panel">
                 <div class="tools-grid">
-                    <button class="sketch-btn tool-btn" data-type="uppercase"><i class="fas fa-arrow-up"></i><span>CHỮ HOA</span></button>
-                    <button class="sketch-btn tool-btn" data-type="lowercase"><i class="fas fa-arrow-down"></i><span>chữ thường</span></button>
-                    <button class="sketch-btn tool-btn" data-type="capitalizeWords"><i class="fas fa-heading"></i><span>Viết Hoa Đầu Từ</span></button>
-                    <button class="sketch-btn tool-btn" data-type="capitalizeSentences"><i class="fas fa-paragraph"></i><span>Viết hoa câu</span></button>
-                    <button class="sketch-btn tool-btn" data-type="toggleCase"><i class="fas fa-random"></i><span>cHữ XeN kẼ</span></button>
-                    <button class="sketch-btn tool-btn" data-type="slug"><i class="fas fa-link"></i><span>Slug URL</span></button>
-                    <button class="sketch-btn tool-btn" data-type="removeAccents"><i class="fas fa-eraser"></i><span>Xóa dấu</span></button>
-                    <button class="sketch-btn tool-btn" data-type="normal"><i class="fas fa-font"></i><span>Bình thường</span></button>
+                    <button class="sketch-btn tool-btn" data-type="uppercase" data-label="CHỮ HOA">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>CHỮ HOA</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="lowercase" data-label="chữ thường">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>chữ thường</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="capitalizeWords" data-label="Viết Hoa Đầu Từ">
+                        <i class="fas fa-heading"></i>
+                        <span>Viết Hoa Đầu Từ</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="capitalizeSentences" data-label="Viết hoa câu">
+                        <i class="fas fa-paragraph"></i>
+                        <span>Viết hoa câu</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="toggleCase" data-label="cHữ XeN kẼ">
+                        <i class="fas fa-random"></i>
+                        <span>cHữ XeN kẼ</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="slug" data-label="Slug URL">
+                        <i class="fas fa-link"></i>
+                        <span>Slug URL</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="removeAccents" data-label="Xóa dấu">
+                        <i class="fas fa-eraser"></i>
+                        <span>Xóa dấu</span>
+                    </button>
+                    <button class="sketch-btn tool-btn" data-type="normal" data-label="Bình thường">
+                        <i class="fas fa-font"></i>
+                        <span>Bình thường</span>
+                    </button>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card accent">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-value" id="wordCount">0</div>
+                            <div class="stat-label">Từ</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-icon">📄</div>
+                            <div class="stat-value" id="lineCount">0</div>
+                            <div class="stat-label">Dòng</div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-value" id="readTime">0p</div>
+                            <div class="stat-label">Đọc</div>
+                        </div>
+                        <div class="stat-card danger">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="sentenceCount">0</div>
+                            <div class="stat-label">Câu</div>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
     
-    <!-- Modals -->
-    <div id="alertModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="alertdialog" aria-modal="true">
-        <div class="absolute inset-0" data-modal-hide="alertModal"></div>
-        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5 text-center">
-            <h3 id="alertTitle" class="text-xl font-black">Thông báo</h3>
-            <p id="alertMessage" class="text-sm text-secondary-text"></p>
-            <button data-modal-hide="alertModal" class="sketch-btn sketch-btn-primary w-full">Đã hiểu</button>
-        </div>
-    </div>
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal-content relative m-4 w-full max-w-md p-7 space-y-5">
-            <header class="flex justify-between items-center">
-                <h2 class="text-xl font-black" data-lang-key="contactTitle">Liên hệ</h2>
-                <button class="modal-close sketch-btn !p-2 !shadow-none" data-modal="contactModal">&times;</button>
-            </header>
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+    
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-backdrop" onclick="closeModal('contactModal')"></div>
+        <div class="modal-content relative m-4 w-full max-w-md p-7">
+            <div class="modal-header">
+                <h2>Liên hệ</h2>
+                <button class="modal-close" onclick="closeModal('contactModal')">&times;</button>
+            </div>
             <div class="modal-body">
-                <p data-lang-key="contactIntro">Vui lòng điền vào biểu mẫu dưới đây...</p>
-                <form id="contactForm">
-                    <div class="form-group mb-4"><label for="name" class="form-label" data-lang-key="formLabels.name">Họ và tên</label><input type="text" id="name" name="name" class="form-control" required></div>
-                    <div class="form-group mb-4"><label for="email" class="form-label" data-lang-key="formLabels.email">Email</label><input type="email" id="email" name="email" class="form-control" required></div>
-                    <div class="form-group mb-4"><label for="subject" class="form-label" data-lang-key="formLabels.subject">Chủ đề</label><input type="text" id="subject" name="subject" class="form-control" required></div>
-                    <div class="form-group mb-4"><label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label><textarea id="message" name="message" class="form-control" required rows="4"></textarea></div>
-                    <div class="form-submit"><button type="submit" class="sketch-btn sketch-btn-primary w-full"><i class="fas fa-paper-plane"></i><span data-lang-key="formLabels.submit">Gửi tin nhắn</span></button></div>
+                <p class="mb-4 text-sm text-secondary-text">Vui lòng điền vào biểu mẫu dưới đây để liên hệ với chúng tôi.</p>
+                <form id="contactForm" class="space-y-4">
+                    <div>
+                        <label for="name" class="form-label">Họ và tên</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="subject" class="form-label">Chủ đề</label>
+                        <input type="text" id="subject" name="subject" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="message" class="form-label">Nội dung</label>
+                        <textarea id="message" name="message" class="form-control" required rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="sketch-btn sketch-btn-primary w-full">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Gửi tin nhắn</span>
+                    </button>
                 </form>
-=======
-    <title>Ủng Hộ Tác Giả - DucManh Blog</title>
-    <!-- Tải font và icon -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <style>
-        /* --- CÀI ĐẶT CHUNG --- */
-        .donate-page-body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            min-height: 100vh;
-            box-sizing: border-box;
-            margin: 0;
-        }
-
-        .donate-container {
-            max-width: 480px;
-            width: 100%;
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        /* --- TIÊU ĐỀ --- */
-        .donate-header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-            color: #1a1a1a;
-        }
-
-        .donate-header p {
-            font-size: 1.1rem;
-            color: #7f8c8d;
-            margin: 0 0 2rem 0;
-        }
-
-        /* --- MÃ QR --- */
-        .qr-code-section {
-            margin-bottom: 2rem;
-        }
-
-        .qr-code-image {
-            max-width: 250px;
-            width: 100%;
-            height: auto;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 10px;
-            background-color: #fff;
-            cursor: pointer; /* Thêm con trỏ để báo hiệu có thể nhấp */
-            transition: transform 0.3s ease;
-        }
-        .qr-code-image:hover {
-            transform: scale(1.05);
-        }
-        
-        .qr-code-section p {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 1rem;
-        }
-
-        /* --- THÔNG TIN TÀI KHOẢN --- */
-        .account-info-section {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .account-info-section .bank-name {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 0.75rem;
-        }
-
-        .account-number-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #fff;
-            border: 1px dashed #dcdcdc;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-        }
-
-        #account-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #007bff;
-            letter-spacing: 1px;
-        }
-
-        #copy-button {
-            border: 1px solid #007bff;
-            background-color: transparent;
-            color: #007bff;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        #copy-button:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        #copy-button.copied {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: #fff;
-        }
-        
-        /* --- POPUP MÃ QR (MỚI) --- */
-        .qr-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: none; /* Ẩn mặc định */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .qr-popup-overlay.show {
-            display: flex;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .qr-popup-content {
-            background-color: #fff;
-            padding: 1.5rem;
-            border-radius: 16px;
-            position: relative;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
-            animation: zoomIn 0.3s ease-out;
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .close-popup-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 2.5rem;
-            color: #aaa;
-            cursor: pointer;
-            line-height: 1;
-            font-weight: 300;
-        }
-
-        .close-popup-button:hover {
-            color: #000;
-        }
-
-        .popup-qr-image {
-            max-width: 80vw;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            display: block;
-        }
-        
-        /* --- ĐIỀU CHỈNH CHO MÀN HÌNH NHỎ (MOBILE) --- */
-        @media (max-width: 600px) {
-            .donate-page-body {
-                padding: 1rem;
-            }
-            .donate-container {
-                padding: 2rem 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body class="donate-page-body">
-
-    <!-- BẮT ĐẦU SAO CHÉP TỪ ĐÂY -->
-    <div class="donate-container">
-        <div class="donate-header">
-            <h1>Ủng hộ tác giả</h1>
-            <p>Sự ủng hộ của bạn là động lực lớn để tôi tiếp tục chia sẻ những nội dung hữu ích.</p>
-        </div>
-
-        <!-- PHẦN MÃ QR -->
-        <div class="qr-code-section">
-            <!-- *** HƯỚNG DẪN: Thay link ảnh QR của bạn vào src="" *** -->
-            <img src="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-6/509606112_1908674543215824_899905257291646667_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CpbXHdYHwi8Q7kNvwFG4c4W&_nc_oc=Adkj7b_AcZLtKccbFIOgWX00cTFy96ocKz-9dbu4CYNfm28HD7KTUejxtqk-mq-YjBw&_nc_zt=23&_nc_ht=scontent.fhan5-9.fna&_nc_gid=GfQrlEdnETo8nsMZiM9bJw&oh=00_AfN560YiNqWjKUT4O9lfbmTJDhZlqapyCpkdBTkeh2ijcQ&oe=685B4D76" 
-                 alt="Mã QR ủng hộ" 
-                 id="qr-code-small"
-                 class="qr-code-image"
-                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
-            <p>Quét mã QR bằng ứng dụng ngân hàng của bạn</p>
-        </div>
-
-        <!-- PHẦN SỐ TÀI KHOẢN -->
-        <div class="account-info-section">
-            <!-- *** HƯỚNG DẪN: Thay đổi thông tin ngân hàng của bạn tại đây *** -->
-            <p class="bank-name">Ngân hàng: <strong>MB BANK</strong></p>
-            <div class="account-number-wrapper">
-                <span id="account-number">0123456789</span>
-                <button id="copy-button">
-                    <i class="fa-regular fa-copy"></i>
-                    <span id="copy-text">Sao chép</span>
-                </button>
->>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
             </div>
         </div>
     </div>
     
-<<<<<<< HEAD
+    <!-- Footer -->
     <footer class="sketch-footer">
-        <a href="#" id="contactLink">
-            <span>Liên hệ</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+        <a href="https://ducmanh.blog" target="_blank" rel="noopener noreferrer" class="footer-link">
+            <span>Thiết kế bởi</span>
+            <strong>DUCMANH</strong>
+            <span class="arrow-icon">
+                <i class="fas fa-arrow-right"></i>
+            </span>
         </a>
     </footer>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const inputText = document.getElementById('inputText');
-            const charCount = document.getElementById('charCount');
-            const copyBtn = document.getElementById('copyBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const lockBtn = document.getElementById('lockBtn');
-            const lockBtnIcon = lockBtn.querySelector('i');
-            const lockBtnText = lockBtn.querySelector('span');
-            const toolButtons = document.querySelectorAll('.tool-btn');
-            const contactLink = document.getElementById('contactLink');
-            const modalOverlays = document.querySelectorAll('.modal-overlay');
-            const modalCloseButtons = document.querySelectorAll('.modal-close');
-            const contactForm = document.getElementById('contactForm');
-            // Alert Modal
-            const alertModal = document.getElementById('alertModal');
-            const alertTitle = document.getElementById('alertTitle');
-            const alertMessage = document.getElementById('alertMessage');
-            
-            // State Variables
-            let currentType = null;
-            let originalText = inputText.value;
-            let isFormatLocked = false;
-
-            // --- Event Listeners ---
-            inputText.addEventListener('input', function() {
-                if (isFormatLocked && currentType && currentType !== 'normal') {
-                    convertText(currentType, false); // No toast on auto-convert
-                } else if (!isFormatLocked) {
-                    currentType = null;
-                    originalText = inputText.value;
-                    updateActiveToolButtonStates();
-                }
-                updateCharCount();
-            });
-
-            inputText.addEventListener('paste', function() {
-                setTimeout(() => { 
-                    if (isFormatLocked && currentType && currentType !== 'normal') {
-                        convertText(currentType, false); // No toast
-                    } else {
-                        originalText = inputText.value;
-                        if (!isFormatLocked) {
-                           currentType = null;
-                           updateActiveToolButtonStates();
-                        }
-=======
-    <!-- CẤU TRÚC POPUP MÃ QR (MỚI) -->
-    <div id="qr-popup" class="qr-popup-overlay">
-        <div class="qr-popup-content">
-            <span id="close-popup" class="close-popup-button">&times;</span>
-            <img src="https://placehold.co/250x250/ffffff/000000?text=Ma+QR+cua+ban" 
-                 alt="Mã QR ủng hộ (phóng to)"
-                 id="qr-code-large"
-                 class="popup-qr-image"
-                 onerror="this.onerror=null;this.src='https://placehold.co/250x250/e9ecef/6c757d?text=Loi+tai+anh';">
-        </div>
-    </div>
-    <!-- KẾT THÚC SAO CHÉP TẠI ĐÂY -->
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Script cho nút sao chép
-            const copyButton = document.getElementById('copy-button');
-            const accountNumberSpan = document.getElementById('account-number');
-            const copyTextSpan = document.getElementById('copy-text');
-            const copyIcon = copyButton.querySelector('i');
-
-            if (copyButton && accountNumberSpan && copyTextSpan && copyIcon) {
-                copyButton.addEventListener('click', function() {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = accountNumberSpan.textContent.trim();
-                    textArea.style.position = 'fixed';
-                    textArea.style.top = '-9999px';
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        copyTextSpan.textContent = 'Đã chép';
-                        copyIcon.classList.remove('fa-regular', 'fa-copy');
-                        copyIcon.classList.add('fa-solid', 'fa-check');
-                        copyButton.classList.add('copied');
-                        setTimeout(function() {
-                            copyTextSpan.textContent = 'Sao chép';
-                            copyIcon.classList.remove('fa-solid', 'fa-check');
-                            copyIcon.classList.add('fa-regular', 'fa-copy');
-                            copyButton.classList.remove('copied');
-                        }, 2000);
-                    } catch (err) {
-                        console.error('Không thể sao chép: ', err);
->>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
-                    }
-                    document.body.removeChild(textArea);
-                });
+        // Text Converter Application
+        class TextConverter {
+            constructor() {
+                this.initElements();
+                this.initState();
+                this.initEventListeners();
+                this.updateUI();
             }
 
-            // Script cho popup mã QR (MỚI)
-            const qrImageSmall = document.getElementById('qr-code-small');
-            const qrPopup = document.getElementById('qr-popup');
-            const closeButton = document.getElementById('close-popup');
-
-<<<<<<< HEAD
-            clearBtn.addEventListener('click', function() {
-                inputText.value = '';
-                updateCharCount();
-                showAlert('Đã xóa văn bản!', 'success');
-                if (!isFormatLocked) {
-                    originalText = ''; 
-                    currentType = null;
-                    updateActiveToolButtonStates();
-                }
-            });
-
-            resetBtn.addEventListener('click', function() {
-                const textBeforeReset = inputText.value;
-                if (textBeforeReset === originalText && textBeforeReset === '') {
-                   showAlert('Không có văn bản!', 'warning'); return;
-                }
-                if(textBeforeReset !== originalText) {
-                   inputText.value = originalText;
-                   showAlert('Đã khôi phục văn bản gốc!', 'success');
-                }
-                if (isFormatLocked) {
-                    isFormatLocked = false;
-                    lockBtn.classList.remove('active');
-                    lockBtnIcon.className = 'fas fa-lock-open';
-                    lockBtnText.textContent = 'Khóa';
-                }
-                currentType = null; 
-                updateActiveToolButtonStates(); 
-                updateCharCount();
-            });
-
-            lockBtn.addEventListener('click', function() {
-                isFormatLocked = !isFormatLocked;
-                this.classList.toggle('active', isFormatLocked);
-                lockBtnIcon.className = `fas fa-${isFormatLocked ? 'lock' : 'lock-open'}`;
-                lockBtnText.textContent = isFormatLocked ? 'Mở khóa' : 'Khóa';
+            initElements() {
+                this.inputText = document.getElementById('inputText');
+                this.charCount = document.getElementById('charCount');
+                this.formatIndicator = document.getElementById('formatIndicator');
+                this.formatText = document.getElementById('formatText');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.lockBtn = document.getElementById('lockBtn');
+                this.toolButtons = document.querySelectorAll('.tool-btn');
+                this.contactForm = document.getElementById('contactForm');
                 
-                showAlert(isFormatLocked ? 'Đã khóa định dạng!' : 'Đã mở khóa định dạng!', 'success');
-            });
-
-            toolButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const clickedButtonType = this.getAttribute('data-type');
-                    
-                    if (this.classList.contains('active') && clickedButtonType !== 'normal') {
-                        inputText.value = originalText;
-                        currentType = null; 
-                        showAlert('Đã khôi phục văn bản gốc!', 'success');
-                    } else if (clickedButtonType === 'normal') {
-                        if (inputText.value !== originalText) {
-                           inputText.value = originalText;
-                           showAlert('Đã khôi phục văn bản gốc!', 'success');
-                        }
-                        currentType = 'normal';
-                    } else {
-                        convertText(clickedButtonType, true); 
-                        currentType = clickedButtonType;
-                    }
-
-                    updateActiveToolButtonStates();
-                    updateCharCount();
-                });
-            });
-            
-            contactLink.addEventListener('click', (e) => { e.preventDefault(); openModal('contactModal'); });
-            modalCloseButtons.forEach(button => button.addEventListener('click', function() { closeModal(this.getAttribute('data-modal')); }));
-            modalOverlays.forEach(overlay => overlay.addEventListener('click', function(e) { if (e.target === this) closeModal(this.id); }));
-            document.querySelectorAll('.modal-content').forEach(modal => modal.addEventListener('click', e => e.stopPropagation()));
-
-            if (contactForm) {
-                contactForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    setTimeout(() => {
-                        showAlert('Tin nhắn đã được gửi thành công!', 'success');
-                        closeModal('contactModal');
-                        contactForm.reset();
-                    }, 500);
-                });
+                // Stats elements
+                this.wordCount = document.getElementById('wordCount');
+                this.lineCount = document.getElementById('lineCount');
+                this.readTime = document.getElementById('readTime');
+                this.sentenceCount = document.getElementById('sentenceCount');
             }
 
-            // --- Helper Functions ---
-            function updateCharCount() {
-                charCount.textContent = `${inputText.value.length} ký tự`;
+            initState() {
+                this.currentType = null;
+                this.originalText = '';
+                this.isFormatLocked = false;
             }
 
-            function convertText(type, showToast = true) { 
-                if ((currentType === null || currentType === 'normal') && !isFormatLocked) {
-                    originalText = inputText.value;
+            initEventListeners() {
+                this.inputText.addEventListener('input', () => this.handleInput());
+                this.inputText.addEventListener('paste', () => setTimeout(() => this.handlePaste(), 0));
+                this.copyBtn.addEventListener('click', () => this.copyText());
+                this.clearBtn.addEventListener('click', () => this.clearText());
+                this.resetBtn.addEventListener('click', () => this.resetText());
+                this.lockBtn.addEventListener('click', () => this.toggleLock());
+                this.toolButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleToolClick(e.currentTarget));
+                });
+                this.contactForm.addEventListener('submit', (e) => this.handleContactSubmit(e));
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+
+            handleInput() {
+                if (this.isFormatLocked && this.currentType && this.currentType !== 'normal') {
+                    this.convertText(this.currentType, false);
+                } else if (!this.isFormatLocked) {
+                    this.currentType = null;
+                    this.originalText = this.inputText.value;
                 }
-                const textBeforeConversion = inputText.value;
-                if (!textBeforeConversion && showToast) {
-                    showAlert('Không có văn bản!', 'warning');
+                this.updateUI();
+            }
+
+            handlePaste() {
+                if (this.isFormatLocked && this.currentType && this.currentType !== 'normal') {
+                    this.convertText(this.currentType, false);
+                } else {
+                    this.originalText = this.inputText.value;
+                    if (!this.isFormatLocked) {
+                        this.currentType = null;
+                    }
+                }
+                this.updateUI();
+            }
+
+            handleToolClick(button) {
+                const type = button.getAttribute('data-type');
+                const label = button.getAttribute('data-label');
+
+                if (button.classList.contains('active') && type !== 'normal') {
+                    this.inputText.value = this.originalText;
+                    this.currentType = null;
+                    this.showToast('Đã khôi phục văn bản gốc!', 'success');
+                } else if (type === 'normal') {
+                    if (this.inputText.value !== this.originalText) {
+                        this.inputText.value = this.originalText;
+                        this.showToast('Đã khôi phục văn bản gốc!', 'success');
+                    }
+                    this.currentType = 'normal';
+                } else {
+                    this.convertText(type, true, label);
+                    this.currentType = type;
+                }
+
+                this.updateUI();
+            }
+
+            convertText(type, showToast = true, label = '') {
+                if (!this.inputText.value) {
+                    if (showToast) this.showToast('Không có văn bản để chuyển đổi!', 'warning');
                     return;
                 }
 
-                let text = inputText.value;
+                if ((this.currentType === null || this.currentType === 'normal') && !this.isFormatLocked) {
+                    this.originalText = this.inputText.value;
+                }
+
+                const textBefore = this.inputText.value;
+                let text = this.inputText.value;
+
                 try {
                     switch(type) {
-                        case 'uppercase': text = text.toLocaleUpperCase('vi-VN'); break;
-                        case 'lowercase': text = text.toLocaleLowerCase('vi-VN'); break;
-                        case 'capitalizeWords': 
-                            text = text.normalize('NFC').toLocaleLowerCase('vi-VN')
+                        case 'uppercase':
+                            text = text.toLocaleUpperCase('vi-VN');
+                            break;
+                        case 'lowercase':
+                            text = text.toLocaleLowerCase('vi-VN');
+                            break;
+                        case 'capitalizeWords':
+                            text = text.normalize('NFC')
+                                .toLocaleLowerCase('vi-VN')
                                 .split(/(\s+)/)
                                 .map(w => w.match(/\s+/) ? w : (w.length > 0 ? w.charAt(0).toLocaleUpperCase('vi-VN') + w.slice(1) : ''))
                                 .join('');
                             break;
-                        case 'capitalizeSentences': text = text.normalize('NFC').toLocaleLowerCase('vi-VN').replace(/(^\s*\p{L}|[.!?]\s*\p{L})/gu, c => c.toLocaleUpperCase('vi-VN')); break;
+                        case 'capitalizeSentences':
+                            text = text.normalize('NFC')
+                                .toLocaleLowerCase('vi-VN')
+                                .replace(/(^\s*\p{L}|[.!?]\s*\p{L})/gu, c => c.toLocaleUpperCase('vi-VN'));
+                            break;
                         case 'toggleCase':
                             text = [...text].map(char => {
                                 const upper = char.toLocaleUpperCase('vi-VN');
@@ -682,75 +1013,245 @@
                                 return char;
                             }).join('');
                             break;
-                        case 'slug': text = text.toLocaleLowerCase('vi-VN').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-'); break;
-                        case 'removeAccents': text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D'); break;
+                        case 'slug':
+                            text = text.toLocaleLowerCase('vi-VN')
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/đ/g, 'd')
+                                .replace(/[^a-z0-9\s-]/g, '')
+                                .trim()
+                                .replace(/\s+/g, '-')
+                                .replace(/-+/g, '-');
+                            break;
+                        case 'removeAccents':
+                            text = text.normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/đ/g, 'd')
+                                .replace(/Đ/g, 'D');
+                            break;
                     }
-                    inputText.value = text;
-                    if(showToast && textBeforeConversion !== text) showAlert('Đã chuyển đổi thành công!', 'success');
+
+                    this.inputText.value = text;
+                    
+                    if (showToast && textBefore !== text) {
+                        this.showToast(`Đã chuyển đổi: ${label}`, 'success');
+                    }
                 } catch (error) {
                     console.error('Lỗi chuyển đổi:', error);
-                    if(showToast) showAlert('Lỗi khi chuyển đổi văn bản!', 'error'); 
-                    inputText.value = textBeforeConversion;
+                    if (showToast) this.showToast('Lỗi khi chuyển đổi văn bản!', 'error');
+                    this.inputText.value = textBefore;
                 }
             }
 
-            function copyText() {
-                if (!inputText.value) { showAlert('Không có văn bản!', 'warning'); return; }
-                navigator.clipboard.writeText(inputText.value).then(() => {
-                    showAlert('Đã sao chép vào clipboard!', 'success');
-                }).catch(() => fallbackCopyText());
+            copyText() {
+                if (!this.inputText.value) {
+                    this.showToast('Không có văn bản để sao chép!', 'warning');
+                    return;
+                }
+
+                navigator.clipboard.writeText(this.inputText.value)
+                    .then(() => {
+                        this.showToast('Đã sao chép vào clipboard!', 'success');
+                        this.copyBtn.classList.add('sketch-btn-success');
+                        setTimeout(() => {
+                            this.copyBtn.classList.remove('sketch-btn-success');
+                        }, 2000);
+                    })
+                    .catch(() => this.fallbackCopyText());
             }
-            
-            function fallbackCopyText() {
+
+            fallbackCopyText() {
                 try {
-                    inputText.select();
+                    this.inputText.select();
                     document.execCommand('copy');
-                    showAlert('Đã sao chép vào clipboard!', 'success');
-                    inputText.setSelectionRange(0,0); 
+                    this.showToast('Đã sao chép vào clipboard!', 'success');
+                    window.getSelection().removeAllRanges();
                 } catch (err) {
-                    showAlert('Lỗi khi sao chép!', 'error'); 
+                    this.showToast('Lỗi khi sao chép!', 'error');
                 }
             }
-            
-            function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.add('active', 'flex'); modal.classList.remove('hidden'); } }
-            function closeModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.remove('active'); modal.classList.add('hidden'); } }
 
-            function showAlert(message, type) {
-                alertTitle.textContent = type === 'success' ? 'Thành công' : (type === 'error' ? 'Lỗi' : 'Thông báo');
-                alertMessage.textContent = message;
-                openModal('alertModal');
+            clearText() {
+                if (!this.inputText.value) {
+                    this.showToast('Không có văn bản để xóa!', 'warning');
+                    return;
+                }
+
+                this.inputText.value = '';
+                if (!this.isFormatLocked) {
+                    this.originalText = '';
+                    this.currentType = null;
+                }
+                this.updateUI();
+                this.showToast('Đã xóa văn bản!', 'success');
             }
 
-            function updateActiveToolButtonStates() {
-                toolButtons.forEach(btn => btn.classList.remove('active'));
-                const typeToActivate = currentType || 'normal';
-                const activeButton = document.querySelector(`.tool-btn[data-type="${typeToActivate}"]`);
-                if (activeButton) activeButton.classList.add('active');
+            resetText() {
+                const textBefore = this.inputText.value;
+                
+                if (textBefore === this.originalText && textBefore === '') {
+                    this.showToast('Không có gì để khôi phục!', 'warning');
+                    return;
+                }
+
+                if (textBefore !== this.originalText) {
+                    this.inputText.value = this.originalText;
+                    this.showToast('Đã khôi phục văn bản gốc!', 'success');
+                }
+
+                if (this.isFormatLocked) {
+                    this.toggleLock();
+                }
+
+                this.currentType = null;
+                this.updateUI();
             }
 
-            // --- Initializations ---
-            updateCharCount();
-            updateActiveToolButtonStates(); 
-=======
-            if (qrImageSmall && qrPopup && closeButton) {
-                // Mở popup
-                qrImageSmall.addEventListener('click', () => {
-                    qrPopup.classList.add('show');
-                });
+            toggleLock() {
+                this.isFormatLocked = !this.isFormatLocked;
+                
+                const icon = this.lockBtn.querySelector('i');
+                const text = this.lockBtn.querySelector('span');
+                
+                if (this.isFormatLocked) {
+                    this.lockBtn.classList.add('active');
+                    icon.className = 'fas fa-lock';
+                    text.textContent = 'Mở khóa';
+                    this.showToast('Đã khóa định dạng!', 'success');
+                } else {
+                    this.lockBtn.classList.remove('active');
+                    icon.className = 'fas fa-lock-open';
+                    text.textContent = 'Khóa';
+                    this.showToast('Đã mở khóa định dạng!', 'success');
+                }
+            }
 
-                // Đóng popup bằng nút X
-                closeButton.addEventListener('click', () => {
-                    qrPopup.classList.remove('show');
-                });
+            updateStats() {
+                const text = this.inputText.value;
+                
+                // Word count
+                const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+                this.wordCount.textContent = words.length;
+                
+                // Line count
+                const lines = text.split('\n').length;
+                this.lineCount.textContent = lines;
+                
+                // Reading time (average 200 words per minute)
+                const minutes = Math.ceil(words.length / 200);
+                this.readTime.textContent = `${minutes}p`;
+                
+                // Sentence count
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                this.sentenceCount.textContent = sentences.length;
+            }
 
-                // Đóng popup khi nhấp vào nền mờ bên ngoài
-                qrPopup.addEventListener('click', (event) => {
-                    if (event.target === qrPopup) {
-                        qrPopup.classList.remove('show');
+            updateUI() {
+                const count = this.inputText.value.length;
+                this.charCount.textContent = `${count.toLocaleString('vi-VN')} ký tự`;
+                this.updateStats();
+
+                if (this.currentType && this.currentType !== 'normal') {
+                    const activeBtn = document.querySelector(`.tool-btn[data-type="${this.currentType}"]`);
+                    const label = activeBtn ? activeBtn.getAttribute('data-label') : 'Đã định dạng';
+                    this.formatText.textContent = label;
+                    this.formatIndicator.style.display = 'flex';
+                } else {
+                    this.formatText.textContent = 'Chưa định dạng';
+                }
+
+                this.toolButtons.forEach(btn => {
+                    const type = btn.getAttribute('data-type');
+                    if (type === this.currentType) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
                     }
                 });
+
+                const hasText = this.inputText.value.length > 0;
+                this.copyBtn.disabled = !hasText;
+                this.clearBtn.disabled = !hasText;
+                this.resetBtn.disabled = !hasText && !this.currentType;
             }
->>>>>>> 57e8cbba4208a48bd52e1eaf1decbe8aa1019120
+
+            handleKeyboard(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    this.clearText();
+                }
+                
+                if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                    e.preventDefault();
+                    this.resetText();
+                }
+                
+                if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                    e.preventDefault();
+                    this.toggleLock();
+                }
+            }
+
+            handleContactSubmit(e) {
+                e.preventDefault();
+                
+                const submitBtn = this.contactForm.querySelector('button[type="submit"]');
+                submitBtn.classList.add('loading');
+                
+                setTimeout(() => {
+                    submitBtn.classList.remove('loading');
+                    this.showToast('Tin nhắn đã được gửi thành công!', 'success');
+                    closeModal('contactModal');
+                    this.contactForm.reset();
+                }, 1500);
+            }
+
+            showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const iconClass = type === 'success' ? 'fa-check-circle' : 
+                                 type === 'error' ? 'fa-times-circle' : 
+                                 'fa-exclamation-circle';
+                
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <div class="toast-message">${message}</div>
+                `;
+                
+                container.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 10);
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.classList.add('hide');
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            }
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new TextConverter();
         });
     </script>
 </body>

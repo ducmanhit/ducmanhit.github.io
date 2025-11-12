@@ -3,642 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chuyển Đổi Văn Bản</title>
+    <title>Chuyển Đổi Chữ - Sketch OS Pro</title>
     <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
         :root {
-            --primary-dark: #0a2a80;
-            --primary: #0e5bae;
-            --primary-light: #0e8bd5;
-            --white: #ffffff;
-            --bg: #040d2c;
-            --card-bg: rgba(255, 255, 255, 0.1);
-            --card-border: rgba(255, 255, 255, 0.2);
-            --text: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --radius-sm: 0.5rem;
-            --radius: 0.75rem;
-            --radius-md: 1rem;
-            --radius-lg: 1.5rem;
-            --radius-xl: 2rem;
-            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #e2e8f0; /* slate-200 */
+            --primary-text: #111827; /* gray-900 */
+            --secondary-text: #4b5563; /* gray-600 */
+            --border-color: #111827;
+            --accent: #f59e0b; /* amber-500 */
+            --accent-dark: #d97706; /* amber-600 */
+            --success: #16a34a; /* green-600 */
+            --danger: #dc2626; /* red-600 */
+            --border-width: 3px;
+            --shadow-offset: 8px;
         }
-        
-        body.light {
-            --bg: #f5f9ff;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(14, 91, 174, 0.2);
-            --text: #0a2a80;
-            --text-secondary: rgba(10, 42, 128, 0.7);
-            --shadow: 0 8px 32px 0 rgba(14, 91, 174, 0.15);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            color: var(--primary-text);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            background: linear-gradient(135deg, var(--bg) 0%, #0a1f4d 100%);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             position: relative;
-            overflow-x: hidden;
-            transition: background-color var(--transition), color var(--transition);
+            background-image:
+                linear-gradient(rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
         }
         
-        body.light {
-            background: linear-gradient(135deg, var(--bg) 0%, #e1e9ff 100%);
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+            align-items: stretch; 
         }
-        
-        .sphere {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #0e8bd5, #0a2a80);
-            box-shadow: 0 0 60px rgba(14, 139, 213, 0.5);
-            z-index: 0;
+        @media (min-width: 1024px) {
+            .main-layout { grid-template-columns: 3fr 2fr; }
         }
-        
-        .sphere-1 {
-            top: 10%; left: 10%; width: 150px; height: 150px;
-            animation: float 8s ease-in-out infinite;
+
+        .sketch-window {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            border: var(--border-width) solid var(--border-color);
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239ca3af' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color), inset 0 0 20px rgba(0,0,0,0.05);
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1;
         }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
-        .sphere-2 {
-            bottom: 10%; right: 15%; width: 200px; height: 200px;
-            animation: float 10s ease-in-out infinite 1s;
-        }
+        .sketch-window > main { flex-grow: 1; display: flex; flex-direction: column; }
+        .sketch-titlebar { display: flex; align-items: center; padding: 0.75rem; border-bottom: var(--border-width) solid var(--border-color); background-color: #ffffff; flex-shrink: 0; }
+        .titlebar-buttons { display: flex; gap: 0.5rem; }
+        .titlebar-btn { width: 14px; height: 14px; border-radius: 99px; border: 2px solid var(--border-color); }
+        .titlebar-btn.close { background-color: #f87171; }
+        .titlebar-btn.minimize { background-color: #fde047; }
+        .titlebar-btn.maximize { background-color: #4ade80; }
+        .titlebar-title { flex-grow: 1; text-align: center; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
         
-        .sphere-3 {
-            top: 60%; left: 75%; width: 100px; height: 100px;
-            animation: float 7s ease-in-out infinite 0.5s;
-        }
+        .sketch-panel { padding: 2rem; flex-grow: 1; display: flex; flex-direction: column; }
         
-        body.light .sphere { opacity: 0.6; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .light-beam {
-            position: absolute;
-            top: -10%; left: 30%; width: 40%; height: 300px;
-            background: linear-gradient(to bottom, rgba(14, 139, 213, 0.3), transparent);
-            transform: rotate(15deg); filter: blur(30px); z-index: 0;
-        }
-        
-        .container {
-            width: 100%; max-width: 1200px; margin: 0 auto;
-            padding: 0 1.5rem; position: relative; z-index: 1;
-        }
-        
-        .navbar { padding: 1.5rem 0; position: relative; z-index: 10; }
-        
-        .navbar-container { display: flex; justify-content: space-between; align-items: center; }
-        
-        .logo-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-        
-        .logo {
-            width: 2.5rem; height: 2.5rem; border-radius: 25%;
-            overflow: hidden; box-shadow: 0 0 20px rgba(14, 139, 213, 0.5);
-            position: relative; display: flex; align-items: center; justify-content: center;
-        }
-        
-        .logo-image { width: 100%; height: 100%; object-fit: cover; }
-        
-        .logo-text {
-            font-weight: 700; font-size: 1.5rem; color: var(--text);
-            transition: color var(--transition);
-        }
-        
-        .navbar-actions { display: flex; align-items: center; gap: 1rem; }
-        
-        .theme-toggle {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg); color: var(--text);
-            padding: 0.5rem; font-size: 1.25rem; cursor: pointer;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); display: flex;
-            align-items: center; justify-content: center;
-        }
-        
-        .theme-toggle:hover {
-            transform: rotate(15deg); box-shadow: 0 0 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .lang-dropdown { position: relative; }
-        
-        .lang-btn {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            color: var(--text); padding: 0.5rem 1rem;
-            border-radius: var(--radius-lg); font-family: inherit;
-            font-size: 0.875rem; font-weight: 500; cursor: pointer;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); display: flex;
-            align-items: center; gap: 0.5rem;
-        }
-        
-        .lang-btn:hover { box-shadow: 0 0 15px rgba(14, 139, 213, 0.3); }
-        
-        .lang-flag { width: 20px; height: 15px; object-fit: cover; border-radius: 2px; }
-        
-        .lang-dropdown-content {
-            position: absolute; top: 100%; right: 0; margin-top: 0.5rem;
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius); overflow: hidden; min-width: 150px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--shadow); opacity: 0; visibility: hidden;
-            transform: translateY(10px); transition: all var(--transition); z-index: 100;
-        }
-        
-        .lang-dropdown.active .lang-dropdown-content {
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        
-        .lang-option {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.75rem 1rem; color: var(--text);
-            text-decoration: none; transition: background-color var(--transition);
-        }
-        
-        .lang-option:hover { background-color: rgba(14, 139, 213, 0.1); }
-        
-        .main { flex: 1; padding: 2rem 0; position: relative; z-index: 1; }
-        
-        .editor-container { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        
-        @media (min-width: 1024px) { .editor-container { grid-template-columns: 3fr 2fr; } }
-        
-        .glass-card {
-            background: var(--card-bg); border-radius: var(--radius-lg);
-            border: 1px solid var(--card-border); box-shadow: var(--shadow);
-            overflow: hidden; position: relative; backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
-        }
-        
-        .card-header {
-            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border);
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 1; transition: border-color var(--transition);
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80); color: white;
-        }
-        
-        .card-title {
-            font-size: 1.125rem; font-weight: 600; display: flex;
-            align-items: center; gap: 0.5rem; color: white;
-        }
-        
-        .card-title i { color: white; }
-        
-        .card-body { padding: 1.5rem; position: relative; z-index: 1; }
-        
-        .textarea-wrapper { position: relative; margin-bottom: 1rem; }
-        
+        .textarea-wrapper { position: relative; flex-grow: 1; display: flex; flex-direction: column; }
         .editor-textarea {
-            width: 100%; min-height: 300px; padding: 1rem;
-            border: 1px solid var(--card-border); border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.05); color: var(--text);
-            font-family: inherit; font-size: 1rem; line-height: 1.5; resize: vertical;
-            transition: all var(--transition); backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            width: 100%;
+            flex-grow: 1;
+            padding: 1rem;
+            border: var(--border-width) solid var(--border-color);
+            background: white;
+            color: var(--primary-text);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: none;
+            transition: all 0.2s ease;
         }
-        
-        body.light .editor-textarea { background: rgba(255, 255, 255, 0.5); }
-        
-        .editor-textarea:focus {
-            outline: none; border-color: #0e8bd5;
-            box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2);
-        }
-        
+        .editor-textarea:focus { outline: none; box-shadow: 0 0 0 3px var(--accent); }
         .char-count {
-            position: absolute; bottom: 0.75rem; right: 0.75rem; font-size: 0.75rem;
-            color: var(--text-secondary); background: rgba(0, 0, 0, 0.2);
-            padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            transition: color var(--transition), background-color var(--transition);
-        }
-        
-        body.light .char-count {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80; font-weight: 500;
-        }
-        
-        .editor-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
-        
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: var(--radius);
-            font-family: inherit; font-size: 0.875rem; font-weight: 500;
-            cursor: pointer; transition: all var(--transition);
-            position: relative; overflow: hidden;
-            border: none;
-        }
-        
-        .btn::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-        }
-        
-        .btn:hover::before { left: 100%; }
-        
-        .btn:hover { transform: translateY(-3px); }
-
-        .btn-primary, .btn-secondary {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            color: white;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .btn-primary:hover, .btn-secondary:hover { box-shadow: 0 6px 20px rgba(14, 139, 213, 0.5); }
-        
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
-            color: var(--text); 
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        body.light .btn-outline {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80;
-            border-color: rgba(14, 91, 174, 0.3); font-weight: 500;
-        }
-        
-        .btn-outline:hover {
-            border-color: #0e8bd5; box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
-        }
-        
-        body.light .btn-outline:hover { 
-            border-color: #0e5bae; 
-            color: #0e5bae; 
+            text-align: right;
+            font-size: 0.75rem;
+            padding-top: 0.5rem;
+            color: var(--secondary-text);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .btn-outline.active {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            border-color: #0e5bae;
-            color: white;
+        .sketch-btn {
+            background: white; border: var(--border-width) solid var(--border-color); color: var(--primary-text); padding: 10px 20px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            transition: all 0.15s ease; font-size: 12px; display: inline-flex; align-items: center;
+            justify-content: center; gap: 8px; box-shadow: 4px 4px 0px var(--border-color);
         }
+        .sketch-btn:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--border-color); }
+        .sketch-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-color); }
+        .sketch-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(50%); box-shadow: none; }
+        .sketch-btn.hidden { display: none; }
         
-        /* This ensures the icon inherits the button's color in all states */
-        .btn i {
-            color: inherit;
-        }
+        .sketch-btn-primary { background-color: var(--accent); }
+        .sketch-btn-primary:hover:not(:disabled) { background-color: var(--accent-dark); }
+        .sketch-btn-danger { background-color: var(--danger); color: white; }
+        .sketch-btn-success { background-color: var(--success); color: white; }
+        .sketch-btn.active { background-color: var(--accent); }
+        .sketch-btn svg, .sketch-btn i { transition: transform 0.2s ease; }
+        .sketch-btn:hover:not(:disabled) svg, .sketch-btn:hover:not(:disabled) i { transform: scale(1.1); }
+        
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        
+        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
+        .modal-content { border: var(--border-width) solid var(--border-color); box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color); background: white; transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal.open .modal-content { transform: scale(1); opacity: 1; }
 
-        .tools-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 0.75rem;
-        }
-        
-        .tool-btn {
-            display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem;
-            border-radius: var(--radius); background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border); color: var(--text);
-            font-family: inherit; font-size: 0.875rem; font-weight: 500;
-            cursor: pointer; transition: all var(--transition); position: relative;
-            overflow: hidden; backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        body.light .tool-btn {
-            background: rgba(255, 255, 255, 0.7); color: #0a2a80;
-            border-color: rgba(14, 91, 174, 0.3); font-weight: 600;
-        }
-        
-        .tool-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-        }
-        
-        .tool-btn:hover::before { left: 100%; }
-        
-        /* Specific icon colors for tool-btn, overrides .btn i */
-        .tool-btn i {
-            color: #0e8bd5; 
-        }
-        body.light .tool-btn i {
-            color: #0a2a80;
-        }
-                
-        .tool-btn:hover {
-            border-color: #0e8bd5; transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.2);
-        }
-        
-        body.light .tool-btn:hover {
-            background: rgba(255, 255, 255, 0.9); border-color: #0e5bae;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        .tool-btn.active, body.light .tool-btn.active {
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80);
-            border-color: transparent; color: white;
-            box-shadow: 0 4px 15px rgba(14, 139, 213, 0.3);
-        }
-        
-        /* Make sure active tool-btn icon is white */
-        .tool-btn.active i {
-             color: white;
-        }
+        .form-label { display: block; font-size: 12px; font-weight: 800; color: var(--primary-text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; border: var(--border-width) solid var(--border-color); padding: 12px 16px; font-size: 14px; background: white; color: var(--primary-text); transition: all 0.2s ease; }
+        .form-control:focus { outline: none; box-shadow: 0 0 0 3px var(--accent); }
 
-        .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
-        
-        .toast {
-            background: var(--card-bg); color: var(--text);
-            border-left: 4px solid #0e8bd5; border-radius: var(--radius);
-            padding: 1rem 1.5rem; margin-top: 0.75rem; box-shadow: var(--shadow);
-            display: flex; align-items: center; gap: 0.75rem;
-            transform: translateX(calc(100% + 2rem)); opacity: 0;
-            transition: all var(--transition); backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .toast.show { transform: translateX(0); opacity: 1; }
-        
-        .toast i { font-size: 1.25rem; }
-        
-        .toast.success { border-left-color: #0e8bd5; }
-        .toast.success i { color: #0e8bd5; }
-        
-        .toast.warning { border-left-color: #f72585; }
-        .toast.warning i { color: #f72585; }
-        
-        .footer { padding: 1.5rem 0; position: relative; z-index: 1; }
-        
-        .footer-content {
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 1rem;
-        }
-        
-        .footer-text {
-            color: var(--text-secondary); font-size: 0.875rem;
-            transition: color var(--transition);
-        }
-        
-        .footer-links { display: flex; gap: 1.5rem; }
-        
-        .footer-link {
-            color: var(--text-secondary); font-size: 0.875rem;
-            text-decoration: none; transition: color var(--transition);
-            cursor: pointer;
-        }
-        
-        .footer-link:hover { color: #0e8bd5; }
-        
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7); display: flex;
-            align-items: center; justify-content: center; z-index: 1000;
-            opacity: 0; visibility: hidden;
-            transition: opacity var(--transition), visibility var(--transition);
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        
-        .modal {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg); width: 90%; max-width: 800px;
-            max-height: 80vh; overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); transform: scale(0.95);
-            opacity: 0; transition: transform var(--transition), opacity var(--transition);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            display: flex; flex-direction: column;
-        }
-        
-        .modal-overlay.active .modal { transform: scale(1); opacity: 1; }
-        
-        .modal-header {
-            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border);
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(135deg, #0e8bd5, #0a2a80); color: white;
-        }
-        
-        .modal-title { font-size: 1.25rem; font-weight: 600; color: white; }
-        
-        .modal-close {
-            background: rgba(255, 255, 255, 0.2); border: none; color: white;
-            width: 32px; height: 32px; border-radius: 50%; font-size: 1.25rem;
-            cursor: pointer; transition: all var(--transition);
-            display: flex; align-items: center; justify-content: center;
-        }
-        
-        .modal-close:hover { background: rgba(255, 255, 255, 0.3); transform: rotate(90deg); }
-        
-        .modal-body { padding: 1.5rem; color: var(--text); overflow-y: auto; flex: 1; }
-        
-        .modal-body::-webkit-scrollbar { width: 10px; }
-        .modal-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-        .modal-body::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #0e8bd5, #0a2a80); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-        .modal-body::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #0a2a80, #0e8bd5); }
-        body.light .modal-body::-webkit-scrollbar-track { background: rgba(14, 91, 174, 0.1); }
-        
-        .modal-body h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: #0e8bd5; font-weight: 600; }
-        .modal-body p, .modal-body ul { margin-bottom: 1rem; }
-        .modal-body ul { padding-left: 1.5rem; }
-        .modal-body li { margin-bottom: 0.5rem; }
-        
-        .form-group { margin-bottom: 1.25rem; }
-        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text); }
-        .form-control {
-            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--card-border);
-            border-radius: var(--radius); background: rgba(255, 255, 255, 0.05);
-            color: var(--text); font-family: inherit; font-size: 1rem;
-            transition: all var(--transition); backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        body.light .form-control { background: rgba(255, 255, 255, 0.5); color: #0a2a80; }
-        .form-control:focus { outline: none; border-color: #0e8bd5; box-shadow: 0 0 0 3px rgba(14, 139, 213, 0.2); }
-        textarea.form-control { min-height: 150px; resize: vertical; }
-        .form-submit { margin-top: 1rem; }
-        
-        @media (max-width: 768px) {
-            .editor-actions { flex-direction: column; }
-            .tools-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .footer-content { flex-direction: column; align-items: center; text-align: center; }
-        }
+        .sketch-footer { position: fixed; bottom: 20px; right: 20px; z-index: 10; }
+        .sketch-footer a { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background-color: white; border: var(--border-width) solid var(--border-color); box-shadow: 4px 4px 0 var(--border-color); color: var(--secondary-text); text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.15s ease; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sketch-footer a:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border-color); color: var(--primary-text); }
+        .sketch-footer a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--border-color); }
+        .sketch-footer strong { font-weight: 800; color: var(--primary-text); }
+        .sketch-footer svg { stroke: currentColor; transition: transform 0.2s ease; }
+        .sketch-footer a:hover svg { transform: translateX(2px) translateY(-2px); }
+
     </style>
 </head>
-<body class="light">
-    <div class="sphere sphere-1"></div>
-    <div class="sphere sphere-2"></div>
-    <div class="sphere sphere-3"></div>
-    <div class="light-beam"></div>
-    
-    <nav class="navbar">
-        <div class="container navbar-container">
-            <a href="#" class="logo-link">
-                <div class="logo">
-                    <img src="https://i.postimg.cc/CznzdZD9/logo.png" alt="Logo" class="logo-image" onerror="this.onerror=null; this.src='https://placehold.co/40x40/0e5bae/ffffff?text=L';">
+<body>
+    <div class="main-layout">
+        <!-- Editor Panel -->
+        <div class="sketch-window">
+            <header class="sketch-titlebar">
+                <div class="titlebar-buttons">
+                    <div class="titlebar-btn close"></div>
+                    <div class="titlebar-btn minimize"></div>
+                    <div class="titlebar-btn maximize"></div>
                 </div>
-                <span class="logo-text" id="appName">Text Conversion</span>
-            </a>
-            <div class="navbar-actions">
-                <div class="lang-dropdown" id="langDropdown">
-                    <button class="lang-btn" id="langBtn">
-                        <img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" id="currentFlag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';">
-                        <span id="currentLang">Tiếng Việt</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="lang-dropdown-content">
-                        <a href="#" class="lang-option" data-lang="vi"><img src="https://flagcdn.com/w20/vn.png" alt="Tiếng Việt" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=VN';"><span>Tiếng Việt</span></a>
-                        <a href="#" class="lang-option" data-lang="en"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="lang-flag" onerror="this.onerror=null; this.src='https://placehold.co/20x15/cccccc/000000?text=EN';"><span>English</span></a>
-                    </div>
+                <div class="titlebar-title" id="editorTitle">Trình soạn thảo</div>
+            </header>
+            <main class="sketch-panel space-y-6">
+                <div class="textarea-wrapper">
+                    <textarea class="editor-textarea" id="inputText" placeholder="Nhập hoặc dán văn bản của bạn vào đây..."></textarea>
+                    <div class="char-count" id="charCount">0 ký tự</div>
                 </div>
-                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-            </div>
+                <div class="editor-actions grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="sketch-btn sketch-btn-primary" id="copyBtn"><i class="far fa-copy"></i><span>Sao chép</span></button>
+                    <button class="sketch-btn" id="resetBtn"><i class="fas fa-history"></i><span>Khôi phục</span></button>
+                    <button class="sketch-btn" id="lockBtn" title="Khóa/Mở khóa định dạng"><i class="fas fa-lock-open"></i><span>Khóa</span></button>
+                    <button class="sketch-btn sketch-btn-danger" id="clearBtn"><i class="far fa-trash-alt"></i><span>Xóa</span></button>
+                </div>
+            </main>
         </div>
-    </nav>
-    
-    <main class="main">
-        <div class="container">
-            <div class="editor-container">
-                <div class="glass-card" id="editorCard">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-keyboard"></i><span id="editorTitle">Trình soạn thảo</span></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="textarea-wrapper">
-                            <textarea class="editor-textarea" id="inputText" placeholder="Nhập hoặc dán văn bản của bạn vào đây..."></textarea>
-                            <div class="char-count" id="charCount">0 ký tự</div>
-                        </div>
-                        <div class="editor-actions">
-                            <button class="btn btn-primary" id="copyBtn"><i class="far fa-copy"></i><span data-lang-key="buttons.copy">Sao chép</span></button>
-                            <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-history"></i><span data-lang-key="buttons.reset">Khôi phục</span></button>
-                            <!-- Nút Khóa Định Dạng Mới -->
-                            <button class="btn btn-outline" id="lockBtn" title="Khóa/Mở khóa định dạng"><i class="fas fa-lock-open"></i><span data-lang-key="buttons.lock">Khóa</span></button>
-                            <button class="btn btn-outline" id="clearBtn"><i class="far fa-trash-alt"></i><span data-lang-key="buttons.clear">Xóa</span></button>
-                        </div>
-                    </div>
+        <!-- Tools Panel -->
+        <div class="sketch-window">
+            <header class="sketch-titlebar">
+                <div class="titlebar-buttons">
+                    <div class="titlebar-btn close"></div>
+                    <div class="titlebar-btn minimize"></div>
+                    <div class="titlebar-btn maximize"></div>
                 </div>
-                
-                <div class="glass-card" id="toolsCard">
-                    <div class="card-header">
-                        <div class="card-title"><i class="fas fa-tools"></i><span id="toolsTitle">Công cụ chuyển đổi</span></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="tools-grid">
-                            <button class="tool-btn" data-type="uppercase"><i class="fas fa-arrow-up"></i><span data-lang-key="buttons.uppercase">CHỮ HOA</span></button>
-                            <button class="tool-btn" data-type="lowercase"><i class="fas fa-arrow-down"></i><span data-lang-key="buttons.lowercase">chữ thường</span></button>
-                            <button class="tool-btn" data-type="capitalizeWords"><i class="fas fa-heading"></i><span data-lang-key="buttons.capitalizeWords">Viết Hoa Đầu Từ</span></button>
-                            <button class="tool-btn" data-type="capitalizeSentences"><i class="fas fa-paragraph"></i><span data-lang-key="buttons.capitalizeSentences">Viết hoa câu</span></button>
-                            <button class="tool-btn" data-type="toggleCase"><i class="fas fa-random"></i><span data-lang-key="buttons.toggleCase">cHữ XeN kẼ</span></button>
-                            <button class="tool-btn" data-type="slug"><i class="fas fa-link"></i><span data-lang-key="buttons.slug">Slug URL</span></button>
-                            <button class="tool-btn" data-type="removeAccents"><i class="fas fa-eraser"></i><span data-lang-key="buttons.removeAccents">Xóa dấu</span></button>
-                            <button class="tool-btn" data-type="normal"><i class="fas fa-font"></i><span data-lang-key="buttons.normal">Bình thường</span></button>
-                        </div>
-                    </div>
+                <div class="titlebar-title" id="toolsTitle">Công cụ</div>
+            </header>
+            <main class="sketch-panel">
+                <div class="tools-grid">
+                    <button class="sketch-btn tool-btn" data-type="uppercase"><i class="fas fa-arrow-up"></i><span>CHỮ HOA</span></button>
+                    <button class="sketch-btn tool-btn" data-type="lowercase"><i class="fas fa-arrow-down"></i><span>chữ thường</span></button>
+                    <button class="sketch-btn tool-btn" data-type="capitalizeWords"><i class="fas fa-heading"></i><span>Viết Hoa Đầu Từ</span></button>
+                    <button class="sketch-btn tool-btn" data-type="capitalizeSentences"><i class="fas fa-paragraph"></i><span>Viết hoa câu</span></button>
+                    <button class="sketch-btn tool-btn" data-type="toggleCase"><i class="fas fa-random"></i><span>cHữ XeN kẼ</span></button>
+                    <button class="sketch-btn tool-btn" data-type="slug"><i class="fas fa-link"></i><span>Slug URL</span></button>
+                    <button class="sketch-btn tool-btn" data-type="removeAccents"><i class="fas fa-eraser"></i><span>Xóa dấu</span></button>
+                    <button class="sketch-btn tool-btn" data-type="normal"><i class="fas fa-font"></i><span>Bình thường</span></button>
                 </div>
-            </div>
+            </main>
         </div>
-    </main>
+    </div>
     
-    <div class="toast-container"></div>
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text" id="footerText">Thiết kế bởi DucManh.</p>
-                <div class="footer-links">
-                    <a class="footer-link" id="contactLink" data-lang-key="contactLink">Liên hệ</a>
-                </div>
-            </div>
+    <!-- Modals -->
+    <div id="alertModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="alertdialog" aria-modal="true">
+        <div class="absolute inset-0" data-modal-hide="alertModal"></div>
+        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5 text-center">
+            <h3 id="alertTitle" class="text-xl font-black">Thông báo</h3>
+            <p id="alertMessage" class="text-sm text-secondary-text"></p>
+            <button data-modal-hide="alertModal" class="sketch-btn sketch-btn-primary w-full">Đã hiểu</button>
         </div>
-    </footer>
-    
+    </div>
     <div class="modal-overlay" id="contactModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" data-lang-key="contactTitle">Liên hệ với chúng tôi</h2>
-                <button class="modal-close" data-modal="contactModal">&times;</button>
-            </div>
+        <div class="modal-content relative m-4 w-full max-w-md p-7 space-y-5">
+            <header class="flex justify-between items-center">
+                <h2 class="text-xl font-black" data-lang-key="contactTitle">Liên hệ</h2>
+                <button class="modal-close sketch-btn !p-2 !shadow-none" data-modal="contactModal">&times;</button>
+            </header>
             <div class="modal-body">
                 <p data-lang-key="contactIntro">Vui lòng điền vào biểu mẫu dưới đây...</p>
                 <form id="contactForm">
-                    <div class="form-group"><label for="name" class="form-label" data-lang-key="formLabels.name">Họ và tên</label><input type="text" id="name" name="name" class="form-control" required></div>
-                    <div class="form-group"><label for="email" class="form-label" data-lang-key="formLabels.email">Email</label><input type="email" id="email" name="email" class="form-control" required></div>
-                    <div class="form-group"><label for="subject" class="form-label" data-lang-key="formLabels.subject">Chủ đề</label><input type="text" id="subject" name="subject" class="form-control" required></div>
-                    <div class="form-group"><label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label><textarea id="message" name="message" class="form-control" required></textarea></div>
-                    <div class="form-submit"><button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i><span data-lang-key="formLabels.submit">Gửi tin nhắn</span></button></div>
+                    <div class="form-group mb-4"><label for="name" class="form-label" data-lang-key="formLabels.name">Họ và tên</label><input type="text" id="name" name="name" class="form-control" required></div>
+                    <div class="form-group mb-4"><label for="email" class="form-label" data-lang-key="formLabels.email">Email</label><input type="email" id="email" name="email" class="form-control" required></div>
+                    <div class="form-group mb-4"><label for="subject" class="form-label" data-lang-key="formLabels.subject">Chủ đề</label><input type="text" id="subject" name="subject" class="form-control" required></div>
+                    <div class="form-group mb-4"><label for="message" class="form-label" data-lang-key="formLabels.message">Nội dung</label><textarea id="message" name="message" class="form-control" required rows="4"></textarea></div>
+                    <div class="form-submit"><button type="submit" class="sketch-btn sketch-btn-primary w-full"><i class="fas fa-paper-plane"></i><span data-lang-key="formLabels.submit">Gửi tin nhắn</span></button></div>
                 </form>
             </div>
         </div>
     </div>
+    
+    <footer class="sketch-footer">
+        <a href="#" id="contactLink">
+            <span>Liên hệ</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+        </a>
+    </footer>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
             const inputText = document.getElementById('inputText');
             const charCount = document.getElementById('charCount');
-            const toastContainer = document.querySelector('.toast-container');
             const copyBtn = document.getElementById('copyBtn');
             const clearBtn = document.getElementById('clearBtn');
             const resetBtn = document.getElementById('resetBtn');
-            const lockBtn = document.getElementById('lockBtn'); // New lock button
+            const lockBtn = document.getElementById('lockBtn');
             const lockBtnIcon = lockBtn.querySelector('i');
             const lockBtnText = lockBtn.querySelector('span');
-            const themeToggle = document.getElementById('themeToggle');
-            const langDropdown = document.getElementById('langDropdown');
-            const langBtn = document.getElementById('langBtn');
-            const langOptions = document.querySelectorAll('.lang-option');
-            const currentLangText = document.getElementById('currentLang');
-            const currentFlag = document.getElementById('currentFlag');
             const toolButtons = document.querySelectorAll('.tool-btn');
             const contactLink = document.getElementById('contactLink');
             const modalOverlays = document.querySelectorAll('.modal-overlay');
             const modalCloseButtons = document.querySelectorAll('.modal-close');
             const contactForm = document.getElementById('contactForm');
+            // Alert Modal
+            const alertModal = document.getElementById('alertModal');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
             
             // State Variables
             let currentType = null;
             let originalText = inputText.value;
-            let isFormatLocked = false; // New state for format lock
-            let currentLang = 'vi';
-
-            // Language Text Object
-            const texts = {
-                vi: {
-                    appName: "Chuyển Đổi Chữ", langName: "Tiếng Việt", flagUrl: "https://flagcdn.com/w20/vn.png",
-                    editorTitle: "Trình soạn thảo", toolsTitle: "Công cụ chuyển đổi",
-                    placeholder: "Nhập hoặc dán văn bản của bạn vào đây...", charCount: "ký tự",
-                    footerText: "Thiết kế bởi DucManh.", contactTitle: "Liên hệ với chúng tôi",
-                    contactIntro: "Vui lòng điền vào biểu mẫu dưới đây để gửi thông tin liên hệ. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
-                    contactLink: "Liên hệ",
-                    formLabels: { name: "Họ và tên", email: "Email", subject: "Chủ đề", message: "Nội dung", submit: "Gửi tin nhắn" },
-                    buttons: { uppercase: "CHỮ HOA", lowercase: "chữ thường", capitalizeWords: "Viết Hoa Đầu Từ", capitalizeSentences: "Viết hoa câu", toggleCase: "cHữ XeN kẼ", slug: "Slug URL", removeAccents: "Xóa dấu", normal: "Bình thường", copy: "Sao chép", clear: "Xóa", reset: "Khôi phục", lock: "Khóa", unlock: "Mở khóa"},
-                    toast: { copied: "Đã sao chép vào clipboard!", cleared: "Đã xóa văn bản!", reset: "Đã khôi phục văn bản gốc!", converted: "Đã chuyển đổi thành công!", error: "Lỗi khi chuyển đổi văn bản!", noText: "Không có văn bản!", messageSent: "Tin nhắn đã được gửi thành công!", formatLocked: "Đã khóa định dạng!", formatUnlocked: "Đã mở khóa định dạng!"}
-                },
-                en: {
-                    appName: "Text Conversion", langName: "English", flagUrl: "https://flagcdn.com/w20/gb.png",
-                    editorTitle: "Editor", toolsTitle: "Conversion Tools",
-                    placeholder: "Enter or paste your text here...", charCount: "characters",
-                    footerText: "Design by DucManh.", contactTitle: "Contact Us",
-                    contactIntro: "Please fill out the form below to send us a message. We will respond as soon as possible.",
-                    contactLink: "Contact",
-                    formLabels: { name: "Full Name", email: "Email", subject: "Subject", message: "Message", submit: "Send Message" },
-                    buttons: { uppercase: "UPPERCASE", lowercase: "lowercase", capitalizeWords: "Capitalize Words", capitalizeSentences: "Capitalize Sentences", toggleCase: "tOgGlE cAsE", slug: "Slug URL", removeAccents: "Remove Accents", normal: "Normal", copy: "Copy", clear: "Clear", reset: "Reset", lock: "Lock", unlock: "Unlock" },
-                    toast: { copied: "Copied to clipboard!", cleared: "Text cleared!", reset: "Reset to original text!", converted: "Conversion successful!", error: "Error converting text!", noText: "No text to process!", messageSent: "Message sent successfully!", formatLocked: "Format locked!", formatUnlocked: "Format unlocked!"}
-                }
-            };
+            let isFormatLocked = false;
 
             // --- Event Listeners ---
-
             inputText.addEventListener('input', function() {
                 if (isFormatLocked && currentType && currentType !== 'normal') {
-                    convertText(currentType);
+                    convertText(currentType, false); // No toast on auto-convert
                 } else if (!isFormatLocked) {
                     currentType = null;
                     originalText = inputText.value;
@@ -650,7 +264,7 @@
             inputText.addEventListener('paste', function() {
                 setTimeout(() => { 
                     if (isFormatLocked && currentType && currentType !== 'normal') {
-                        convertText(currentType);
+                        convertText(currentType, false); // No toast
                     } else {
                         originalText = inputText.value;
                         if (!isFormatLocked) {
@@ -667,7 +281,7 @@
             clearBtn.addEventListener('click', function() {
                 inputText.value = '';
                 updateCharCount();
-                showToast(texts[currentLang].toast.cleared, 'success');
+                showAlert('Đã xóa văn bản!', 'success');
                 if (!isFormatLocked) {
                     originalText = ''; 
                     currentType = null;
@@ -678,21 +292,18 @@
             resetBtn.addEventListener('click', function() {
                 const textBeforeReset = inputText.value;
                 if (textBeforeReset === originalText && textBeforeReset === '') {
-                   showToast(texts[currentLang].toast.noText, 'warning'); return;
+                   showAlert('Không có văn bản!', 'warning'); return;
                 }
                 if(textBeforeReset !== originalText) {
                    inputText.value = originalText;
-                   showToast(texts[currentLang].toast.reset, 'success');
+                   showAlert('Đã khôi phục văn bản gốc!', 'success');
                 }
-                
                 if (isFormatLocked) {
                     isFormatLocked = false;
                     lockBtn.classList.remove('active');
                     lockBtnIcon.className = 'fas fa-lock-open';
-                    lockBtnText.setAttribute('data-lang-key', 'buttons.lock');
-                    updateLanguage(currentLang);
+                    lockBtnText.textContent = 'Khóa';
                 }
-
                 currentType = null; 
                 updateActiveToolButtonStates(); 
                 updateCharCount();
@@ -702,66 +313,45 @@
                 isFormatLocked = !isFormatLocked;
                 this.classList.toggle('active', isFormatLocked);
                 lockBtnIcon.className = `fas fa-${isFormatLocked ? 'lock' : 'lock-open'}`;
-                lockBtnText.setAttribute('data-lang-key', `buttons.${isFormatLocked ? 'unlock' : 'lock'}`);
-                updateLanguage(currentLang);
+                lockBtnText.textContent = isFormatLocked ? 'Mở khóa' : 'Khóa';
                 
-                const toastKey = isFormatLocked ? 'formatLocked' : 'formatUnlocked';
-                showToast(texts[currentLang].toast[toastKey], 'success');
-
-                if (isFormatLocked && inputText.value && (!currentType || currentType === 'normal')) {
-                    showToast(texts[currentLang].toast.noFormatToLock, 'warning');
-                }
+                showAlert(isFormatLocked ? 'Đã khóa định dạng!' : 'Đã mở khóa định dạng!', 'success');
             });
 
             toolButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const clickedButtonType = this.getAttribute('data-type');
-                    const textBeforeOperation = inputText.value;
-                    let toastMessageKey = '';
                     
                     if (this.classList.contains('active') && clickedButtonType !== 'normal') {
                         inputText.value = originalText;
                         currentType = null; 
-                        toastMessageKey = 'reset';
+                        showAlert('Đã khôi phục văn bản gốc!', 'success');
                     } else if (clickedButtonType === 'normal') {
-                        inputText.value = originalText;
+                        if (inputText.value !== originalText) {
+                           inputText.value = originalText;
+                           showAlert('Đã khôi phục văn bản gốc!', 'success');
+                        }
                         currentType = 'normal';
-                        if (textBeforeOperation !== originalText) toastMessageKey = 'reset';
                     } else {
-                        convertText(clickedButtonType); 
+                        convertText(clickedButtonType, true); 
                         currentType = clickedButtonType;
-                        if (textBeforeOperation !== inputText.value) toastMessageKey = 'converted';
                     }
 
-                    if (toastMessageKey) showToast(texts[currentLang].toast[toastMessageKey], 'success');
                     updateActiveToolButtonStates();
                     updateCharCount();
                 });
             });
             
-            themeToggle.addEventListener('click', toggleTheme);
-
-            langBtn.addEventListener('click', (e) => { e.preventDefault(); langDropdown.classList.toggle('active'); e.stopPropagation(); });
-            document.addEventListener('click', (e) => { if (!langDropdown.contains(e.target)) langDropdown.classList.remove('active'); });
-
-            langOptions.forEach(option => {
-                option.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    updateLanguage(this.getAttribute('data-lang'));
-                    langDropdown.classList.remove('active');
-                });
-            });
-
-            contactLink.addEventListener('click', () => openModal('contactModal'));
+            contactLink.addEventListener('click', (e) => { e.preventDefault(); openModal('contactModal'); });
             modalCloseButtons.forEach(button => button.addEventListener('click', function() { closeModal(this.getAttribute('data-modal')); }));
             modalOverlays.forEach(overlay => overlay.addEventListener('click', function(e) { if (e.target === this) closeModal(this.id); }));
-            document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', e => e.stopPropagation()));
+            document.querySelectorAll('.modal-content').forEach(modal => modal.addEventListener('click', e => e.stopPropagation()));
 
             if (contactForm) {
                 contactForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     setTimeout(() => {
-                        showToast(texts[currentLang].toast.messageSent, 'success');
+                        showAlert('Tin nhắn đã được gửi thành công!', 'success');
                         closeModal('contactModal');
                         contactForm.reset();
                     }, 500);
@@ -769,18 +359,22 @@
             }
 
             // --- Helper Functions ---
-
             function updateCharCount() {
-                charCount.textContent = `${inputText.value.length} ${texts[currentLang].charCount}`;
+                charCount.textContent = `${inputText.value.length} ký tự`;
             }
 
-            function convertText(type) { 
+            function convertText(type, showToast = true) { 
                 if ((currentType === null || currentType === 'normal') && !isFormatLocked) {
                     originalText = inputText.value;
                 }
-                const textBeforeThisConversion = inputText.value;
+                const textBeforeConversion = inputText.value;
+                if (!textBeforeConversion && showToast) {
+                    showAlert('Không có văn bản!', 'warning');
+                    return;
+                }
+
+                let text = inputText.value;
                 try {
-                    let text = inputText.value;
                     switch(type) {
                         case 'uppercase': text = text.toLocaleUpperCase('vi-VN'); break;
                         case 'lowercase': text = text.toLocaleLowerCase('vi-VN'); break;
@@ -804,17 +398,18 @@
                         case 'removeAccents': text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D'); break;
                     }
                     inputText.value = text;
+                    if(showToast && textBeforeConversion !== text) showAlert('Đã chuyển đổi thành công!', 'success');
                 } catch (error) {
                     console.error('Lỗi chuyển đổi:', error);
-                    showToast(texts[currentLang].toast.error, 'warning'); 
-                    inputText.value = textBeforeThisConversion;
+                    if(showToast) showAlert('Lỗi khi chuyển đổi văn bản!', 'error'); 
+                    inputText.value = textBeforeConversion;
                 }
             }
 
             function copyText() {
-                if (!inputText.value) { showToast(texts[currentLang].toast.noText, 'warning'); return; }
+                if (!inputText.value) { showAlert('Không có văn bản!', 'warning'); return; }
                 navigator.clipboard.writeText(inputText.value).then(() => {
-                    showToast(texts[currentLang].toast.copied, 'success');
+                    showAlert('Đã sao chép vào clipboard!', 'success');
                 }).catch(() => fallbackCopyText());
             }
             
@@ -822,54 +417,21 @@
                 try {
                     inputText.select();
                     document.execCommand('copy');
-                    showToast(texts[currentLang].toast.copied, 'success');
+                    showAlert('Đã sao chép vào clipboard!', 'success');
                     inputText.setSelectionRange(0,0); 
                 } catch (err) {
-                    showToast(texts[currentLang].toast.error, 'warning'); 
+                    showAlert('Lỗi khi sao chép!', 'error'); 
                 }
             }
-
-            function toggleTheme() {
-                document.body.classList.toggle('light');
-                themeToggle.querySelector('i').className = document.body.classList.contains('light') ? 'fas fa-moon' : 'fas fa-sun';
-            }
             
-            function updateLanguage(lang) {
-                currentLang = lang;
-                const t = texts[lang];
-                document.documentElement.lang = lang;
-                document.getElementById('appName').textContent = t.appName;
-                currentLangText.textContent = t.langName;
-                currentFlag.src = t.flagUrl;
-                currentFlag.alt = t.langName;
-                document.getElementById('editorTitle').textContent = t.editorTitle;
-                document.getElementById('toolsTitle').textContent = t.toolsTitle;
-                inputText.placeholder = t.placeholder;
-                updateCharCount(); 
+            function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.add('active', 'flex'); modal.classList.remove('hidden'); } }
+            function closeModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.remove('active'); modal.classList.add('hidden'); } }
 
-                document.querySelectorAll('[data-lang-key]').forEach(el => {
-                    const keyParts = el.getAttribute('data-lang-key').split('.');
-                    let textValue = t;
-                    keyParts.forEach(part => { if (textValue) textValue = textValue[part]; });
-                    if (typeof textValue === 'string') el.textContent = textValue;
-                });
+            function showAlert(message, type) {
+                alertTitle.textContent = type === 'success' ? 'Thành công' : (type === 'error' ? 'Lỗi' : 'Thông báo');
+                alertMessage.textContent = message;
+                openModal('alertModal');
             }
-
-            function showToast(message, type = 'success') {
-                const toastEl = document.createElement('div');
-                toastEl.className = `toast ${type}`;
-                const iconClass = type === 'success' ? 'fa-check-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle');
-                toastEl.innerHTML = `<i class="fas ${iconClass}"></i><span>${message}</span>`;
-                toastContainer.appendChild(toastEl);
-                requestAnimationFrame(() => toastEl.classList.add('show'));
-                setTimeout(() => {
-                    toastEl.classList.remove('show');
-                    toastEl.addEventListener('transitionend', () => toastEl.remove());
-                }, 3000);
-            }
-
-            function openModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; } }
-            function closeModal(modalId) { const modal = document.getElementById(modalId); if(modal) { modal.classList.remove('active'); document.body.style.overflow = ''; } }
 
             function updateActiveToolButtonStates() {
                 toolButtons.forEach(btn => btn.classList.remove('active'));
@@ -879,8 +441,6 @@
             }
 
             // --- Initializations ---
-            themeToggle.querySelector('i').className = document.body.classList.contains('light') ? 'fas fa-moon' : 'fas fa-sun';
-            updateLanguage(currentLang); 
             updateCharCount();
             updateActiveToolButtonStates(); 
         });

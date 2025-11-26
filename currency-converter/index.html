@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển Đổi Tiền Tệ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- FIX: Correct Flag Icons Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css"/>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f2f7;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(80px) saturate(1.2); 
+            opacity: 0.6; pointer-events: none;
+        }
+
+        /* HOME BUTTON */
+        .glass-btn-home {
+            position: fixed; top: 24px; left: 24px; z-index: 50;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 6px; padding-right: 18px; 
+            border-radius: 99px;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            text-decoration: none;
+            color: #1d1d1f;
+        }
+        .glass-btn-home:hover {
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+        .home-icon-bg {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .glass-btn-home:hover .home-icon-bg { background: rgba(255, 255, 255, 1); }
+
+        /* GLASS PANEL */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
+            position: relative; overflow: visible; 
+            transition: all 0.3s ease;
+        }
+
+        /* INPUTS */
+        .crystal-input {
+            background: #ffffff; 
+            border: 1px solid #e5e7eb;
+            color: #1d1d1f; border-radius: 12px; 
+            transition: all 0.2s; 
+            font-size: 1rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .crystal-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
+            outline: none;
+        }
+
+        /* --- REFINED CUSTOM DROPDOWN --- */
+        .custom-select-wrapper { position: relative; user-select: none; }
+        
+        .custom-select-trigger {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; padding: 12px 16px;
+            background: #ffffff; 
+            border: 1px solid #e5e7eb;
+            border-radius: 12px; 
+            transition: all 0.2s ease; 
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            height: 56px; 
+        }
+        
+        .custom-select-trigger:hover { border-color: #9ca3af; }
+        
+        .custom-select-trigger.open {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+        }
+
+        .custom-options {
+            position: absolute; display: block; top: 100%; left: 0; right: 0;
+            background: #fff; 
+            border: 1px solid #2563eb; 
+            border-top: 0;
+            border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50; opacity: 0; visibility: hidden; pointer-events: none;
+            transform: translateY(-8px); 
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            max-height: 320px; overflow-y: auto;
+        }
+        
+        .custom-select-wrapper.open .custom-options {
+            opacity: 1; visibility: visible; pointer-events: all; transform: translateY(0);
+        }
+
+        .custom-option {
+            padding: 12px 16px; cursor: pointer; transition: all 0.15s;
+            color: #1f2937; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover { background-color: #f8fafc; color: #000; }
+        .custom-option.selected { background-color: #2563eb; color: #fff; }
+        .custom-option.selected .text-gray-400 { color: rgba(255,255,255,0.8); }
+
+        .fi { width: 1.4em; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .custom-options::-webkit-scrollbar { width: 6px; }
+        .custom-options::-webkit-scrollbar-track { background: transparent; }
+        .custom-options::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-options::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- SWAP BUTTON --- */
+        .swap-btn {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: white; border: 1px solid #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            color: #6b7280;
+        }
+        .swap-btn:hover {
+            color: #007aff; border-color: #007aff;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.2);
+            transform: scale(1.1) rotate(180deg);
+        }
+        .swap-btn:active { transform: scale(0.9) rotate(180deg); }
+
+        /* ACTION BUTTONS */
+        .action-btn {
+            background: transparent; color: #6b7280;
+            border: 1px solid transparent; font-weight: 500; font-size: 0.85rem;
+            transition: all 0.2s ease; padding: 8px 16px; border-radius: 99px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .action-btn:hover { background: rgba(0,0,0,0.05); color: #1d1d1f; }
+        .action-btn.delete:hover { color: #ef4444; background: rgba(254, 226, 226, 0.5); }
+        .action-btn.refresh:hover { color: #007aff; background: rgba(219, 234, 254, 0.5); }
+
+        /* RATE BOX */
+        .rate-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            text-align: right;
+            min-width: 180px;
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-result { animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        
+        .loading-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px); z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 32px; transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <a href="https://ducmanh.io.vn/" class="glass-btn-home group">
+        <div class="home-icon-bg">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-gray-700 group-hover:text-black transition-colors"></i>
+        </div>
+        <span class="font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Trang chủ</span>
+    </a>
+
+    <div class="w-full max-w-4xl relative z-10 flex flex-col gap-6">
+        
+        <div class="text-center md:text-left space-y-2">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Chuyển Đổi Tiền Tệ</h1>
+            <p class="text-gray-500 font-medium text-sm md:text-base">
+                Chuyển đổi giữa các loại tiền tệ sử dụng tỷ giá thời gian thực.
+            </p>
+        </div>
+
+        <div class="glass-panel p-8 md:p-10 relative">
+            
+            <div id="loading-overlay" class="loading-overlay hidden">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <i data-lucide="circle-dollar-sign" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800">Chuyển Đổi</h2>
+                </div>
+                <button onclick="updateRate()" class="action-btn refresh">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Cập nhật
+                </button>
+            </div>
+
+            <!-- INPUTS GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 items-end mb-8">
+                
+                <!-- FROM CUSTOM DROPDOWN -->
+                <div class="flex flex-col gap-2 relative z-30">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Từ Tiền Tệ</label>
+                    <div id="from-wrapper" class="custom-select-wrapper">
+                        <div class="custom-select-trigger" onclick="toggleDropdown('from')">
+                            <div class="flex items-center gap-3">
+                                <span id="from-flag" class="fi fi-us text-xl rounded shadow-sm"></span>
+                                <span id="from-label" class="font-medium">USD - Đô la Mỹ</span>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                        <div class="custom-options" id="from-options">
+                            <!-- Options will be populated by JS -->
+                        </div>
+                        <input type="hidden" id="from-value" value="USD">
+                    </div>
+                </div>
+
+                <!-- SWAP BUTTON -->
+                <div class="flex justify-center md:pb-2 z-10">
+                    <button onclick="swapCurrencies()" class="swap-btn" title="Đảo ngược">
+                        <i data-lucide="arrow-right-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- TO CUSTOM DROPDOWN -->
+                <div class="flex flex-col gap-2 relative z-20">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Sang Tiền Tệ</label>
+                    <div id="to-wrapper" class="custom-select-wrapper">
+                        <div class="custom-select-trigger" onclick="toggleDropdown('to')">
+                            <div class="flex items-center gap-3">
+                                <span id="to-flag" class="fi fi-vn text-xl rounded shadow-sm"></span>
+                                <span id="to-label" class="font-medium">VND - Việt Nam Đồng</span>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                        <div class="custom-options" id="to-options">
+                            <!-- Options will be populated by JS -->
+                        </div>
+                        <input type="hidden" id="to-value" value="VND">
+                    </div>
+                </div>
+            </div>
+
+            <!-- AMOUNT INPUT -->
+            <div class="flex flex-col gap-2 mb-8">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Số tiền</label>
+                <!-- REMOVED debounceConversion(), using oninput="calculate()" for instant result -->
+                <input type="number" id="amount" placeholder="Nhập số tiền..." class="crystal-input w-full px-5 py-4 text-xl font-bold tracking-wide text-gray-800 h-14" value="1" oninput="calculate()">
+            </div>
+
+            <!-- RESULT AREA -->
+            <div class="relative bg-white/60 rounded-2xl p-6 border border-white/80 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                
+                <!-- Main Result -->
+                <div class="flex-1 text-left pl-2">
+                    <div id="result-container" class="animate-result">
+                        <div class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight break-all flex items-baseline gap-3" id="final-result">
+                            ...
+                        </div>
+                        <div class="text-sm text-gray-500 font-medium mt-2" id="result-subtext">...</div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Copy & Rate Info -->
+                <div class="flex flex-col items-end gap-3">
+                    <!-- Copy Button -->
+                    <button onclick="copyRate()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors" title="Sao chép tỷ giá">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Sao chép
+                    </button>
+
+                    <!-- Rate Info Box -->
+                    <div class="rate-box">
+                        <div id="rate-one-unit" class="text-sm font-bold text-gray-800">...</div>
+                        <div id="rate-date" class="text-xs text-gray-500 mt-1">...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                <button onclick="clearInput()" class="action-btn delete">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Xóa nhập liệu
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed top-5 right-5 bg-white/90 backdrop-blur shadow-xl rounded-xl px-4 py-3 flex items-center gap-3 transform translate-x-[120%] transition-transform duration-300 z-[100]">
+        <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-green-600"></i></div>
+        <span id="toast-msg" class="text-sm font-medium text-gray-800">Đã sao chép!</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- BACKGROUND ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:0,g:122,b:255}, {r:52,g:199,b:89}, {r:255,g:149,b:0}, {r:175,g:82,b:222}];
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { this.radius = Math.random()*150+120; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.color = colors[Math.floor(Math.random()*colors.length)]; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
+            draw(ctx) { const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.35)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.globalCompositeOperation='source-over'; ctx.fill(); }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<5;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
+
+        // --- DATA WITH FLAGS ---
+        const currencies = [
+            { code: 'USD', name: 'Đô la Mỹ', flag: 'us' },
+            { code: 'VND', name: 'Việt Nam Đồng', flag: 'vn' },
+            { code: 'EUR', name: 'Euro', flag: 'eu' },
+            { code: 'JPY', name: 'Yên Nhật', flag: 'jp' },
+            { code: 'KRW', name: 'Won Hàn Quốc', flag: 'kr' },
+            { code: 'GBP', name: 'Bảng Anh', flag: 'gb' },
+            { code: 'CNY', name: 'Nhân dân tệ', flag: 'cn' },
+            { code: 'AUD', name: 'Đô la Úc', flag: 'au' },
+            { code: 'CAD', name: 'Đô la Canada', flag: 'ca' },
+            { code: 'SGD', name: 'Đô la Singapore', flag: 'sg' },
+            { code: 'THB', name: 'Baht Thái', flag: 'th' },
+            { code: 'RUB', name: 'Rúp Nga', flag: 'ru' },
+            { code: 'HKD', name: 'Đô la Hồng Kông', flag: 'hk' },
+            { code: 'TWD', name: 'Đài tệ', flag: 'tw' }
+        ];
+
+        // GLOBAL STATE FOR INSTANT CALCULATION
+        let currentExchangeRate = 0;
+        let cachedFrom = 'USD';
+        let cachedTo = 'VND';
+
+        // --- CUSTOM DROPDOWN LOGIC ---
+        function initDropdowns() {
+            renderOptions('from');
+            renderOptions('to');
+            
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.custom-select-wrapper')) {
+                    closeAllDropdowns();
+                }
+            });
+        }
+
+        function renderOptions(type) {
+            const container = document.getElementById(`${type}-options`);
+            const currentVal = document.getElementById(`${type}-value`).value;
+            container.innerHTML = '';
+
+            currencies.forEach(cur => {
+                const div = document.createElement('div');
+                div.className = `custom-option ${cur.code === currentVal ? 'selected' : ''}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="fi fi-${cur.flag} text-lg rounded shadow-sm"></span>
+                        <span class="font-semibold">${cur.code}</span>
+                    </div>
+                    <span class="text-sm ${cur.code === currentVal ? 'text-white/80' : 'text-gray-500'}">${cur.name}</span>
+                `;
+                div.onclick = () => selectOption(type, cur.code, cur.name, cur.flag);
+                container.appendChild(div);
+            });
+        }
+
+        function toggleDropdown(type) {
+            const wrapper = document.getElementById(`${type}-wrapper`);
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            
+            const wasOpen = wrapper.classList.contains('open');
+            closeAllDropdowns(); 
+            
+            if (!wasOpen) {
+                wrapper.classList.add('open');
+                trigger.classList.add('open');
+            }
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.custom-select-wrapper').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.custom-select-trigger').forEach(el => el.classList.remove('open'));
+        }
+
+        function selectOption(type, code, name, flag) {
+            document.getElementById(`${type}-value`).value = code;
+            const labelHtml = `
+                <div class="flex items-center gap-3">
+                    <span class="fi fi-${flag} text-xl rounded shadow-sm"></span>
+                    <span class="font-medium">${code} - ${name}</span>
+                </div>
+                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+            `;
+            document.querySelector(`#${type}-wrapper .custom-select-trigger`).innerHTML = labelHtml;
+            lucide.createIcons();
+            
+            renderOptions(type); 
+            closeAllDropdowns();
+            updateRate(); // Fetch new rate immediately when currency changes
+        }
+
+        // --- NEW CONVERSION LOGIC: Fetch once, Calculate instantly ---
+
+        // 1. Fetch API only when currencies change
+        async function updateRate() {
+            const from = document.getElementById('from-value').value;
+            const to = document.getElementById('to-value').value;
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            // Avoid redundant fetches if currencies haven't changed (optional optimization)
+            // but user might want to refresh rate manually
+            
+            loadingOverlay.classList.remove('hidden');
+
+            try {
+                const url = `https://hexarate.paikama.co/api/rates/latest/${from}?target=${to}`;
+                const res = await fetch(url);
+                const json = await res.json();
+
+                if (json.status_code === 200 && json.data) {
+                    currentExchangeRate = json.data.mid;
+                    const timestamp = json.data.timestamp;
+                    
+                    // Update Rate Info Box UI immediately
+                    const precision = currentExchangeRate < 0.01 ? 6 : (currentExchangeRate < 1 ? 4 : 2);
+                    document.getElementById('rate-one-unit').innerText = `1 ${from} = ${new Intl.NumberFormat('en-US', { maximumFractionDigits: precision }).format(currentExchangeRate)} ${to}`;
+                    
+                    if(timestamp) {
+                        const dateObj = new Date(timestamp);
+                        const dateStr = dateObj.toISOString().split('T')[0]; 
+                        document.getElementById('rate-date').innerText = dateStr;
+                    }
+
+                    // Now recalculate the result with new rate
+                    calculate();
+
+                } else {
+                    throw new Error("Invalid API");
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('final-result').innerHTML = `<span class="text-red-500 text-2xl">Lỗi kết nối</span>`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        // 2. Calculate instantly on input (No network request)
+        function calculate() {
+            const amountVal = parseFloat(document.getElementById('amount').value);
+            const from = document.getElementById('from-value').value;
+            const to = document.getElementById('to-value').value;
+            const resultEl = document.getElementById('final-result');
+
+            if (isNaN(amountVal) || amountVal === 0) {
+                resultEl.innerHTML = `0 <span class="text-2xl text-gray-400 font-medium">${to}</span>`;
+                return;
+            }
+
+            // Use stored rate for instant calculation
+            const result = amountVal * currentExchangeRate;
+
+            // Formatting
+            const formatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+            resultEl.innerHTML = `${formatter.format(result)} <span class="text-2xl text-gray-400 font-medium align-middle">${to}</span>`;
+            document.getElementById('result-subtext').innerText = `${new Intl.NumberFormat('en-US').format(amountVal)} ${from} =`;
+        }
+
+        function swapCurrencies() {
+            const fromVal = document.getElementById('from-value').value;
+            const fromWrapperContent = document.querySelector(`#from-wrapper .custom-select-trigger`).innerHTML;
+            
+            const toVal = document.getElementById('to-value').value;
+            const toWrapperContent = document.querySelector(`#to-wrapper .custom-select-trigger`).innerHTML;
+
+            // Swap Values
+            document.getElementById('from-value').value = toVal;
+            document.querySelector(`#from-wrapper .custom-select-trigger`).innerHTML = toWrapperContent;
+            
+            document.getElementById('to-value').value = fromVal;
+            document.querySelector(`#to-wrapper .custom-select-trigger`).innerHTML = fromWrapperContent;
+
+            renderOptions('from');
+            renderOptions('to');
+            updateRate(); // Fetch new rate after swap
+        }
+
+        function clearInput() {
+            document.getElementById('amount').value = "";
+            calculate(); // Recalculate with empty/zero input
+            document.getElementById('amount').focus();
+        }
+
+        function copyRate() {
+            const from = document.getElementById('from-value').value;
+            const to = document.getElementById('to-value').value;
+            const text = `1 ${from} = ${currentExchangeRate} ${to}`;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const t = document.getElementById('toast');
+                    t.style.transform = 'translateX(0)';
+                    setTimeout(() => t.style.transform = 'translateX(120%)', 2000);
+                }
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        initDropdowns();
+        updateRate(); // Initial fetch
+
+    </script>
+</body>
+</html>

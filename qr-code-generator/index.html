@@ -84,34 +84,73 @@
             background: white;
         }
 
-        /* --- UPDATED CARD STYLES (Sếp's Request) --- */
+        /* --- UPDATED CARD STYLES (LUXURY VERSION WITH BLACK BORDER) --- */
         .type-card {
-            background: rgba(255, 255, 255, 0.3); 
+            background: rgba(255, 255, 255, 0.3); /* Glass mờ, nhẹ nhàng */
             border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 16px;
-            padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            border-radius: 20px; /* Bo góc tròn trịa hơn */
+            padding: 12px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
             cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            height: 80px; position: relative; overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Nhẹ hơn */
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Apple ease curve */
+            height: 86px; 
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(8px);
         }
+
+        /* Hover nhẹ */
         .type-card:hover { 
             background: rgba(255, 255, 255, 0.6); 
-            border-color: rgba(0, 0, 0, 0.1); 
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            transform: translateY(-2px); 
+            border-color: rgba(255, 255, 255, 0.8);
         }
+
+        /* Active: Nền trắng, Shadow xịn, VIỀN ĐEN XÁM RÕ RÀNG */
         .type-card.active { 
             background: #ffffff;
-            border-color: rgba(0, 122, 255, 0.3); /* Xanh mờ hơn */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Bóng đổ mềm mại hơn */
+            border-color: rgba(0, 0, 0, 0.5); /* <-- MÀU SẾP YÊU CẦU: Đen xám, rõ nét */
+            box-shadow: 
+                0 12px 28px -6px rgba(0, 0, 0, 0.12), /* Bóng đổ sâu mềm mại */
+                0 4px 10px -4px rgba(0, 0, 0, 0.05);  /* Bóng chân */
+            transform: translateY(-4px) scale(1.02); /* Nổi lên rõ ràng */
         }
-        .type-card i { color: rgba(0,0,0,0.3); transition: all 0.4s; } /* Icon mờ hơn */
-        .type-card:hover i { color: #007aff; transform: scale(1.1); }
-        .type-card.active i { color: #007aff; transform: scale(1.1); filter: drop-shadow(0 2px 4px rgba(0,122,255,0.2)); }
-        .type-card span { font-size: 0.7rem; color: rgba(0,0,0,0.4); font-weight: 500; transition: color 0.3s; letter-spacing: 0.02em; z-index: 2; } /* Chữ mờ hơn */
-        .type-card:hover span { color: #007aff; } /* Chữ xanh khi hover */
-        .type-card.active span { color: #007aff; font-weight: 600; }
+
+        /* Icon Styles */
+        .type-card i { 
+            color: rgba(0,0,0,0.45); /* Màu xám trung tính */
+            transition: all 0.4s ease; 
+            stroke-width: 1.5px; /* Nét mảnh sang trọng */
+        }
+        
+        .type-card:hover i { 
+            color: #1d1d1f; /* Hover chuyển đen */
+            stroke-width: 1.75px;
+        }
+
+        .type-card.active i { 
+            color: #007aff; /* Active màu xanh Apple tinh tế */
+            stroke-width: 2px; /* Đậm hơn chút để nhấn mạnh */
+            transform: scale(1.05);
+            /* Bỏ shadow lòe loẹt, giữ sự sạch sẽ */
+        }
+
+        /* Text Styles */
+        .type-card span { 
+            font-size: 0.7rem; 
+            color: rgba(0,0,0,0.5); 
+            font-weight: 500; 
+            transition: all 0.3s; 
+            letter-spacing: 0.01em;
+        }
+        
+        .type-card:hover span { 
+            color: rgba(0,0,0,0.8); 
+        }
+
+        .type-card.active span { 
+            color: #1d1d1f; /* Chữ active màu đen đậm để tương phản tốt */
+            font-weight: 600; 
+        }
 
         /* BUTTONS */
         .primary-btn { 

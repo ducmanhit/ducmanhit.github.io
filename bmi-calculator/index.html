@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máy Tính BMI</title>
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #f3f4f6 100%);
+            margin: 0; padding: 0;
+            height: 100vh; width: 100vw;
+            color: #1f2937;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            opacity: 0.4; pointer-events: none;
+        }
+
+        /* HOME BUTTON */
+        .glass-btn-home {
+            position: fixed; top: 20px; left: 20px; z-index: 50;
+            background: #ffffff; border: 1px solid #e5e7eb;
+            padding: 8px 16px; border-radius: 99px;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease; text-decoration: none; color: #374151; font-size: 0.9rem; font-weight: 500;
+        }
+        .glass-btn-home:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
+        }
+
+        /* MAIN CONTAINER - CENTERED PERFECTLY */
+        .main-container {
+            flex: 1; width: 100%; max-width: 1100px; margin: 0 auto;
+            padding: 0 40px; 
+            display: flex; flex-direction: column; justify-content: center; /* VERTICAL CENTER */
+            gap: 32px; 
+            position: relative; z-index: 10;
+            height: 100%;
+        }
+
+        /* HEADER */
+        .header-section { flex-shrink: 0; text-align: center; }
+
+        /* CONTENT GRID - EQUAL COLUMNS */
+        .content-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* 50-50 Split */
+            gap: 32px;
+            height: auto; 
+            max-height: 75vh; /* Limit height */
+        }
+
+        /* COLUMNS */
+        .col-left { display: flex; flex-direction: column; gap: 24px; height: 100%; min-height: 0; }
+        .col-right { height: 100%; min-height: 0; }
+
+        /* CARDS */
+        .crystal-card {
+            background: #ffffff; border: 1px solid #e5e7eb;
+            border-radius: 24px; padding: 28px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease;
+            display: flex; flex-direction: column;
+        }
+        
+        /* INPUTS */
+        .crystal-input {
+            background: #f9fafb; border: 1px solid #d1d5db;
+            color: #111827; border-radius: 12px; 
+            transition: all 0.2s; font-size: 1rem; font-weight: 500;
+            width: 100%; padding: 14px 16px;
+        }
+        .crystal-input:focus {
+            background: #fff; border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); outline: none;
+        }
+
+        /* DROPDOWN */
+        .custom-select-wrapper { position: relative; user-select: none; }
+        .custom-select-trigger {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; padding: 14px 16px;
+            background: #f9fafb; border: 1px solid #d1d5db;
+            border-radius: 12px; transition: all 0.2s; font-weight: 500; color: #111827;
+        }
+        .custom-select-trigger:hover { border-color: #9ca3af; background: #fff; }
+        .custom-select-trigger.open {
+            background: #fff; border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+        }
+        .custom-options {
+            position: absolute; display: block; top: 100%; left: 0; right: 0;
+            background: #fff; border: 1px solid #2563eb; border-top: 0;
+            border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            z-index: 50; opacity: 0; visibility: hidden; pointer-events: none;
+            transform: translateY(-10px); transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .custom-select-wrapper.open .custom-options {
+            opacity: 1; visibility: visible; pointer-events: all; transform: translateY(0);
+        }
+        .custom-option {
+            padding: 12px 16px; cursor: pointer; transition: all 0.2s;
+            color: #374151; font-weight: 500;
+        }
+        .custom-option:hover { background-color: #eff6ff; color: #1d4ed8; }
+        .custom-option.selected { background-color: #2563eb; color: #fff; }
+        .custom-option:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+
+        /* BMI GAUGE BAR */
+        .bmi-bar-container {
+            height: 20px; width: 100%; background: #e5e7eb;
+            border-radius: 99px; position: relative; margin-top: 40px; overflow: visible;
+        }
+        .bmi-bar-fill {
+            position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #3b82f6 0%, #22c55e 25%, #eab308 50%, #ef4444 100%);
+        }
+        .bmi-marker {
+            position: absolute; top: -10px; width: 8px; height: 40px;
+            background: #1f2937; border-radius: 99px; border: 2px solid white;
+            transform: translateX(-50%); transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10;
+        }
+        .bmi-tooltip {
+            position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
+            background: #1f2937; color: white; padding: 6px 12px; border-radius: 10px;
+            font-size: 0.9rem; font-weight: 700; white-space: nowrap;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .bmi-marker.active .bmi-tooltip { opacity: 1; top: -55px; }
+
+        /* CATEGORY LIST - FIXED & REFINED */
+        .cat-list { 
+            display: flex; flex-direction: column; gap: 8px; 
+            overflow-y: auto; 
+            padding-right: 6px; flex: 1;
+        } 
+        .cat-list::-webkit-scrollbar { width: 4px; }
+        .cat-list::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
+
+        .category-row {
+            padding: 12px 16px; 
+            border-radius: 14px; 
+            transition: all 0.2s ease;
+            display: flex; justify-content: space-between; align-items: center;
+            background: transparent; border: 1px solid transparent;
+        }
+        
+        /* Highlight state matches the image provided */
+        .category-row.active {
+            background: #ffffff;
+            box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+
+        /* PILL: Shorter & Centered */
+        .cat-pill { 
+            width: 4px; height: 24px; /* FIXED: Short & cute like image */
+            border-radius: 4px; 
+            margin-right: 14px; 
+            flex-shrink: 0;
+        }
+        
+        /* Colors */
+        .cat-blue .cat-pill { background-color: #3b82f6; }
+        .category-row.active.cat-blue { border-color: #bfdbfe; background: #eff6ff; }
+        
+        .cat-green .cat-pill { background-color: #22c55e; }
+        .category-row.active.cat-green { border-color: #bbf7d0; background: #f0fdf4; }
+        
+        .cat-yellow .cat-pill { background-color: #eab308; }
+        .category-row.active.cat-yellow { border-color: #fef08a; background: #fefce8; }
+        
+        .cat-red .cat-pill { background-color: #ef4444; }
+        .category-row.active.cat-red { border-color: #fecaca; background: #fef2f2; }
+
+        .category-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .category-label { font-weight: 700; font-size: 0.95rem; color: #1f2937; line-height: 1.3; }
+        .category-desc { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
+        .category-range { font-weight: 700; font-size: 0.85rem; color: #4b5563; white-space: nowrap; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .animate-enter { animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+        @media (max-width: 1024px) {
+            body { overflow: auto; height: auto; }
+            .main-container { height: auto; padding: 20px; padding-top: 80px; justify-content: flex-start; }
+            .content-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+            .crystal-card { height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- HOME BUTTON -->
+    <a href="https://ducmanh.io.vn/" class="glass-btn-home group">
+        <div class="home-icon-bg">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-gray-600 group-hover:text-black transition-colors"></i>
+        </div>
+        <span class="font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Trang chủ</span>
+    </a>
+
+    <div class="main-container">
+        
+        <!-- HEADER -->
+        <div class="header-section">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Máy Tính BMI</h1>
+            <p class="text-gray-500 text-base">Công cụ theo dõi chỉ số cơ thể toàn diện & chính xác</p>
+        </div>
+
+        <!-- CONTENT GRID -->
+        <div class="content-grid">
+            
+            <!-- LEFT COLUMN -->
+            <div class="col-left">
+                
+                <!-- INPUT CARD -->
+                <div class="crystal-card h-auto flex-shrink-0">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-green-100 p-2 rounded-xl"><i data-lucide="activity" class="w-5 h-5 text-green-600"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">Thông số đo</h3>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 pl-1">Hệ đo lường</label>
+                            <div id="unit-wrapper" class="custom-select-wrapper">
+                                <div class="custom-select-trigger" onclick="toggleDropdown()">
+                                    <span id="unit-label">Hệ mét (kg, cm)</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                                <div class="custom-options">
+                                    <div class="custom-option selected" onclick="selectUnit('metric', 'Hệ mét (kg, cm)')">Hệ mét (kg, cm)</div>
+                                    <div class="custom-option" onclick="selectUnit('imperial', 'Hệ imperial (lbs, ft/in)')">Hệ imperial (lbs, ft/in)</div>
+                                </div>
+                                <input type="hidden" id="unit-system" value="metric">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 pl-1">Cân nặng (<span id="weight-unit">kg</span>)</label>
+                                <input type="number" id="weight" class="crystal-input" placeholder="0" oninput="calculateBMI()">
+                            </div>
+                            <div id="height-wrapper">
+                                <div id="height-metric-group">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 pl-1">Chiều cao (cm)</label>
+                                    <input type="number" id="height-cm" class="crystal-input" placeholder="0" oninput="calculateBMI()">
+                                </div>
+                                <div id="height-imperial-group" class="hidden grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 pl-1">Feet</label>
+                                        <input type="number" id="height-ft" class="crystal-input" placeholder="0" oninput="calculateBMI()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 pl-1">Inches</label>
+                                        <input type="number" id="height-in" class="crystal-input" placeholder="0" oninput="calculateBMI()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CATEGORIES CARD -->
+                <div class="crystal-card flex-1 overflow-hidden flex flex-col">
+                    <div class="flex items-center gap-3 mb-4 flex-shrink-0">
+                        <div class="bg-blue-100 p-2 rounded-xl"><i data-lucide="info" class="w-5 h-5 text-blue-600"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">Phân loại BMI</h3>
+                    </div>
+                    
+                    <div class="cat-list">
+                        <!-- Underweight -->
+                        <div class="category-row cat-blue" id="cat-under">
+                            <div class="flex items-center flex-1">
+                                <div class="cat-pill"></div>
+                                <div class="category-content">
+                                    <div class="category-label">Thiếu cân</div>
+                                    <div class="category-desc">Cần bổ sung dinh dưỡng</div>
+                                </div>
+                            </div>
+                            <div class="category-range">&lt; 18.5</div>
+                        </div>
+
+                        <!-- Normal -->
+                        <div class="category-row cat-green" id="cat-normal">
+                            <div class="flex items-center flex-1">
+                                <div class="cat-pill"></div>
+                                <div class="category-content">
+                                    <div class="category-label">Bình thường</div>
+                                    <div class="category-desc">Cơ thể cân đối</div>
+                                </div>
+                            </div>
+                            <div class="category-range">18.5 - 24.9</div>
+                        </div>
+
+                        <!-- Overweight -->
+                        <div class="category-row cat-yellow" id="cat-over">
+                            <div class="flex items-center flex-1">
+                                <div class="cat-pill"></div>
+                                <div class="category-content">
+                                    <div class="category-label">Thừa cân</div>
+                                    <div class="category-desc">Cần vận động thêm</div>
+                                </div>
+                            </div>
+                            <div class="category-range">25 - 29.9</div>
+                        </div>
+
+                        <!-- Obese -->
+                        <div class="category-row cat-red" id="cat-obese">
+                            <div class="flex items-center flex-1">
+                                <div class="cat-pill"></div>
+                                <div class="category-content">
+                                    <div class="category-label">Béo phì</div>
+                                    <div class="category-desc">Nguy cơ sức khỏe</div>
+                                </div>
+                            </div>
+                            <div class="category-range">&ge; 30</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: RESULT -->
+            <div class="col-right">
+                <div class="crystal-card h-full relative overflow-hidden flex flex-col">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4 flex-shrink-0">
+                        <div class="bg-indigo-100 p-2.5 rounded-2xl text-indigo-600">
+                            <i data-lucide="activity" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800">Kết quả phân tích</h3>
+                            <p class="text-xs text-gray-400 font-medium">Dựa trên chỉ số WHO</p>
+                        </div>
+                    </div>
+
+                    <!-- EMPTY STATE -->
+                    <div id="result-empty" class="flex-1 flex flex-col items-center justify-center text-center opacity-100 transition-all duration-500">
+                        <div class="w-36 h-36 bg-gradient-to-br from-gray-50 to-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-gray-100">
+                            <i data-lucide="clipboard-edit" class="w-14 h-14 text-gray-300"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-700 mb-2">Đang chờ số liệu...</h4>
+                        <p class="text-gray-400 text-sm max-w-xs leading-relaxed">Hãy nhập đầy đủ chiều cao và cân nặng để hệ thống tính toán chính xác.</p>
+                    </div>
+
+                    <!-- RESULT CONTENT -->
+                    <div id="result-content" class="hidden flex-col h-full animate-enter flex-1">
+                        
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="text-center py-2">
+                                <div class="text-7xl font-black text-gray-900 tracking-tighter mb-2" id="bmi-value">0.0</div>
+                                <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gray-50 border border-gray-200 transition-colors duration-300" id="bmi-status-pill">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-gray-400 shadow-sm" id="bmi-status-dot"></div>
+                                    <span class="text-base font-bold text-gray-700" id="bmi-status-text">--</span>
+                                </div>
+                            </div>
+
+                            <div class="w-full px-2 mt-8 mb-4">
+                                <div class="bmi-bar-container">
+                                    <div class="bmi-bar-fill shadow-inner"></div>
+                                    <div id="bmi-marker" class="bmi-marker" style="left: 0%;">
+                                        <div class="bmi-tooltip" id="marker-tooltip">0</div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-400 mt-2 font-medium font-mono px-1">
+                                    <span>15</span>
+                                    <span>18.5</span>
+                                    <span>25</span>
+                                    <span>30</span>
+                                    <span>40</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm mt-auto flex-shrink-0">
+                            <h5 class="font-bold text-gray-800 mb-2 flex items-center gap-2 text-sm">
+                                <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-500"></i> Lời khuyên
+                            </h5>
+                            <p class="text-sm text-gray-600 leading-relaxed" id="bmi-advice">...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- BACKGROUND ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:59,g:130,b:246}, {r:16,g:185,b:129}, {r:249,g:115,b:22}, {r:239,g:68,b:68}];
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { this.radius = Math.random()*150+120; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.color = colors[Math.floor(Math.random()*colors.length)]; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
+            draw(ctx) { const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.35)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.globalCompositeOperation='source-over'; ctx.fill(); }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<5;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
+
+        // --- CUSTOM DROPDOWN ---
+        function toggleDropdown() {
+            const wrapper = document.getElementById('unit-wrapper');
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            wrapper.classList.toggle('open');
+            trigger.classList.toggle('open');
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select-wrapper')) {
+                document.getElementById('unit-wrapper').classList.remove('open');
+                document.querySelector('.custom-select-trigger').classList.remove('open');
+            }
+        });
+
+        function selectUnit(value, text) {
+            document.getElementById('unit-system').value = value;
+            document.getElementById('unit-label').innerText = text;
+            
+            const options = document.querySelectorAll('.custom-option');
+            options.forEach(opt => {
+                if(opt.innerText === text) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+
+            // FIX: Close dropdown after selection
+            const wrapper = document.getElementById('unit-wrapper');
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            wrapper.classList.remove('open');
+            trigger.classList.remove('open');
+
+            toggleUnits();
+        }
+
+        // --- LOGIC ---
+        function toggleUnits() {
+            const system = document.getElementById('unit-system').value;
+            const wUnit = document.getElementById('weight-unit');
+            const hMetric = document.getElementById('height-metric-group');
+            const hImperial = document.getElementById('height-imperial-group');
+
+            // FIX: Only clear user visible inputs, NOT hidden inputs!
+            document.querySelectorAll('input[type="number"]').forEach(i => i.value = '');
+            showEmptyState();
+
+            if(system === 'metric') {
+                wUnit.innerText = 'kg';
+                hMetric.classList.remove('hidden');
+                hImperial.classList.add('hidden');
+                hImperial.classList.remove('grid');
+            } else {
+                wUnit.innerText = 'lbs';
+                hMetric.classList.add('hidden');
+                hImperial.classList.remove('hidden');
+                hImperial.classList.add('grid');
+            }
+        }
+
+        function showEmptyState() {
+            document.getElementById('result-empty').style.display = 'flex';
+            document.getElementById('result-content').classList.add('hidden');
+            document.getElementById('result-content').classList.remove('flex');
+            
+            document.querySelectorAll('.category-row').forEach(el => {
+                el.className = 'category-row ' + (el.id === 'cat-under' ? 'cat-blue' : el.id === 'cat-normal' ? 'cat-green' : el.id === 'cat-over' ? 'cat-yellow' : 'cat-red'); 
+            });
+        }
+
+        function calculateBMI() {
+            const system = document.getElementById('unit-system').value;
+            let weight = parseFloat(document.getElementById('weight').value);
+            let height = 0;
+
+            if(system === 'metric') {
+                const hCm = parseFloat(document.getElementById('height-cm').value);
+                if (hCm > 0) height = hCm / 100; 
+            } else {
+                const ft = parseFloat(document.getElementById('height-ft').value) || 0;
+                const inch = parseFloat(document.getElementById('height-in').value) || 0;
+                if (ft > 0 || inch > 0) {
+                    const totalInches = (ft * 12) + inch;
+                    height = totalInches * 0.0254;
+                    if(weight > 0) weight = weight * 0.453592;
+                }
+            }
+
+            // LOGIC "SILENT": Only show result if BOTH inputs are valid
+            if(weight > 0 && height > 0) {
+                const bmi = weight / (height * height);
+                if(bmi > 5 && bmi < 100) {
+                    displayResult(bmi);
+                } else {
+                    showEmptyState();
+                }
+            } else {
+                showEmptyState();
+            }
+        }
+
+        function displayResult(bmi) {
+            document.getElementById('result-empty').style.display = 'none';
+            const content = document.getElementById('result-content');
+            content.classList.remove('hidden');
+            content.classList.add('flex');
+
+            const bmiVal = bmi.toFixed(1);
+            document.getElementById('bmi-value').innerText = bmiVal;
+            document.getElementById('marker-tooltip').innerText = bmiVal;
+
+            let status = '';
+            let pos = 0;
+            let colorClass = ''; 
+            let catId = '';
+            let pillBg = '';
+
+            // Reset Categories first (keep base classes)
+            document.querySelectorAll('.category-row').forEach(el => {
+                el.className = 'category-row ' + (el.id === 'cat-under' ? 'cat-blue' : el.id === 'cat-normal' ? 'cat-green' : el.id === 'cat-over' ? 'cat-yellow' : 'cat-red');
+            });
+
+            if (bmi < 18.5) {
+                status = 'Thiếu cân'; colorClass = 'text-blue-600'; pillBg = 'bg-blue-50 border-blue-200';
+                catId = 'cat-under';
+                pos = (bmi / 18.5) * 25; 
+            } else if (bmi < 25) {
+                status = 'Bình thường'; colorClass = 'text-green-600'; pillBg = 'bg-green-50 border-green-200';
+                catId = 'cat-normal';
+                pos = 25 + ((bmi - 18.5) / (25 - 18.5)) * 25;
+            } else if (bmi < 30) {
+                status = 'Thừa cân'; colorClass = 'text-yellow-600'; pillBg = 'bg-yellow-50 border-yellow-200';
+                catId = 'cat-over';
+                pos = 50 + ((bmi - 25) / (30 - 25)) * 25;
+            } else {
+                status = 'Béo phì'; colorClass = 'text-red-600'; pillBg = 'bg-red-50 border-red-200';
+                catId = 'cat-obese';
+                pos = 75 + ((bmi - 30) / (40 - 30)) * 25;
+            }
+
+            if(pos > 100) pos = 100; if(pos < 0) pos = 0;
+
+            document.getElementById('bmi-status-text').innerText = status;
+            document.getElementById('bmi-status-text').className = `text-base font-bold ${colorClass}`;
+            
+            const pill = document.getElementById('bmi-status-pill');
+            pill.className = `inline-flex items-center gap-2 px-5 py-2 rounded-full transition-colors duration-300 border ${pillBg}`;
+            
+            document.getElementById('bmi-status-dot').className = `w-2.5 h-2.5 rounded-full shadow-sm ${colorClass.replace('text-', 'bg-')}`;
+            
+            const marker = document.getElementById('bmi-marker');
+            marker.style.left = `${pos}%`;
+            marker.classList.add('active');
+
+            if(catId) {
+                document.getElementById(catId).classList.add('active');
+            }
+            
+            let advice = '';
+            if (bmi < 18.5) advice = 'Chỉ số hơi thấp. Hãy bổ sung thêm dinh dưỡng và protein, chia nhỏ bữa ăn trong ngày.';
+            else if (bmi < 25) advice = 'Tuyệt vời! Cơ thể bạn đang rất cân đối. Hãy duy trì chế độ ăn uống và luyện tập hiện tại.';
+            else if (bmi < 30) advice = 'Bạn hơi dư cân một chút. Hãy thử giảm lượng đường, tinh bột và tăng cường vận động nhẹ.';
+            else advice = 'Chỉ số cao báo động. Bạn nên tham khảo ý kiến bác sĩ để có lộ trình giảm cân an toàn và hiệu quả.';
+            
+            document.getElementById('bmi-advice').innerText = advice;
+        }
+    </script>
+</body>
+</html>

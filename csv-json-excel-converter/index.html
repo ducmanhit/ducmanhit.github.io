@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển Đổi CSV sang JSON/Excel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="favicon.ico">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f2f7;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(80px) saturate(1.2); 
+            opacity: 0.6; pointer-events: none;
+        }
+
+        /* HOME BUTTON */
+        .glass-btn-home {
+            position: fixed; top: 24px; left: 24px; z-index: 50;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 6px; padding-right: 18px; 
+            border-radius: 99px;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            text-decoration: none;
+            color: #1d1d1f;
+            cursor: pointer;
+        }
+        .glass-btn-home:hover {
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+        .home-icon-bg {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .glass-btn-home:hover .home-icon-bg { background: rgba(255, 255, 255, 1); }
+
+        /* GLASS PANEL */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
+            position: relative; overflow: visible; 
+            transition: all 0.3s ease;
+        }
+
+        /* INPUTS & DROP ZONE */
+        .drop-zone {
+            /* border: 2px dashed #cbd5e1;  REMOVED DASHED BORDER */
+            border-radius: 24px;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Added subtle shadow for better look without border */
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); 
+        }
+        .drop-zone:hover, .drop-zone.drag-over {
+            /* border-color: #2563eb; REMOVED */
+            background: rgba(37, 99, 235, 0.08); /* Slightly stronger hover bg */
+            transform: scale(1.01);
+        }
+        
+        /* TEXTAREA STYLING */
+        .glass-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            font-family: 'Menlo', monospace;
+            font-size: 0.875rem;
+            color: #334155;
+            transition: all 0.2s;
+            resize: vertical;
+        }
+        .glass-textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* RADIO SLIDER - NEW STYLE */
+        .radio-slider-container {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 99px;
+            padding: 4px;
+            display: flex;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .radio-slider-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px 16px;
+            z-index: 2;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: #6b7280;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .radio-slider-option.active {
+            color: #1d1d1f;
+        }
+        .radio-slider-bg {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: calc(50% - 4px);
+            background: white;
+            border-radius: 99px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1;
+        }
+        /* When second option (Dán Dữ Liệu) is active, slide the background */
+        .radio-slider-container[data-active="paste"] .radio-slider-bg {
+            transform: translateX(100%);
+        }
+
+
+        /* BUTTONS */
+        .action-btn {
+            background: white; 
+            color: #1f2937;
+            border: 1px solid #e5e7eb; 
+            font-weight: 600; font-size: 0.9rem;
+            transition: all 0.2s ease; padding: 12px 24px; border-radius: 14px;
+            display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .action-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .action-btn.primary {
+            background: #2563eb; color: white; border-color: #2563eb;
+        }
+        .action-btn.primary:hover { background: #1d4ed8; }
+        
+        .action-btn.success {
+            background: #10b981; color: white; border-color: #10b981;
+        }
+        .action-btn.success:hover { background: #059669; }
+
+        /* CHECKBOX custom styling */
+        .custom-checkbox {
+            appearance: none; background-color: #fff; margin: 0;
+            font: inherit; color: currentColor; width: 1.25em; height: 1.25em;
+            border: 1px solid #cbd5e1; border-radius: 0.25em;
+            display: grid; place-content: center; transition: 0.2s; cursor: pointer;
+        }
+        .custom-checkbox::before {
+            content: ""; width: 0.65em; height: 0.65em; transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked { background-color: #2563eb; border-color: #2563eb; }
+        .custom-checkbox:checked::before { transform: scale(1); }
+
+        /* TABLE STYLING */
+        .data-table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.5);
+            max-height: 400px;
+        }
+        .data-table {
+            width: 100%; border-collapse: collapse; text-align: left;
+            font-size: 0.9rem;
+        }
+        .data-table th {
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(4px);
+            padding: 12px 16px;
+            font-weight: 600; color: #4b5563;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .data-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            white-space: nowrap;
+        }
+        .data-table tr:hover td { background: rgba(255,255,255,0.8); }
+
+        /* ANIMATIONS */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-enter { animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        /* TOAST */
+        #toast {
+            position: fixed; top: 24px; right: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 10px;
+            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100; border: 1px solid rgba(0,0,0,0.05);
+        }
+        #toast.show { transform: translateX(0); }
+
+        /* Code Block */
+        .code-preview {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            background: #1e293b; color: #e2e8f0;
+            padding: 16px; border-radius: 12px;
+            overflow: auto; max-height: 300px;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 md:p-8">
+
+    <!-- Fluid Background -->
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- Home Button -->
+    <a href="#" onclick="window.location.reload()" class="glass-btn-home group">
+        <div class="home-icon-bg">
+            <i data-lucide="layout-grid" class="w-4 h-4 text-gray-700 group-hover:text-black transition-colors"></i>
+        </div>
+        <span class="font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Trang chủ</span>
+    </a>
+
+    <div class="w-full max-w-5xl relative z-10 flex flex-col gap-6 mb-10">
+        
+        <!-- Header Section -->
+        <div class="text-center space-y-2 mt-12 md:mt-0">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight">Chuyển Đổi CSV sang JSON/Excel</h1>
+            <p class="text-gray-500 font-medium text-sm md:text-base max-w-2xl mx-auto">
+                Chuyển đổi file CSV sang JSON hoặc Excel ngay trên trình duyệt. Dữ liệu của bạn được xử lý an toàn, không gửi lên máy chủ.
+            </p>
+        </div>
+
+        <!-- Warning/Info Banner -->
+        <div class="glass-panel p-4 flex items-start gap-3 bg-blue-50/50 border-blue-100/50">
+            <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+            <p class="text-sm text-blue-800 font-medium">
+                Tất cả xử lý file được thực hiện hoàn toàn trong trình duyệt (Client-side). Dữ liệu của bạn không bao giờ được gửi đi đâu.
+            </p>
+        </div>
+
+        <!-- Main Converter Panel -->
+        <div class="glass-panel p-6 md:p-10 animate-enter">
+            
+            <!-- Step 1 Container -->
+            <div class="mb-8">
+                <!-- Mode Selection - SLIDER STYLE -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="bg-gray-900 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                        Nhập Dữ Liệu
+                    </h3>
+                    
+                    <div class="radio-slider-container w-full md:w-64" id="mode-slider" data-active="upload">
+                        <div class="radio-slider-bg"></div>
+                        <div class="radio-slider-option active" onclick="setMode('upload')">Tải File Lên</div>
+                        <div class="radio-slider-option" onclick="setMode('paste')">Dán Dữ Liệu</div>
+                    </div>
+                </div>
+
+                <!-- Content Area: Upload -->
+                <div id="upload-section">
+                    <div id="drop-area" class="drop-zone w-full flex flex-col items-center justify-center gap-3 relative">
+                        <input type="file" id="file-input" accept=".csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-1">
+                            <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-600"></i>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-900 font-semibold text-lg">Kéo thả file CSV vào đây</p>
+                            <p class="text-gray-500 text-sm mt-1">hoặc nhấn để chọn file</p>
+                        </div>
+                    </div>
+                    <div id="file-name-display" class="hidden mt-3 text-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
+                            <i data-lucide="file-check" class="w-3 h-3"></i> <span id="current-filename">data.csv</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Content Area: Paste -->
+                <div id="paste-section" class="hidden">
+                    <div class="mb-4">
+                        <textarea id="paste-input" class="glass-textarea" placeholder="Dán dữ liệu CSV, JSON hoặc Excel (copy từ bảng) vào đây..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Common Settings (Footer of Step 1) -->
+                <div class="mt-6 p-4 bg-gray-50/80 rounded-xl border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" id="header-check" class="custom-checkbox" checked>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">Dùng dòng đầu tiên làm header</span>
+                            <span class="text-xs text-gray-400">Nếu bật, dòng đầu tiên sẽ được dùng làm tên cột.</span>
+                        </div>
+                    </label>
+
+                    <!-- Convert Button (Visible only in Paste mode mostly, but handled via JS) -->
+                    <button id="convert-paste-btn" onclick="processPaste()" class="hidden action-btn success text-sm shadow-sm">
+                        <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> Xử lý Dữ Liệu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty State (Initial) -->
+            <div id="empty-state" class="text-center py-10 border-t border-gray-200/50">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+                    <i data-lucide="file-spreadsheet" class="w-8 h-8"></i>
+                </div>
+                <h4 class="text-gray-500 font-medium">Chưa có dữ liệu</h4>
+                <p class="text-gray-400 text-sm">Tải file lên hoặc dán dữ liệu để bắt đầu</p>
+            </div>
+
+            <!-- Step 2: Preview & Export (Hidden Initially) -->
+            <div id="result-section" class="hidden space-y-8 border-t border-gray-200 pt-8 animate-enter">
+                
+                <!-- Action Bar -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="bg-gray-900 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                        Xem trước & Xuất
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="copyJSON()" class="action-btn text-xs">
+                            <i data-lucide="copy" class="w-4 h-4 text-gray-500"></i> Copy JSON
+                        </button>
+                        <button onclick="downloadJSON()" class="action-btn text-xs">
+                            <i data-lucide="download" class="w-4 h-4 text-blue-600"></i> Tải JSON
+                        </button>
+                        <button onclick="downloadExcel()" class="action-btn success text-xs">
+                            <i data-lucide="sheet" class="w-4 h-4"></i> Tải Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex gap-1 bg-gray-100/50 p-1 rounded-xl w-fit">
+                    <button onclick="switchTab('table')" id="tab-table" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-gray-900 transition-all">Bảng</button>
+                    <button onclick="switchTab('json')" id="tab-json" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all">JSON View</button>
+                </div>
+
+                <!-- Table View -->
+                <div id="view-table" class="block animate-enter">
+                    <div class="data-table-container custom-scrollbar">
+                        <table class="data-table" id="preview-table">
+                            <!-- JS Generated -->
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 text-right">* Hiển thị tối đa 50 dòng đầu tiên để xem trước.</p>
+                </div>
+
+                <!-- JSON View -->
+                <div id="view-json" class="hidden animate-enter">
+                    <div class="code-preview custom-scrollbar" id="json-preview">
+                        <!-- JS Generated -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">
+        <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-green-600"></i></div>
+        <span class="text-sm font-medium text-gray-800" id="toast-message">Thành công!</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- 1. BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:0,g:122,b:255}, {r:52,g:199,b:89}, {r:255,g:149,b:0}, {r:175,g:82,b:222}];
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { this.radius = Math.random()*150+120; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.color = colors[Math.floor(Math.random()*colors.length)]; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
+            draw(ctx) { const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.35)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.globalCompositeOperation='source-over'; ctx.fill(); }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<5;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
+
+        // --- 2. APP LOGIC ---
+        
+        let globalData = [];
+        let globalFileName = 'data';
+        
+        // Elements
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const emptyState = document.getElementById('empty-state');
+        const resultSection = document.getElementById('result-section');
+        const previewTable = document.getElementById('preview-table');
+        const jsonPreview = document.getElementById('json-preview');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const currentFilenameSpan = document.getElementById('current-filename');
+        const headerCheck = document.getElementById('header-check');
+        
+        // New Elements for Paste Mode
+        const uploadSection = document.getElementById('upload-section');
+        const pasteSection = document.getElementById('paste-section');
+        const pasteInput = document.getElementById('paste-input');
+        const convertPasteBtn = document.getElementById('convert-paste-btn');
+
+        // Mode Slider Function
+        function setMode(mode) {
+            const slider = document.getElementById('mode-slider');
+            const options = slider.querySelectorAll('.radio-slider-option');
+            
+            // Update slider active state
+            slider.setAttribute('data-active', mode);
+            options.forEach(opt => opt.classList.remove('active'));
+            if (mode === 'upload') options[0].classList.add('active');
+            else options[1].classList.add('active');
+
+            // Toggle views
+            if (mode === 'upload') {
+                uploadSection.classList.remove('hidden');
+                pasteSection.classList.add('hidden');
+                convertPasteBtn.classList.add('hidden');
+                if (fileInput.files.length > 0) fileNameDisplay.classList.remove('hidden');
+            } else {
+                uploadSection.classList.add('hidden');
+                pasteSection.classList.remove('hidden');
+                convertPasteBtn.classList.remove('hidden');
+                pasteInput.focus();
+            }
+        }
+
+        // --- PASTE PROCESSING ---
+        function processPaste() {
+            const text = pasteInput.value.trim();
+            if (!text) {
+                showToast("Vui lòng dán dữ liệu vào ô trống!", true);
+                return;
+            }
+
+            // 1. Try Parse as JSON
+            try {
+                const json = JSON.parse(text);
+                if (Array.isArray(json)) {
+                    globalData = json;
+                    globalFileName = "pasted_data";
+                    renderData(globalData, Object.keys(globalData[0] || {}));
+                    showSuccess();
+                    return;
+                }
+            } catch (e) {
+                // Not JSON, continue to CSV/TSV
+            }
+
+            // 2. Try Parse as CSV/TSV (Excel copy-paste is often TSV)
+            const hasHeader = headerCheck.checked;
+            Papa.parse(text, {
+                header: hasHeader,
+                skipEmptyLines: true,
+                delimiter: "", // Auto-detect delimiter (comma, tab, pipe, etc.)
+                complete: function(results) {
+                    if (results.errors.length > 0 && results.errors[0].type !== 'Delimiter') {
+                        // PapaParse is forgiving, check data length
+                    }
+                    
+                    if (results.data && results.data.length > 0) {
+                        globalData = results.data;
+                        globalFileName = "pasted_data";
+                        renderData(globalData, results.meta.fields);
+                        showSuccess();
+                    } else {
+                        showToast("Không thể nhận dạng dữ liệu!", true);
+                    }
+                }
+            });
+        }
+
+        function showSuccess() {
+            emptyState.classList.add('hidden');
+            resultSection.classList.remove('hidden');
+            showToast(`Đã tải ${globalData.length} dòng dữ liệu`);
+            
+            // Scroll to result
+            setTimeout(() => {
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        // --- DRAG & DROP LOGIC ---
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault(); e.stopPropagation();
+                dropArea.classList.add('drag-over');
+            }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault(); e.stopPropagation();
+                dropArea.classList.remove('drag-over');
+            }, false);
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFiles, false);
+        
+        // Watch header check for live updates if data exists
+        headerCheck.addEventListener('change', () => {
+            // Check which mode is active by looking at slider's data-active attribute
+            const mode = document.getElementById('mode-slider').getAttribute('data-active');
+            if (mode === 'upload' && fileInput.files.length > 0) {
+                processFile(fileInput.files[0]);
+            } else if (mode === 'paste' && pasteInput.value.trim() !== "") {
+                processPaste();
+            }
+        });
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+
+        function handleFiles(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // UI Update
+            globalFileName = file.name.replace(/\.[^/.]+$/, ""); // remove extension
+            currentFilenameSpan.innerText = file.name;
+            fileNameDisplay.classList.remove('hidden');
+
+            processFile(file);
+        }
+
+        function processFile(file) {
+            const hasHeader = headerCheck.checked;
+
+            Papa.parse(file, {
+                header: hasHeader,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.errors.length > 0) {
+                        console.error("Errors:", results.errors);
+                        showToast("File CSV có lỗi, hãy kiểm tra lại!", true);
+                        return;
+                    }
+                    
+                    globalData = results.data;
+                    renderData(results.data, results.meta.fields);
+                    showSuccess();
+                }
+            });
+        }
+
+        function renderData(data, fields) {
+            // 1. Render Table (Max 50 rows)
+            const maxRows = 50;
+            let tableHTML = '';
+
+            // Header
+            if (fields && fields.length > 0) {
+                tableHTML += '<thead><tr>';
+                fields.forEach(f => tableHTML += `<th>${f}</th>`);
+                tableHTML += '</tr></thead>';
+            } else if (data.length > 0 && Array.isArray(data[0])) {
+                // If no header, use index
+                tableHTML += '<thead><tr>';
+                data[0].forEach((_, i) => tableHTML += `<th>Col ${i+1}</th>`);
+                tableHTML += '</tr></thead>';
+            } else if (data.length > 0 && typeof data[0] === 'object') {
+                 // Fallback for JSON array of objects without explicit fields from PapaParse
+                 const keys = Object.keys(data[0]);
+                 tableHTML += '<thead><tr>';
+                 keys.forEach(k => tableHTML += `<th>${k}</th>`);
+                 tableHTML += '</tr></thead>';
+            }
+
+            // Body
+            tableHTML += '<tbody>';
+            data.slice(0, maxRows).forEach(row => {
+                tableHTML += '<tr>';
+                if (Array.isArray(row)) {
+                    row.forEach(cell => tableHTML += `<td>${cell}</td>`);
+                } else {
+                    // Object
+                    Object.values(row).forEach(cell => tableHTML += `<td>${cell !== null ? cell : ''}</td>`);
+                }
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody>';
+            
+            previewTable.innerHTML = tableHTML;
+
+            // 2. Render JSON Preview
+            jsonPreview.innerText = JSON.stringify(data.slice(0, 5), null, 2) + (data.length > 5 ? '\n... (còn tiếp)' : '');
+        }
+
+        // --- 3. EXPORT FUNCTIONS ---
+
+        function downloadJSON() {
+            if (!globalData.length) return;
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", globalFileName + ".json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            showToast("Đã tải xuống JSON");
+        }
+
+        function downloadExcel() {
+            if (!globalData.length) return;
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(globalData);
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            XLSX.writeFile(wb, globalFileName + ".xlsx");
+            showToast("Đã tải xuống Excel");
+        }
+
+        function copyJSON() {
+            if (!globalData.length) return;
+            navigator.clipboard.writeText(JSON.stringify(globalData, null, 2)).then(() => {
+                showToast("Đã sao chép JSON vào bộ nhớ đệm");
+            });
+        }
+
+        // --- 4. UI UTILS ---
+
+        function switchTab(tab) {
+            const tableBtn = document.getElementById('tab-table');
+            const jsonBtn = document.getElementById('tab-json');
+            const viewTable = document.getElementById('view-table');
+            const viewJson = document.getElementById('view-json');
+
+            if (tab === 'table') {
+                tableBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-gray-900 transition-all";
+                jsonBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all";
+                viewTable.classList.remove('hidden');
+                viewJson.classList.add('hidden');
+            } else {
+                jsonBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-gray-900 transition-all";
+                tableBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all";
+                viewJson.classList.remove('hidden');
+                viewTable.classList.add('hidden');
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            msg.innerText = message;
+            
+            if (isError) {
+                toast.querySelector('.bg-green-100').className = 'bg-red-100 p-1 rounded-full';
+                toast.querySelector('i').classList.replace('text-green-600', 'text-red-600');
+                toast.querySelector('i').setAttribute('data-lucide', 'alert-circle');
+            } else {
+                // Reset to success style
+                const iconContainer = toast.querySelector('div');
+                if(iconContainer) iconContainer.className = 'bg-green-100 p-1 rounded-full';
+                const icon = toast.querySelector('i');
+                if(icon) {
+                    icon.className = 'w-4 h-4 text-green-600';
+                    icon.setAttribute('data-lucide', 'check');
+                }
+            }
+            lucide.createIcons();
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>

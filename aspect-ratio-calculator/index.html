@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Máy Tính Tỷ Lệ Khung Hình</title>
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0; padding: 0;
+            height: 100vh;
+            width: 100vw;
+            color: #111827;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            opacity: 0.4; pointer-events: none;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .main-container {
+            width: 100%; max-width: 1280px; height: 90vh; max-height: 800px;
+            display: grid; grid-template-columns: 7fr 5fr; gap: 24px;
+            position: relative; z-index: 10; padding: 0 24px;
+        }
+
+        .clean-panel {
+            background: #ffffff; border-radius: 24px;
+            box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ffffff; padding: 32px; height: 100%;
+            display: flex; flex-direction: column; overflow-y: auto;
+        }
+
+        /* Hide scrollbar */
+        .clean-panel::-webkit-scrollbar { width: 6px; }
+        .clean-panel::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 99px; }
+        .clean-panel::-webkit-scrollbar-track { background-color: transparent; }
+
+        /* --- PRIVACY ALERT BOX --- */
+        .privacy-alert {
+            background-color: #eff6ff; /* Blue-50 */
+            border: 1px solid #dbeafe; /* Blue-100 */
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex; align-items: start; gap: 12px;
+            margin-top: 16px; /* Changed to top margin for right panel placement */
+            font-size: 13px;
+        }
+        .privacy-icon { flex-shrink: 0; color: #2563eb; margin-top: 2px; }
+        .privacy-text { color: #1e40af; line-height: 1.5; font-weight: 500; }
+
+        /* --- TABS --- */
+        .tab-wrapper {
+            background: #f1f5f9; border-radius: 99px; padding: 4px;
+            display: inline-flex; position: relative; margin-bottom: 24px;
+            align-self: flex-start; flex-shrink: 0;
+        }
+        .tab-bg {
+            position: absolute; top: 4px; bottom: 4px; left: 4px;
+            background: white; border-radius: 99px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;
+        }
+        .tab-btn {
+            position: relative; z-index: 2; padding: 10px 24px;
+            font-size: 13px; font-weight: 600; color: #64748b;
+            background: transparent; border: none; cursor: pointer;
+            transition: color 0.2s; user-select: none; white-space: nowrap;
+        }
+        .tab-btn.active { color: #0f172a; }
+
+        /* --- INPUTS --- */
+        .input-section { transition: opacity 0.2s ease; flex-shrink: 0; }
+        .input-section.hidden { display: none; opacity: 0; }
+        
+        .input-group-label {
+            font-size: 11px; font-weight: 700; color: #6b7280; 
+            text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.5px;
+        }
+        .clean-input-wrapper {
+            background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px;
+            padding: 0 16px; height: 52px; display: flex; align-items: center; transition: all 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .clean-input-wrapper:focus-within {
+            border-color: #3b82f6; background: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        .clean-input {
+            width: 100%; background: transparent; border: none; outline: none;
+            font-size: 18px; font-weight: 600; color: #111827; z-index: 1;
+        }
+        .input-suffix {
+            font-size: 13px; font-weight: 600; color: #9ca3af;
+            background: #e5e7eb; padding: 4px 8px; border-radius: 6px; margin-left: 8px; z-index: 1;
+        }
+
+        /* Sweep Effect */
+        .sweep-effect {
+            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
+            transform: skewX(-20deg); pointer-events: none;
+        }
+
+        /* --- PRESETS --- */
+        .presets-label {
+            font-size: 11px; font-weight: 700; color: #6b7280; 
+            text-transform: uppercase; margin-bottom: 12px; margin-top: 20px; display: block;
+        }
+        .preset-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; 
+            overflow-y: auto; padding-bottom: 4px; flex-grow: 1;
+            padding: 4px; margin: -4px;
+        }
+        /* Custom scrollbar */
+        .preset-grid::-webkit-scrollbar { width: 4px; }
+        .preset-grid::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 4px; }
+        .preset-grid::-webkit-scrollbar-track { background-color: transparent; }
+
+        .preset-card {
+            background: white; border: 1px solid #e5e7eb; border-radius: 12px;
+            padding: 14px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .preset-card:hover { border-color: #d1d5db; background: #f9fafb; transform: translateY(-1px); }
+        .preset-card.active { 
+            border-color: #3b82f6; background: #eff6ff; 
+            box-shadow: 0 0 0 1.5px #3b82f6;
+        }
+        .preset-value { font-size: 15px; font-weight: 700; color: #1f2937; margin-bottom: 2px; }
+        .preset-card.active .preset-value { color: #1d4ed8; }
+        .preset-name { font-size: 11px; color: #9ca3af; font-weight: 500; }
+        .preset-card.active .preset-name { color: #60a5fa; }
+
+        /* --- RESULT SECTION --- */
+        .result-label-top {
+            font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+        }
+        .result-ratio-display {
+            font-size: 56px; font-weight: 800; color: #3b82f6;
+            line-height: 1; letter-spacing: -2px; margin-bottom: 24px;
+        }
+        .result-ratio-display.empty { color: #d1d5db; font-size: 56px; letter-spacing: 0; }
+
+        .info-cards-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .info-box {
+            background: #f8f9fa; border-radius: 16px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .info-box-label { font-size: 12px; color: #8e8e93; margin-bottom: 6px; font-weight: 500; }
+        .info-box-value { font-size: 18px; font-weight: 700; color: #1d1d1f; }
+
+        .orientation-box {
+            background: #eff6ff; border-radius: 16px; padding: 16px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 8px; flex-shrink: 0;
+        }
+        .orient-label { font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; margin-bottom: 2px; }
+        .orient-value { font-size: 16px; font-weight: 700; color: #1e3a8a; }
+
+        .preview-mini-container {
+            width: 100%; flex-grow: 1; min-height: 120px;
+            background: #f8f9fa; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px; overflow: hidden; position: relative;
+        }
+        .preview-shape {
+            background: rgba(59, 130, 246, 0.15); border: 2px solid #3b82f6;
+            border-radius: 8px; transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+        
+        /* Light Sweep for Preview */
+        .preview-shape::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+            transform: skewX(-25deg); animation: lightSweep 3s infinite ease-in-out; pointer-events: none;
+        }
+        @keyframes lightSweep { 0% { left: -100%; opacity: 0; } 30% { opacity: 1; } 100% { left: 200%; opacity: 0; } }
+        
+        /* Glass Buttons */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease; cursor: pointer; text-decoration: none;
+        }
+        .glass-btn:hover { background: rgba(255, 255, 255, 0.85); transform: translateY(-1px); }
+
+        .reset-btn {
+            margin-top: auto; width: 100%; text-align: center;
+            color: #ef4444; font-weight: 600; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 14px; border-radius: 16px;
+        }
+
+        .home-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 50;
+            padding: 10px 20px; border-radius: 99px;
+            display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: #374151;
+        }
+        
+        .clear-input-btn {
+            font-size: 12px; font-weight: 600; color: #6b7280;
+            display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px;
+        }
+        .clear-input-btn:hover { color: #ef4444; }
+
+        .toast {
+            position: fixed; top: 24px; right: 24px; background: white; padding: 12px 20px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #f3f4f6;
+            display: flex; align-items: center; gap: 10px; z-index: 100;
+            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast.show { transform: translateX(0); }
+
+        /* Mobile specific */
+        @media (max-width: 1024px) {
+            body { height: auto; overflow-y: auto; display: block; padding: 80px 16px 40px; }
+            .main-container { height: auto; max-height: none; grid-template-columns: 1fr; gap: 20px; }
+            .clean-panel { height: auto; min-height: 400px; padding: 24px; overflow: visible; }
+            .preset-grid { max-height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <a href="https://ducmanh.io.vn/" class="home-btn glass-btn">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Trang chủ
+    </a>
+
+    <div class="main-container">
+        
+        <!-- LEFT PANEL -->
+        <div class="clean-panel">
+            <div class="mb-4 flex-shrink-0">
+                <h1 class="text-2xl font-extrabold text-gray-900 mb-1">Máy Tính Tỷ Lệ</h1>
+                <p class="text-gray-500 font-medium text-sm">Công cụ tính toán kích thước ảnh chính xác.</p>
+            </div>
+
+            <!-- Tabs - Removed Privacy Alert from here -->
+            <div class="tab-wrapper">
+                <div class="tab-bg" id="tab-bg"></div>
+                <button class="tab-btn active" id="btn-tab-1" onclick="switchMode(1)">Tìm Tỷ Lệ</button>
+                <button class="tab-btn" id="btn-tab-2" onclick="switchMode(2)">Tìm Kích Thước</button>
+            </div>
+
+            <!-- Mode 1: Find Ratio (COMPACT ROW) -->
+            <div id="mode-1-inputs" class="input-section">
+                <!-- NOW ON 1 ROW -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="input-group-label">Chiều Rộng (W)</label>
+                        <div class="clean-input-wrapper">
+                            <div class="sweep-effect"></div>
+                            <input type="number" id="width-in" value="1920" class="clean-input" oninput="calculate(); triggerSweep(this)">
+                            <span class="input-suffix">px</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="input-group-label">Chiều Cao (H)</label>
+                        <div class="clean-input-wrapper">
+                            <div class="sweep-effect"></div>
+                            <input type="number" id="height-in" value="1080" class="clean-input" oninput="calculate(); triggerSweep(this)">
+                            <span class="input-suffix">px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode 2: Find Size -->
+            <div id="mode-2-inputs" class="input-section hidden">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="input-group-label">Tỷ lệ Rộng</label>
+                        <div class="clean-input-wrapper">
+                            <div class="sweep-effect"></div>
+                            <input type="number" id="ratio-w-in" value="16" class="clean-input" oninput="calculate(); triggerSweep(this)">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="input-group-label">Tỷ lệ Cao</label>
+                        <div class="clean-input-wrapper">
+                            <div class="sweep-effect"></div>
+                            <input type="number" id="ratio-h-in" value="9" class="clean-input" oninput="calculate(); triggerSweep(this)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2 text-gray-900 font-bold text-sm">
+                            <i data-lucide="ruler" class="w-4 h-4 text-blue-600"></i>
+                            <span>Kích Thước</span>
+                        </div>
+                        <button onclick="clearSizeInputs()" class="clear-input-btn glass-btn">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i> Xóa nhập liệu
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="input-group-label">Chiều Rộng</label>
+                            <div class="clean-input-wrapper">
+                                <div class="sweep-effect"></div>
+                                <input type="number" id="size-width" class="clean-input" placeholder="Nhập rộng..." oninput="calcFromSize('width'); triggerSweep(this)">
+                                <span class="input-suffix">px</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="input-group-label">Chiều Cao</label>
+                            <div class="clean-input-wrapper">
+                                <div class="sweep-effect"></div>
+                                <input type="number" id="size-height" class="clean-input" placeholder="Nhập cao..." oninput="calcFromSize('height'); triggerSweep(this)">
+                                <span class="input-suffix">px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <label class="presets-label">Kích thước phổ biến</label>
+            <div class="preset-grid">
+                <div class="preset-card active" onclick="applyPreset(this, 16, 9)">
+                    <div class="preset-value">16:9</div><div class="preset-name">HD/Full HD</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 9, 16)">
+                    <div class="preset-value">9:16</div><div class="preset-name">Vertical</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 4, 3)">
+                    <div class="preset-value">4:3</div><div class="preset-name">Standard</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 3, 4)">
+                    <div class="preset-value">3:4</div><div class="preset-name">Portrait</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 1, 1)">
+                    <div class="preset-value">1:1</div><div class="preset-name">Square</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 21, 9)">
+                    <div class="preset-value">21:9</div><div class="preset-name">Ultrawide</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 5, 4)">
+                    <div class="preset-value">5:4</div><div class="preset-name">Monitor</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 4, 5)">
+                    <div class="preset-value">4:5</div><div class="preset-name">Instagram</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 16, 10)">
+                    <div class="preset-value">16:10</div><div class="preset-name">MacBook</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 15, 9)">
+                    <div class="preset-value">15:9</div><div class="preset-name">Legacy</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 1.91, 1)">
+                    <div class="preset-value">1.91:1</div><div class="preset-name">Link/Post</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 5, 3)">
+                    <div class="preset-value">5:3</div><div class="preset-name">Standard</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 3, 2)">
+                    <div class="preset-value">3:2</div><div class="preset-name">Photo</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 2, 3)">
+                    <div class="preset-value">2:3</div><div class="preset-name">Vertical</div>
+                </div>
+                <div class="preset-card" onclick="applyPreset(this, 1, 2)">
+                    <div class="preset-value">1:2</div><div class="preset-name">Vertical</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="clean-panel">
+            <div style="flex-grow: 0;">
+                <div class="result-label-top">TỶ LỆ (RATIO)</div>
+                <div id="res-ratio-text" class="result-ratio-display">16:9</div>
+
+                <div class="preview-mini-container">
+                    <div id="aspect-visual" class="preview-shape" style="width: 160px; height: 90px;"></div>
+                </div>
+
+                <div class="info-cards-row">
+                    <div class="info-box">
+                        <div class="info-box-label">Hệ số thập phân</div>
+                        <div id="res-decimal" class="info-box-value">1.78</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Độ phân giải</div>
+                        <div id="res-dimension" class="info-box-value">1920 × 1080</div>
+                    </div>
+                </div>
+
+                <div class="orientation-box">
+                    <div>
+                        <div class="orient-label">HƯỚNG</div>
+                        <div id="res-orientation" class="orient-value">Landscape</div>
+                    </div>
+                    <i data-lucide="monitor" id="orientation-icon" class="w-8 h-8 text-blue-600"></i>
+                </div>
+
+                <!-- PRIVACY ALERT (Moved Here) -->
+                <div class="privacy-alert">
+                    <i data-lucide="shield-check" class="w-5 h-5 privacy-icon"></i>
+                    <span class="privacy-text">
+                        Tất cả các phép tính được thực hiện hoàn toàn trong trình duyệt của bạn. Dữ liệu không bao giờ được gửi đi.
+                    </span>
+                </div>
+            </div>
+
+            <button onclick="resetAll()" class="reset-btn glass-btn">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Làm mới
+            </button>
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast">
+        <div class="bg-blue-100 p-1.5 rounded-full"><i data-lucide="check" class="w-4 h-4 text-blue-600"></i></div>
+        <span id="toast-msg" class="text-sm font-medium text-gray-700">Thông báo</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- BACKGROUND ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:59,g:130,b:246}, {r:37,g:99,b:235}, {r:29,g:78,b:216}, {r:96,g:165,b:250}];
+        
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { 
+                this.radius = Math.random()*120+100; this.x = Math.random()*width; this.y = Math.random()*height; 
+                this.vx = (Math.random()-0.5)*0.2; this.vy = (Math.random()-0.5)*0.2; 
+                this.color = colors[Math.floor(Math.random()*colors.length)]; 
+            }
+            update() { 
+                this.x+=this.vx; this.y+=this.vy; 
+                if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; 
+            }
+            draw(ctx) { 
+                const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius);
+                g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.3)`); 
+                g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); 
+                ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.fill(); 
+            }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<5;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        let lastWidth = window.innerWidth;
+        window.addEventListener('resize', () => { if (window.innerWidth !== lastWidth) { lastWidth = window.innerWidth; resize(); } });
+        initBackground();
+
+        // --- TAB & MODE LOGIC ---
+        let currentMode = 1;
+
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            const btn1 = document.getElementById('btn-tab-1');
+            const btn2 = document.getElementById('btn-tab-2');
+            const tabBg = document.getElementById('tab-bg');
+            const inputs1 = document.getElementById('mode-1-inputs');
+            const inputs2 = document.getElementById('mode-2-inputs');
+
+            const activeBtn = mode === 1 ? btn1 : btn2;
+            
+            tabBg.style.width = `${activeBtn.offsetWidth}px`;
+            tabBg.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
+
+            if(mode === 1) {
+                btn1.classList.add('active'); btn2.classList.remove('active');
+                inputs2.classList.add('hidden'); 
+                inputs1.classList.remove('hidden');
+                setTimeout(() => inputs1.style.opacity = 1, 10);
+                inputs2.style.opacity = 0;
+            } else {
+                btn1.classList.remove('active'); btn2.classList.add('active');
+                inputs1.classList.add('hidden'); 
+                inputs2.classList.remove('hidden');
+                setTimeout(() => inputs2.style.opacity = 1, 10);
+                inputs1.style.opacity = 0;
+                
+                if(!document.getElementById('size-width').value && document.getElementById('width-in').value) {
+                    document.getElementById('size-width').value = document.getElementById('width-in').value;
+                    calcFromSize('width');
+                }
+            }
+            calculate();
+        }
+
+        window.onload = function() { 
+            switchMode(1); 
+            setTimeout(() => switchMode(1), 100); 
+        };
+
+        // --- INPUT SWEEP ANIMATION ---
+        function triggerSweep(inputElement) {
+            const wrapper = inputElement.parentElement;
+            const sweep = wrapper.querySelector('.sweep-effect');
+            if (sweep) {
+                sweep.style.animation = 'none';
+                sweep.offsetHeight; 
+                sweep.style.animation = 'sweep 0.6s ease-out';
+            }
+        }
+
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes sweep {
+                0% { left: -100%; opacity: 0.8; }
+                100% { left: 150%; opacity: 0; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // --- CALCULATE ---
+        function gcd(a, b) { return b == 0 ? a : gcd(b, a % b); }
+        
+        function calculate() {
+            if(currentMode === 1) {
+                let w = parseFloat(document.getElementById('width-in').value) || 0;
+                let h = parseFloat(document.getElementById('height-in').value) || 0;
+                let rw = 0, rh = 0;
+
+                if (w > 0 && h > 0) {
+                    if(Number.isInteger(w) && Number.isInteger(h)) {
+                        const divisor = gcd(w, h); rw = w / divisor; rh = h / divisor;
+                    } else { rw = (w/h).toFixed(2); rh = 1; }
+                }
+                updateUI(w, h, rw, rh);
+            } else {
+                calcFromSize('width');
+            }
+        }
+
+        function calcFromSize(source) {
+            const rw = parseFloat(document.getElementById('ratio-w-in').value) || 0;
+            const rh = parseFloat(document.getElementById('ratio-h-in').value) || 0;
+            const wEl = document.getElementById('size-width');
+            const hEl = document.getElementById('size-height');
+            
+            if (rw <= 0 || rh <= 0) return;
+
+            if (source === 'width') {
+                const w = parseFloat(wEl.value);
+                if (!isNaN(w) && w > 0) {
+                    const h = Math.round(w * (rh / rw));
+                    hEl.value = h;
+                    updateUI(w, h, rw, rh);
+                } else {
+                    hEl.value = '';
+                    updateUI(0, 0, rw, rh);
+                }
+            } else {
+                const h = parseFloat(hEl.value);
+                if (!isNaN(h) && h > 0) {
+                    const w = Math.round(h * (rw / rh));
+                    wEl.value = w;
+                    updateUI(w, h, rw, rh);
+                } else {
+                    wEl.value = '';
+                    updateUI(0, 0, rw, rh);
+                }
+            }
+        }
+
+        function clearSizeInputs() {
+            document.getElementById('size-width').value = '';
+            document.getElementById('size-height').value = '';
+            const rw = parseFloat(document.getElementById('ratio-w-in').value) || 0;
+            const rh = parseFloat(document.getElementById('ratio-h-in').value) || 0;
+            updateUI(0, 0, rw, rh);
+        }
+
+        function updateUI(w, h, rw, rh) {
+            const ratioTextEl = document.getElementById('res-ratio-text');
+            const decimalEl = document.getElementById('res-decimal');
+            const dimEl = document.getElementById('res-dimension');
+            const orientEl = document.getElementById('res-orientation');
+            const iconEl = document.getElementById('orientation-icon');
+            const box = document.getElementById('aspect-visual');
+
+            if(rw > 0 && rh > 0) {
+                let txt = Number.isInteger(rw) && Number.isInteger(rh) ? `${rw}:${rh}` : `${parseFloat(rw)}:${parseFloat(rh)}`;
+                ratioTextEl.innerText = txt;
+                ratioTextEl.classList.remove('empty');
+                ratioTextEl.style.color = "#3b82f6";
+            } else {
+                ratioTextEl.innerText = "-- : --";
+                ratioTextEl.classList.add('empty');
+                ratioTextEl.style.color = "#d1d5db";
+            }
+
+            decimalEl.innerText = (w > 0 && h > 0) ? (w/h).toFixed(2) : "0.00";
+            dimEl.innerText = (w > 0 && h > 0) ? `${w} × ${h}` : "-- × --";
+
+            if (w > h) {
+                orientEl.innerText = "Landscape";
+                iconEl.innerHTML = '<polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline>'; 
+                iconEl.setAttribute('data-lucide', 'monitor');
+            } else if (h > w) {
+                orientEl.innerText = "Portrait";
+                iconEl.setAttribute('data-lucide', 'smartphone');
+            } else if (w > 0 && w === h) {
+                orientEl.innerText = "Square";
+                iconEl.setAttribute('data-lucide', 'square');
+            } else {
+                orientEl.innerText = "---";
+            }
+            lucide.createIcons();
+
+            const container = document.querySelector('.preview-mini-container');
+            if (w > 0 && h > 0) {
+                const maxW = container.clientWidth - 40; const maxH = container.clientHeight - 40;
+                const ratio = w/h;
+                let boxW, boxH;
+                if(ratio >= 1) { boxW = Math.min(maxW, 200); boxH = boxW / ratio; if(boxH > maxH) { boxH = maxH; boxW = boxH * ratio; } } 
+                else { boxH = Math.min(maxH, 120); boxW = boxH * ratio; }
+                box.style.width = `${boxW}px`; box.style.height = `${boxH}px`; box.style.opacity = '1';
+            } else { box.style.opacity = '0'; }
+        }
+
+        function applyPreset(element, rw, rh) {
+            document.querySelectorAll('.preset-card').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            if(currentMode === 1) {
+                let baseW = 1920; 
+                if(rw < rh || rw === rh) baseW = 1080;
+                const newH = Math.round((baseW / rw) * rh);
+                document.getElementById('width-in').value = baseW; 
+                document.getElementById('height-in').value = newH;
+                calculate();
+            } else {
+                document.getElementById('ratio-w-in').value = rw; 
+                document.getElementById('ratio-h-in').value = rh;
+                
+                const wInput = document.getElementById('size-width');
+                if(!wInput.value) {
+                    wInput.value = (rw < rh || rw === rh) ? 1080 : 1920;
+                }
+                calcFromSize('width');
+            }
+            showToast(`Đã áp dụng ${rw}:${rh}`, "check");
+        }
+
+        function copyResult() {
+            const txt = document.getElementById('res-dimension').innerText;
+            if(txt.includes("--")) return;
+            navigator.clipboard.writeText(txt);
+            showToast("Đã sao chép!", "copy");
+        }
+
+        function resetAll() {
+            document.querySelectorAll('input').forEach(i => i.value = '');
+            document.querySelectorAll('.preset-card').forEach(btn => btn.classList.remove('active'));
+            updateUI(0,0,0,0);
+            showToast("Đã làm mới", "rotate-ccw");
+        }
+
+        function showToast(msg, icon) {
+            const t = document.getElementById('toast');
+            t.innerHTML = `<div class="bg-blue-100 p-1 rounded-full"><i data-lucide="${icon}" class="w-4 h-4 text-blue-600"></i></div><span class="text-sm font-medium text-gray-800">${msg}</span>`;
+            lucide.createIcons();
+            t.classList.add('show');
+            setTimeout(()=>t.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

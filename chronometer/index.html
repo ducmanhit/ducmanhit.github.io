@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đồng Hồ Bấm Giờ Pro</title>
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            color: #1e293b;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* FLUID BACKGROUND */
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(90px) saturate(1.4); 
+            opacity: 0.5; pointer-events: none;
+        }
+
+        /* GLASS PANEL CONTAINER */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            border-radius: 24px; /* Giảm radius trên mobile cho gọn */
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .glass-panel { border-radius: 32px; }
+        }
+
+        /* TIMER DISPLAY */
+        .timer-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .timer-display {
+            font-family: 'Inter', sans-serif; 
+            font-variant-numeric: tabular-nums; 
+            letter-spacing: -1px; 
+            /* Màu chính đậm rõ */
+            color: #1e293b; 
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+            line-height: 1;
+            /* Responsive font size using VW for mobile fit */
+            font-size: 13vw; 
+        }
+        @media (min-width: 640px) {
+            .timer-display { font-size: 4.5rem; letter-spacing: -2px; }
+        }
+        @media (min-width: 768px) {
+            .timer-display { font-size: 5rem; letter-spacing: -3px; }
+        }
+        @media (min-width: 1024px) {
+            .timer-display { font-size: 6rem; }
+        }
+
+        /* Mili giây rõ ràng hơn */
+        #ms-display {
+            display: inline-block;
+            text-align: left;
+            font-size: 0.6em; /* Tỉ lệ kích thước so với số chính */
+        }
+
+        /* BUTTONS */
+        .control-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 20px; 
+            border-radius: 99px;
+            font-weight: 600; font-size: 0.9rem;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid transparent;
+            user-select: none;
+            letter-spacing: 0.02em;
+        }
+        @media (min-width: 768px) {
+            .control-btn { padding: 14px 28px; font-size: 0.95rem; gap: 10px; }
+        }
+        
+        /* Primary (Blue) */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px) scale(1.02); 
+            box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.5);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        .btn-primary:active { transform: scale(0.96); }
+
+        /* Danger (Red/Orange) */
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 8px 20px -4px rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-danger:hover { 
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 24px -4px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Secondary (White/Glass) */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: #475569;
+            border-color: rgba(203, 213, 225, 0.6);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+        .btn-secondary:hover { 
+            background: #fff; 
+            border-color: #94a3b8; 
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+        .btn-secondary:disabled {
+            opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none;
+            background: rgba(241, 245, 249, 0.5);
+        }
+
+        /* HOME BUTTON */
+        .glass-btn-home {
+            position: fixed; top: 16px; left: 16px; z-index: 50;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 6px; padding-right: 16px; 
+            border-radius: 99px;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            text-decoration: none; transition: all 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .glass-btn-home { top: 24px; left: 24px; padding: 8px; padding-right: 20px; gap: 10px; }
+        }
+        
+        .glass-btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+        .home-icon-bg {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #eff6ff; 
+            color: #3b82f6;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        @media (min-width: 768px) {
+            .home-icon-bg { width: 36px; height: 36px; }
+        }
+        .glass-btn-home:hover .home-icon-bg { background: #3b82f6; color: white; }
+
+        /* LAP LIST STYLING */
+        .lap-item {
+            display: grid; grid-template-columns: 40px 1fr auto; 
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            transition: background 0.2s;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .lap-item { padding: 14px 20px; grid-template-columns: 50px 1fr auto; font-size: 1rem; }
+        }
+
+        .lap-item:hover { background: rgba(59, 130, 246, 0.03); }
+        .lap-item:last-child { border-bottom: none; }
+        
+        .lap-index { 
+            color: #94a3b8; font-weight: 600; font-size: 0.85em; 
+            background: #f1f5f9; padding: 4px 6px; border-radius: 6px; 
+            text-align: center; width: fit-content;
+        }
+        .lap-time { 
+            color: #1e293b; font-weight: 700; font-size: 1.1em;
+            font-feature-settings: "tnum"; 
+            font-variant-numeric: tabular-nums;
+        }
+        .lap-diff { font-weight: 500; font-size: 0.8em; font-variant-numeric: tabular-nums; }
+        
+        .badge {
+            font-size: 0.7em; font-weight: 700; text-transform: uppercase;
+            padding: 3px 6px; border-radius: 4px; letter-spacing: 0.05em;
+        }
+        .badge-blue { background: #dbeafe; color: #2563eb; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* CUSTOM SCROLLBAR */
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .header-decoration {
+            width: 4px; height: 20px; background: #3b82f6; border-radius: 4px; display: inline-block; margin-right: 10px;
+        }
+        @media (min-width: 768px) {
+             .header-decoration { height: 24px; margin-right: 12px; }
+        }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
+
+    <!-- FLUID BACKGROUND CANVAS -->
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- HOME BUTTON -->
+    <a href="https://ducmanh.io.vn/" class="glass-btn-home group">
+        <div class="home-icon-bg">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </div>
+        <span class="font-semibold text-gray-600 group-hover:text-gray-900 transition-colors text-sm md:text-base">Trang chủ</span>
+    </a>
+
+    <!-- MAIN CONTAINER -->
+    <div class="w-full max-w-6xl relative z-10 flex flex-col gap-4 md:gap-8 mt-12 md:mt-0">
+        
+        <!-- HEADER TEXT -->
+        <div class="text-center md:text-left pl-2">
+            <h1 class="text-2xl md:text-5xl font-extrabold text-slate-800 tracking-tight mb-1 md:mb-2">
+                Đồng Hồ Bấm Giờ
+            </h1>
+            <p class="text-slate-500 font-medium text-xs md:text-lg">
+                Theo dõi thời gian chính xác, mượt mà và trực quan.
+            </p>
+        </div>
+
+        <!-- CONTENT GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1.3fr,1fr] gap-4 md:gap-8">
+            
+            <!-- LEFT COLUMN: CLOCK & CONTROLS -->
+            <div class="glass-panel p-6 md:p-14 flex flex-col justify-between min-h-[350px] md:min-h-[420px] shadow-2xl relative overflow-hidden">
+                
+                <!-- Decorative BG blob inside panel -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="flex items-center mb-4">
+                        <span class="header-decoration"></span>
+                        <h2 class="text-xs md:text-sm font-bold text-blue-600 uppercase tracking-widest">Thời Gian</h2>
+                    </div>
+
+                    <!-- MAIN DISPLAY -->
+                    <div class="flex justify-center items-center py-6 md:py-12 timer-container">
+                        <!-- REMOVED GLOW ELEMENT -->
+                        
+                        <!-- Cập nhật class hiển thị ms rõ ràng hơn -->
+                        <div id="display" class="timer-display font-bold tracking-tight">
+                            00:00:00<span class="text-slate-700 font-bold" id="ms-display">.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTROLS FOOTER -->
+                <div class="relative z-10 flex flex-col items-center gap-6 md:gap-8 mt-auto">
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-5 w-full">
+                        
+                        <!-- Reset Button -->
+                        <button id="btn-reset" class="control-btn btn-secondary min-w-[110px] md:min-w-[130px]" onclick="resetTimer()" disabled title="Đặt lại (R)">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Đặt lại</span>
+                        </button>
+
+                        <!-- Start/Stop Button (Main) -->
+                        <button id="btn-toggle" class="control-btn btn-primary min-w-[140px] md:min-w-[160px] text-base md:text-lg shadow-blue-500/30" onclick="toggleTimer()">
+                            <i data-lucide="play" class="w-5 h-5 md:w-6 md:h-6 fill-current"></i>
+                            <span id="label-toggle">Bắt đầu</span>
+                        </button>
+
+                        <!-- Lap Button -->
+                        <button id="btn-lap" class="control-btn btn-secondary min-w-[110px] md:min-w-[130px]" onclick="recordLap()" disabled title="Ghi vòng (L)">
+                            <i data-lucide="flag" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            <span>Vòng</span>
+                        </button>
+                    </div>
+
+                    <p class="text-[10px] md:text-xs text-slate-400 font-medium text-center bg-white/50 px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-white/60">
+                        Space: Bắt đầu • L: Vòng • R: Đặt lại
+                    </p>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: LAP LIST -->
+            <div class="glass-panel flex flex-col h-[350px] md:h-[500px] lg:h-auto lg:min-h-[420px] relative overflow-hidden">
+                
+                <!-- HEADER FIXED -->
+                <div class="p-4 md:p-6 pb-3 md:pb-4 border-b border-slate-100 bg-white/40 backdrop-blur-md z-20 flex items-center justify-between">
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="bg-blue-100 p-1.5 md:p-2 rounded-lg text-blue-600">
+                            <i data-lucide="list" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        </div>
+                        <h2 class="font-bold text-slate-700 text-sm md:text-base">Lịch sử vòng</h2>
+                    </div>
+                    <span id="lap-count" class="text-[10px] md:text-xs font-bold bg-slate-800 text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full hidden">0</span>
+                </div>
+
+                <!-- LAP LIST CONTAINER -->
+                <div class="relative flex-1 overflow-hidden bg-white/30">
+                    <div id="laps-container" class="absolute inset-0 overflow-y-auto custom-scroll">
+                        
+                        <!-- EMPTY STATE -->
+                        <div id="empty-state" class="h-full flex flex-col items-center justify-center text-slate-400 gap-3 md:gap-4">
+                            <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-100 rounded-full flex items-center justify-center mb-1 md:mb-2">
+                                <i data-lucide="timer" class="w-6 h-6 md:w-8 md:h-8 text-slate-300"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-medium">Chưa có dữ liệu vòng chạy</span>
+                        </div>
+
+                        <!-- Laps will be injected here -->
+                        <div id="laps-list" class="flex flex-col"></div>
+                    </div>
+                </div>
+                
+                <!-- FOOTER STATS -->
+                <div id="stats-footer" class="p-3 md:p-4 border-t border-slate-100 bg-white/60 backdrop-blur text-center hidden">
+                    <span class="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wide">Tổng thời gian</span>
+                    <div id="total-time-footer" class="text-lg md:text-xl font-bold text-blue-600 tabular-nums">00:00:00</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. ICONS INIT ---
+        lucide.createIcons();
+
+        // --- 2. BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        
+        const colors = [
+            {r:59, g:130, b:246},   // Blue-500
+            {r:14, g:165, b:233},   // Sky-500
+            {r:99, g:102, b:241},   // Indigo-500
+            {r:168, g:85, b:247}    // Purple-500
+        ];
+        
+        function resize() { 
+            width = window.innerWidth; 
+            height = window.innerHeight; 
+            canvas.width = width; 
+            canvas.height = height; 
+        }
+
+        class Orb {
+            constructor() { this.init(); }
+            init() { 
+                this.radius = Math.random()*120+100; 
+                this.x = Math.random()*width; 
+                this.y = Math.random()*height; 
+                this.vx = (Math.random()-0.5)*0.3; 
+                this.vy = (Math.random()-0.5)*0.3; 
+                this.color = colors[Math.floor(Math.random()*colors.length)]; 
+            }
+            update() { 
+                this.x+=this.vx; 
+                this.y+=this.vy; 
+                if(this.x<-150||this.x>width+150) this.vx*=-1; 
+                if(this.y<-150||this.y>height+150) this.vy*=-1; 
+            }
+            draw(ctx) { 
+                const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); 
+                g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.45)`); 
+                g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); 
+                ctx.beginPath(); 
+                ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); 
+                ctx.fillStyle=g; 
+                ctx.globalCompositeOperation='screen'; 
+                ctx.fill(); 
+            }
+        }
+
+        function initBackground() { 
+            resize(); 
+            orbs=[]; 
+            for(let i=0;i<7;i++) orbs.push(new Orb()); 
+            loopBg(); 
+        }
+
+        function loopBg() { 
+            ctxBg.clearRect(0,0,width,height); 
+            orbs.forEach(o=>{o.update();o.draw(ctxBg)}); 
+            requestAnimationFrame(loopBg); 
+        }
+
+        window.addEventListener('resize', ()=>{ resize(); orbs.forEach(o => o.init()); });
+        initBackground();
+
+        // --- 3. STOPWATCH LOGIC ---
+
+        let startTime = 0;
+        let elapsedTime = 0;
+        let rafId; 
+        let isRunning = false;
+        let laps = [];
+
+        const displayEl = document.getElementById('display');
+        // Removed timerGlowEl reference
+        const btnToggle = document.getElementById('btn-toggle');
+        const labelToggle = document.getElementById('label-toggle');
+        const btnLap = document.getElementById('btn-lap');
+        const btnReset = document.getElementById('btn-reset');
+        const lapsListEl = document.getElementById('laps-list');
+        const emptyStateEl = document.getElementById('empty-state');
+        const lapCountEl = document.getElementById('lap-count');
+        const statsFooterEl = document.getElementById('stats-footer');
+        const totalTimeFooterEl = document.getElementById('total-time-footer');
+
+        function formatTime(ms) {
+            const h = Math.floor(ms / 3600000);
+            const m = Math.floor((ms % 3600000) / 60000);
+            const s = Math.floor((ms % 60000) / 1000);
+            const centi = Math.floor((ms % 1000) / 10); // 2 số mili giây
+
+            return {
+                main: `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`,
+                sub: `.${centi.toString().padStart(2, '0')}`
+            };
+        }
+
+        function updateDisplay() {
+            const timeObj = formatTime(elapsedTime);
+            // SỬ DỤNG CLASS ĐẬM HƠN, RÕ RÀNG HƠN (text-slate-700, font-bold)
+            displayEl.innerHTML = `${timeObj.main}<span class="text-slate-700 font-bold" id="ms-display">${timeObj.sub}</span>`;
+            
+            if (!statsFooterEl.classList.contains('hidden')) {
+                totalTimeFooterEl.innerText = `${timeObj.main}`;
+            }
+        }
+
+        function loopTimer() {
+            if (!isRunning) return;
+            elapsedTime = Date.now() - startTime;
+            updateDisplay();
+            rafId = requestAnimationFrame(loopTimer);
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                cancelAnimationFrame(rafId);
+                isRunning = false;
+                
+                btnToggle.classList.remove('btn-danger');
+                btnToggle.classList.add('btn-primary');
+                // Removed timerGlowEl.classList.remove('active');
+                labelToggle.innerText = 'Tiếp tục';
+                btnToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play w-5 h-5 md:w-6 md:h-6 fill-current"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg> <span>Tiếp tục</span>`;
+            } else {
+                startTime = Date.now() - elapsedTime;
+                isRunning = true;
+                loopTimer();
+
+                btnToggle.classList.remove('btn-primary');
+                btnToggle.classList.add('btn-danger'); 
+                // Removed timerGlowEl.classList.add('active'); 
+                labelToggle.innerText = 'Dừng lại';
+                btnToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause w-5 h-5 md:w-6 md:h-6 fill-current"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> <span>Dừng lại</span>`;
+                
+                btnLap.disabled = false;
+                btnReset.disabled = false;
+            }
+        }
+
+        function resetTimer() {
+            cancelAnimationFrame(rafId);
+            isRunning = false;
+            elapsedTime = 0;
+            startTime = 0;
+            laps = [];
+            updateDisplay();
+            
+            btnToggle.classList.remove('btn-danger');
+            btnToggle.classList.add('btn-primary');
+            // Removed timerGlowEl.classList.remove('active');
+            labelToggle.innerText = 'Bắt đầu';
+            btnToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play w-5 h-5 md:w-6 md:h-6 fill-current"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg> <span>Bắt đầu</span>`;
+
+            btnLap.disabled = true;
+            btnReset.disabled = true;
+            renderLaps();
+        }
+
+        function recordLap() {
+            if (!isRunning && elapsedTime === 0) return;
+            const previousLapTime = laps.length > 0 ? laps[0].totalMs : 0;
+            const lapDiff = elapsedTime - previousLapTime;
+            const lapObj = { index: laps.length + 1, totalMs: elapsedTime, lapMs: lapDiff };
+            laps.unshift(lapObj);
+            renderLaps();
+            document.getElementById('laps-container').scrollTop = 0;
+        }
+
+        function renderLaps() {
+            if (laps.length === 0) {
+                lapsListEl.innerHTML = '';
+                emptyStateEl.classList.remove('hidden');
+                lapCountEl.classList.add('hidden');
+                statsFooterEl.classList.add('hidden');
+                return;
+            }
+
+            emptyStateEl.classList.add('hidden');
+            lapCountEl.classList.remove('hidden');
+            statsFooterEl.classList.remove('hidden');
+            lapCountEl.innerText = laps.length;
+
+            let fastest = Infinity;
+            let slowest = -Infinity;
+            if (laps.length >= 2) {
+                const times = laps.map(l => l.lapMs);
+                fastest = Math.min(...times);
+                slowest = Math.max(...times);
+            }
+
+            lapsListEl.innerHTML = laps.map(lap => {
+                const totalFormatted = formatTime(lap.totalMs);
+                const diffFormatted = formatTime(lap.lapMs);
+                
+                let badge = '';
+                if (laps.length >= 2) {
+                    if (lap.lapMs === fastest) badge = `<span class="badge badge-blue">Nhanh nhất</span>`;
+                    else if (lap.lapMs === slowest) badge = `<span class="badge badge-red">Chậm nhất</span>`;
+                }
+
+                return `
+                <div class="lap-item animate-[fadeIn_0.3s_ease-out]">
+                    <div class="lap-index">#${lap.index.toString().padStart(2, '0')}</div>
+                    <div class="flex flex-col ml-3">
+                        <span class="lap-time">${diffFormatted.main}<span class="text-sm text-slate-500 font-semibold opacity-90">${diffFormatted.sub}</span></span>
+                        <div class="flex items-center gap-2 mt-1">
+                             ${badge}
+                        </div>
+                    </div>
+                    <span class="lap-diff text-slate-400 text-xs">+${totalFormatted.main}</span>
+                </div>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') { e.preventDefault(); toggleTimer(); }
+            if (e.code === 'KeyL' && !btnLap.disabled) recordLap();
+            if (e.code === 'KeyR' && !btnReset.disabled) resetTimer();
+        });
+
+    </script>
+</body>
+</html>

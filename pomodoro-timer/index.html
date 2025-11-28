@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- GLOBAL STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- BACKGROUND ANIMATION --- */
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(80px) saturate(1.4); opacity: 0.5; pointer-events: none;
+        }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+            border-radius: 40px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .timer-display {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-icon {
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 999px; cursor: pointer; border: none;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .btn-icon:active { transform: scale(0.92); }
+
+        .btn-home {
+            position: fixed; top: 24px; left: 24px; z-index: 50;
+            background: rgba(255,255,255,0.6); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            padding: 10px 20px; border-radius: 99px;
+            font-weight: 600; color: #374151; 
+            display: flex; align-items: center; gap: 8px;
+            text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        .btn-home:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+        .play-btn-shadow { box-shadow: 0 16px 32px -8px rgba(37, 99, 235, 0.4); }
+        .pause-btn-shadow { box-shadow: 0 16px 32px -8px rgba(245, 158, 11, 0.4); }
+
+        /* --- SLIDING TABS (FIXED - NO OVERFLOW) --- */
+        .tab-container {
+            position: relative;
+            background: rgba(229, 231, 235, 0.6);
+            padding: 4px;
+            border-radius: 9999px;
+            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            overflow: hidden; /* Prevent overflow */
+        }
+
+        .tab-btn {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+        
+        .tab-btn.active-text { 
+            color: #111827; 
+            font-weight: 700; 
+        }
+        
+        #tab-bg {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            background: white;
+            border-radius: 9999px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 5;
+            /* Calculate proper width and position */
+            width: calc((100% - 8px) / 3);
+            left: 4px;
+        }
+
+        /* --- INPUTS --- */
+        .custom-input {
+            width: 100%; padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            font-weight: 600; color: #374151;
+            transition: all 0.2s;
+        }
+        .custom-input:focus {
+            background: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        /* --- TOGGLE --- */
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+
+        /* --- PROGRESS RING --- */
+        .progress-ring circle {
+            transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotate(-90deg); transform-origin: 50% 50%;
+        }
+
+        /* --- ANIMATIONS --- */
+        .modal-content { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* --- CUSTOM CONFIRM MODAL --- */
+        .confirm-btn-primary {
+            background: #2563eb; color: white;
+            border-radius: 12px; font-weight: 600;
+            padding: 10px 24px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .confirm-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+        
+        .confirm-btn-secondary {
+            background: #f3f4f6; color: #4b5563;
+            border-radius: 12px; font-weight: 600;
+            padding: 10px 24px;
+            transition: all 0.2s;
+        }
+        .confirm-btn-secondary:hover { background: #e5e7eb; color: #111827; }
+
+        /* --- CUSTOM SCROLLBAR --- */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-6">
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <a href="index.html" class="btn-home group">
+        <i data-lucide="arrow-left" class="w-4 h-4 text-gray-500 group-hover:text-black"></i>
+        <span>Trang chủ</span>
+    </a>
+
+    <div class="w-full max-w-6xl relative z-10">
+        
+        <header class="text-center mb-8 md:mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2 drop-shadow-sm">
+                Pomodoro Timer
+            </h1>
+            <p class="text-gray-500 font-medium text-sm md:text-base opacity-90">
+                Tập trung và tăng năng suất với kỹ thuật Pomodoro. Bộ đếm thời gian Pomodoro miễn phí giúp bạn làm việc trong các khoảng thời gian tập trung.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1.4fr,1fr] gap-6 md:gap-8">
+
+            <!-- LEFT: TIMER -->
+            <div class="glass-panel p-8 md:p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/40 to-transparent pointer-events-none"></div>
+
+                <!-- SLIDING MODE TABS -->
+                <div class="tab-container w-full max-w-md z-10 mb-8">
+                    <div id="tab-bg"></div>
+                    <button onclick="requestChangeMode('pomodoro')" class="tab-btn text-sm md:text-base text-gray-500 active-text" data-mode="pomodoro">Làm việc</button>
+                    <button onclick="requestChangeMode('short')" class="tab-btn text-sm md:text-base text-gray-500" data-mode="short">Nghỉ ngắn</button>
+                    <button onclick="requestChangeMode('long')" class="tab-btn text-sm md:text-base text-gray-500" data-mode="long">Nghỉ dài</button>
+                </div>
+
+                <!-- TIMER RING -->
+                <div class="relative mb-8 group z-10">
+                    <div class="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <svg class="relative z-10 progress-ring w-[260px] h-[260px] md:w-[320px] md:h-[320px]" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="#e5e7eb" stroke-width="4" />
+                        <circle id="progress-circle" cx="60" cy="60" r="54" 
+                                fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round"
+                                stroke-dasharray="339.292" stroke-dashoffset="0" />
+                    </svg>
+                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
+                        <div id="timer-display" class="timer-display text-7xl md:text-8xl font-bold text-gray-800 tracking-tighter">25:00</div>
+                        <div id="session-label" class="text-gray-400 font-bold tracking-widest text-xs mt-4 uppercase bg-gray-100/80 px-3 py-1 rounded-full">Phiên #1</div>
+                    </div>
+                </div>
+
+                <!-- CONTROLS ROW -->
+                <div class="flex flex-col items-center w-full z-10">
+                    <div class="flex items-center gap-3 md:gap-5 justify-center mb-4">
+                        <!-- Settings -->
+                        <button onclick="openSettings()" class="btn-icon w-12 h-12 bg-white border border-gray-200 text-gray-500 hover:text-blue-600 hover:border-blue-200 shadow-sm hover:shadow-md" title="Cài đặt">
+                            <i data-lucide="settings" class="w-5 h-5"></i>
+                        </button>
+
+                        <!-- Reset -->
+                        <button onclick="resetTimer()" class="btn-icon w-12 h-12 bg-white border border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-200 shadow-sm hover:shadow-md" title="Đặt lại (R)">
+                            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        </button>
+
+                        <!-- Main Play -->
+                        <button id="main-btn" onclick="toggleTimer()" class="btn-icon w-20 h-20 bg-blue-600 text-white play-btn-shadow hover:bg-blue-700 hover:scale-105 mx-1">
+                            <span id="btn-icon-wrapper"><i data-lucide="play" class="w-8 h-8 fill-current ml-1"></i></span>
+                        </button>
+
+                        <!-- Skip -->
+                        <button onclick="manualSkip()" class="btn-icon w-12 h-12 bg-white border border-gray-200 text-gray-500 hover:text-orange-500 hover:border-orange-200 shadow-sm hover:shadow-md" title="Bỏ qua (S)">
+                            <i data-lucide="skip-forward" class="w-5 h-5"></i>
+                        </button>
+
+                        <!-- Finish -->
+                        <button onclick="manualFinish()" class="btn-icon w-12 h-12 bg-white border border-gray-200 text-gray-500 hover:text-green-500 hover:border-green-200 shadow-sm hover:shadow-md" title="Hoàn thành sớm (F)">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- SHORTCUT HINTS -->
+                    <div class="text-xs font-medium text-gray-400 bg-white/40 px-4 py-1.5 rounded-full border border-white/50 backdrop-blur-sm">
+                        Phím tắt: Space (Chạy/Dừng) • R (Đặt lại) • S (Bỏ qua) • F (Xong)
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: STATS & TASKS -->
+            <div class="flex flex-col gap-6">
+                <!-- Stats Card -->
+                <div class="glass-panel p-6 md:p-8 relative">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-purple-100 rounded-xl text-purple-600">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                            </div>
+                            <h2 class="text-lg font-bold text-gray-900">Thống kê hôm nay</h2>
+                        </div>
+                        <button onclick="tryClearStats()" class="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors" title="Xóa thống kê">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/50 p-5 rounded-3xl border border-white/60 text-center hover:bg-white/80 transition-colors">
+                            <div class="text-4xl font-extrabold text-gray-900 mb-1" id="stat-sessions">0</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wide">Phiên hoàn thành</div>
+                        </div>
+                        <div class="bg-white/50 p-5 rounded-3xl border border-white/60 text-center hover:bg-white/80 transition-colors">
+                            <div class="text-4xl font-extrabold text-gray-900 mb-1" id="stat-time">0m</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wide">Thời gian tập trung</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Card -->
+                <div class="glass-panel p-6 md:p-8 flex-1 flex flex-col min-h-[300px]">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-green-100 rounded-xl text-green-600">
+                                <i data-lucide="check-square" class="w-5 h-5"></i>
+                            </div>
+                            <h2 class="text-lg font-bold text-gray-900">Nhiệm vụ</h2>
+                        </div>
+                        <button onclick="openTaskModal()" class="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors flex items-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Thêm
+                        </button>
+                    </div>
+                    <div id="task-list" class="space-y-3 overflow-y-auto flex-1 pr-2 max-h-[320px] custom-scrollbar"></div>
+                    <div id="empty-tasks" class="hidden flex-col items-center justify-center h-full text-gray-400 opacity-60 py-8">
+                        <div class="bg-gray-100 p-4 rounded-full mb-3"><i data-lucide="clipboard-list" class="w-8 h-8 text-gray-300"></i></div>
+                        <p class="text-sm font-medium">Chưa có nhiệm vụ nào</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 z-[150] hidden">
+        <div class="absolute inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity" onclick="closeConfirmModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm p-4">
+            <div class="bg-white rounded-[24px] shadow-2xl modal-content p-6 text-center">
+                <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
+                    <i data-lucide="help-circle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2" id="confirm-title">Xác nhận</h3>
+                <p class="text-gray-500 text-sm mb-6" id="confirm-msg">Bạn có chắc chắn muốn thực hiện?</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeConfirmModal()" class="confirm-btn-secondary flex-1">Hủy</button>
+                    <button id="confirm-ok-btn" class="confirm-btn-primary flex-1">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity" onclick="closeSettings()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4">
+            <div class="bg-white rounded-[32px] shadow-2xl modal-content flex flex-col max-h-[85vh]">
+                <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-900">Cài đặt</h3>
+                    <button onclick="closeSettings()" class="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-50 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+                <div class="p-6 overflow-y-auto custom-scrollbar space-y-8">
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i> Thời lượng</h4>
+                        <div class="space-y-5">
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Thời lượng làm việc (phút)</label><input type="number" id="input-pomodoro" class="custom-input" value="25" min="1"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Thời lượng nghỉ ngắn (phút)</label><input type="number" id="input-short" class="custom-input" value="5" min="1"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Thời lượng nghỉ dài (phút)</label><input type="number" id="input-long" class="custom-input" value="15" min="1"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700 mb-2">Số pomodoro trước khi nghỉ dài</label><input type="number" id="input-interval" class="custom-input" value="4" min="1"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2"><i data-lucide="volume-2" class="w-4 h-4"></i> Âm thanh & Thông báo</h4>
+                        <div class="flex items-center justify-between mb-4"><span class="text-sm font-semibold text-gray-700">Bật thông báo âm thanh</span><div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="toggle-sound" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 left-0 checked:left-6 transition-all duration-300"/><label for="toggle-sound" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer checked:bg-green-500 transition-colors duration-300"></label></div></div>
+                        <div class="flex items-center justify-between"><span class="text-sm font-semibold text-gray-700">Bật thông báo trình duyệt</span><div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="toggle-notif" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 left-0 checked:left-6 transition-all duration-300"/><label for="toggle-notif" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer checked:bg-green-500 transition-colors duration-300"></label></div></div>
+                    </div>
+                </div>
+                <div class="p-6 border-t border-gray-100 bg-gray-50/50 rounded-b-[32px] flex justify-end gap-3">
+                    <button onclick="tryResetSettings()" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Mặc định</button>
+                    <button onclick="saveSettings()" class="px-8 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-200 hover:shadow-green-300 transition-all transform active:scale-95">Xong</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASK MODAL -->
+    <div id="task-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-gray-900/30 backdrop-blur-sm transition-opacity" onclick="closeTaskModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm p-4">
+            <div class="bg-white rounded-3xl shadow-2xl modal-content p-6">
+                <div class="mb-4"><h3 class="text-lg font-bold text-gray-900 mb-1">Thêm nhiệm vụ mới</h3><p class="text-sm text-gray-500">Bạn định tập trung làm gì tiếp theo?</p></div>
+                <input type="text" id="new-task-input" class="custom-input mb-6" placeholder="Nhập tên công việc..." autofocus onkeydown="if(event.key==='Enter') confirmAddTask()">
+                <div class="flex gap-3"><button onclick="closeTaskModal()" class="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors">Hủy</button><button onclick="confirmAddTask()" class="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 hover:shadow-blue-300 transition-all">Thêm</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed top-6 right-6 bg-white/95 backdrop-blur shadow-xl rounded-2xl p-4 flex items-center gap-4 transform translate-x-[150%] transition-transform duration-500 z-[200] max-w-xs border border-white/50">
+        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 text-green-600"><i data-lucide="check" class="w-5 h-5"></i></div>
+        <div><h4 class="font-bold text-gray-900 text-sm">Thông báo</h4><p class="text-sm text-gray-500" id="toast-msg">Cập nhật thành công</p></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- BACKGROUND ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:59,g:130,b:246}, {r:16,g:185,b:129}, {r:139,g:92,b:246}, {r:255,g:255,b:255}]; 
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { this.radius = Math.random()*120+80; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.3; this.vy = (Math.random()-0.5)*0.3; this.color = colors[Math.floor(Math.random()*colors.length)]; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
+            draw(c) { const g=c.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.4)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); c.beginPath(); c.arc(this.x,this.y,this.radius,0,Math.PI*2); c.fillStyle=g; c.fill(); }
+        }
+        function initBg() { resize(); orbs=[]; for(let i=0;i<6;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctx.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctx)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBg();}); initBg();
+
+        // --- CORE LOGIC ---
+        const DEFAULT_SETTINGS = { pomodoro: 25, short: 5, long: 15, interval: 4, sound: true, notif: false };
+        let settings = JSON.parse(localStorage.getItem('pomoSettings')) || DEFAULT_SETTINGS;
+        let stats = JSON.parse(localStorage.getItem('pomoStats')) || { sessions: 0, time: 0 };
+        let currentMode = 'pomodoro';
+        let timeLeft = settings[currentMode] * 60;
+        let totalTime = timeLeft;
+        let timerId = null;
+        let isRunning = false;
+        let tasks = JSON.parse(localStorage.getItem('pomoTasks')) || [];
+
+        const elTimer = document.getElementById('timer-display');
+        const elCircle = document.getElementById('progress-circle');
+        const elMainBtn = document.getElementById('main-btn');
+        const elIconWrapper = document.getElementById('btn-icon-wrapper');
+        const elSessionLabel = document.getElementById('session-label');
+        
+        const radius = 54;
+        const circumference = radius * 2 * Math.PI;
+        elCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+
+        function updateUI() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            elTimer.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            
+            const progress = timeLeft / totalTime;
+            const offset = circumference - (progress * circumference);
+            elCircle.style.strokeDashoffset = offset;
+        }
+
+        // --- SLIDING TAB LOGIC (FIXED) ---
+        function requestChangeMode(mode) {
+            if (mode === currentMode) return;
+            if (isRunning) {
+                showConfirm("Đang mở ngược", "Bạn có chắc muốn dừng phiên này?", () => executeChangeMode(mode));
+            } else {
+                executeChangeMode(mode);
+            }
+        }
+
+        function executeChangeMode(mode) {
+            if(isRunning) toggleTimer();
+            currentMode = mode;
+            timeLeft = settings[mode] * 60;
+            totalTime = timeLeft;
+            
+            // Update sliding tab
+            const tabBg = document.getElementById('tab-bg');
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active-text'));
+            
+            let index = 0;
+            if (mode === 'short') index = 1;
+            if (mode === 'long') index = 2;
+            
+            // Calculate the exact position based on container width
+            const container = document.querySelector('.tab-container');
+            const containerWidth = container.offsetWidth;
+            const padding = 8; // 4px on each side
+            const tabWidth = (containerWidth - padding) / 3;
+            const leftPosition = 4 + (index * tabWidth); // 4px initial padding + offset
+            
+            tabBg.style.left = `${leftPosition}px`;
+            tabBg.style.width = `${tabWidth}px`;
+            
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active-text');
+            
+            if(mode === 'pomodoro') {
+                elSessionLabel.innerText = `Phiên #${stats.sessions + 1}`;
+                elSessionLabel.classList.remove('bg-green-100', 'text-green-600');
+                elSessionLabel.classList.add('bg-gray-100', 'text-gray-400');
+                elCircle.style.stroke = '#2563eb';
+            } else {
+                elSessionLabel.innerText = mode === 'short' ? 'Nghỉ giải lao' : 'Nghỉ ngơi dài';
+                elSessionLabel.classList.add('bg-green-100', 'text-green-600');
+                elCircle.style.stroke = '#10b981';
+            }
+            updateUI();
+            elCircle.style.strokeDashoffset = 0;
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(timerId);
+                isRunning = false;
+                elMainBtn.classList.remove('bg-amber-500', 'pause-btn-shadow', 'hover:bg-amber-600');
+                elMainBtn.classList.add('bg-blue-600', 'play-btn-shadow', 'hover:bg-blue-700');
+                elIconWrapper.innerHTML = `<i data-lucide="play" class="w-10 h-10 fill-current ml-1"></i>`;
+            } else {
+                isRunning = true;
+                elMainBtn.classList.remove('bg-blue-600', 'play-btn-shadow', 'hover:bg-blue-700');
+                elMainBtn.classList.add('bg-amber-500', 'pause-btn-shadow', 'hover:bg-amber-600');
+                elIconWrapper.innerHTML = `<i data-lucide="pause" class="w-10 h-10 fill-current"></i>`;
+
+                timerId = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateUI();
+                    } else {
+                        finishTimer();
+                    }
+                }, 1000);
+            }
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            if(isRunning) toggleTimer();
+            timeLeft = settings[currentMode] * 60;
+            totalTime = timeLeft; 
+            updateUI();
+            elCircle.style.strokeDashoffset = 0;
+        }
+
+        function manualSkip() {
+            showConfirm("Bỏ qua?", "Phiên hiện tại sẽ không được tính vào thống kê.", () => {
+                if(isRunning) toggleTimer();
+                if(currentMode === 'pomodoro') {
+                    if(stats.sessions % settings.interval === 0) executeChangeMode('long');
+                    else executeChangeMode('short');
+                } else {
+                    executeChangeMode('pomodoro');
+                }
+                showToast("Đã bỏ qua", "Chuyển sang chế độ tiếp theo");
+            });
+        }
+
+        function manualFinish() {
+            if(currentMode !== 'pomodoro') return;
+            showConfirm("Hoàn thành sớm?", "Phiên này sẽ được tính là đã hoàn thành.", () => {
+                finishTimer();
+            });
+        }
+
+        function finishTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            if(settings.sound) playSound();
+            if(currentMode === 'pomodoro') {
+                stats.sessions++;
+                stats.time += settings.pomodoro;
+                saveData();
+                showToast("Hoàn thành!", "Bạn đã làm rất tốt!");
+                if(stats.sessions % settings.interval === 0) executeChangeMode('long');
+                else executeChangeMode('short');
+            } else {
+                showToast("Hết giờ nghỉ!", "Quay lại làm việc nào.");
+                executeChangeMode('pomodoro');
+            }
+            elMainBtn.classList.remove('bg-amber-500', 'pause-btn-shadow');
+            elMainBtn.classList.add('bg-blue-600', 'play-btn-shadow');
+            elIconWrapper.innerHTML = `<i data-lucide="play" class="w-10 h-10 fill-current ml-1"></i>`;
+            lucide.createIcons();
+        }
+
+        // --- STATS ---
+        let pendingAction = null;
+        function showConfirm(title, msg, callback) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-msg').innerText = msg;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            pendingAction = callback;
+        }
+        function closeConfirmModal() { document.getElementById('confirm-modal').classList.add('hidden'); pendingAction = null; }
+        document.getElementById('confirm-ok-btn').onclick = function() { if(pendingAction) pendingAction(); closeConfirmModal(); }
+
+        function tryClearStats() {
+            showConfirm("Xóa thống kê?", "Dữ liệu hôm nay sẽ bị xóa.", () => {
+                stats = { sessions: 0, time: 0 };
+                saveData();
+                elSessionLabel.innerText = `Phiên #1`;
+                showToast("Đã xóa", "Thống kê đã được làm mới");
+            });
+        }
+
+        function saveData() { localStorage.setItem('pomoStats', JSON.stringify(stats)); renderStats(); }
+        function renderStats() {
+            document.getElementById('stat-sessions').innerText = stats.sessions;
+            const h = Math.floor(stats.time / 60);
+            const m = stats.time % 60;
+            document.getElementById('stat-time').innerText = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        }
+
+        // --- SETTINGS ---
+        function openSettings() {
+            document.getElementById('input-pomodoro').value = settings.pomodoro;
+            document.getElementById('input-short').value = settings.short;
+            document.getElementById('input-long').value = settings.long;
+            document.getElementById('input-interval').value = settings.interval || 4;
+            document.getElementById('toggle-sound').checked = settings.sound;
+            document.getElementById('toggle-notif').checked = settings.notif;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+        function tryResetSettings() { showConfirm("Khôi phục mặc định?", "Cài đặt sẽ trở về ban đầu.", () => { settings = { ...DEFAULT_SETTINGS }; openSettings(); showToast("Đã khôi phục", "Cài đặt gốc"); }); }
+        function saveSettings() {
+            settings.pomodoro = parseInt(document.getElementById('input-pomodoro').value);
+            settings.short = parseInt(document.getElementById('input-short').value);
+            settings.long = parseInt(document.getElementById('input-long').value);
+            settings.interval = parseInt(document.getElementById('input-interval').value);
+            settings.sound = document.getElementById('toggle-sound').checked;
+            settings.notif = document.getElementById('toggle-notif').checked;
+            localStorage.setItem('pomoSettings', JSON.stringify(settings));
+            closeSettings();
+            resetTimer(); 
+            showToast("Đã lưu", "Cài đặt đã cập nhật");
+        }
+
+        // --- TASKS ---
+        function openTaskModal() { document.getElementById('new-task-input').value = ""; document.getElementById('task-modal').classList.remove('hidden'); setTimeout(() => document.getElementById('new-task-input').focus(), 100); }
+        function closeTaskModal() { document.getElementById('task-modal').classList.add('hidden'); }
+        function confirmAddTask() { const text = document.getElementById('new-task-input').value.trim(); if(text) { tasks.push({ text: text, done: false }); renderTasks(); closeTaskModal(); } }
+        function renderTasks() {
+            const list = document.getElementById('task-list');
+            const empty = document.getElementById('empty-tasks');
+            list.innerHTML = ''; 
+            if(tasks.length === 0) { empty.classList.remove('hidden'); empty.classList.add('flex'); } else { empty.classList.add('hidden'); empty.classList.remove('flex'); tasks.forEach((t, index) => { const div = document.createElement('div'); div.className = 'bg-white/70 border border-white/50 p-4 rounded-2xl flex items-center gap-3 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 mb-2'; div.innerHTML = `<input type="checkbox" class="custom-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${index})"><span class="flex-1 text-sm font-semibold ${t.done ? 'line-through text-gray-400' : 'text-gray-700'}">${t.text}</span><button onclick="deleteTask(${index})" class="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`; list.appendChild(div); }); lucide.createIcons(); }
+            localStorage.setItem('pomoTasks', JSON.stringify(tasks));
+        }
+        function toggleTask(index) { tasks[index].done = !tasks[index].done; renderTasks(); }
+        function deleteTask(index) { showConfirm("Xóa nhiệm vụ?", "Nhiệm vụ sẽ bị xóa vĩnh viễn.", () => { tasks.splice(index, 1); renderTasks(); }); }
+
+        // --- UTILS ---
+        function showToast(title, msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.querySelector('h4').innerText = title; t.style.transform = 'translateX(0)'; setTimeout(() => t.style.transform = 'translateX(150%)', 3000); }
+        function playSound() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const g = ctx.createGain(); osc.connect(g); g.connect(ctx.destination); osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 0.1); g.gain.setValueAtTime(0.2, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5); osc.start(); osc.stop(ctx.currentTime + 0.5); }
+        
+        // --- KEYBOARD SHORTCUTS ---
+        document.addEventListener('keydown', (e) => { 
+            if(document.activeElement.tagName === 'INPUT') return;
+            
+            if(e.code === 'Space') { e.preventDefault(); toggleTimer(); }
+            if(e.code === 'KeyR') resetTimer();
+            if(e.code === 'KeyS') manualSkip();
+            if(e.code === 'KeyF') manualFinish();
+        });
+
+        // --- HANDLE WINDOW RESIZE FOR TAB ---
+        window.addEventListener('resize', () => {
+            // Recalculate tab position on resize
+            executeChangeMode(currentMode);
+        });
+
+        // INIT
+        renderStats(); 
+        renderTasks(); 
+        executeChangeMode('pomodoro');
+    </script>
+</body>
+</html>

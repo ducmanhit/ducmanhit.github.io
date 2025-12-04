@@ -68,17 +68,20 @@
             padding: 10px 20px; gap: 8px;
         }
         
+        /* Modified Config Button Position/Width for Status Text */
         .config-btn {
             position: fixed; top: 24px; right: 140px; 
             padding: 10px 20px; gap: 8px;
+            /* Removed fixed min-width to allow auto-resizing */
+            transition: all 0.3s ease;
         }
 
         /* --- MAIN CONTAINER --- */
         .main-container {
             width: 100%; 
-            max-width: 1350px; /* Increased from 1280px */
+            max-width: 1350px; 
             height: 90vh; max-height: 850px;
-            display: grid; grid-template-columns: 7fr 5fr; gap: 24px; /* Increased gap */
+            display: grid; grid-template-columns: 7fr 5fr; gap: 24px; 
             position: relative; z-index: 10; padding: 0 24px;
         }
 
@@ -88,7 +91,7 @@
             border-radius: 32px;
             box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 36px; /* Increased padding from 32px */
+            padding: 36px;
             height: 100%;
             display: flex; flex-direction: column; overflow-y: auto;
             position: relative;
@@ -99,7 +102,7 @@
         .clean-panel::-webkit-scrollbar-track { background-color: transparent; }
 
         /* --- INPUTS --- */
-        .input-group { margin-bottom: 24px; /* Increased margin */ }
+        .input-group { margin-bottom: 24px; }
         
         .input-group-label {
             font-size: 12px; font-weight: 700; color: #4b5563; 
@@ -112,7 +115,7 @@
             background: #f8fafc; border: 1px solid #e2e8f0; 
             border-radius: 20px;
             padding: 0 20px; 
-            height: 54px; /* Increased height from 50px */
+            height: 54px;
             display: flex; align-items: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; overflow: hidden;
         }
@@ -127,7 +130,7 @@
 
         .clean-input {
             width: 100%; background: transparent; border: none; outline: none;
-            font-size: 15px; /* Slightly larger font */
+            font-size: 15px;
             font-weight: 500; color: #111827; z-index: 1;
             height: 100%;
         }
@@ -178,7 +181,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: white; padding: 24px; border-radius: 24px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
-            margin-bottom: 16px; /* Reduced from 24px to move details up */
+            margin-bottom: 16px;
         }
         .qr-placeholder {
             color: #94a3b8; font-size: 13px; text-align: center; margin-top: 20px; margin-bottom: 20px;
@@ -218,7 +221,7 @@
         }
         .reset-btn:hover { background: #fef2f2; border-color: #fecaca; }
 
-        /* --- TOAST FIX --- */
+        /* --- TOAST --- */
         .toast {
             position: fixed; top: 32px; right: 50%; transform: translateX(50%) translateY(-150%);
             background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(8px);
@@ -233,52 +236,36 @@
             opacity: 1; pointer-events: auto;
         }
 
-        /* --- MODALS (SOFT ANIMATION & GLASS) --- */
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
             z-index: 200; 
-            display: flex; align-items: center; justify-content: center; /* Always flex but hidden */
-            
-            /* Soft fade transition using visibility to prevent instant hide */
-            visibility: hidden; 
-            opacity: 0;
+            display: flex; align-items: center; justify-content: center; 
+            visibility: hidden; opacity: 0;
             transition: opacity 0.3s ease, visibility 0.3s ease; 
         }
-        .modal-overlay.open { 
-            visibility: visible;
-            opacity: 1;
-        }
+        .modal-overlay.open { visibility: visible; opacity: 1; }
 
         .settings-modal {
-            /* Glassmorphism Background */
-            background: rgba(255, 255, 255, 0.9); /* Slightly more opaque for readability but still glass */
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            
             width: 90%; max-width: 420px;
             border-radius: 32px; padding: 32px;
-            
-            /* Soft Pop Animation */
-            transform: scale(0.95);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Gentle elastic pop */
+            transform: scale(0.95); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
-        .modal-overlay.open .settings-modal { 
-            transform: scale(1); 
-            opacity: 1;
-        }
+        .modal-overlay.open .settings-modal { transform: scale(1); opacity: 1; }
 
         .settings-modal .clean-input-wrapper {
-            background: rgba(248, 250, 252, 0.5); /* Glassy input */
-            border-color: rgba(226, 232, 240, 0.8);
+            background: rgba(248, 250, 252, 0.5); border-color: rgba(226, 232, 240, 0.8);
         }
 
         .param-list {
-            font-size: 12px; color: #6b7280; margin-top: 0px; padding: 0 8px; /* Removed top margin */
+            font-size: 12px; color: #6b7280; margin-top: 0px; padding: 0 8px;
         }
         .param-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; }
         .param-item span:last-child { font-weight: 600; color: #374151; max-width: 60%; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -313,10 +300,14 @@
         <i data-lucide="arrow-left" class="w-4 h-4"></i> Trang chủ
     </a>
 
-    <!-- Config Button (Bitly) -->
+    <!-- Config Button (Updated with API Status) -->
     <div class="config-btn apple-glass-btn" onclick="openSettings()">
-        <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
-        <span>API Setup</span>
+        <div class="relative">
+            <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
+            <!-- API Status Dot -->
+            <div id="api-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse"></div>
+        </div>
+        <span id="api-status-text">Setup API</span>
     </div>
 
     <!-- Language Toggle Trigger -->
@@ -419,7 +410,6 @@
                 </div>
             </div>
 
-            <!-- RESET BUTTON MOVED HERE -->
             <button onclick="resetAll()" class="reset-btn">
                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i> <span data-i18n="btn_reset">Làm mới tất cả</span>
             </button>
@@ -439,7 +429,7 @@
                     <button onclick="copyToClipboard()" class="glass-btn primary" id="btn-copy">
                         <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="btn_copy">Sao chép</span>
                     </button>
-                    <!-- Updated Shorten Button -->
+                    <!-- Shorten Button -->
                     <button onclick="shortenUrl()" class="glass-btn" id="btn-shorten">
                         <i data-lucide="scissors" class="w-4 h-4"></i> <span data-i18n="btn_shorten">Rút gọn</span>
                     </button>
@@ -488,13 +478,15 @@
                 <label class="input-group-label" data-i18n="lbl_bitly_token">Bitly Access Token</label>
                 <div class="clean-input-wrapper">
                     <i data-lucide="key" class="input-icon"></i>
-                    <!-- Added data-i18n-ph for dynamic placeholder -->
                     <input type="password" id="inp-bitly-token" class="clean-input" data-i18n-ph="ph_token" placeholder="Nhập token..." onchange="saveBitlyToken(this.value)">
                 </div>
                 <p class="text-xs text-gray-500 mt-3 leading-relaxed" data-i18n="msg_token_help">
-                    Bạn cần nhập Access Token từ tài khoản Bitly để sử dụng tính năng rút gọn link. Token sẽ được lưu trong trình duyệt của bạn.
+                    Bạn cần nhập Access Token từ tài khoản Bitly để sử dụng tính năng rút gọn link.
                 </p>
-                <!-- Added data-i18n for link text -->
+                <!-- Fixed Localized Warning -->
+                <div id="hardcoded-warning" class="hidden mt-2 p-2 bg-blue-50 text-blue-700 text-xs rounded-lg border border-blue-100">
+                    <i data-lucide="info" class="w-3 h-3 inline mr-1"></i> <span data-i18n="msg_using_hardcoded">Đang sử dụng mã API được cài sẵn trong code.</span>
+                </div>
                 <a href="https://app.bitly.com/settings/api/" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline mt-1 inline-block" data-i18n="link_token_where">Lấy token ở đâu?</a>
             </div>
 
@@ -538,7 +530,12 @@
     <script>
         lucide.createIcons();
 
-        // --- LANGUAGE DATA ---
+        // ==========================================
+        // KHU VỰC CẤU HÌNH API MẶC ĐỊNH (SẾP SỬA Ở ĐÂY)
+        // ==========================================
+        const DEFAULT_BITLY_TOKEN = "f8bd3c97a2a2fe2115a9d71c71e22ba8d50ea3f2"; // Điền token vào giữa 2 dấu nháy kép. Ví dụ: "38580234..."
+        // ==========================================
+
         const translations = {
             vi: {
                 home: "Trang chủ",
@@ -582,7 +579,9 @@
                 msg_enter_token: "Vui lòng nhập Token trước!",
                 lbl_select_lang: "Chọn Ngôn Ngữ",
                 ph_token: "Nhập token...",
-                link_token_where: "Lấy token ở đâu?"
+                link_token_where: "Lấy token ở đâu?",
+                api_status_missing: "Thiết lập API",
+                msg_using_hardcoded: "Đang sử dụng mã API được cài sẵn trong code."
             },
             en: {
                 home: "Home",
@@ -626,24 +625,67 @@
                 msg_enter_token: "Please enter Token first!",
                 lbl_select_lang: "Select Language",
                 ph_token: "Enter token...",
-                link_token_where: "Where to get token?"
+                link_token_where: "Where to get token?",
+                api_status_missing: "Setup API",
+                msg_using_hardcoded: "Using API key configured in code."
             }
         };
 
         let currentLang = 'vi';
+        let currentFullUrl = "";
+        let isShortened = false; // NEW FLAG: Track if current URL is a successful shortened URL
+
+        // --- HELPER: GET TOKEN (PRIORITY: LOCALSTORAGE -> DEFAULT CONST) ---
+        function getEffectiveToken() {
+            const local = localStorage.getItem('bitly_token');
+            if (local && local.trim() !== '') return local.trim();
+            if (DEFAULT_BITLY_TOKEN && DEFAULT_BITLY_TOKEN.trim() !== '') return DEFAULT_BITLY_TOKEN.trim();
+            return null;
+        }
 
         // --- BITLY LOGIC ---
         function openSettings() {
             document.getElementById('settings-modal').classList.add('open');
             document.getElementById('inp-bitly-token').value = localStorage.getItem('bitly_token') || '';
+            
+            // Show warning if using hardcoded token but input is empty
+            const warning = document.getElementById('hardcoded-warning');
+            if (!localStorage.getItem('bitly_token') && DEFAULT_BITLY_TOKEN) {
+                warning.classList.remove('hidden');
+            } else {
+                warning.classList.add('hidden');
+            }
         }
 
         function closeSettings() {
             document.getElementById('settings-modal').classList.remove('open');
+            checkApiStatus(); // Re-check status on close
         }
 
         function saveBitlyToken(val) {
             localStorage.setItem('bitly_token', val.trim());
+            checkApiStatus(); // Update UI immediately
+        }
+
+        function checkApiStatus() {
+            const token = getEffectiveToken();
+            const dot = document.getElementById('api-status-dot');
+            const text = document.getElementById('api-status-text');
+            
+            if (token) {
+                // GREEN LIGHT (Subtle Mode: No Text, Just Dot)
+                dot.classList.remove('bg-red-500', 'animate-pulse');
+                dot.classList.add('bg-green-500');
+                text.style.display = 'none'; // Hide text for subtle look
+            } else {
+                // RED LIGHT (Attention Mode: Red Dot + Text)
+                dot.classList.remove('bg-green-500');
+                dot.classList.add('bg-red-500', 'animate-pulse');
+                text.innerText = translations[currentLang]['api_status_missing'];
+                text.classList.remove('text-green-600');
+                text.classList.add('text-red-500'); 
+                text.style.display = 'block'; // Show text to prompt action
+            }
         }
 
         async function shortenUrl() {
@@ -652,9 +694,8 @@
                  return;
             }
 
-            const token = localStorage.getItem('bitly_token');
+            const token = getEffectiveToken(); // USE HELPER FUNCTION
             if (!token) {
-                // Show modal immediately without toast
                 openSettings();
                 return;
             }
@@ -679,12 +720,11 @@
                     const data = await response.json();
                     const shortUrl = data.link;
                     
-                    // Display Short URL
                     const display = document.getElementById('result-display');
                     display.innerHTML = `<span class="url-short">${shortUrl}</span>`;
                     
-                    // Update currentFullUrl (for copy button)
                     currentFullUrl = shortUrl;
+                    isShortened = true; // MARK AS SHORTENED
                     
                     showToast(translations[currentLang]['toast_shortened'], "check");
                 } else {
@@ -718,14 +758,11 @@
         function setLanguage(lang) {
             currentLang = lang;
             
-            // Update display text in floating btn
             document.getElementById('current-lang-display').innerText = lang === 'vi' ? 'VN' : 'EN';
 
-            // Update active state in modal
             document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`lang-${lang}`).classList.add('active');
 
-            // Update all translations
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang][key]) {
@@ -750,6 +787,7 @@
             const qrEl = document.getElementById('qr-placeholder');
             if(qrEl) qrEl.innerHTML = translations[lang][qrMsgKey];
             
+            checkApiStatus(); // Re-render API status text based on lang
             generate(); 
         }
 
@@ -799,7 +837,6 @@
         document.head.appendChild(styleSheet);
 
         // --- GENERATE LOGIC ---
-        let currentFullUrl = "";
 
         function fillInput(id, value) {
             const input = document.getElementById(id);
@@ -809,6 +846,9 @@
         }
 
         function generate() {
+            // Any editing resets the shortened state
+            isShortened = false;
+
             let url = document.getElementById('inp-url').value.trim();
             const source = document.getElementById('inp-source').value.trim();
             const medium = document.getElementById('inp-medium').value.trim();
@@ -897,6 +937,14 @@
         }
 
         function copyToClipboard() {
+            // Priority 1: If URL is successfully shortened, bypass validation
+            if (isShortened && currentFullUrl) {
+                navigator.clipboard.writeText(currentFullUrl);
+                showToast(translations[currentLang]['toast_copy'], "copy");
+                return;
+            }
+
+            // Priority 2: Normal validation for long URLs
             const url = document.getElementById('inp-url').value.trim();
             const source = document.getElementById('inp-source').value.trim();
             
@@ -941,6 +989,7 @@
         window.onload = function() {
             setLanguage('vi');
             initBackground();
+            checkApiStatus(); // Check on load
         };
     </script>
 </body>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ủng hộ NDM</title>
+    <link rel="icon" href="favicon.ico">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter & Manrope -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f2f7;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(80px) saturate(1.2); 
+            opacity: 0.6; pointer-events: none;
+        }
+
+        /* Home Button - Compact */
+        .glass-btn-home {
+            position: fixed; top: 20px; left: 20px; z-index: 50;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 8px 20px 8px 14px;
+            border-radius: 9999px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            text-decoration: none; color: #1d1d1f;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .glass-btn-home:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        .home-icon-bg {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Glass Panel - Compact */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border-radius: 40px;
+            position: relative; overflow: visible; 
+            transition: transform 0.3s ease;
+        }
+
+        /* Crystal Input - Compact */
+        .crystal-input {
+            background: #ffffff; 
+            border: 1px solid rgba(0,0,0,0.06);
+            color: #1d1d1f; 
+            border-radius: 18px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+        .crystal-input:focus {
+            border-color: #ef4444; 
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); 
+            transform: translateY(-1px);
+            outline: none;
+        }
+        .crystal-input[readonly] {
+            background: #fff;
+            cursor: pointer;
+        }
+        .crystal-input[readonly]:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.05);
+        }
+
+        /* Manrope Font */
+        .font-number { 
+            font-family: 'Manrope', sans-serif; 
+            letter-spacing: 0.02em; 
+        }
+
+        /* QR Section - Compact */
+        .qr-section {
+            background: white;
+            padding: 20px;
+            border-radius: 32px; 
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255,255,255,0.8);
+            display: flex; flex-direction: column; align-items: center;
+            transition: transform 0.3s ease;
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+        .qr-section:hover {
+            transform: scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1);
+        }
+
+        /* Copy Button */
+        .input-wrapper { position: relative; }
+        .copy-trigger {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            width: 36px; height: 36px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: #9ca3af;
+            background: transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .copy-trigger:hover {
+            background: #fef2f2; 
+            color: #ef4444;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed; top: 32px; left: 50%; 
+            transform: translateX(-50%) translateY(-150%);
+            background: #ffffff;
+            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.03);
+            border-radius: 9999px;
+            padding: 10px 24px 10px 10px;
+            display: flex; align-items: center; gap: 14px;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 100;
+            min-width: 260px;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+        
+        .animate-enter { animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <a href="#" class="glass-btn-home group">
+        <div class="home-icon-bg">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-gray-700"></i>
+        </div>
+        <span class="group-hover:text-gray-900 transition-colors">Trang chủ</span>
+    </a>
+
+    <div class="w-full max-w-4xl relative z-10 flex flex-col gap-6 animate-enter">
+        
+        <div class="text-center md:text-left space-y-2 pl-2 md:pl-4">
+            <!-- Thay đổi tiêu đề -->
+            <h1 class="text-2xl md:text-4xl font-bold text-gray-900 tracking-tight">Ủng hộ NDM</h1>
+            <p class="text-gray-500 font-medium text-base md:text-lg max-w-2xl">
+                Cảm ơn sự đồng hành của bạn!
+            </p>
+        </div>
+
+        <div class="glass-panel p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                
+                <!-- Left: VietQR -->
+                <div class="lg:col-span-5 flex flex-col justify-center">
+                    <div class="qr-section mb-6">
+                        <!-- Cập nhật addInfo=Ung%20ho%20NDM -->
+                        <img src="https://img.vietqr.io/image/TCB-4609686868-compact.png?amount=&addInfo=Ung%20ho%20NDM&accountName=NONG%20DUC%20MANH" 
+                             alt="QR Code" class="w-full h-auto max-w-[200px] object-contain rounded-xl mb-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-sm font-semibold text-gray-400 uppercase tracking-widest">
+                            <i data-lucide="scan-line" class="w-4 h-4"></i>
+                            Quét mã nhanh
+                        </div>
+                    </div>
+                    <div class="bg-white/40 border border-white/60 rounded-[24px] p-4 text-center shadow-sm max-w-[260px] mx-auto w-full">
+                         <div class="flex items-center justify-center gap-2">
+                            <span class="relative flex h-2.5 w-2.5">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                            </span>
+                            <span class="text-sm font-bold text-gray-700">Chủ TK: <span class="text-red-600">NONG DUC MANH</span></span>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- Right: Info -->
+                <div class="lg:col-span-7 flex flex-col justify-center gap-6">
+                    
+                    <div class="flex items-center gap-4 pb-1">
+                        <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center border border-gray-100">
+                            <i data-lucide="landmark" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Thông tin chuyển khoản</h2>
+                            <p class="text-gray-500 font-medium text-sm">Techcombank - 24/7</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Bank -->
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-2">Ngân hàng</label>
+                            <div class="input-wrapper">
+                                <input type="text" value="Techcombank" readonly 
+                                       class="crystal-input px-5 py-3.5 font-bold text-gray-800 text-base" id="bankName"
+                                       onclick="copyToClipboard('bankName')">
+                                <button class="copy-trigger" onclick="copyToClipboard('bankName')">
+                                    <i data-lucide="copy" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Number -->
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-2">Số tài khoản</label>
+                            <div class="input-wrapper">
+                                <input type="text" value="4609 6868 68" readonly 
+                                       class="crystal-input font-number px-5 py-3.5 text-2xl md:text-3xl font-extrabold text-red-600 tracking-wide" id="accNum"
+                                       onclick="copyToClipboard('accNum')">
+                                <button class="copy-trigger" onclick="copyToClipboard('accNum')">
+                                    <i data-lucide="copy" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Info Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-2">Chủ tài khoản</label>
+                                <div class="input-wrapper">
+                                    <input type="text" value="NONG DUC MANH" readonly 
+                                           class="crystal-input px-5 py-3 font-bold text-gray-800 uppercase text-sm" id="accName"
+                                           onclick="copyToClipboard('accName')">
+                                    <button class="copy-trigger" onclick="copyToClipboard('accName')">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-2">Nội dung</label>
+                                <div class="input-wrapper">
+                                    <!-- Nội dung chuyển thành Ung ho NDM -->
+                                    <input type="text" value="Ung ho NDM" readonly 
+                                           class="crystal-input px-5 py-3 font-medium text-gray-600 text-sm" id="msgContent"
+                                           onclick="copyToClipboard('msgContent')">
+                                    <button class="copy-trigger" onclick="copyToClipboard('msgContent')">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quote - Cá nhân hóa -->
+                    <div class="bg-white/50 rounded-[24px] p-5 border border-white/60 flex items-start gap-3 hover:bg-white/80 transition-colors cursor-default shadow-sm">
+                        <div class="p-2 bg-red-50 rounded-full flex-shrink-0">
+                            <i data-lucide="heart" class="w-5 h-5 text-red-500 fill-red-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Cảm ơn bạn!</p>
+                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">Sự ủng hộ của bạn là động lực to lớn cho mình. Chúc bạn luôn thành công!</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">
+        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" class="w-5 h-5 text-green-600 stroke-[3px]"></i>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm font-bold text-gray-800">Đã sao chép!</span>
+            <span class="text-xs text-gray-500 font-medium">Sẵn sàng để dán.</span>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:239,g:68,b:68}, {r:59,g:130,b:246}, {r:16,g:185,b:129}, {r:245,g:158,b:11}]; 
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { this.radius = Math.random()*150+120; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.color = colors[Math.floor(Math.random()*colors.length)]; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
+            draw(ctx) { const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.35)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.globalCompositeOperation='source-over'; ctx.fill(); }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<5;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
+
+        function copyToClipboard(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            
+            let success = false;
+            try { success = document.execCommand('copy'); } catch (err) {}
+            if (!success && navigator.clipboard) { navigator.clipboard.writeText(copyText.value); }
+
+            const wrapper = copyText.parentElement;
+            const btn = wrapper.querySelector('.copy-trigger');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `<i data-lucide="check" class="w-5 h-5 text-green-600"></i>`;
+            lucide.createIcons();
+            
+            const originalBorder = copyText.style.borderColor;
+            copyText.style.borderColor = "#22c55e";
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                lucide.createIcons();
+                copyText.style.borderColor = originalBorder;
+            }, 2000);
+
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

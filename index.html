@@ -3,25 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="NDM Tool - Bộ công cụ toàn diện cho mọi nhu cầu">
     <title>NDM TOOL | Commander Center</title>
     
-    <!-- Favicon từ URL ảnh -->
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://sf-static.upanhlaylink.com">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    
+    <!-- Favicon -->
     <link rel="icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
     <link rel="shortcut icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons (Sử dụng CDN ổn định hơn) -->
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Lucide Icons - Defer loading -->
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- Enhanced Google Fonts - Premium Selection -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts - Optimized with display=swap -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- THEME VARIABLES --- */
+        /* === THEME VARIABLES === */
         :root {
             --bg-main: #0A0A0A;
             --bg-card: #111111;
@@ -47,31 +55,31 @@
             --border: #E2E8F0;
             --accent: #EA580C;
             --accent-hover: #DC2626;
-            --accent-glow: rgba(234, 88, 12, 0.2);
+            --accent-glow: rgba(234, 88, 12, 0.15);
             --grid-color: #E2E8F0;
             --scanline: rgba(255,255,255,0);
             --success: #059669;
             --warning: #D97706;
         }
 
+        /* === BASE STYLES === */
         * {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            touch-action: manipulation; 
         }
 
         body { 
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
             font-weight: 400;
             letter-spacing: -0.01em;
         }
         
+        /* Typography */
         .font-display { 
             font-family: 'Sora', sans-serif; 
             letter-spacing: -0.03em;
@@ -94,19 +102,18 @@
             font-weight: 400;
         }
 
-        /* Typography Scale */
+        /* Responsive Typography */
         h1 { font-size: clamp(2.5rem, 8vw, 5rem); }
         h2 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
         h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
         
-        .text-balance {
-            text-wrap: balance;
-        }
+        .text-balance { text-wrap: balance; }
 
+        /* Hide scrollbar */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- ENHANCED SCROLLBAR --- */
+        /* === SCROLLBAR === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { 
@@ -116,9 +123,13 @@
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
 
-        /* --- VISUAL EFFECTS --- */
+        /* === VISUAL EFFECTS === */
         .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(to bottom, 
                 rgba(255,255,255,0) 0%, 
                 rgba(255,255,255,0) 48%, 
@@ -131,11 +142,22 @@
             opacity: 0.06;
         }
 
-        /* --- ENHANCED GLOW EFFECTS --- */
+        /* Grid Background */
+        .bg-grid {
+            background-image: 
+                linear-gradient(var(--grid-color) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, var(--grid-color) 1.5px, transparent 1.5px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
+        }
+
+        /* === HOVER & GLOW EFFECTS === */
         .hover-glow { 
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
             cursor: pointer;
+            will-change: transform, border-color;
         }
         
         .hover-glow::before {
@@ -161,16 +183,27 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
+        /* Mobile hover optimization */
         @media (hover: none) and (pointer: coarse) {
-            .hover-glow:hover {
-                transform: none;
-            }
-            .hover-glow:active {
-                transform: scale(0.98);
-            }
+            .hover-glow:hover { transform: none; }
+            .hover-glow:active { transform: scale(0.98); }
         }
 
-        /* --- ANIMATIONS --- */
+        /* === SIMPLE PINNED CARD STYLE === */
+        .pinned-card {
+            border: 2px solid var(--accent) !important;
+            box-shadow: 
+                0 0 0 1px var(--accent),
+                0 4px 16px var(--accent-glow);
+        }
+
+        .pinned-card:hover {
+            box-shadow: 
+                0 0 0 1px var(--accent),
+                0 8px 24px var(--accent-glow);
+        }
+
+        /* === ANIMATIONS === */
         @keyframes fadeIn { 
             from { opacity: 0; transform: translateY(24px); } 
             to { opacity: 1; transform: translateY(0); } 
@@ -181,7 +214,17 @@
             opacity: 0;
         }
 
-        /* --- TOAST NOTIFICATIONS --- */
+        /* Status pulse animation */
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+        
+        .status-online {
+            animation: status-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* === TOAST NOTIFICATIONS === */
         #toast-container {
             position: fixed;
             top: 24px;
@@ -236,7 +279,7 @@
             to { opacity: 0; transform: translateY(-12px) scale(0.95); }
         }
 
-        /* --- CARD SHIMMER EFFECT --- */
+        /* === CARD SHIMMER === */
         .card-shimmer {
             position: relative;
             overflow: hidden;
@@ -263,7 +306,7 @@
             transform: rotate(45deg) translate(50%, 50%);
         }
 
-        /* --- GLASS MORPHISM --- */
+        /* === GLASS MORPHISM === */
         .glass {
             background: rgba(17, 17, 17, 0.6);
             backdrop-filter: blur(32px) saturate(180%);
@@ -278,17 +321,7 @@
             border: 1px solid rgba(0, 0, 0, 0.06);
         }
 
-        /* --- GRID BACKGROUND --- */
-        .bg-grid {
-            background-image: 
-                linear-gradient(var(--grid-color) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, var(--grid-color) 1.5px, transparent 1.5px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
-            -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
-        }
-
-        /* --- GRADIENT TEXT --- */
+        /* === GRADIENT TEXT === */
         .gradient-text {
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             -webkit-background-clip: text;
@@ -297,26 +330,20 @@
             color: transparent;
         }
 
-        /* --- BUTTON STYLES --- */
+        /* === BUTTON STYLES === */
         .btn-primary {
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .btn-primary:active::before { width: 400px; height: 400px; }
+        .btn-primary:active { transform: scale(0.98); }
 
-        /* --- STATUS INDICATOR --- */
-        .status-online {
-            animation: status-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        /* === DOCK & MOBILE MENU === */
+        .dock-container { 
+            transition: transform 0.5s cubic-bezier(0.2, 0, 0.1, 1);
+            will-change: transform;
         }
-        @keyframes status-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
-        }
-
-        /* --- DOCK & MOBILE MENU --- */
-        .dock-container { transition: transform 0.5s cubic-bezier(0.2, 0, 0.1, 1); }
         .dock-hidden { transform: translate(-50%, 200%) !important; }
         
         .dock-glass {
@@ -326,6 +353,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
         }
+        
         [data-theme="light"] .dock-glass {
             background: rgba(255, 255, 255, 0.6);
             border: 1px solid rgba(0, 0, 0, 0.08);
@@ -333,44 +361,108 @@
         }
 
         .dock-popup {
-            opacity: 0; visibility: hidden;
+            opacity: 0;
+            visibility: hidden;
             transform: translateY(12px) scale(0.9);
             transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.3s;
             pointer-events: none;
         }
         
-        #pinned-menu.dock-popup { transform: translateX(-50%) translateY(12px) scale(0.9); transform-origin: bottom center; }
-        #contact-menu.dock-popup { transform: translateY(12px) scale(0.9); transform-origin: bottom right; }
+        #pinned-menu.dock-popup { 
+            transform: translateX(-50%) translateY(12px) scale(0.9); 
+            transform-origin: bottom center;
+        }
         
-        .dock-popup.active { opacity: 1; visibility: visible; pointer-events: auto; }
-        #pinned-menu.dock-popup.active { transform: translateX(-50%) translateY(0) scale(1); }
-        #contact-menu.dock-popup.active { transform: translateY(0) scale(1); }
+        #contact-menu.dock-popup { 
+            transform: translateY(12px) scale(0.9); 
+            transform-origin: bottom right;
+        }
+        
+        .dock-popup.active { 
+            opacity: 1; 
+            visibility: visible; 
+            pointer-events: auto;
+        }
+        
+        #pinned-menu.dock-popup.active { 
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        
+        #contact-menu.dock-popup.active { 
+            transform: translateY(0) scale(1);
+        }
 
         .category-active::after {
-            content: ''; position: absolute; bottom: -3px; left: 50%;
-            transform: translateX(-50%); width: 50%; height: 3px;
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 3px;
             background: linear-gradient(90deg, transparent, var(--accent), transparent);
             border-radius: 3px;
         }
 
+        /* === MOBILE OPTIMIZATIONS === */
         @media (max-width: 768px) {
-            .glass { backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%); }
+            .glass { 
+                backdrop-filter: blur(24px) saturate(160%); 
+                -webkit-backdrop-filter: blur(24px) saturate(160%);
+            }
             .card-shimmer::after { display: none; }
-            button, a { min-height: 44px; min-width: 44px; }
+            button, a { 
+                min-height: 44px; 
+                min-width: 44px;
+            }
             .mobile-compact { padding: 0.75rem !important; }
         }
 
+        /* === SCROLL PROGRESS === */
         #scroll-progress {
             background: linear-gradient(90deg, var(--accent) 0%, var(--accent-hover) 50%, var(--accent) 100%);
             box-shadow: 0 0 20px var(--accent-glow);
+            will-change: width;
         }
         
-        #mobile-menu { backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
-        *:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-        ::selection { background: var(--accent); color: white; }
+        /* === MOBILE MENU === */
+        #mobile-menu { 
+            backdrop-filter: blur(40px); 
+            -webkit-backdrop-filter: blur(40px);
+            will-change: transform;
+        }
 
+        /* === FOCUS STYLES === */
+        *:focus-visible { 
+            outline: 2px solid var(--accent); 
+            outline-offset: 3px; 
+            border-radius: 4px;
+        }
+
+        /* === SELECTION === */
+        ::selection { 
+            background: var(--accent); 
+            color: white;
+        }
+
+        /* === CONTAINER === */
         @media (max-width: 640px) {
-            .container-mobile { padding-left: 1rem; padding-right: 1rem; }
+            .container-mobile { 
+                padding-left: 1rem; 
+                padding-right: 1rem;
+            }
+        }
+
+        /* === PERFORMANCE OPTIMIZATIONS === */
+        .perf-gpu {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        /* CSS Containment for isolated components */
+        .card-container {
+            contain: layout style paint;
         }
     </style>
 </head>
@@ -379,69 +471,95 @@
     <!-- Scanlines -->
     <div class="scanlines"></div>
 
-    <!-- Enhanced Background Grid with Gradient -->
+    <!-- Background Grid -->
     <div class="fixed inset-0 z-0 pointer-events-none">
         <div class="absolute inset-0 bg-grid opacity-[0.12]"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg-main)]"></div>
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-[0.02] blur-[100px] rounded-full"></div>
     </div>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
+    <!-- Toast Container -->
+    <div id="toast-container" role="status" aria-live="polite"></div>
 
-    <!-- --- ENHANCED SIDEBAR --- -->
-    <div class="fixed top-0 left-0 w-full h-14 md:h-16 md:w-20 md:h-full z-50 glass border-b md:border-b-0 md:border-r border-[var(--border)] flex md:flex-col justify-between items-center py-3 md:py-6 px-4 md:px-0 transition-all duration-300">
+    <!-- === SIDEBAR === -->
+    <aside class="fixed top-0 left-0 w-full h-14 md:h-16 md:w-20 md:h-full z-50 glass border-b md:border-b-0 md:border-r border-[var(--border)] flex md:flex-col justify-between items-center py-3 md:py-6 px-4 md:px-0 transition-all duration-300" role="navigation" aria-label="Main navigation">
         <!-- Logo -->
-        <div class="relative group cursor-pointer" onclick="window.location.reload()">
+        <div class="relative group cursor-pointer" onclick="window.location.reload()" role="button" tabindex="0" aria-label="Reload page">
             <div class="absolute inset-0 bg-[var(--accent)] opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 rounded-xl"></div>
-            <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="NDM Logo" class="relative w-10 h-10 md:w-12 md:h-12 rounded-xl shadow-2xl group-hover:border-[var(--accent)] border-2 border-[var(--border)] transition-all duration-300 group-hover:scale-105 object-cover">
+            <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" 
+                 alt="NDM Logo" 
+                 class="relative w-10 h-10 md:w-12 md:h-12 rounded-xl shadow-2xl group-hover:border-[var(--accent)] border-2 border-[var(--border)] transition-all duration-300 group-hover:scale-105 object-cover"
+                 loading="eager">
         </div>
 
-        <!-- System Controls - Desktop -->
+        <!-- Desktop Controls -->
         <div class="hidden md:flex flex-col gap-3 items-center">
-            <button onclick="toggleTheme()" class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all duration-300 flex items-center justify-center group" title="Theme">
+            <button onclick="AppController.toggleTheme()" 
+                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all duration-300 flex items-center justify-center group" 
+                    title="Toggle theme"
+                    aria-label="Toggle theme">
                 <i data-lucide="sun" class="w-5 h-5 hidden dark:block transition-transform group-hover:rotate-180 duration-700"></i>
                 <i data-lucide="moon" class="w-5 h-5 block dark:hidden transition-transform group-hover:-rotate-12 duration-500"></i>
             </button>
             
-            <button onclick="toggleLang()" class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] font-code font-bold text-[10px] transition-all duration-300 flex items-center justify-center group" title="Language">
+            <button onclick="AppController.toggleLang()" 
+                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] font-code font-bold text-[10px] transition-all duration-300 flex items-center justify-center group" 
+                    title="Change language"
+                    aria-label="Change language">
                 <span id="lang-btn-text" class="group-hover:scale-110 transition-transform">VN</span>
             </button>
 
-            <a href="https://ducmanh.io.vn/donate" target="_blank" class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-pink-500 hover:text-pink-600 hover:border-pink-500 transition-all duration-300 flex items-center justify-center group" title="Donate">
+            <a href="https://ducmanh.io.vn/donate" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-pink-500 hover:text-pink-600 hover:border-pink-500 transition-all duration-300 flex items-center justify-center group" 
+               title="Donate"
+               aria-label="Donate">
                 <i data-lucide="heart" class="w-5 h-5 group-hover:scale-110 transition-transform fill-current"></i>
             </a>
 
             <div class="w-px h-6 bg-gradient-to-b from-transparent via-[var(--border)] to-transparent my-1"></div>
 
-            <button onclick="window.open('https://t.me/ducmanh', '_blank')" class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[#229ED9] hover:border-[#229ED9] transition-all duration-300 flex items-center justify-center group" title="Telegram">
+            <button onclick="window.open('https://t.me/ducmanh', '_blank')" 
+                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[#229ED9] hover:border-[#229ED9] transition-all duration-300 flex items-center justify-center group" 
+                    title="Telegram"
+                    aria-label="Contact via Telegram">
                 <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"></i>
             </button>
         </div>
 
-        <!-- Mobile Menu Trigger -->
-        <button class="md:hidden text-[var(--text-main)] w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--bg-card)] active:scale-95 transition-all" onclick="toggleMobileMenu()" aria-label="Menu">
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden text-[var(--text-main)] w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--bg-card)] active:scale-95 transition-all" 
+                onclick="AppController.toggleMobileMenu()" 
+                aria-label="Open menu"
+                aria-expanded="false">
             <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Status Indicator -->
-        <div class="hidden md:flex flex-col items-center gap-1.5">
+        <!-- Status -->
+        <div class="hidden md:flex flex-col items-center gap-1.5" role="status" aria-label="System status">
             <div class="relative">
                 <div class="w-2.5 h-2.5 rounded-full bg-[var(--success)] status-online"></div>
                 <div class="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[var(--success)] animate-ping opacity-75"></div>
             </div>
             <span class="text-[7px] font-code text-[var(--text-sub)] uppercase tracking-wider font-medium">Live</span>
         </div>
-    </div>
+    </aside>
 
-    <!-- Enhanced Mobile Menu with Smoother Animation (FIXED) -->
-    <div id="mobile-menu" class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1) md:hidden">
+    <!-- === MOBILE MENU === -->
+    <div id="mobile-menu" 
+         class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-300 ease-out md:hidden"
+         role="dialog"
+         aria-modal="true"
+         aria-label="Mobile menu">
         <div class="absolute inset-0 bg-[var(--bg-main)]/98 backdrop-blur-3xl"></div>
         
         <div class="relative h-full flex flex-col p-6 overflow-y-auto">
             <!-- Close Button -->
             <div class="flex justify-end mb-6">
-                <button onclick="toggleMobileMenu()" class="text-[var(--text-main)] w-11 h-11 flex items-center justify-center rounded-xl glass border border-[var(--border)] active:scale-95 transition-all" aria-label="Close">
+                <button onclick="AppController.toggleMobileMenu()" 
+                        class="text-[var(--text-main)] w-11 h-11 flex items-center justify-center rounded-xl glass border border-[var(--border)] active:scale-95 transition-all" 
+                        aria-label="Close menu">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -449,15 +567,19 @@
             <!-- Logo & Brand -->
             <div class="mb-8">
                 <div class="w-14 h-14 rounded-2xl mb-4 shadow-lg shadow-[var(--accent)]/20 overflow-hidden border-2 border-[var(--accent)]">
-                     <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="NDM Logo" class="w-full h-full object-cover">
+                    <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" 
+                         alt="NDM Logo" 
+                         class="w-full h-full object-cover"
+                         loading="lazy">
                 </div>
                 <h2 class="font-display text-xl text-[var(--text-main)] mb-1">Commander Center</h2>
                 <p class="text-xs text-[var(--text-sub)] font-body">Bộ công cụ toàn diện</p>
             </div>
             
             <!-- Menu Items -->
-            <div class="flex-1 flex flex-col gap-3 min-h-0">
-                <button onclick="toggleTheme(); toggleMobileMenu();" class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
+            <nav class="flex-1 flex flex-col gap-3 min-h-0" role="navigation">
+                <button onclick="AppController.toggleTheme(); AppController.toggleMobileMenu();" 
+                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
                     <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
                         <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
                         <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
@@ -465,21 +587,26 @@
                     <span class="text-sm">Chế độ hiển thị</span>
                 </button>
                 
-                <button onclick="toggleLang(); toggleMobileMenu();" class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
+                <button onclick="AppController.toggleLang(); AppController.toggleMobileMenu();" 
+                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
                     <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
                         <i data-lucide="globe" class="w-4 h-4"></i>
                     </div>
                     <span class="text-sm" id="lang-text-mobile">Tiếng Việt</span>
                 </button>
 
-                <button onclick="window.open('https://t.me/ducmanh', '_blank'); toggleMobileMenu();" class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
+                <button onclick="window.open('https://t.me/ducmanh', '_blank'); AppController.toggleMobileMenu();" 
+                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
                     <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
                         <i data-lucide="send" class="w-4 h-4"></i>
                     </div>
                     <span class="text-sm">Telegram</span>
                 </button>
 
-                <a href="https://ducmanh.io.vn/donate" target="_blank" class="w-full h-12 text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-pink-500/20 p-3 rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98">
+                <a href="https://ducmanh.io.vn/donate" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="w-full h-12 text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-pink-500/20 p-3 rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98">
                     <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
                         <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
                     </div>
@@ -488,29 +615,30 @@
 
                 <div class="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent my-1"></div>
 
-                <a href="https://ducmanh.io.vn" class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
+                <a href="https://ducmanh.io.vn" 
+                   class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
                     <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
                         <i data-lucide="home" class="w-4 h-4"></i>
                     </div>
                     <span class="text-sm">Trang chủ</span>
                 </a>
-            </div>
+            </nav>
 
             <!-- Footer -->
-            <div class="mt-6 pt-6 border-t border-[var(--border)]">
+            <footer class="mt-6 pt-6 border-t border-[var(--border)]">
                 <div class="flex items-center gap-2 text-[var(--text-sub)] text-xs font-code">
                     <div class="w-2 h-2 rounded-full bg-[var(--success)] status-online"></div>
                     <span>System Online • V3.2 PRO</span>
                 </div>
-            </div>
+            </footer>
         </div>
     </div>
 
-    <!-- --- MAIN CONTENT --- -->
+    <!-- === MAIN CONTENT === -->
     <main class="relative z-10 md:ml-20 min-h-screen px-4 md:px-8 lg:px-12 py-6 md:py-12 max-w-[1800px] mx-auto pb-6 container-mobile">
         
-        <!-- Header HUD -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10 animate-enter">
+        <!-- Header -->
+        <header class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10 animate-enter">
             <div class="flex flex-col gap-3 md:gap-4 justify-center">
                 <div class="flex items-center gap-2 flex-wrap">
                     <div class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg glass border border-[var(--border)] flex items-center gap-1.5 md:gap-2 group hover:border-[var(--success)] transition-all">
@@ -527,7 +655,10 @@
                     </h1>
                     <div class="flex flex-wrap items-center gap-3">
                         <p class="text-xs md:text-sm text-[var(--text-sub)] font-body max-w-md text-balance" id="subtitle-text">Bộ công cụ toàn diện cho mọi nhu cầu</p>
-                        <a href="https://ducmanh.io.vn/donate" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-bold text-[10px] uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/30 transition-all active:scale-95 group">
+                        <a href="https://ducmanh.io.vn/donate" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-bold text-[10px] uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/30 transition-all active:scale-95 group">
                             <i data-lucide="heart" class="w-3 h-3 fill-current group-hover:scale-110 transition-transform"></i>
                             <span>Donate</span>
                         </a>
@@ -552,43 +683,61 @@
                 <div class="relative z-10">
                     <div class="flex items-baseline gap-0.5 md:gap-1 font-code font-bold text-3xl md:text-4xl lg:text-5xl tracking-wide md:tracking-wider">
                         <div class="flex items-center gap-0.5 md:gap-1">
-                            <span id="clock-hours" class="gradient-text">09</span><span class="text-[var(--accent)] animate-pulse">:</span><span id="clock-minutes" class="gradient-text">41</span>
+                            <span id="clock-hours" class="gradient-text">09</span>
+                            <span class="text-[var(--accent)] animate-pulse">:</span>
+                            <span id="clock-minutes" class="gradient-text">41</span>
                         </div>
                         <span class="text-base md:text-lg text-[var(--text-sub)] ml-1 md:ml-2" id="clock-seconds">30</span>
                     </div>
                     <div class="text-[9px] md:text-[10px] font-code text-[var(--text-sub)] text-center md:text-right mt-1 tracking-wider uppercase font-medium">Local Time</div>
                 </div>
             </div>
-        </div>
+        </header>
 
         <!-- Search & Filter -->
-        <div class="flex flex-col gap-4 md:gap-6 mb-8 md:mb-12 pb-6 border-b border-[var(--border)] animate-enter" style="animation-delay: 0.1s;">
+        <section class="flex flex-col gap-4 md:gap-6 mb-8 md:mb-12 pb-6 border-b border-[var(--border)] animate-enter" style="animation-delay: 0.1s;">
             <div class="relative w-full group">
                 <div class="relative flex items-center glass rounded-xl overflow-hidden border border-[var(--border)] group-hover:border-[var(--accent)] focus-within:border-[var(--accent)] transition-all duration-300">
                     <div class="p-3 md:p-4 text-[var(--text-sub)] group-hover:text-[var(--accent)] group-focus-within:text-[var(--accent)] transition-colors border-r border-[var(--border)]">
                         <i data-lucide="search" class="w-4 h-4 md:w-5 md:h-5"></i>
                     </div>
-                    <input type="text" id="search-input" placeholder="TÌM KIẾM CÔNG CỤ..." class="bg-transparent border-none w-full px-3 md:px-4 py-3 md:py-4 text-[var(--text-main)] placeholder-[var(--text-sub)] focus:outline-none font-code text-xs md:text-sm uppercase tracking-wider font-medium">
-                    <button id="clear-search" class="hidden p-3 md:p-4 text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 transition-all" onclick="clearSearch()" aria-label="Clear"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    <input type="text" 
+                           id="search-input" 
+                           placeholder="TÌM KIẾM CÔNG CỤ..." 
+                           class="bg-transparent border-none w-full px-3 md:px-4 py-3 md:py-4 text-[var(--text-main)] placeholder-[var(--text-sub)] focus:outline-none font-code text-xs md:text-sm uppercase tracking-wider font-medium"
+                           aria-label="Search tools">
+                    <button id="clear-search" 
+                            class="hidden p-3 md:p-4 text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 transition-all" 
+                            onclick="AppController.clearSearch()" 
+                            aria-label="Clear search">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
-            <div id="categories-container" class="flex flex-wrap gap-2 justify-start"></div>
-        </div>
+            <div id="categories-container" 
+                 class="flex flex-wrap gap-2 justify-start" 
+                 role="tablist" 
+                 aria-label="Tool categories"></div>
+        </section>
 
-        <!-- Main Grid -->
-        <div class="mb-8 animate-enter" style="animation-delay: 0.2s;">
+        <!-- Tools Grid -->
+        <section class="mb-8 animate-enter" style="animation-delay: 0.2s;">
             <div class="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
                     <i data-lucide="grid-3x3" class="w-4 h-4 md:w-5 md:h-5 text-[var(--text-sub)]"></i>
                 </div>
-                <h3 class="text-base md:text-lg font-heading font-bold text-[var(--text-main)] tracking-wide uppercase" id="tools-title">Tất cả công cụ</h3>
+                <h2 class="text-base md:text-lg font-heading font-bold text-[var(--text-main)] tracking-wide uppercase" id="tools-title">Tất cả công cụ</h2>
                 <div class="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
             </div>
-            <div id="projects-grid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"></div>
-        </div>
+            <div id="projects-grid" 
+                 class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"
+                 role="list"></div>
+        </section>
 
         <!-- Empty State -->
-        <div id="empty-state" class="hidden py-16 md:py-24 text-center glass border-2 border-dashed border-[var(--border)] rounded-xl md:rounded-2xl mt-8 animate-enter">
+        <div id="empty-state" 
+             class="hidden py-16 md:py-24 text-center glass border-2 border-dashed border-[var(--border)] rounded-xl md:rounded-2xl mt-8 animate-enter"
+             role="status">
             <div class="flex flex-col items-center gap-4 px-4">
                 <div class="w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl glass border border-[var(--border)] flex items-center justify-center">
                     <i data-lucide="search-x" class="w-8 h-8 md:w-10 md:h-10 text-[var(--text-sub)] opacity-50"></i>
@@ -597,35 +746,47 @@
                     <p class="text-[var(--text-main)] font-bold text-lg md:text-xl mb-2 font-heading" id="empty-title">Không tìm thấy kết quả</p>
                     <p class="text-[var(--text-sub)] font-body text-sm tracking-wide text-balance" id="empty-text">Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
                 </div>
-                <button onclick="resetFilters()" class="mt-4 px-6 md:px-8 py-2.5 md:py-3 border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white font-code text-xs md:text-sm uppercase tracking-widest transition-all rounded-xl font-bold btn-primary active:scale-95" id="reset-btn">
+                <button onclick="AppController.resetFilters()" 
+                        class="mt-4 px-6 md:px-8 py-2.5 md:py-3 border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white font-code text-xs md:text-sm uppercase tracking-widest transition-all rounded-xl font-bold btn-primary active:scale-95" 
+                        id="reset-btn">
                     <span class="relative z-10">Đặt lại bộ lọc</span>
                 </button>
             </div>
         </div>
 
         <!-- Why Choose Us -->
-        <div id="why-choose-us" class="mt-16 md:mt-24 pt-8 border-t border-[var(--border)] animate-enter" style="animation-delay: 0.3s;">
+        <section id="why-choose-us" 
+                 class="mt-16 md:mt-24 pt-8 border-t border-[var(--border)] animate-enter" 
+                 style="animation-delay: 0.3s;">
             <div class="flex flex-col items-center text-center mb-8 md:mb-12">
                 <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-[var(--accent)]/10 border border-[var(--accent)]/30 mb-4 shadow-[0_0_40px_-10px_var(--accent-glow)]">
                     <i data-lucide="award" class="w-6 h-6 md:w-8 md:h-8 text-[var(--accent)]"></i>
                 </div>
-                <h3 class="text-xl md:text-2xl lg:text-3xl font-heading font-bold text-[var(--text-main)] mb-2" id="why-choose-title">Vì sao chọn chúng tôi</h3>
+                <h2 class="text-xl md:text-2xl lg:text-3xl font-heading font-bold text-[var(--text-main)] mb-2" id="why-choose-title">Vì sao chọn chúng tôi</h2>
                 <p class="text-sm md:text-base text-[var(--text-sub)] max-w-lg mx-auto text-balance">Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày</p>
             </div>
-            <div id="why-choose-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"></div>
-        </div>
+            <div id="why-choose-grid" 
+                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"></div>
+        </section>
 
-        <!-- Compact Footer -->
+        <!-- Footer -->
         <footer class="py-4 text-center text-[var(--text-sub)] text-[10px] md:text-xs font-code border-t border-[var(--border)] mt-8 opacity-80">
             <span id="copyright"></span>
         </footer>
 
     </main>
 
-    <!-- Dock & Menus -->
-    <div id="tactical-dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container dock-hidden">
+    <!-- === TACTICAL DOCK === -->
+    <nav id="tactical-dock" 
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container dock-hidden"
+         role="navigation"
+         aria-label="Quick actions">
         
-        <div id="pinned-menu" class="dock-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 md:w-80 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 max-h-[50vh] overflow-hidden">
+        <!-- Pinned Menu -->
+        <div id="pinned-menu" 
+             class="dock-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 md:w-80 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 max-h-[50vh] overflow-hidden"
+             role="menu"
+             aria-label="Pinned tools">
             <div class="flex items-center justify-between px-2.5 py-1.5 border-b border-[var(--border)]">
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="pin" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
@@ -633,56 +794,166 @@
                 </div>
                 <span class="text-[10px] md:text-xs font-code text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full font-medium" id="pinned-badge-menu">0</span>
             </div>
-            <div id="pinned-menu-content" class="flex flex-col gap-1 overflow-y-auto scrollbar-hide py-1"></div>
+            <div id="pinned-menu-content" 
+                 class="flex flex-col gap-1 overflow-y-auto scrollbar-hide py-1"></div>
         </div>
 
-        <div id="contact-menu" class="dock-popup absolute bottom-full right-0 mb-4 w-72 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30">
+        <!-- Contact Menu -->
+        <div id="contact-menu" 
+             class="dock-popup absolute bottom-full right-0 mb-4 w-72 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30"
+             role="menu"
+             aria-label="Contact options">
             <div class="flex items-center justify-between px-2.5 py-1.5 border-b border-[var(--border)]">
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="mail" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
                     <span class="text-[10px] md:text-xs text-[var(--text-sub)] font-code font-bold uppercase tracking-widest">Kết nối</span>
                 </div>
             </div>
-            <a href="https://www.facebook.com/ducmanh" target="_blank" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]">
-                <div class="w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-lg shadow-lg"><i data-lucide="facebook" class="w-4 h-4"></i></div>
+            <a href="https://www.facebook.com/ducmanh" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
+               role="menuitem">
+                <div class="w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-lg shadow-lg">
+                    <i data-lucide="facebook" class="w-4 h-4"></i>
+                </div>
                 <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-blue-500 transition-colors">Facebook</span>
             </a>
-            <a href="https://t.me/ducmanh" target="_blank" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]">
-                <div class="w-8 h-8 flex items-center justify-center bg-sky-500 text-white rounded-lg shadow-lg"><i data-lucide="send" class="w-4 h-4"></i></div>
+            <a href="https://t.me/ducmanh" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
+               role="menuitem">
+                <div class="w-8 h-8 flex items-center justify-center bg-sky-500 text-white rounded-lg shadow-lg">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </div>
                 <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-sky-500 transition-colors">Telegram</span>
             </a>
-            <a href="mailto:contact@ducmanh.io.vn" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]">
-                <div class="w-8 h-8 flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-lg"><i data-lucide="mail" class="w-4 h-4"></i></div>
+            <a href="mailto:contact@ducmanh.io.vn" 
+               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
+               role="menuitem">
+                <div class="w-8 h-8 flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-lg">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
                 <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-rose-500 transition-colors">Email</span>
             </a>
         </div>
 
+        <!-- Dock Actions -->
         <div class="flex items-center justify-center gap-1 p-1.5 dock-glass rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.3)] transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-            <a href="https://ducmanh.io.vn" class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" aria-label="Home">
+            <a href="https://ducmanh.io.vn" 
+               class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
+               aria-label="Go to home page">
                 <i data-lucide="home" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
             </a>
             <div class="w-px h-4 bg-white/10 mx-1"></div>
-            <button onclick="togglePinnedMenu()" class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90 relative" aria-label="Pinned">
+            <button onclick="AppController.togglePinnedMenu()" 
+                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90 relative" 
+                    aria-label="View pinned tools">
                 <i data-lucide="pin" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
                 <span id="dock-pin-indicator" class="hidden absolute top-2 right-2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-pulse"></span>
             </button>
-            <button onclick="toggleContactMenu()" class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" aria-label="Contact">
+            <button onclick="AppController.toggleContactMenu()" 
+                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
+                    aria-label="Contact options">
                 <i data-lucide="message-circle" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
             </button>
             <div class="w-px h-4 bg-white/10 mx-1"></div>
-            <button onclick="scrollToTop()" class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" aria-label="Scroll to top">
+            <button onclick="AppController.scrollToTop()" 
+                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
+                    aria-label="Scroll to top">
                 <i data-lucide="arrow-up" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
             </button>
         </div>
-    </div>
+    </nav>
 
     <!-- Scroll Progress -->
-    <div class="fixed top-0 left-0 w-full h-0.5 md:h-1 bg-[var(--border)] z-[100]">
+    <div class="fixed top-0 left-0 w-full h-0.5 md:h-1 bg-[var(--border)] z-[100]" role="progressbar" aria-label="Scroll progress">
         <div id="scroll-progress" class="h-full transition-all duration-150" style="width: 0%"></div>
     </div>
 
+    <!-- === OPTIMIZED JAVASCRIPT === -->
     <script>
-        // --- TRANSLATIONS ---
+        'use strict';
+
+        const CONSTANTS = {
+            STORAGE_KEYS: {
+                LANG: 'app_lang',
+                THEME: 'app_theme',
+                PINS: 'ndm_pins_v8'
+            },
+            DEFAULTS: {
+                LANG: 'vi',
+                THEME: 'light'
+            },
+            TIMINGS: {
+                TOAST_DURATION: 3000,
+                DOCK_IDLE: 4000,
+                SCROLL_THRESHOLD: 5,
+                DEBOUNCE_DELAY: 300
+            }
+        };
+
+        const Utils = {
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            throttle(func, limit) {
+                let inThrottle;
+                return function(...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
+
+            storage: {
+                get(key, defaultValue = null) {
+                    try {
+                        const item = localStorage.getItem(key);
+                        return item ? JSON.parse(item) : defaultValue;
+                    } catch (e) {
+                        console.error('Storage get error:', e);
+                        return defaultValue;
+                    }
+                },
+                set(key, value) {
+                    try {
+                        localStorage.setItem(key, JSON.stringify(value));
+                        return true;
+                    } catch (e) {
+                        console.error('Storage set error:', e);
+                        return false;
+                    }
+                }
+            },
+
+            $(selector) {
+                return document.querySelector(selector);
+            },
+
+
+            $$(selector) {
+                return document.querySelectorAll(selector);
+            },
+
+            formatDate(date, lang) {
+                const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
+                return date.toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', options);
+            }
+        };
+
         const dictionary = {
             vi: {
                 subtitle: "Bộ công cụ toàn diện cho mọi nhu cầu",
@@ -696,12 +967,26 @@
                 afternoon: "Chào buổi chiều, Sếp!",
                 evening: "Chào buổi tối, Sếp!",
                 night: "Chúc ngủ ngon, Sếp!",
-                cat_ALL: "Tất cả", cat_FINANCE: "Tài chính", cat_MATH: "Toán học", cat_UTILITY: "Tiện ích",
-                cat_TIME: "Thời gian", cat_HEALTH: "Sức khỏe", cat_DEV: "Dev Tools", cat_DESIGN: "Thiết kế",
-                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Năng suất", cat_NETWORK: "Mạng", cat_TEXT: "Văn bản",
-                statusActive: "Hoạt động", whyChooseTitle: "Vì sao chọn chúng tôi", pinnedTitle: "Đã ghim",
-                noPinnedTools: "Chưa có công cụ nào được ghim", footerText: "DucManh © ",
-                linkCopied: "Đã sao chép liên kết", pinned: "Đã ghim công cụ", unpinned: "Đã bỏ ghim"
+                cat_ALL: "Tất cả",
+                cat_FINANCE: "Tài chính",
+                cat_MATH: "Toán học",
+                cat_UTILITY: "Tiện ích",
+                cat_TIME: "Thời gian",
+                cat_HEALTH: "Sức khỏe",
+                cat_DEV: "Dev Tools",
+                cat_DESIGN: "Thiết kế",
+                cat_MKT: "Marketing",
+                cat_PRODUCTIVITY: "Năng suất",
+                cat_NETWORK: "Mạng",
+                cat_TEXT: "Văn bản",
+                statusActive: "Hoạt động",
+                whyChooseTitle: "Vì sao chọn chúng tôi",
+                pinnedTitle: "Đã ghim",
+                noPinnedTools: "Chưa có công cụ nào được ghim",
+                footerText: "DucManh © ",
+                linkCopied: "Đã sao chép liên kết",
+                pinned: "Đã ghim công cụ",
+                unpinned: "Đã bỏ ghim"
             },
             en: {
                 subtitle: "Comprehensive toolkit for all your needs",
@@ -715,12 +1000,26 @@
                 afternoon: "Good Afternoon, Boss!",
                 evening: "Good Evening, Boss!",
                 night: "Good Night, Boss!",
-                cat_ALL: "All", cat_FINANCE: "Finance", cat_MATH: "Math", cat_UTILITY: "Utility",
-                cat_TIME: "Time", cat_HEALTH: "Health", cat_DEV: "Dev Tools", cat_DESIGN: "Design",
-                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Productivity", cat_NETWORK: "Network", cat_TEXT: "Text",
-                statusActive: "Active", whyChooseTitle: "Why Choose Us", pinnedTitle: "Pinned",
-                noPinnedTools: "No pinned tools yet", footerText: "DucManh © ",
-                linkCopied: "Link copied to clipboard", pinned: "Tool pinned", unpinned: "Tool unpinned"
+                cat_ALL: "All",
+                cat_FINANCE: "Finance",
+                cat_MATH: "Math",
+                cat_UTILITY: "Utility",
+                cat_TIME: "Time",
+                cat_HEALTH: "Health",
+                cat_DEV: "Dev Tools",
+                cat_DESIGN: "Design",
+                cat_MKT: "Marketing",
+                cat_PRODUCTIVITY: "Productivity",
+                cat_NETWORK: "Network",
+                cat_TEXT: "Text",
+                statusActive: "Active",
+                whyChooseTitle: "Why Choose Us",
+                pinnedTitle: "Pinned",
+                noPinnedTools: "No pinned tools yet",
+                footerText: "DucManh © ",
+                linkCopied: "Link copied to clipboard",
+                pinned: "Tool pinned",
+                unpinned: "Tool unpinned"
             }
         };
 
@@ -737,7 +1036,6 @@
             ]
         };
 
-        // --- DATA ---
         const projectsData = [
             { id: 1, name_vi: "Tiền Tệ", name_en: "Currency", code: "CURR", desc_vi: "Chuyển đổi tỷ giá ngoại tệ.", desc_en: "Convert currency rates.", url: "https://ducmanh.io.vn/currency-converter", category: "FINANCE", icon: 'dollar-sign' },
             { id: 2, name_vi: "Phần Trăm", name_en: "Percent", code: "PERC", desc_vi: "Tính toán phần trăm nhanh.", desc_en: "Calculate percentages.", url: "https://ducmanh.io.vn/percentage-calculator/", category: "MATH", icon: 'percent' },
@@ -755,354 +1053,606 @@
             { id: 14, name_vi: "Sửa Link", name_en: "Fix Link", code: "FIX", desc_vi: "Sửa lỗi link bị lỗi.", desc_en: "Fix broken links.", url: "https://ducmanh.io.vn/link-fixer/", category: "UTILITY", icon: 'wrench' },
         ];
 
-        // --- STATE ---
-        const categories = ["ALL", ...new Set(projectsData.map(p => p.category))];
-        let activeCategory = "ALL";
-        let searchTerm = "";
-        let currentLang = 'vi';
-        let currentTheme = 'light';
-        let lastScrollY = window.scrollY;
-        let pinnedIds = [];
-        let dockIdleTimer;
-        let isProgrammaticScroll = false;
+        const AppController = (() => {
+            let state = {
+                categories: ["ALL", ...new Set(projectsData.map(p => p.category))],
+                activeCategory: "ALL",
+                searchTerm: "",
+                currentLang: CONSTANTS.DEFAULTS.LANG,
+                currentTheme: CONSTANTS.DEFAULTS.THEME,
+                lastScrollY: window.scrollY,
+                pinnedIds: [],
+                dockIdleTimer: null,
+                isProgrammaticScroll: false
+            };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('app_lang');
-            if (savedLang) currentLang = savedLang;
-            const savedTheme = localStorage.getItem('app_theme');
-            if (savedTheme) currentTheme = savedTheme;
-            const savedPins = localStorage.getItem('ndm_pins_v8');
-            if (savedPins) pinnedIds = JSON.parse(savedPins);
+            function init() {
+                loadState();
+                applyTheme();
+                setupEventListeners();
+                updateTime();
+                renderUI();
+                updatePinnedState();
+                setInterval(updateTime, 1000);
+            }
 
-            applyTheme();
-            updateTime();
-            renderUI();
-            updatePinnedState();
-            setInterval(updateTime, 1000);
+            function loadState() {
+                state.currentLang = Utils.storage.get(CONSTANTS.STORAGE_KEYS.LANG, CONSTANTS.DEFAULTS.LANG);
+                state.currentTheme = Utils.storage.get(CONSTANTS.STORAGE_KEYS.THEME, CONSTANTS.DEFAULTS.THEME);
+                state.pinnedIds = Utils.storage.get(CONSTANTS.STORAGE_KEYS.PINS, []);
+            }
 
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', (e) => {
-                searchTerm = e.target.value.toLowerCase();
-                document.getElementById('clear-search').classList.toggle('hidden', !searchTerm);
-                renderProjects();
-            });
-
-            document.addEventListener('click', (e) => {
-                const contactMenu = document.getElementById('contact-menu');
-                const pinnedMenu = document.getElementById('pinned-menu');
-                const contactBtn = e.target.closest('button[onclick="toggleContactMenu()"]');
-                const pinnedBtn = e.target.closest('button[onclick="togglePinnedMenu()"]');
-                
-                if (!contactMenu.contains(e.target) && !contactBtn && contactMenu.classList.contains('active')) toggleContactMenu();
-                if (!pinnedMenu.contains(e.target) && !pinnedBtn && pinnedMenu.classList.contains('active')) togglePinnedMenu();
-            });
-
-            window.addEventListener('scroll', () => {
-                updateScrollProgress();
-                handleDockVisibility();
-            });
-
-            document.addEventListener('touchstart', resetDockIdleTimer);
-            document.addEventListener('mousemove', resetDockIdleTimer);
-            document.addEventListener('click', resetDockIdleTimer);
-            document.addEventListener('keydown', resetDockIdleTimer);
-            resetDockIdleTimer();
-
-            document.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); searchInput.focus(); }
-                if (e.key === 'Escape') {
-                    searchInput.blur();
-                    if (document.getElementById('contact-menu').classList.contains('active')) toggleContactMenu();
-                    if (document.getElementById('pinned-menu').classList.contains('active')) togglePinnedMenu();
+            function setupEventListeners() {
+                const searchInput = Utils.$('#search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', Utils.debounce((e) => {
+                        state.searchTerm = e.target.value.toLowerCase();
+                        const clearBtn = Utils.$('#clear-search');
+                        if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchTerm);
+                        renderProjects();
+                    }, CONSTANTS.TIMINGS.DEBOUNCE_DELAY));
                 }
-            });
-        });
 
-        // --- FUNCTIONS ---
-        function applyTheme() {
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('app_theme', currentTheme);
-        }
+                document.addEventListener('click', handleOutsideClick);
+                window.addEventListener('scroll', Utils.throttle(() => {
+                    updateScrollProgress();
+                    handleDockVisibility();
+                }, 100), { passive: true });
 
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme();
-        }
+                ['touchstart', 'mousemove', 'click', 'keydown'].forEach(event => {
+                    document.addEventListener(event, resetDockIdleTimer, { passive: true });
+                });
 
-        function toggleLang() {
-            currentLang = currentLang === 'vi' ? 'en' : 'vi';
-            localStorage.setItem('app_lang', currentLang);
-            updateGreeting();
-            renderUI();
-        }
+                document.addEventListener('keydown', handleKeyboard);
 
-        function getText(key) { return dictionary[currentLang][key] || key; }
+                if (typeof lucide !== 'undefined') {
+                    createIcons();
+                } else {
+                    document.addEventListener('DOMContentLoaded', createIcons);
+                }
+            }
 
-        function updateTime() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('clock-hours').innerText = h;
-            document.getElementById('clock-minutes').innerText = m;
-            document.getElementById('clock-seconds').innerText = s;
-            const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
-            const dateStr = now.toLocaleDateString(currentLang === 'vi' ? 'vi-VN' : 'en-US', options);
-            document.getElementById('date-display').innerText = dateStr;
-            updateGreeting(now.getHours());
-        }
+            function handleOutsideClick(e) {
+                const contactMenu = Utils.$('#contact-menu');
+                const pinnedMenu = Utils.$('#pinned-menu');
+                const contactBtn = e.target.closest('button[onclick*="toggleContactMenu"]');
+                const pinnedBtn = e.target.closest('button[onclick*="togglePinnedMenu"]');
+                
+                if (contactMenu && !contactMenu.contains(e.target) && !contactBtn && contactMenu.classList.contains('active')) toggleContactMenu();
+                if (pinnedMenu && !pinnedMenu.contains(e.target) && !pinnedBtn && pinnedMenu.classList.contains('active')) togglePinnedMenu();
+            }
 
-        function updateGreeting(hour) {
-            if (hour === undefined) hour = new Date().getHours();
-            let greetingKey = 'morning';
-            if (hour >= 12 && hour < 18) greetingKey = 'afternoon';
-            else if (hour >= 18 && hour < 22) greetingKey = 'evening';
-            else if (hour >= 22 || hour < 5) greetingKey = 'night';
-            document.getElementById('greeting-text').innerText = getText(greetingKey);
-        }
+            function handleKeyboard(e) {
+                const searchInput = Utils.$('#search-input');
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput?.focus();
+                }
+                if (e.key === 'Escape') {
+                    searchInput?.blur();
+                    const contactMenu = Utils.$('#contact-menu');
+                    const pinnedMenu = Utils.$('#pinned-menu');
+                    if (contactMenu?.classList.contains('active')) toggleContactMenu();
+                    if (pinnedMenu?.classList.contains('active')) togglePinnedMenu();
+                }
+            }
 
-        function createIcons() {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            else setTimeout(createIcons, 100);
-        }
+            function applyTheme() {
+                document.documentElement.setAttribute('data-theme', state.currentTheme);
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.THEME, state.currentTheme);
+            }
 
-        function renderUI() {
-            document.getElementById('search-input').placeholder = getText('searchPlaceholder');
-            document.getElementById('subtitle-text').innerText = getText('subtitle');
-            document.getElementById('why-choose-title').innerText = getText('whyChooseTitle');
-            document.getElementById('tools-title').innerText = getText('toolsTitle');
-            document.getElementById('empty-title').innerText = getText('emptyTitle');
-            document.getElementById('empty-text').innerText = getText('emptyText');
-            document.getElementById('reset-btn').innerHTML = `<span class="relative z-10">${getText('resetBtn')}</span>`;
-            document.getElementById('lang-btn-text').innerText = currentLang === 'vi' ? 'VN' : 'EN';
-            document.getElementById('lang-text-mobile').innerText = getText('langMobile');
-            document.getElementById('pinned-menu-title').innerText = getText('pinnedTitle');
-            
-            const currentYear = new Date().getFullYear();
-            document.getElementById('copyright').innerText = getText('footerText') + currentYear;
+            function toggleTheme() {
+                state.currentTheme = state.currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme();
+            }
 
-            renderCategories();
-            renderProjects();
-            renderWhyChooseUs();
-            renderPinnedMenu();
-            createIcons();
-        }
+            function toggleLang() {
+                state.currentLang = state.currentLang === 'vi' ? 'en' : 'vi';
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.LANG, state.currentLang);
+                updateGreeting();
+                renderUI();
+            }
 
-        function renderWhyChooseUs() {
-            const container = document.getElementById('why-choose-grid');
-            container.innerHTML = WHY_CHOOSE_US_DATA[currentLang].map(item => `
-                <div class="hover-glow relative glass border border-[var(--border)] p-4 md:p-5 lg:p-6 group flex flex-col rounded-xl md:rounded-2xl overflow-hidden">
-                    <div class="flex justify-between items-start relative z-10 mb-4 md:mb-5">
-                        <div class="w-10 h-10 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110">
-                            <i data-lucide="${item.icon}" class="w-5 h-5 md:w-6 md:h-6"></i>
+            function getText(key) {
+                return dictionary[state.currentLang]?.[key] || key;
+            }
+
+            function updateTime() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                
+                const hoursEl = Utils.$('#clock-hours');
+                const minsEl = Utils.$('#clock-minutes');
+                const secsEl = Utils.$('#clock-seconds');
+                
+                if (hoursEl) hoursEl.textContent = h;
+                if (minsEl) minsEl.textContent = m;
+                if (secsEl) secsEl.textContent = s;
+                
+                const dateEl = Utils.$('#date-display');
+                if (dateEl) dateEl.textContent = Utils.formatDate(now, state.currentLang);
+                
+                updateGreeting(now.getHours());
+            }
+
+            function updateGreeting(hour) {
+                if (hour === undefined) hour = new Date().getHours();
+                let greetingKey = 'morning';
+                if (hour >= 12 && hour < 18) greetingKey = 'afternoon';
+                else if (hour >= 18 && hour < 22) greetingKey = 'evening';
+                else if (hour >= 22 || hour < 5) greetingKey = 'night';
+                
+                const greetingEl = Utils.$('#greeting-text');
+                if (greetingEl) greetingEl.textContent = getText(greetingKey);
+            }
+
+            function createIcons() {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                } else {
+                    setTimeout(createIcons, 100);
+                }
+            }
+
+            function renderUI() {
+                const searchInput = Utils.$('#search-input');
+                if (searchInput) searchInput.placeholder = getText('searchPlaceholder');
+                
+                const subtitleEl = Utils.$('#subtitle-text');
+                if (subtitleEl) subtitleEl.textContent = getText('subtitle');
+                
+                const whyTitleEl = Utils.$('#why-choose-title');
+                if (whyTitleEl) whyTitleEl.textContent = getText('whyChooseTitle');
+                
+                const toolsTitleEl = Utils.$('#tools-title');
+                if (toolsTitleEl) toolsTitleEl.textContent = getText('toolsTitle');
+                
+                const emptyTitleEl = Utils.$('#empty-title');
+                if (emptyTitleEl) emptyTitleEl.textContent = getText('emptyTitle');
+                
+                const emptyTextEl = Utils.$('#empty-text');
+                if (emptyTextEl) emptyTextEl.textContent = getText('emptyText');
+                
+                const resetBtnEl = Utils.$('#reset-btn');
+                if (resetBtnEl) resetBtnEl.innerHTML = `<span class="relative z-10">${getText('resetBtn')}</span>`;
+                
+                const langBtnEl = Utils.$('#lang-btn-text');
+                if (langBtnEl) langBtnEl.textContent = state.currentLang === 'vi' ? 'VN' : 'EN';
+                
+                const langMobileEl = Utils.$('#lang-text-mobile');
+                if (langMobileEl) langMobileEl.textContent = getText('langMobile');
+                
+                const pinnedTitleEl = Utils.$('#pinned-menu-title');
+                if (pinnedTitleEl) pinnedTitleEl.textContent = getText('pinnedTitle');
+                
+                const copyrightEl = Utils.$('#copyright');
+                if (copyrightEl) copyrightEl.textContent = getText('footerText') + new Date().getFullYear();
+
+                renderCategories();
+                renderProjects();
+                renderWhyChooseUs();
+                renderPinnedMenu();
+                createIcons();
+            }
+
+            function renderCategories() {
+                const container = Utils.$('#categories-container');
+                if (!container) return;
+                
+                container.innerHTML = state.categories.map(cat => {
+                    const displayCat = getText('cat_' + cat);
+                    const isActive = state.activeCategory === cat;
+                    return `
+                    <button onclick="AppController.setCategory('${cat}')" 
+                        class="px-3 md:px-4 py-2 md:py-2.5 border-2 text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg md:rounded-xl font-code active:scale-95
+                        ${isActive 
+                            ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)] text-white border-[var(--accent)] shadow-lg shadow-[var(--accent)]/30 category-active' 
+                            : 'glass text-[var(--text-sub)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)]'}"
+                        role="tab"
+                        aria-selected="${isActive}"
+                        aria-label="Filter by ${displayCat}">
+                        ${displayCat}
+                    </button>
+                `}).join('');
+            }
+
+            function getCardHTML(p, isPinned) {
+                const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
+                const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
+                const pinClass = isPinned ? 'text-[var(--accent)] fill-[var(--accent)]' : 'text-[var(--text-sub)]';
+                const cardClass = isPinned ? 'pinned-card' : '';
+                
+                return `
+                <article class="hover-glow card-shimmer card-container ${cardClass} relative glass border border-[var(--border)] p-3 md:p-5 lg:p-6 group flex flex-col justify-between min-h-[140px] md:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden" role="listitem">
+                    <a href="${p.url}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="absolute inset-0 z-30" 
+                       aria-label="${name}">
+                    </a>
+
+                    <div class="flex justify-between items-start relative z-40 pointer-events-none">
+                        <div class="w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110 pointer-events-none ${isPinned ? 'border-[var(--accent)] text-[var(--accent)]' : ''}">
+                            <i data-lucide="${p.icon}" class="w-4 h-4 md:w-6 md:h-6"></i>
+                        </div>
+                        
+                        <div class="flex items-center gap-1 pointer-events-auto">
+                            <button onclick="AppController.copyLink(event, '${p.url}')" 
+                                    class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 group/copy" 
+                                    title="Copy Link"
+                                    aria-label="Copy link for ${name}">
+                                <i data-lucide="copy" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/copy:scale-110"></i>
+                            </button>
+                            <button onclick="AppController.togglePin(event, ${p.id})" 
+                                    class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] ${pinClass} active:scale-95 group/pin" 
+                                    title="${isPinned ? 'Unpin' : 'Pin'} Tool"
+                                    aria-label="${isPinned ? 'Unpin' : 'Pin'} ${name}"
+                                    aria-pressed="${isPinned}">
+                                <i data-lucide="pin" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/pin:scale-110 ${isPinned ? 'fill-current' : ''}"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="relative z-10">
-                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1.5 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance">${item.title}</h3>
-                        <p class="text-xs md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance">${item.desc}</p>
-                    </div>
-                    <div class="absolute top-0 left-0 w-2.5 md:w-3 h-2.5 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
-                    <div class="absolute bottom-0 right-0 w-2.5 md:w-3 h-2.5 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
-                </div>
-            `).join('');
-        }
 
-        function renderCategories() {
-            const container = document.getElementById('categories-container');
-            container.innerHTML = categories.map(cat => {
-                const displayCat = getText('cat_' + cat);
-                const isActive = activeCategory === cat;
-                return `
-                <button onclick="setCategory('${cat}')" 
-                    class="px-3 md:px-4 py-2 md:py-2.5 border-2 text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg md:rounded-xl font-code active:scale-95
-                    ${isActive 
-                        ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)] text-white border-[var(--accent)] shadow-lg shadow-[var(--accent)]/30 category-active' 
-                        : 'glass text-[var(--text-sub)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)]'}">
-                    ${displayCat}
-                </button>
-            `}).join('');
-        }
-
-        function getCardHTML(p, isPinned) {
-            const name = currentLang === 'vi' ? p.name_vi : p.name_en;
-            const desc = currentLang === 'vi' ? p.desc_vi : p.desc_en;
-            const pinClass = isPinned ? 'text-[var(--accent)] fill-[var(--accent)]' : 'text-[var(--text-sub)]';
-            
-            return `
-            <div class="hover-glow card-shimmer relative glass border border-[var(--border)] p-3 md:p-5 lg:p-6 group flex flex-col justify-between min-h-[140px] md:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden">
-                <!-- Link Overlay - MOVED TO TOP LAYER (z-30) TO ENSURE CLICKABILITY -->
-                <a href="${p.url}" 
-                   target="_blank" 
-                   class="absolute inset-0 z-30" 
-                   aria-label="${name}">
-                </a>
-
-                <!-- Top Section -->
-                <div class="flex justify-between items-start relative z-40 pointer-events-none">
-                    <div class="w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110 pointer-events-none">
-                        <i data-lucide="${p.icon}" class="w-4 h-4 md:w-6 md:h-6"></i>
+                    <div class="mt-3 md:mt-5 pointer-events-none relative z-20">
+                        <div class="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-2">
+                            <span class="text-[8px] md:text-[10px] text-[var(--accent)] font-code font-bold tracking-widest bg-[var(--accent)]/10 px-1.5 md:px-2 py-0.5 md:py-1 rounded">${p.code}</span>
+                        </div>
+                        <h3 class="text-sm md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance leading-tight">${name}</h3>
+                        <p class="text-[10px] md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance line-clamp-2">${desc}</p>
                     </div>
                     
-                    <!-- Action Buttons -->
-                    <div class="flex items-center gap-1 pointer-events-auto">
-                        <button onclick="copyLink(event, '${p.url}')" class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 group/copy" title="Copy Link">
-                            <i data-lucide="copy" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/copy:scale-110"></i>
-                        </button>
-                        <button onclick="togglePin(event, ${p.id})" class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] ${pinClass} active:scale-95 group/pin" title="Pin Tool">
-                            <i data-lucide="pin" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/pin:scale-110"></i>
-                        </button>
-                    </div>
-                </div>
+                    <div class="absolute top-0 left-0 w-2 md:w-3 h-2 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
+                    <div class="absolute bottom-0 right-0 w-2 md:w-3 h-2 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
+                </article>
+                `;
+            }
 
-                <!-- Content -->
-                <div class="mt-3 md:mt-5 pointer-events-none relative z-20">
-                    <div class="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-2">
-                        <span class="text-[8px] md:text-[10px] text-[var(--accent)] font-code font-bold tracking-widest bg-[var(--accent)]/10 px-1.5 md:px-2 py-0.5 md:py-1 rounded">${p.code}</span>
-                    </div>
-                    <h3 class="text-sm md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance leading-tight">${name}</h3>
-                    <p class="text-[10px] md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance line-clamp-2">${desc}</p>
-                </div>
+            function renderProjects() {
+                const grid = Utils.$('#projects-grid');
+                const emptyState = Utils.$('#empty-state');
                 
-                <div class="absolute top-0 left-0 w-2 md:w-3 h-2 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
-                <div class="absolute bottom-0 right-0 w-2 md:w-3 h-2 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
-                <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
-            </div>
-            `;
-        }
-
-        function renderProjects() {
-            const grid = document.getElementById('projects-grid');
-            const emptyState = document.getElementById('empty-state');
-            const filtered = projectsData.filter(p => {
-                const name = currentLang === 'vi' ? p.name_vi : p.name_en;
-                const desc = currentLang === 'vi' ? p.desc_vi : p.desc_en;
-                const matchesSearch = name.toLowerCase().includes(searchTerm) || desc.toLowerCase().includes(searchTerm) || p.code.toLowerCase().includes(searchTerm);
-                const matchesCategory = activeCategory === 'ALL' || p.category === activeCategory;
-                return matchesSearch && matchesCategory;
-            });
-            grid.innerHTML = filtered.map(p => getCardHTML(p, pinnedIds.includes(p.id))).join('');
-            if (filtered.length === 0) emptyState.classList.remove('hidden');
-            else emptyState.classList.add('hidden');
-            createIcons();
-        }
-
-        function togglePin(e, id) {
-            e.stopPropagation(); e.preventDefault();
-            if (pinnedIds.includes(id)) {
-                pinnedIds = pinnedIds.filter(pid => pid !== id);
-                showToast(getText('unpinned'), 'default');
-            } else {
-                pinnedIds.push(id);
-                showToast(getText('pinned'), 'accent');
-            }
-            localStorage.setItem('ndm_pins_v8', JSON.stringify(pinnedIds));
-            renderProjects();
-            updatePinnedState();
-            renderPinnedMenu();
-        }
-
-        function updatePinnedState() {
-            const badge = document.getElementById('dock-pin-indicator');
-            const menuBadge = document.getElementById('pinned-badge-menu');
-            if (pinnedIds.length > 0) { badge.classList.remove('hidden'); menuBadge.innerText = pinnedIds.length; }
-            else { badge.classList.add('hidden'); menuBadge.innerText = '0'; }
-        }
-
-        function renderPinnedMenu() {
-            const container = document.getElementById('pinned-menu-content');
-            if (pinnedIds.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center"><div class="w-12 h-12 rounded-xl glass border border-[var(--border)] flex items-center justify-center mx-auto mb-2"><i data-lucide="pin-off" class="w-6 h-6 text-[var(--text-sub)] opacity-50"></i></div><p class="text-xs text-[var(--text-sub)] font-body">${getText('noPinnedTools')}</p></div>`;
-                createIcons(); return;
-            }
-            const pinnedTools = projectsData.filter(p => pinnedIds.includes(p.id));
-            container.innerHTML = pinnedTools.map(p => {
-                const name = currentLang === 'vi' ? p.name_vi : p.name_en;
-                const desc = currentLang === 'vi' ? p.desc_vi : p.desc_en;
-                return `<a href="${p.url}" target="_blank" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"><div class="w-8 h-8 flex items-center justify-center glass border border-[var(--border)] text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] transition-all rounded-lg group-hover:scale-110 flex-shrink-0"><i data-lucide="${p.icon}" class="w-4 h-4"></i></div><div class="flex-1 min-w-0"><div class="text-xs font-bold text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors uppercase truncate font-heading">${name}</div><div class="text-[10px] text-[var(--text-sub)] font-code truncate">${desc}</div></div><i data-lucide="external-link" class="w-3.5 h-3.5 text-[var(--text-sub)] group-hover:text-[var(--accent)] transition-colors flex-shrink-0"></i></a>`;
-            }).join('');
-            createIcons();
-        }
-
-        function copyLink(e, url) {
-            e.stopPropagation(); e.preventDefault();
-            
-            // Create a temporary textarea element to copy from
-            const textarea = document.createElement('textarea');
-            textarea.value = url;
-            textarea.setAttribute('readonly', '');
-            textarea.style.position = 'absolute';
-            textarea.style.left = '-9999px';
-            document.body.appendChild(textarea);
-            
-            const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-            textarea.select();
-            
-            try {
-                document.execCommand('copy');
-                showToast(getText('linkCopied'), 'success');
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-            }
-            
-            document.body.removeChild(textarea);
-            if (selected) {
-                document.getSelection().removeAllRanges();
-                document.getSelection().addRange(selected);
-            }
-        }
-
-        function showToast(message, type = 'default') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let iconName = 'info';
-            if (type === 'success') iconName = 'check-circle';
-            else if (type === 'accent') iconName = 'pin';
-            
-            toast.className = `toast-message ${type}`;
-            toast.innerHTML = `
-                <i data-lucide="${iconName}" class="w-4 h-4 ${type === 'success' ? 'text-[var(--success)]' : 'text-[var(--accent)]'}"></i>
-                <span class="text-xs font-bold font-heading uppercase tracking-wide">${message}</span>
-            `;
-            
-            container.appendChild(toast);
-            lucide.createIcons();
-
-            // Auto remove after 3s
-            setTimeout(() => {
-                toast.classList.add('hiding');
-                toast.addEventListener('animationend', () => {
-                    if (toast.parentElement) toast.parentElement.removeChild(toast);
+                if (!grid || !emptyState) return;
+                
+                const filtered = projectsData.filter(p => {
+                    const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
+                    const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
+                    const matchesSearch = name.toLowerCase().includes(state.searchTerm) || 
+                                        desc.toLowerCase().includes(state.searchTerm) || 
+                                        p.code.toLowerCase().includes(state.searchTerm);
+                    const matchesCategory = state.activeCategory === 'ALL' || p.category === state.activeCategory;
+                    return matchesSearch && matchesCategory;
                 });
-            }, 3000);
-        }
-
-        function setCategory(cat) { activeCategory = cat; renderCategories(); renderProjects(); }
-        function resetFilters() { searchTerm = ""; activeCategory = "ALL"; document.getElementById('search-input').value = ""; document.getElementById('clear-search').classList.add('hidden'); renderCategories(); renderProjects(); }
-        function clearSearch() { searchTerm = ""; document.getElementById('search-input').value = ""; document.getElementById('clear-search').classList.add('hidden'); renderProjects(); }
-        function toggleMobileMenu() { const menu = document.getElementById('mobile-menu'); menu.classList.toggle('translate-x-full'); }
-        function toggleContactMenu() { const menu = document.getElementById('contact-menu'); const pinnedMenu = document.getElementById('pinned-menu'); if (pinnedMenu.classList.contains('active')) pinnedMenu.classList.remove('active'); menu.classList.toggle('active'); }
-        function togglePinnedMenu() { const menu = document.getElementById('pinned-menu'); const contactMenu = document.getElementById('contact-menu'); if (contactMenu.classList.contains('active')) contactMenu.classList.remove('active'); menu.classList.toggle('active'); }
-        function scrollToTop() { isProgrammaticScroll = true; const dock = document.getElementById('tactical-dock'); dock.classList.add('dock-hidden'); document.getElementById('contact-menu').classList.remove('active'); document.getElementById('pinned-menu').classList.remove('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => { isProgrammaticScroll = false; }, 1000); }
-        function updateScrollProgress() { const windowHeight = window.innerHeight; const documentHeight = document.documentElement.scrollHeight; const scrollTop = window.pageYOffset || document.documentElement.scrollTop; const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100; document.getElementById('scroll-progress').style.width = scrollPercent + '%'; }
-        
-        function resetDockIdleTimer() {
-            const dock = document.getElementById('tactical-dock'); clearTimeout(dockIdleTimer);
-            if (!dock.classList.contains('dock-hidden')) {
-                dockIdleTimer = setTimeout(() => {
-                    dock.classList.add('dock-hidden'); document.getElementById('contact-menu').classList.remove('active'); document.getElementById('pinned-menu').classList.remove('active');
-                }, 4000); 
+                
+                const fragment = document.createDocumentFragment();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = filtered.map(p => getCardHTML(p, state.pinnedIds.includes(p.id))).join('');
+                
+                while (tempDiv.firstChild) fragment.appendChild(tempDiv.firstChild);
+                
+                grid.innerHTML = '';
+                grid.appendChild(fragment);
+                
+                emptyState.classList.toggle('hidden', filtered.length > 0);
+                
+                createIcons();
             }
-        }
 
-        function handleDockVisibility() {
-            const dock = document.getElementById('tactical-dock'); const currentScrollY = window.scrollY;
-            const isScrollingDown = currentScrollY > lastScrollY; const isScrollingUp = currentScrollY < lastScrollY;
-            if (Math.abs(currentScrollY - lastScrollY) < 5 || isProgrammaticScroll) { lastScrollY = currentScrollY; return; }
-            if (isScrollingDown && currentScrollY > 100) { dock.classList.add('dock-hidden'); document.getElementById('contact-menu').classList.remove('active'); document.getElementById('pinned-menu').classList.remove('active'); clearTimeout(dockIdleTimer); } 
-            else if (isScrollingUp) { dock.classList.remove('dock-hidden'); resetDockIdleTimer(); }
-            lastScrollY = currentScrollY;
+            function renderWhyChooseUs() {
+                const container = Utils.$('#why-choose-grid');
+                if (!container) return;
+                
+                container.innerHTML = WHY_CHOOSE_US_DATA[state.currentLang].map(item => `
+                    <div class="hover-glow relative glass border border-[var(--border)] p-4 md:p-5 lg:p-6 group flex flex-col rounded-xl md:rounded-2xl overflow-hidden">
+                        <div class="flex justify-between items-start relative z-10 mb-4 md:mb-5">
+                            <div class="w-10 h-10 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110">
+                                <i data-lucide="${item.icon}" class="w-5 h-5 md:w-6 md:h-6"></i>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-base md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1.5 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance">${item.title}</h3>
+                            <p class="text-xs md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance">${item.desc}</p>
+                        </div>
+                        <div class="absolute top-0 left-0 w-2.5 md:w-3 h-2.5 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
+                        <div class="absolute bottom-0 right-0 w-2.5 md:w-3 h-2.5 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
+                    </div>
+                `).join('');
+            }
+
+            function togglePin(e, id) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                if (state.pinnedIds.includes(id)) {
+                    state.pinnedIds = state.pinnedIds.filter(pid => pid !== id);
+                    showToast(getText('unpinned'), 'default');
+                } else {
+                    state.pinnedIds.push(id);
+                    showToast(getText('pinned'), 'accent');
+                }
+                
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.PINS, state.pinnedIds);
+                renderProjects();
+                updatePinnedState();
+                renderPinnedMenu();
+            }
+
+            function updatePinnedState() {
+                const badge = Utils.$('#dock-pin-indicator');
+                const menuBadge = Utils.$('#pinned-badge-menu');
+                
+                if (badge) badge.classList.toggle('hidden', state.pinnedIds.length === 0);
+                if (menuBadge) menuBadge.textContent = state.pinnedIds.length;
+            }
+
+            function renderPinnedMenu() {
+                const container = Utils.$('#pinned-menu-content');
+                if (!container) return;
+                
+                if (state.pinnedIds.length === 0) {
+                    container.innerHTML = `
+                        <div class="p-6 text-center">
+                            <div class="w-12 h-12 rounded-xl glass border border-[var(--border)] flex items-center justify-center mx-auto mb-2">
+                                <i data-lucide="pin-off" class="w-6 h-6 text-[var(--text-sub)] opacity-50"></i>
+                            </div>
+                            <p class="text-xs text-[var(--text-sub)] font-body">${getText('noPinnedTools')}</p>
+                        </div>
+                    `;
+                    createIcons();
+                    return;
+                }
+                
+                const pinnedTools = projectsData.filter(p => state.pinnedIds.includes(p.id));
+                container.innerHTML = pinnedTools.map(p => {
+                    const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
+                    const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
+                    return `
+                        <a href="${p.url}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
+                           role="menuitem">
+                            <div class="w-8 h-8 flex items-center justify-center glass border border-[var(--border)] text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] transition-all rounded-lg group-hover:scale-110 flex-shrink-0">
+                                <i data-lucide="${p.icon}" class="w-4 h-4"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs font-bold text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors uppercase truncate font-heading">${name}</div>
+                                <div class="text-[10px] text-[var(--text-sub)] font-code truncate">${desc}</div>
+                            </div>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5 text-[var(--text-sub)] group-hover:text-[var(--accent)] transition-colors flex-shrink-0"></i>
+                        </a>
+                    `;
+                }).join('');
+                createIcons();
+            }
+
+            function copyLink(e, url) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        showToast(getText('linkCopied'), 'success');
+                    }).catch(err => {
+                        console.error('Clipboard error:', err);
+                        fallbackCopy(url);
+                    });
+                } else {
+                    fallbackCopy(url);
+                }
+            }
+
+            function fallbackCopy(url) {
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                
+                const selected = document.getSelection().rangeCount > 0 ? 
+                    document.getSelection().getRangeAt(0) : false;
+                textarea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showToast(getText('linkCopied'), 'success');
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                
+                document.body.removeChild(textarea);
+                if (selected) {
+                    document.getSelection().removeAllRanges();
+                    document.getSelection().addRange(selected);
+                }
+            }
+
+            function showToast(message, type = 'default') {
+                const container = Utils.$('#toast-container');
+                if (!container) return;
+                
+                const toast = document.createElement('div');
+                
+                let iconName = 'info';
+                if (type === 'success') iconName = 'check-circle';
+                else if (type === 'accent') iconName = 'pin';
+                
+                toast.className = `toast-message ${type}`;
+                toast.setAttribute('role', 'status');
+                toast.setAttribute('aria-live', 'polite');
+                toast.innerHTML = `
+                    <i data-lucide="${iconName}" class="w-4 h-4 ${type === 'success' ? 'text-[var(--success)]' : 'text-[var(--accent)]'}"></i>
+                    <span class="text-xs font-bold font-heading uppercase tracking-wide">${message}</span>
+                `;
+                
+                container.appendChild(toast);
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                setTimeout(() => {
+                    toast.classList.add('hiding');
+                    toast.addEventListener('animationend', () => {
+                        if (toast.parentElement) toast.parentElement.removeChild(toast);
+                    });
+                }, CONSTANTS.TIMINGS.TOAST_DURATION);
+            }
+
+            function setCategory(cat) {
+                state.activeCategory = cat;
+                renderCategories();
+                renderProjects();
+            }
+
+            function resetFilters() {
+                state.searchTerm = "";
+                state.activeCategory = "ALL";
+                
+                const searchInput = Utils.$('#search-input');
+                if (searchInput) searchInput.value = "";
+                
+                const clearBtn = Utils.$('#clear-search');
+                if (clearBtn) clearBtn.classList.add('hidden');
+                
+                renderCategories();
+                renderProjects();
+            }
+
+            function clearSearch() {
+                state.searchTerm = "";
+                
+                const searchInput = Utils.$('#search-input');
+                if (searchInput) searchInput.value = "";
+                
+                const clearBtn = Utils.$('#clear-search');
+                if (clearBtn) clearBtn.classList.add('hidden');
+                
+                renderProjects();
+            }
+
+            function toggleMobileMenu() {
+                const menu = Utils.$('#mobile-menu');
+                if (menu) {
+                    menu.classList.toggle('translate-x-full');
+                    const button = Utils.$('button[onclick*="toggleMobileMenu"]');
+                    if (button) {
+                        const isOpen = !menu.classList.contains('translate-x-full');
+                        button.setAttribute('aria-expanded', isOpen);
+                    }
+                }
+            }
+
+            function toggleContactMenu() {
+                const menu = Utils.$('#contact-menu');
+                const pinnedMenu = Utils.$('#pinned-menu');
+                
+                if (pinnedMenu?.classList.contains('active')) pinnedMenu.classList.remove('active');
+                menu?.classList.toggle('active');
+            }
+
+            function togglePinnedMenu() {
+                const menu = Utils.$('#pinned-menu');
+                const contactMenu = Utils.$('#contact-menu');
+                
+                if (contactMenu?.classList.contains('active')) contactMenu.classList.remove('active');
+                menu?.classList.toggle('active');
+            }
+
+            function scrollToTop() {
+                state.isProgrammaticScroll = true;
+                
+                const dock = Utils.$('#tactical-dock');
+                if (dock) dock.classList.add('dock-hidden');
+                
+                const contactMenu = Utils.$('#contact-menu');
+                const pinnedMenu = Utils.$('#pinned-menu');
+                if (contactMenu) contactMenu.classList.remove('active');
+                if (pinnedMenu) pinnedMenu.classList.remove('active');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                setTimeout(() => { state.isProgrammaticScroll = false; }, 1000);
+            }
+
+            function updateScrollProgress() {
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+                
+                const progress = Utils.$('#scroll-progress');
+                if (progress) progress.style.width = scrollPercent + '%';
+            }
+
+            function resetDockIdleTimer() {
+                const dock = Utils.$('#tactical-dock');
+                if (!dock) return;
+                
+                clearTimeout(state.dockIdleTimer);
+                
+                if (!dock.classList.contains('dock-hidden')) {
+                    state.dockIdleTimer = setTimeout(() => {
+                        dock.classList.add('dock-hidden');
+                        const contactMenu = Utils.$('#contact-menu');
+                        const pinnedMenu = Utils.$('#pinned-menu');
+                        if (contactMenu) contactMenu.classList.remove('active');
+                        if (pinnedMenu) pinnedMenu.classList.remove('active');
+                    }, CONSTANTS.TIMINGS.DOCK_IDLE);
+                }
+            }
+
+            function handleDockVisibility() {
+                const dock = Utils.$('#tactical-dock');
+                if (!dock) return;
+                
+                const currentScrollY = window.scrollY;
+                const isScrollingDown = currentScrollY > state.lastScrollY;
+                const isScrollingUp = currentScrollY < state.lastScrollY;
+                
+                if (Math.abs(currentScrollY - state.lastScrollY) < CONSTANTS.TIMINGS.SCROLL_THRESHOLD || state.isProgrammaticScroll) {
+                    state.lastScrollY = currentScrollY;
+                    return;
+                }
+                
+                if (isScrollingDown && currentScrollY > 100) {
+                    dock.classList.add('dock-hidden');
+                    const contactMenu = Utils.$('#contact-menu');
+                    const pinnedMenu = Utils.$('#pinned-menu');
+                    if (contactMenu) contactMenu.classList.remove('active');
+                    if (pinnedMenu) pinnedMenu.classList.remove('active');
+                    clearTimeout(state.dockIdleTimer);
+                } else if (isScrollingUp) {
+                    dock.classList.remove('dock-hidden');
+                    resetDockIdleTimer();
+                }
+                
+                state.lastScrollY = currentScrollY;
+            }
+
+            return {
+                init,
+                toggleTheme,
+                toggleLang,
+                toggleMobileMenu,
+                toggleContactMenu,
+                togglePinnedMenu,
+                setCategory,
+                resetFilters,
+                clearSearch,
+                scrollToTop,
+                togglePin,
+                copyLink
+            };
+        })();
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', AppController.init);
+        } else {
+            AppController.init();
         }
     </script>
 </body>

@@ -1,1663 +1,721 @@
 <!DOCTYPE html>
-<<<<<<< Updated upstream
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lấy Mã 2FA</title>
-    <link rel="icon" href="favicon.ico">
+    <title>Get 2FA Authenticator</title>
+        <link rel="icon" href="favicon.ico">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- OTP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/otpauth/9.1.2/otpauth.umd.min.js"></script>
+
     <style>
-        :root {
-            --bg: #e2e8f0; /* slate-200 */
-            --primary-text: #111827; /* gray-900 */
-            --secondary-text: #4b5563; /* gray-600 */
-            --border-color: #111827;
-            --accent: #f59e0b; /* amber-500 */
-            --accent-dark: #d97706; /* amber-600 */
-            --success: #16a34a; /* green-600 */
-            --danger: #dc2626; /* red-600 */
-            --border-width: 3px;
-            --shadow-offset: 8px;
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
+        /* --- CORE THEME: CRYSTAL OS --- */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--primary-text);
-=======
-<html lang="vi" class="dark-theme">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình tạo mã 2FA - Phong cách Apple</title>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-color: #f5f5f7;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(0, 0, 0, 0.1);
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --accent-blue: #007aff;
-            --accent-purple: #5856d6;
-            --accent-red: #ff3b30;
-            --accent-green: #34c759;
-            --button-secondary-bg: #e8e8ea;
-            --input-bg: rgba(118, 118, 128, 0.12);
-            --border-radius-lg: 20px;
-            --border-radius-md: 12px;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        html.dark-theme {
-            --bg-color: #000000;
-            --card-bg: rgba(28, 28, 30, 0.75);
-            --card-border: rgba(255, 255, 255, 0.15);
-            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            --text-primary: #ffffff;
-            --text-secondary: #8e8e93;
-            --button-secondary-bg: #3a3a3c;
-            --input-bg: rgba(118, 118, 128, 0.24);
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-color);
-            color: var(--text-primary);
->>>>>>> Stashed changes
+            font-family: 'Inter', sans-serif; /* Clean Apple-like Font */
+            background-color: #f2f2f7;
+            margin: 0; padding: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-<<<<<<< Updated upstream
-            justify-content: center;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        #fluid-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: blur(80px) saturate(1.2); 
+            opacity: 0.6; pointer-events: none;
+        }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.05),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
+            position: relative; overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glass-noise {
+            position: absolute; inset: 0; opacity: 0.3; pointer-events: none; mix-blend-mode: overlay; z-index: 1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .content-layer { position: relative; z-index: 10; }
+
+        /* --- INPUTS & BUTTONS --- */
+        .crystal-input {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
             padding: 20px;
-            position: relative;
-            background-image:
-                linear-gradient(rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1.5px, transparent 1.5px);
-            background-size: 25px 25px;
+            font-family: 'Space Mono', monospace; /* Monospace for alignment */
+            font-size: 15px; /* Slightly larger */
+            font-weight: 500; /* Bolder */
+            color: #1d1d1f;
+            outline: none; resize: none;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .crystal-input:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 122, 255, 0.5);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
         }
 
-        /* --- WINDOW FRAME --- */
-        .sketch-window {
-            width: 100%;
-            max-width: 1300px;
-            border: var(--border-width) solid var(--border-color);
-            background-color: white;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239ca3af' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color), inset 0 0 20px rgba(0,0,0,0.05);
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            z-index: 1;
+        .primary-btn { 
+            background: #1d1d1f; color: white; border: none; font-weight: 700; /* Bolder */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .primary-btn:hover { 
+            background: #000; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+            transform: translateY(-2px); 
         }
 
-        .sketch-titlebar {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            border-bottom: var(--border-width) solid var(--border-color);
-            background-color: #ffffff;
-            cursor: grab;
+        .crystal-btn {
+            background: rgba(255, 255, 255, 0.5); 
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            color: #1d1d1f; font-weight: 600; /* Bolder */
+            transition: all 0.3s; 
+            backdrop-filter: blur(10px);
         }
-        .sketch-titlebar:active { cursor: grabbing; }
-
-        .titlebar-buttons { display: flex; gap: 0.5rem; }
-        .titlebar-btn { width: 14px; height: 14px; border-radius: 99px; border: 2px solid var(--border-color); transition: transform 0.2s ease; }
-        .titlebar-btn:hover { transform: scale(1.1); }
-        .titlebar-btn.close { background-color: #f87171; }
-        .titlebar-btn.minimize { background-color: #fde047; }
-        .titlebar-btn.maximize { background-color: #4ade80; }
-        .titlebar-title {
-            flex-grow: 1;
-            text-align: center;
-            font-weight: 800;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .titlebar-time { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.875rem; }
-
-        /* --- COMPONENTS --- */
-        .sketch-panel {
-            padding: 1.75rem;
-        }
-        .sketch-panel-right {
-             border-left: var(--border-width) solid var(--border-color);
-        }
-        @media (max-width: 1024px) {
-            .sketch-panel-right { border-left: none; border-top: var(--border-width) solid var(--border-color); }
+        .crystal-btn:hover { 
+            background: white; border-color: rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
         }
 
-        .sketch-btn {
-            background: white; border: var(--border-width) solid var(--border-color); color: var(--primary-text); padding: 10px 20px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
-            transition: all 0.15s ease; font-size: 12px; display: inline-flex; align-items: center;
-            justify-content: center; gap: 8px;
-            box-shadow: 4px 4px 0px var(--border-color);
+        .delete-btn {
+            color: #ef4444; background: rgba(254, 226, 226, 0.3);
+            border: 1px solid rgba(252, 165, 165, 0.2); transition: all 0.2s;
         }
-        .sketch-btn:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--border-color); }
-        .sketch-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-color); }
-        .sketch-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(50%); box-shadow: none; }
+        .delete-btn:hover { background: #fee2e2; border-color: #fca5a5; }
 
-        .sketch-btn-primary { background-color: var(--accent); }
-        .sketch-btn-primary:hover:not(:disabled) { background-color: var(--accent-dark); }
-        .sketch-btn-danger { background-color: var(--danger); color: white; }
-        .sketch-btn-success { background-color: var(--success); color: white; }
-        .sketch-btn svg { transition: transform 0.2s ease; }
-        .sketch-btn:hover:not(:disabled) svg { transform: scale(1.1); }
+        /* --- LIST ITEMS (NO FLICKER) --- */
+        .token-item {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 16px;
+            transition: transform 0.2s, background 0.2s;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        .token-item:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.01);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .sketch-input {
-            border: var(--border-width) solid var(--border-color); padding: 12px 16px; font-size: 14px;
-            background: white; color: var(--primary-text);
-            transition: all 0.2s ease;
-            font-family: 'JetBrains Mono', monospace; width: 100%;
+        .progress-bar {
+            height: 6px; /* Slightly thicker */
+            border-radius: 99px; width: 100%;
+            background: rgba(0,0,0,0.05); overflow: hidden;
         }
-        .sketch-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--accent);
-        }
-        .sketch-input::placeholder { color: #9ca3af; }
-
-        /* --- OTP FLIP DISPLAY --- */
-        .otp-display-container {
-            background-color: var(--primary-text);
-            border: var(--border-width) solid var(--border-color);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            perspective: 1000px;
-        }
-        .otp-display { display: flex; justify-content: space-between; align-items: center; }
-        
-        .otp-digit-group { display: flex; gap: 0.75rem; }
-        .otp-digit-box {
-            width: 50px; height: 65px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.5s;
-        }
-        .otp-digit-box.updating { transform: rotateX(-180deg); }
-        .digit-face {
-            position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden;
-            display: flex; justify-content: center; align-items: center;
-            color: var(--primary-text); background-color: white;
-            border: var(--border-width) solid var(--border-color);
-            font-size: 2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace;
-        }
-        .digit-face.front { transform: rotateX(0deg); }
-        .digit-face.back { transform: rotateX(180deg); }
-
-        .progress-container { border: var(--border-width) solid var(--border-color); height: 20px; padding: 4px; background-color: #e2e8f0; }
         .progress-fill {
-            height: 100%;
-            background-color: var(--primary-text);
-            transition: width 1s linear;
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255, 255, 255, 0.1) 5px, rgba(255, 255, 255, 0.1) 10px);
-        }
-        .progress-fill.warning { background-color: var(--danger); }
-
-        .timer-display { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--secondary-text); text-align: center; margin-top: 0.5rem; }
-        .timer-display .value.warning { color: var(--danger); font-weight: 800; }
-
-        .badge {
-            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
-            background: white; border: var(--border-width) solid var(--border-color);
-            font-size: 12px; font-weight: 800;
-        }
-        
-        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
-        .modal-content {
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
-            background: white;
-            transform: scale(0.95); opacity: 0;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal.open .modal-content { transform: scale(1); opacity: 1; }
-
-        .saved-card {
-            background: white;
-            border: var(--border-width) solid var(--border-color); padding: 1rem; margin-bottom: 1rem;
-            transition: all 0.2s ease;
-        }
-        .saved-card:hover { transform: translateX(-4px); box-shadow: 4px 0 0 var(--accent); }
-        .saved-otp-display {
-            font-family: 'JetBrains Mono', monospace; font-size: 1.75rem; font-weight: 800; letter-spacing: 0.1em;
-            text-align: center; color: var(--primary-text);
-            padding: 0.75rem; background-color: #f3f4f6; border: var(--border-width) solid var(--border-color);
-            margin: 0.75rem 0;
+            height: 100%; background: #3b82f6; border-radius: 99px;
+            transition: width 1s linear, background-color 0.3s;
         }
 
-        .custom-scroll::-webkit-scrollbar { width: 12px; }
-        .custom-scroll::-webkit-scrollbar-track { background: var(--bg); border-left: var(--border-width) solid var(--border-color); }
-        .custom-scroll::-webkit-scrollbar-thumb { background: var(--primary-text); border: var(--border-width) solid var(--border-color); }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--secondary-text); }
-        .label {
-            display: block; font-size: 12px; font-weight: 800; color: var(--primary-text);
-            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+        /* --- MODAL (POPUP) --- */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
-        .empty-state { text-align: center; padding: 60px 20px; opacity: 0.8; }
-        .expand-container { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s ease; }
-        .expand-container.open { grid-template-rows: 1fr; }
-        .expand-content { overflow: hidden; }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
 
-        .sketch-footer {
-            position: fixed; bottom: 20px; right: 20px; z-index: 10;
+        .modal-glass {
+            width: 90%; max-width: 400px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 32px; padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .sketch-footer a {
-            display: flex; align-items: center; gap: 8px; padding: 8px 14px;
-            background-color: white; border: var(--border-width) solid var(--border-color);
-            box-shadow: 4px 4px 0 var(--border-color); color: var(--secondary-text); text-decoration: none;
-            font-size: 12px; font-weight: 600; transition: all 0.15s ease;
-            text-transform: uppercase; letter-spacing: 0.5px;
+        .modal-overlay.open .modal-glass { transform: scale(1) translateY(0); }
+
+        /* --- TOAST --- */
+        .toast {
+            position: fixed; top: 24px; right: 24px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+            padding: 12px 20px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 200; display: flex; align-items: center; gap: 10px;
+            font-weight: 600; font-size: 14px;
         }
-        .sketch-footer a:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border-color); color: var(--primary-text); }
-        .sketch-footer a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--border-color); }
-        .sketch-footer strong { font-weight: 800; color: var(--primary-text); }
-        .sketch-footer svg { stroke: currentColor; transition: transform 0.2s ease; }
-        .sketch-footer a:hover svg { transform: translateX(2px) translateY(-2px); }
-    </style>
-</head>
-<body>
-    <div class="sketch-window">
-        <header class="sketch-titlebar">
-            <div class="titlebar-buttons">
-                <div class="titlebar-btn close"></div>
-                <div class="titlebar-btn minimize"></div>
-                <div class="titlebar-btn maximize"></div>
-            </div>
-            <div class="titlebar-title">2FA Generator</div>
-            <div id="syncStatus" class="titlebar-time text-xs mr-2" style="color: var(--accent);"></div>
-            <div id="serverTime" class="titlebar-time">--:--:--</div>
-        </header>
-        <main class="grid grid-cols-1 lg:grid-cols-2">
-            <section class="sketch-panel space-y-6">
-                <header>
-                    <h2 class="text-2xl font-black uppercase tracking-wide">Trình tạo mã</h2>
-                    <p class="text-sm text-secondary-text">Nhập mã bí mật để bắt đầu</p>
-                </header>
-                <div>
-                    <label for="secretKey" class="label">Secret Key</label>
-                    <div id="warning-banner" class="hidden text-sm font-bold p-3 text-center text-red-800 bg-red-100 border-2 border-red-800 mb-2">
-                        LỖI: Không thể đồng bộ thời gian. Vui lòng kiểm tra mạng và thử lại.
-                    </div>
-                    <textarea id="secretKey" class="sketch-input resize-none" rows="2" placeholder="Đang kết nối..." disabled></textarea>
-                    <button id="retrySyncBtn" class="hidden sketch-btn sketch-btn-primary w-full mt-2">
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.667 0l3.181-3.183m-4.991-2.691V5.006h-4.992v.001M9.015 4.356L5.83 7.539a8.25 8.25 0 000 11.667l3.185 3.185" /></svg>
-                        <span>Thử lại đồng bộ</span>
-                    </button>
-                </div>
-                <div id="resultContainer" class="expand-container">
-                    <div class="expand-content space-y-4">
-                        <div class="otp-display-container">
-                            <div class="otp-display">
-                               <div class="otp-digit-group">
-                                   <div class="otp-digit-box" data-index="0"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                                   <div class="otp-digit-box" data-index="1"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                                   <div class="otp-digit-box" data-index="2"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                               </div>
-                               <div class="otp-digit-group">
-                                   <div class="otp-digit-box" data-index="3"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                                   <div class="otp-digit-box" data-index="4"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                                   <div class="otp-digit-box" data-index="5"><div class="digit-face front">-</div><div class="digit-face back">-</div></div>
-                               </div>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="progress-container">
-                                <div id="progressBar" class="progress-fill" style="width: 100%"></div>
-                            </div>
-                            <div class="timer-display">
-                                Mã mới sau <span id="timerValue" class="value">30</span> giây
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-4 pt-2">
-                    <button id="copyBtn" class="sketch-btn" disabled>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        <span>Chép</span>
-                    </button>
-                    <button id="saveBtn" class="sketch-btn sketch-btn-primary" disabled>
-                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"></path></svg>
-                        <span>Lưu</span>
-                    </button>
-                    <button id="clearBtn" class="sketch-btn sketch-btn-danger">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        <span>Xóa</span>
-                    </button>
-                </div>
-            </section>
-            <section class="sketch-panel sketch-panel-right space-y-6">
-                <header class="flex items-center justify-between">
-                    <h2 class="text-2xl font-black uppercase tracking-wide">Mã đã lưu</h2>
-                    <span id="savedCount" class="badge">0</span>
-                </header>
-                <div id="savedCodesList" class="custom-scroll max-h-[500px] overflow-y-auto pr-3">
-                </div>
-            </section>
-        </main>
-    </div>
-    <!-- Modals -->
-    <div id="saveModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="dialog" aria-modal="true">
-        <div class="absolute inset-0" data-modal-hide="saveModal"></div>
-        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5">
-            <h3 class="text-xl font-black">Lưu mã bí mật</h3>
-            <p class="text-sm text-secondary-text">Đặt tên gợi nhớ để dễ quản lý. Ví dụ: "Gmail", "GitHub"...</p>
-            <div>
-                <label for="modalCodeName" class="label">Tên gợi nhớ</label>
-                <input type="text" id="modalCodeName" class="sketch-input" placeholder="Ví dụ: Tài khoản Google" maxlength="50">
-            </div>
-            <div class="flex gap-3">
-                <button data-modal-hide="saveModal" class="sketch-btn flex-1">Hủy</button>
-                <button id="confirmSaveBtn" class="sketch-btn sketch-btn-primary flex-1">Lưu mã</button>
-            </div>
-        </div>
-    </div>
-    <div id="deleteModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="dialog" aria-modal="true">
-        <div class="absolute inset-0" data-modal-hide="deleteModal"></div>
-        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5 text-center">
-            <h3 class="text-xl font-black">Xác nhận xóa</h3>
-            <p class="text-sm text-secondary-text">
-                Bạn có chắc muốn xóa mã<br>
-                <strong id="deleteCodeName" class="font-bold text-danger"></strong>?<br>
-                <span class="text-red-500">Hành động này không thể hoàn tác!</span>
-            </p>
-            <div class="flex gap-3">
-                <button data-modal-hide="deleteModal" class="sketch-btn flex-1">Hủy</button>
-                <button id="confirmDeleteBtn" class="sketch-btn sketch-btn-danger flex-1">Xóa</button>
-            </div>
-        </div>
-    </div>
-    <div id="alertModal" class="fixed inset-0 z-50 items-center justify-center hidden modal modal-backdrop" role="alertdialog" aria-modal="true">
-        <div class="absolute inset-0" data-modal-hide="alertModal"></div>
-        <div class="relative m-4 w-full max-w-md modal-content p-7 space-y-5 text-center">
-            <h3 class="text-xl font-black">Thông báo</h3>
-            <p id="alertMessage" class="text-sm text-secondary-text"></p>
-            <button data-modal-hide="alertModal" class="sketch-btn sketch-btn-primary w-full">Đã hiểu</button>
-        </div>
-    </div>
-    <footer class="sketch-footer">
-        <a href="https://www.facebook.com/DucManhDay" target="_blank" rel="noopener noreferrer">
-            <span>Thiết kế bởi</span> <strong>DucManh</strong>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-        </a>
-    </footer>
+        .toast.show { transform: translateX(0); }
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        'use strict';
-        
-        const elements = {
-            secretKeyInput: document.getElementById('secretKey'),
-            copyBtn: document.getElementById('copyBtn'),
-            saveBtn: document.getElementById('saveBtn'),
-            clearBtn: document.getElementById('clearBtn'),
-            resultContainer: document.getElementById('resultContainer'),
-            progressBar: document.getElementById('progressBar'),
-            timerValue: document.getElementById('timerValue'),
-            otpDigits: document.querySelectorAll('.otp-digit-box'),
-            savedCodesList: document.getElementById('savedCodesList'),
-            serverTimeSpan: document.getElementById('serverTime'),
-            syncStatus: document.getElementById('syncStatus'),
-            warningBanner: document.getElementById('warning-banner'),
-            retrySyncBtn: document.getElementById('retrySyncBtn'),
-            savedCount: document.getElementById('savedCount'),
-            modals: {
-                save: document.getElementById('saveModal'),
-                delete: document.getElementById('deleteModal'),
-                alert: document.getElementById('alertModal'),
-            },
-            modalCodeNameInput: document.getElementById('modalCodeName'),
-            confirmSaveBtn: document.getElementById('confirmSaveBtn'),
-            deleteCodeNameSpan: document.getElementById('deleteCodeName'),
-            confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
-            alertMessage: document.getElementById('alertMessage'),
-        };
-
-        const showModal = (modal) => {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => modal.classList.add('open'), 10);
-        };
-        const hideModal = (modal) => {
-            modal.classList.remove('open');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-        };
-        const showAlert = (message) => {
-            elements.alertMessage.textContent = message;
-            showModal(elements.modals.alert);
-        };
-
-        let state = {
-            savedCodes: [], currentOTP: '------', codeToDeleteId: null, isGeneratorActive: false, masterInterval: null,
-        };
-        
-        const timeSync = {
-            offset: 0,
-            isSynced: false,
-            timeServers: [
-                { url: 'https://worldtimeapi.org/api/timezone/Etc/UTC', key: 'utc_datetime' },
-                { url: 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC', key: 'dateTime' }
-            ],
-            async syncTime() {
-                this.isSynced = false;
-                stopApp();
-                elements.syncStatus.textContent = 'Đang đồng bộ...';
-                elements.syncStatus.style.color = 'var(--accent)';
-                elements.secretKeyInput.placeholder = "Đang đồng bộ thời gian...";
-                elements.warningBanner.classList.add('hidden');
-                elements.retrySyncBtn.classList.add('hidden');
-
-                let serverTime = null;
-
-                // --- START NEW FAST METHOD ---
-                try {
-                    // Try getting the 'Date' header from the current page's server.
-                    // This is often faster than a cross-origin API call.
-                    const response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
-                    const dateHeader = response.headers.get('Date');
-                    if (dateHeader) {
-                        serverTime = new Date(dateHeader).getTime();
-                        console.log('Time synchronized via HEAD request header.');
-                    }
-                } catch (error) {
-                    console.warn('Could not sync time via HEAD request, falling back to API.', error);
-                }
-                // --- END NEW FAST METHOD ---
-
-                // If the fast method failed, fall back to APIs
-                if (!serverTime) {
-                    for (const server of this.timeServers) {
-                        try {
-                            const response = await fetch(server.url, { cache: 'no-store' });
-                            if (!response.ok) throw new Error(`Server ${server.url} failed`);
-                            const data = await response.json();
-                            serverTime = new Date(data[server.key]).getTime();
-                            console.log(`Time synchronized with ${server.url}.`);
-                            break; // Success, exit loop
-                        } catch (error) {
-                            console.error(`Lỗi khi đồng bộ với ${server.url}:`, error);
-                        }
-                    }
-                }
-
-                if (serverTime) {
-                    this.offset = serverTime - Date.now();
-                    this.isSynced = true;
-                    elements.syncStatus.textContent = 'Đã đồng bộ ✔';
-                    elements.syncStatus.style.color = 'var(--success)';
-                    setTimeout(() => { elements.syncStatus.textContent = ''; }, 3000);
-                    startApp();
-                } else {
-                    console.error('Lỗi đồng bộ thời gian: Tất cả các phương thức đều thất bại.');
-                    elements.syncStatus.textContent = 'Lỗi đồng bộ ❌';
-                    elements.syncStatus.style.color = 'var(--danger)';
-                    elements.warningBanner.classList.remove('hidden');
-                    elements.retrySyncBtn.classList.remove('hidden');
-                }
-            },
-            getCurrentTime() {
-                if (!this.isSynced) {
-                    console.error("Attempted to get time without a successful sync.");
-                    return 0; 
-                }
-                return Date.now() + this.offset;
-            }
-        };
-
-        const stopApp = () => {
-             if (state.masterInterval) {
-                clearInterval(state.masterInterval);
-                state.masterInterval = null;
-            }
-            elements.secretKeyInput.disabled = true;
-            elements.secretKeyInput.placeholder = "Lỗi đồng bộ, không thể tạo mã";
-            elements.serverTimeSpan.textContent = 'Lỗi đồng bộ';
-            document.querySelectorAll('[data-role="otp-display"]').forEach(el => el.textContent = '------');
-            document.querySelectorAll('[data-role="timer"]').forEach(el => el.textContent = '--s');
-            if (state.isGeneratorActive) {
-                clearGenerator();
-            }
-        };
-
-        const startApp = () => {
-            elements.secretKeyInput.disabled = false;
-            elements.secretKeyInput.placeholder = "Dán mã Base32 của bạn vào đây...";
-            elements.warningBanner.classList.add('hidden');
-            elements.retrySyncBtn.classList.add('hidden');
-            
-            if (state.masterInterval) clearInterval(state.masterInterval);
-            state.masterInterval = setInterval(masterTick, 1000);
-            masterTick();
-        };
-
-        const debounce = (func, delay) => {
-            let timeoutId;
-            return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func.apply(this, args), delay); };
-        };
-        const base32tohex = (base32) => {
-            const base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-            let bits = "", hex = "";
-            for (let char of base32) {
-                const val = base32chars.indexOf(char.toUpperCase());
-                if (val === -1) throw new Error("Invalid Base32");
-                bits += val.toString(2).padStart(5, '0');
-            }
-            for (let i = 0; i + 8 <= bits.length; i += 8) { hex += parseInt(bits.substr(i, 8), 2).toString(16).padStart(2, '0'); }
-            return hex;
-        };
-        const hexToArrayBuffer = (hex) => new Uint8Array(hex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))).buffer;
-        const generateTOTP = async (secret) => {
-            if (!timeSync.isSynced) return null;
-            try {
-                const normalizedSecret = secret.replace(/\s/g, '').toUpperCase();
-                if (!/^[A-Z2-7]+=*$/.test(normalizedSecret) || normalizedSecret.length < 16) return null;
-                const secretBuffer = hexToArrayBuffer(base32tohex(normalizedSecret));
-                const counter = Math.floor(timeSync.getCurrentTime() / 30000);
-                const counterBuffer = new ArrayBuffer(8);
-                new DataView(counterBuffer).setUint32(4, counter, false);
-                const cryptoKey = await crypto.subtle.importKey('raw', secretBuffer, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-                const signature = await crypto.subtle.sign('HMAC', cryptoKey, counterBuffer);
-                const offset = new Uint8Array(signature)[19] & 0x0f;
-                const truncatedHash = new DataView(signature).getInt32(offset, false) & 0x7fffffff;
-                return (truncatedHash % 1000000).toString().padStart(6, '0');
-            } catch (error) { console.error("TOTP Generation Error:", error); return null; }
-        };
-        const updateSavedCount = () => elements.savedCount.textContent = state.savedCodes.length;
-        const createSavedCodeHTML = (code) => `
-            <div class="saved-card" data-id="${code.id}">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-base">${code.name}</h3>
-                        <p class="text-xs text-secondary-text font-mono">${code.secret.substring(0, 14)}...</p>
-                    </div>
-                    <span class="text-sm font-mono text-secondary-text" data-role="timer">--s</span>
-                </div>
-                <div class="saved-otp-display" data-role="otp-display">------</div>
-                <div class="grid grid-cols-3 gap-2 mt-3">
-                    <button class="sketch-btn text-xs py-2" data-action="copy">Chép</button>
-                    <button class="sketch-btn text-xs py-2" data-action="load">Tải</button>
-                    <button class="sketch-btn sketch-btn-danger text-xs py-2" data-action="delete">Xóa</button>
-                </div>
-            </div>`;
-        const renderSavedCodes = (shouldUpdateOtps = true) => {
-            if (state.savedCodes.length === 0) {
-                elements.savedCodesList.innerHTML = `<div class="empty-state"><p class="font-bold text-lg mb-1">Danh sách trống</p><p class="text-sm">Lưu một mã để thấy nó ở đây.</p></div>`;
-            } else {
-                elements.savedCodesList.innerHTML = state.savedCodes.map(createSavedCodeHTML).join('');
-            }
-            if (shouldUpdateOtps && timeSync.isSynced) {
-                updateAllSavedCodesOTP();
-            }
-            updateSavedCount();
-        };
-
-        const updateOTPDigits = (otp) => {
-            elements.otpDigits.forEach((digitBox, index) => {
-                const frontFace = digitBox.querySelector('.front');
-                const backFace = digitBox.querySelector('.back');
-                const newDigit = otp[index] || '-';
-
-                if (frontFace.textContent !== newDigit) {
-                    backFace.textContent = newDigit;
-                    digitBox.classList.add('updating');
-                    setTimeout(() => {
-                        frontFace.textContent = newDigit;
-                        digitBox.classList.remove('updating');
-                    }, 500);
-                }
-            });
-        };
-        
-        const clearGenerator = () => {
-            elements.secretKeyInput.value = '';
-            elements.resultContainer.classList.remove('open');
-            elements.copyBtn.disabled = true;
-            elements.saveBtn.disabled = true;
-            state.currentOTP = '------';
-            state.isGeneratorActive = false;
-            updateOTPDigits('------');
-            elements.progressBar.classList.remove('warning');
-            elements.timerValue.classList.remove('warning');
-        };
-
-        const saveToStorage = () => localStorage.setItem('2fa_saved_codes_sketch_pro', JSON.stringify(state.savedCodes));
-        const loadFromStorage = (shouldUpdateOtps) => {
-            const data = localStorage.getItem('2fa_saved_codes_sketch_pro');
-            state.savedCodes = data ? JSON.parse(data) : [];
-            renderSavedCodes(shouldUpdateOtps);
-        };
-        const handleRealtimeGenerate = async () => {
-            const secret = elements.secretKeyInput.value;
-            if (!secret) return clearGenerator();
-            const otp = await generateTOTP(secret);
-            if (!otp) {
-                clearGenerator();
-                return showAlert("Mã bí mật không hợp lệ. Vui lòng kiểm tra lại.");
-            }
-            state.currentOTP = otp;
-            updateOTPDigits(otp);
-            elements.resultContainer.classList.add('open');
-            elements.copyBtn.disabled = false;
-            elements.saveBtn.disabled = state.savedCodes.some(c => c.secret === secret);
-            state.isGeneratorActive = true;
-        };
-        const debouncedGenerate = debounce(handleRealtimeGenerate, 300);
-        const handleConfirmSave = () => {
-            const name = elements.modalCodeNameInput.value.trim();
-            const secret = elements.secretKeyInput.value.trim();
-            if (!name) return showAlert("Vui lòng nhập tên gợi nhớ.");
-            if (state.savedCodes.some(c => c.name.toLowerCase() === name.toLowerCase())) { return showAlert("Tên này đã tồn tại."); }
-            state.savedCodes.push({ id: Date.now().toString(), name, secret });
-            saveToStorage(); renderSavedCodes(true); hideModal(elements.modals.save); clearGenerator();
-        };
-        const handleConfirmDelete = () => {
-            if (state.codeToDeleteId) {
-                state.savedCodes = state.savedCodes.filter(c => c.id !== state.codeToDeleteId);
-                saveToStorage(); renderSavedCodes(true); state.codeToDeleteId = null;
-            }
-            hideModal(elements.modals.delete);
-        };
-        const copyToClipboard = async (text, button) => {
-            if (!text || text.includes('-')) return;
-            try {
-                await navigator.clipboard.writeText(text);
-                const originalContent = button.innerHTML;
-                button.innerHTML = `<span>OK</span>`;
-                button.classList.add('sketch-btn-success');
-                setTimeout(() => { button.innerHTML = originalContent; button.classList.remove('sketch-btn-success'); }, 2000);
-            } catch (err) { showAlert("Không thể sao chép."); }
-        };
-        const getSecondsRemaining = () => 30 - (Math.floor(timeSync.getCurrentTime() / 1000) % 30);
-        async function updateAllSavedCodesOTP() {
-            for (const code of state.savedCodes) {
-                const otp = await generateTOTP(code.secret);
-                const card = document.querySelector(`.saved-card[data-id="${code.id}"]`);
-                if (otp && card) { card.querySelector('[data-role="otp-display"]').textContent = `${otp.slice(0,3)} ${otp.slice(3,6)}`; }
-            }
-        }
-        const masterTick = async () => {
-            if (!timeSync.isSynced) return;
-            
-            const seconds = getSecondsRemaining();
-            document.querySelectorAll('[data-role="timer"]').forEach(el => el.textContent = `${seconds}s`);
-            
-            if (state.isGeneratorActive) {
-                elements.timerValue.textContent = seconds;
-                elements.progressBar.style.width = `${(seconds / 30) * 100}%`;
-                const isWarning = seconds <= 5;
-                elements.progressBar.classList.toggle('warning', isWarning);
-                elements.timerValue.classList.toggle('warning', isWarning);
-            }
-            
-            const now = new Date(timeSync.getCurrentTime());
-            elements.serverTimeSpan.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
-            
-            if (seconds === 30) {
-                if (state.isGeneratorActive) await handleRealtimeGenerate();
-                await updateAllSavedCodesOTP();
-            }
-        };
-        const setupEventListeners = () => {
-            elements.retrySyncBtn.addEventListener('click', timeSync.syncTime.bind(timeSync));
-            elements.secretKeyInput.addEventListener('input', debouncedGenerate);
-            elements.copyBtn.addEventListener('click', () => copyToClipboard(state.currentOTP, elements.copyBtn));
-            elements.clearBtn.addEventListener('click', clearGenerator);
-            elements.saveBtn.addEventListener('click', () => {
-                elements.modalCodeNameInput.value = '';
-                showModal(elements.modals.save)
-            });
-            elements.confirmSaveBtn.addEventListener('click', handleConfirmSave);
-            elements.confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
-            document.addEventListener('click', e => { if (e.target.dataset.modalHide) hideModal(document.getElementById(e.target.dataset.modalHide)); });
-            elements.savedCodesList.addEventListener('click', e => {
-                const button = e.target.closest('button[data-action]');
-                if (!button || !timeSync.isSynced) return;
-                const card = e.target.closest('.saved-card');
-                const id = card.dataset.id;
-                const action = button.dataset.action;
-                const code = state.savedCodes.find(c => c.id === id);
-                if (!code) return;
-                switch (action) {
-                    case 'load':
-                        elements.secretKeyInput.value = code.secret;
-                        handleRealtimeGenerate();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        break;
-                    case 'copy':
-                        const otp = card.querySelector('[data-role="otp-display"]').textContent.replace(' ', '');
-                        copyToClipboard(otp, button);
-                        break;
-                    case 'delete':
-                        state.codeToDeleteId = id;
-                        elements.deleteCodeNameSpan.textContent = code.name;
-                        showModal(elements.modals.delete);
-                        break;
-                }
-            });
-        };
-        const init = () => {
-            setupEventListeners();
-            loadFromStorage(false); // Load saved codes but don't generate OTPs yet
-            timeSync.syncTime();
-        };
-        init();
-    });
-    </script>
-</body>
-</html>
-
-=======
-            padding: 1.5rem;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            z-index: 1;
-        }
-
-        .app-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .app-title {
-            font-size: 2.5rem;
-            font-weight: 700;
+        /* --- MISC --- */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        /* NEW FONT FOR CODE - BOLD & CLEAN */
+        .otp-font { 
+            font-family: 'Space Mono', monospace; 
+            font-variant-numeric: tabular-nums; 
             letter-spacing: -0.5px;
-        }
-        
-        .navbar-actions { display: flex; justify-content: flex-end; margin-bottom: 1.5rem; }
-
-        .ui-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--border-radius-lg);
-            padding: 2rem;
-            box-shadow: var(--card-shadow);
-            transition: all 0.4s ease;
-        }
-        
-        .split-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .section-title i { color: var(--text-secondary); }
-
-        .input-group { margin-bottom: 1.25rem; }
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .ui-input {
-            width: 100%;
-            background: var(--input-bg);
-            border: none;
-            border-radius: var(--border-radius-md);
-            padding: 0.875rem 1rem;
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-family: var(--font-main);
-            transition: all 0.3s ease;
-        }
-        .ui-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
-        }
-
-        .generator-output-wrapper {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transform: translateY(15px);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            margin-top: 0;
-        }
-
-        .generator-output-wrapper.active {
-            max-height: 500px;
-            opacity: 1;
-            transform: translateY(0);
-            margin-top: 1.5rem;
-        }
-        
-        .token-display {
-            background: var(--input-bg);
-            border-radius: var(--border-radius-lg);
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            border: 1px solid transparent;
-            position: relative;
-        }
-        .token-display:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-color: var(--card-border);
-        }
-        html.dark-theme .token-display:hover {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        }
-
-        .token-value {
-            font-family: var(--font-main);
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 5px;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            transition: opacity 0.2s ease-in-out;
-            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
-        }
-        
-        .timer-ring-container {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .timer-ring {
-            width: 24px;
-            height: 24px;
-            transform: rotate(-90deg);
-        }
-        
-        .timer-ring__circle {
-            transition: stroke-dashoffset 1s linear;
-            stroke: var(--accent-blue);
-            stroke-width: 3;
-            fill: transparent;
-        }
-        
-        .timer-ring__background {
-            stroke: rgba(120, 120, 128, 0.16);
-            stroke-width: 3;
-            fill: transparent;
-        }
-
-        .timer-text { font-size: 0.875rem; color: var(--text-secondary); font-weight: 500; margin-left: 0.5rem; }
-
-        .button-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1.5rem;}
-        .ui-btn {
-            padding: 0.875rem 1rem;
-            border-radius: var(--border-radius-md);
-            border: none;
-            background: var(--button-secondary-bg);
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .ui-btn:hover { filter: brightness(0.95); }
-        .dark-theme .ui-btn:hover { filter: brightness(1.15); }
-        .ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .btn-primary {
-            background: var(--accent-blue);
-            color: #fff;
-        }
-        .btn-primary:hover { filter: brightness(1.1); }
-        
-        .btn-danger { background: var(--accent-red); color: #fff; }
-
-        .custom-select-wrapper {
-            position: relative;
-        }
-        .custom-select-trigger {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-        }
-        .custom-select-trigger .fa-chevron-down {
-            transition: transform 0.3s ease;
-            color: var(--text-secondary);
-        }
-        .custom-select-wrapper.open .custom-select-trigger .fa-chevron-down {
-            transform: rotate(180deg);
-        }
-
-        .custom-select-options {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--border-radius-md);
-            box-shadow: var(--card-shadow);
-            z-index: 10;
-            padding: 0.5rem;
-            list-style: none;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-        .custom-select-wrapper.open .custom-select-options {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .custom-select-options li {
-            padding: 0.75rem 1rem;
-            border-radius: 9px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            font-weight: 500;
-        }
-        .custom-select-options li:hover {
-            background-color: var(--input-bg);
-        }
-        .custom-select-options li.selected {
-            color: var(--accent-blue);
-            font-weight: 600;
-        }
-
-        .tabs { 
-            display: flex; 
-            background: var(--input-bg);
-            border-radius: var(--border-radius-md);
-            padding: 4px;
-            margin-bottom: 1.5rem; 
-            position: relative;
-        }
-        .tab {
-            flex: 1;
-            padding: 0.6rem;
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            background: transparent;
-            border: none;
-            border-radius: 9px;
-            z-index: 1;
-        }
-        
-        .tab-indicator {
-            position: absolute;
-            top: 4px;
-            bottom: 4px;
-            left: 4px;
-            width: calc(50% - 4px);
-            background: var(--card-bg);
-            border-radius: 9px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 0;
-        }
-        
-        .saved-codes-list { max-height: 400px; overflow-y: auto; }
-        .saved-code-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-            border-radius: var(--border-radius-md);
-            position: relative;
-        }
-        .saved-code-item:hover { background: var(--input-bg); }
-        .saved-code-info { flex-grow: 1; }
-        .saved-code-label { font-size: 1rem; font-weight: 500; }
-        .saved-code-value {
-            font-family: 'Menlo', 'Consolas', monospace;
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-        .saved-code-live { text-align: right; }
-        .saved-code-live .code {
-            font-size: 1.5rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .saved-code-item .timer-ring {
-            width: 20px;
-            height: 20px;
-        }
-        .saved-code-item .timer-ring__circle {
-             stroke-width: 2.5;
-        }
-        .saved-code-item .timer-ring__background {
-             stroke-width: 2.5;
-        }
-        .saved-code-timer-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-        .saved-code-timer-container .time {
-             font-size: 0.8rem;
-             color: var(--text-secondary);
-             min-width: 20px;
-        }
-        
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
-        }
-        .modal.active { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-lg);
-            width: 90%; max-width: 480px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transform: scale(0.95); opacity: 0;
-            transition: all 0.3s ease;
-        }
-        .modal.active .modal-content { transform: scale(1); opacity: 1; }
-        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border); }
-        .modal-title { font-size: 1.125rem; font-weight: 600; text-align: center;}
-        .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-        
-        .notification {
-            position: fixed; top: 1.5rem; left: 50%;
-            transform: translateX(-50%) translateY(-2rem);
-            background: var(--card-bg);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: var(--border-radius-lg);
-            padding: 0.875rem 1.25rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            display: flex; align-items: center; gap: 0.75rem;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1001;
-        }
-        .notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        
-        @media (max-width: 900px) {
-            .split-layout { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 480px) {
-            body { padding: 1rem; }
-            .app-title { font-size: 2rem; }
-            .token-value { font-size: 2.5rem; }
-            .button-grid { grid-template-columns: 1fr; }
-            .saved-code-item { flex-direction: column; align-items: flex-start; gap: 0.5rem;}
-            .saved-code-live { text-align: left; }
+            font-weight: 700; /* Bold */
         }
     </style>
 </head>
-<body class="dark-theme">
-    <div class="container">
-        <header class="app-header">
-            <h1 class="app-title">Trình xác thực</h1>
-        </header>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
 
-        <div class="navbar-actions">
-             <button class="ui-btn" id="themeToggleBtn" aria-label="Chuyển đổi giao diện" style="width: 44px; height: 44px; border-radius: 50%;">
-                <i class="fa-solid fa-sun"></i>
-            </button>
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- MAIN LAYOUT (WIDE DESKTOP LAYOUT) -->
+    <div class="w-full max-w-[1400px] grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
+        
+        <!-- HEADER (Mobile Only) -->
+        <div class="lg:hidden col-span-1 text-center mb-2">
+            <h1 class="text-xl font-bold text-gray-900">Crystal Auth</h1>
         </div>
 
-        <main class="split-layout">
-            <section class="ui-card generator-section">
-                <h2 class="section-title"><i class="fa-solid fa-key"></i> Tạo mã mới</h2>
-                <div class="input-group" style="margin-bottom: 0;">
-                    <label class="input-label" for="secretInput">Khóa thiết lập</label>
-                    <input type="text" id="secretInput" class="ui-input" placeholder="Dán khóa của bạn vào đây" autocomplete="off">
-                </div>
+        <!-- LEFT PANEL: QUICK ACCESS (7 Cols) - HORIZONTAL LAYOUT -->
+        <div class="glass-panel col-span-1 lg:col-span-7 p-8 flex flex-col h-[640px]">
+            <div class="glass-noise"></div>
+            <div class="content-layer h-full flex flex-col">
                 
-                <div class="generator-output-wrapper" id="generatorOutput">
-                    <div class="token-display" id="tokenDisplay" title="Nhấn để sao chép mã">
-                        <p class="token-value" id="token">------</p>
-                        <div class="timer-ring-container">
-                            <svg class="timer-ring" id="main-timer-ring">
-                               <circle class="timer-ring__background" r="9" cx="12" cy="12"></circle>
-                               <circle class="timer-ring__circle" r="9" cx="12" cy="12"></circle>
-                            </svg>
-                            <p class="timer-text">
-                                Làm mới sau <span id="secondsCounter">30</span> giây
-                            </p>
-                        </div>
-                    </div>
-                    <div class="button-grid">
-                        <button class="ui-btn" id="copyBtn"><i class="fa-solid fa-copy"></i> Sao chép</button>
-                        <button class="ui-btn btn-primary" id="saveBtn"><i class="fa-solid fa-save"></i> Lưu</button>
-                    </div>
-                </div>
-            </section>
+                <h2 class="text-xl font-bold flex items-center gap-2 mb-6 text-gray-800 tracking-tight">
+                    <i data-lucide="zap" class="w-6 h-6 text-yellow-500 fill-yellow-500"></i>
+                    Lấy Mã Nhanh
+                </h2>
 
-            <section class="ui-card">
-                <div class="tabs">
-                    <div class="tab-indicator"></div>
-                    <button class="tab active" data-tab="saved">Đã lưu</button>
-                    <button class="tab" data-tab="settings">Cài đặt</button>
-                </div>
-                <div class="tab-content saved-codes-content active" data-content="saved">
-                    <div class="saved-codes-list" id="savedCodesList">
-                         <!-- Các mã đã lưu sẽ được render tại đây bằng JS -->
-                    </div>
-                     <button class="ui-btn" id="addNewBtn" style="width: 100%; margin-top: 1rem;"><i class="fa-solid fa-plus"></i> Thêm mã mới</button>
-                </div>
-                <div class="tab-content settings-content" data-content="settings" style="display: none;">
-                    <div class="input-group">
-                        <label class="input-label">Thuật toán</label>
-                        <div class="custom-select-wrapper" id="algorithm-select-wrapper">
-                            <button class="ui-input custom-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-                                <span id="algorithm-selected-value">SHA-1 (Mặc định)</span>
-                                <i class="fa-solid fa-chevron-down"></i>
+                <!-- SPLIT AREA: Input (Left) & Result (Right) -->
+                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- 1. INPUT ZONE -->
+                    <div class="relative bg-white/40 rounded-[24px] border border-white/60 shadow-sm p-1 flex flex-col group transition-all h-full hover:bg-white/50">
+                        <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="window.clearQuickInput()" class="w-8 h-8 rounded-full bg-white/80 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition-colors shadow-sm" title="Xóa nội dung">
+                                <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
-                            <ul class="custom-select-options" role="listbox">
-                                <li role="option" data-value="SHA-1" class="selected">SHA-1 (Mặc định)</li>
-                                <li role="option" data-value="SHA-256">SHA-256</li>
-                                <li role="option" data-value="SHA-512">SHA-512</li>
-                            </ul>
                         </div>
-                    </div>
-                     <!-- [REVERTED] Chức năng Sao lưu & Khôi phục cục bộ -->
-                     <div class="input-group">
-                        <label class="input-label">Dữ liệu</label>
-                         <div style="display: flex; gap: 0.75rem;">
-                            <button class="ui-btn" id="backupBtn" style="flex:1;"><i class="fa-solid fa-download"></i> Sao lưu</button>
-                            <button class="ui-btn" id="restoreBtn" style="flex:1;"><i class="fa-solid fa-upload"></i> Khôi phục</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Modals -->
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <header class="modal-header"><h3 class="modal-title">Thêm mã mới</h3></header>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label class="input-label" for="newLabel">Nhãn</label>
-                    <input type="text" id="newLabel" class="ui-input" placeholder="Ví dụ: Tài khoản Google">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" for="newSecret">Khóa thiết lập</label>
-                    <input type="text" id="newSecret" class="ui-input" placeholder="Dán khóa của bạn vào đây">
-                </div>
-            </div>
-            <footer class="modal-footer">
-                <button class="ui-btn" id="cancelBtn">Hủy</button>
-                <button class="ui-btn btn-primary" id="saveNewBtn">Lưu</button>
-            </footer>
-        </div>
-    </div>
-    <div class="modal" id="confirmDeleteModal">
-         <div class="modal-content">
-            <header class="modal-header"><h3 class="modal-title">Xóa mã</h3></header>
-            <div class="modal-body" style="text-align: center;">
-                <p id="deleteConfirmMessage" style="color: var(--text-secondary);"></p>
-            </div>
-            <footer class="modal-footer">
-                <button class="ui-btn" id="cancelDeleteBtn">Hủy</button>
-                <button class="ui-btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-            </footer>
-        </div>
-    </div>
-    
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <i class="fa-solid"></i><span id="notificationText"></span>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const TwoFactorApp = {
-                els: {
-                    secretInput: document.getElementById('secretInput'),
-                    token: document.getElementById('token'),
-                    secondsCounter: document.getElementById('secondsCounter'),
-                    mainTimerRing: document.querySelector('#main-timer-ring .timer-ring__circle'),
-                    copyBtn: document.getElementById('copyBtn'),
-                    saveBtn: document.getElementById('saveBtn'),
-                    tokenDisplay: document.getElementById('tokenDisplay'),
-                    generatorOutput: document.getElementById('generatorOutput'),
-                    savedCodesList: document.getElementById('savedCodesList'),
-                    addNewBtn: document.getElementById('addNewBtn'),
-                    tabs: document.querySelectorAll('.tab'),
-                    tabIndicator: document.querySelector('.tab-indicator'),
-                    tabContents: document.querySelectorAll('.tab-content'),
-                    algorithmSelectWrapper: document.getElementById('algorithm-select-wrapper'),
-                    algorithmSelectedValue: document.getElementById('algorithm-selected-value'),
-                    addModal: document.getElementById('addModal'),
-                    newLabel: document.getElementById('newLabel'),
-                    newSecret: document.getElementById('newSecret'),
-                    cancelBtn: document.getElementById('cancelBtn'),
-                    saveNewBtn: document.getElementById('saveNewBtn'),
-                    notification: document.getElementById('notification'),
-                    notificationText: document.getElementById('notificationText'),
-                    notificationIcon: document.querySelector('#notification .fa-solid'),
-                    backupBtn: document.getElementById('backupBtn'),
-                    restoreBtn: document.getElementById('restoreBtn'),
-                    confirmDeleteModal: document.getElementById('confirmDeleteModal'),
-                    confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
-                    cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
-                    deleteConfirmMessage: document.getElementById('deleteConfirmMessage'),
-                    themeToggleBtn: document.getElementById('themeToggleBtn'),
-                },
-                state: {
-                    mainTimer: null, savedCodesRefreshTimer: null, currentToken: '',
-                    savedCodes: [], codeToDeleteIndex: -1, notificationTimer: null,
-                    algorithm: 'SHA-1',
-                },
-                
-                init() {
-                    this.setupSvgCircle(this.els.mainTimerRing, 9);
-                    this.loadTheme();
-                    this.loadCodesFromLocalStorage();
-                    this.bindEvents();
-                    this.renderSavedCodes();
-                    this.startSavedCodesRefresh();
-                },
-                
-                setupSvgCircle(circleElement, radius) {
-                    if(!circleElement) return;
-                    const circumference = 2 * Math.PI * radius;
-                    circleElement.style.strokeDasharray = `${circumference} ${circumference}`;
-                    circleElement.style.strokeDashoffset = circumference;
-                    circleElement.dataset.circumference = circumference;
-                },
-                
-                bindEvents() {
-                    if (this.els.copyBtn) this.els.copyBtn.addEventListener('click', () => this.copyToClipboard(this.state.currentToken, 'Đã sao chép mã'));
-                    if (this.els.saveBtn) this.els.saveBtn.addEventListener('click', () => this.openAddModalWithCurrentSecret());
-                    if (this.els.tokenDisplay) this.els.tokenDisplay.addEventListener('click', () => this.copyToClipboard(this.state.currentToken, 'Đã sao chép mã'));
-                    
-                    if (this.els.secretInput) this.els.secretInput.addEventListener('input', () => {
-                        clearTimeout(this.debounceTimer);
-                        this.debounceTimer = setTimeout(() => {
-                            if (this.els.secretInput.value.trim().length > 2) {
-                                this.startMainTokenUpdates();
-                                this.els.generatorOutput.classList.add('active');
-                            } else {
-                                this.clearMainGenerator();
-                                this.els.generatorOutput.classList.remove('active');
-                            }
-                        }, 100);
-                    });
-
-                    const wrapper = this.els.algorithmSelectWrapper;
-                    if (wrapper) {
-                        const trigger = wrapper.querySelector('.custom-select-trigger');
-                        const options = wrapper.querySelectorAll('.custom-select-options li');
-
-                        if(trigger) trigger.addEventListener('click', () => {
-                            wrapper.classList.toggle('open');
-                            trigger.setAttribute('aria-expanded', wrapper.classList.contains('open'));
-                        });
-
-                        if(options) options.forEach(option => {
-                            option.addEventListener('click', () => {
-                                this.state.algorithm = option.dataset.value;
-                                this.els.algorithmSelectedValue.textContent = option.textContent;
-                                options.forEach(opt => opt.classList.remove('selected'));
-                                option.classList.add('selected');
-                                wrapper.classList.remove('open');
-                                if(trigger) trigger.setAttribute('aria-expanded', 'false');
-                                this.startMainTokenUpdates();
-                            });
-                        });
+                        <textarea 
+                            id="quick-input" 
+                            class="crystal-input w-full h-full text-base leading-relaxed placeholder-gray-400 bg-transparent shadow-none border-none focus:shadow-none focus:border-none p-6 resize-none font-medium"
+                            placeholder="Dán Secret Key vào đây..."
+                            oninput="window.handleQuickInput(this)"></textarea>
                         
-                        document.addEventListener('click', (e) => {
-                            if (wrapper && !wrapper.contains(e.target)) {
-                                wrapper.classList.remove('open');
-                                if(trigger) trigger.setAttribute('aria-expanded', 'false');
-                            }
-                        });
-                    }
+                        <div class="absolute bottom-4 right-4 flex items-center gap-2 text-[11px] font-bold text-gray-400 pointer-events-none uppercase tracking-wide">
+                            <i data-lucide="keyboard" class="w-3 h-3"></i> Auto-Detect
+                        </div>
+                    </div>
 
-                    if (this.els.themeToggleBtn) this.els.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
-                    if (this.els.tabs) this.els.tabs.forEach(tab => tab.addEventListener('click', () => this.showTab(tab.dataset.tab)));
-                    if (this.els.savedCodesList) this.els.savedCodesList.addEventListener('click', e => {
-                        const item = e.target.closest('.saved-code-item');
-                        if(!item) return;
-                        if(e.target.closest('.delete-btn')) {
-                             e.stopPropagation();
-                             this.confirmDeletion(parseInt(item.dataset.index, 10));
-                        } else {
-                            this.loadSavedCode(parseInt(item.dataset.index, 10));
-                        }
-                    });
-                    if (this.els.addNewBtn) this.els.addNewBtn.addEventListener('click', () => this.openModal(this.els.addModal));
-                    if (this.els.cancelBtn) this.els.cancelBtn.addEventListener('click', () => this.closeModal(this.els.addModal));
-                    if (this.els.saveNewBtn) this.els.saveNewBtn.addEventListener('click', () => this.addNewCodeToList());
-                    if (this.els.confirmDeleteBtn) this.els.confirmDeleteBtn.addEventListener('click', () => this.deleteCode());
-                    if (this.els.cancelDeleteBtn) this.els.cancelDeleteBtn.addEventListener('click', () => this.closeModal(this.els.confirmDeleteModal));
-                    if (this.els.addModal) this.els.addModal.addEventListener('click', e => { if (e.target === this.els.addModal) this.closeModal(this.els.addModal) });
-                    if (this.els.confirmDeleteModal) this.els.confirmDeleteModal.addEventListener('click', e => { if (e.target === this.els.confirmDeleteModal) this.closeModal(this.els.confirmDeleteModal) });
-                    
-                    if (this.els.backupBtn) this.els.backupBtn.addEventListener('click', () => this.createBackup());
-                    if (this.els.restoreBtn) this.els.restoreBtn.addEventListener('click', () => this.restoreFromBackup());
-                },
-                base32ToHex(base32) {
-                    const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-                    base32 = base32.replace(/\s+/g, '').toUpperCase().replace(/=+$/, '');
-                    if (!/^[A-Z2-7]+$/.test(base32)) throw new Error('Invalid Base32');
-                    let bits = '';
-                    for (let i = 0; i < base32.length; i++) bits += base32chars.indexOf(base32[i]).toString(2).padStart(5, '0');
-                    let hex = '';
-                    for (let i = 0; i + 4 <= bits.length; i += 4) hex += parseInt(bits.substring(i, i + 4), 2).toString(16);
-                    return hex;
-                },
-                generateTOTP({ secret, period = 30, digits = 6, algorithm = 'SHA-1' }) {
-                    try {
-                        if (!secret) return null;
-                        const hexSecret = this.base32ToHex(secret);
-                        const epoch = Math.floor(Date.now() / 1000);
-                        const counter = Math.floor(epoch / period);
-                        const counterHex = counter.toString(16).padStart(16, '0');
-                        const secretWordArray = CryptoJS.enc.Hex.parse(hexSecret);
-                        const counterWordArray = CryptoJS.enc.Hex.parse(counterHex);
-                        const algoMap = { 'SHA-1': CryptoJS.HmacSHA1, 'SHA-256': CryptoJS.HmacSHA256, 'SHA-512': CryptoJS.HmacSHA512 };
-                        const hmac = algoMap[algorithm](counterWordArray, secretWordArray);
-                        const hmacHex = hmac.toString(CryptoJS.enc.Hex);
-                        const offset = parseInt(hmacHex.slice(-1), 16);
-                        const binary = parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff;
-                        const otp = binary % Math.pow(10, digits);
-                        return { code: otp.toString().padStart(digits, '0'), secondsRemaining: period - (epoch % period) };
-                    } catch (error) { return null; }
-                },
-                startMainTokenUpdates() {
-                    if (this.state.mainTimer) clearInterval(this.state.mainTimer);
-                    this.updateMainToken();
-                    this.state.mainTimer = setInterval(() => this.updateMainToken(), 1000);
-                },
-                updateMainToken() {
-                    const secret = this.els.secretInput.value.trim();
-                    const options = { secret, period: 30, digits: 6, algorithm: this.state.algorithm };
-                    const result = this.generateTOTP(options);
-                    if (!result) { this.els.token.textContent = 'Lỗi Khóa'; this.updateMainTimerDisplay(0, options.period); return; }
-                    if (result.code !== this.state.currentToken) {
-                        this.state.currentToken = result.code;
-                        const tokenEl = this.els.token;
-                        tokenEl.style.opacity = '0';
-                        setTimeout(() => {
-                            tokenEl.textContent = result.code.match(/.{1,3}/g).join(' ');
-                            tokenEl.style.opacity = '1';
-                        }, 200);
-                    }
-                    this.updateMainTimerDisplay(result.secondsRemaining, options.period);
-                },
-                updateMainTimerDisplay(seconds, period) {
-                    if (this.els.secondsCounter) this.els.secondsCounter.textContent = seconds;
-                    if (this.els.mainTimerRing) {
-                        const circumference = this.els.mainTimerRing.dataset.circumference;
-                        const offset = circumference - (seconds / period) * circumference;
-                        this.els.mainTimerRing.style.strokeDashoffset = offset;
-                        this.els.mainTimerRing.style.stroke = seconds <= 5 ? 'var(--accent-red)' : 'var(--accent-blue)';
-                    }
-                },
-                clearMainGenerator() {
-                    const tokenEl = this.els.token;
-                    if(tokenEl) {
-                        tokenEl.style.opacity = '0';
-                        setTimeout(() => {
-                            tokenEl.textContent = '------';
-                            tokenEl.style.opacity = '1';
-                        }, 200);
-                    }
-                    this.state.currentToken = '';
-                    if (this.state.mainTimer) clearInterval(this.state.mainTimer);
-                    this.updateMainTimerDisplay(0, 30);
-                },
-                renderSavedCodes() {
-                    if (!this.els.savedCodesList) return;
-                    if (this.state.savedCodes.length === 0) {
-                        this.els.savedCodesList.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">Chưa có mã nào được lưu</div>`;
-                    } else {
-                        this.els.savedCodesList.innerHTML = this.state.savedCodes.map((code, index) => `
-                            <div class="saved-code-item" data-index="${index}" data-id="${code.id}" title="Nhấn để tải lại mã này">
-                                <div class="saved-code-info">
-                                    <div class="saved-code-label">${code.label}</div>
-                                    <div class="saved-code-value" id="saved-token-static-${code.id}">------</div>
-                                </div>
-                                <div class="saved-code-live">
-                                    <div class="code" id="saved-token-${code.id}">------</div>
-                                    <div class="saved-code-timer-container">
-                                       <svg class="timer-ring" id="timer-ring-${code.id}">
-                                           <circle class="timer-ring__background" r="8" cx="10" cy="10"></circle>
-                                           <circle class="timer-ring__circle" r="8" cx="10" cy="10"></circle>
-                                       </svg>
-                                       <span class="time" id="saved-time-${code.id}">--s</span>
-                                    </div>
-                                </div>
-                                <button class="delete-btn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1rem; margin-left:1rem; opacity:0.5; transition: opacity 0.2s ease;" title="Xóa mã">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>`).join('');
-                    }
-                    this.state.savedCodes.forEach(code => {
-                        this.setupSvgCircle(document.querySelector(`#timer-ring-${code.id} .timer-ring__circle`), 8);
-                    });
-                },
-                refreshLiveSavedCodes() {
-                    this.state.savedCodes.forEach(codeData => {
-                        const result = this.generateTOTP(codeData);
-                        const tokenEl = document.getElementById(`saved-token-${codeData.id}`);
-                        const timeEl = document.getElementById(`saved-time-${codeData.id}`);
-                        const staticTokenEl = document.getElementById(`saved-token-static-${codeData.id}`);
-                        const ringEl = document.querySelector(`#timer-ring-${codeData.id} .timer-ring__circle`);
+                    <!-- 2. RESULT ZONE -->
+                    <div id="result-zone" class="relative bg-white/60 backdrop-blur-xl rounded-[24px] border border-white/80 shadow-md p-6 flex flex-col items-center justify-center text-center transition-all h-full">
+                        
+                        <!-- Empty State -->
+                        <div id="result-empty" class="absolute inset-0 flex flex-col items-center justify-center opacity-100 transition-opacity duration-300">
+                            <div class="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center mb-4 shadow-sm border border-white/60">
+                                <i data-lucide="lock" class="w-8 h-8 text-gray-400"></i>
+                            </div>
+                            <p class="text-sm font-bold text-gray-400">Chưa có mã nào</p>
+                        </div>
 
-                        if (result && tokenEl && timeEl && ringEl) {
-                            tokenEl.textContent = result.code.match(/.{1,3}/g).join(' ');
-                            timeEl.textContent = `${result.secondsRemaining}s`;
+                        <!-- Content State -->
+                        <div id="result-content" class="w-full flex flex-col items-center justify-center h-full opacity-0 pointer-events-none transition-opacity duration-300 scale-95 transform">
+                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-auto pt-4">Mã Xác Thực</p>
                             
-                            const circumference = ringEl.dataset.circumference;
-                            const offset = circumference - (result.secondsRemaining / (codeData.period || 30)) * circumference;
-                            ringEl.style.strokeDashoffset = offset;
-                            ringEl.style.stroke = result.secondsRemaining <= 5 ? 'var(--accent-red)' : 'var(--accent-blue)';
-                            
-                            if(staticTokenEl.textContent === '------') {
-                                staticTokenEl.textContent = codeData.secret.substring(0, 4) + '...' + codeData.secret.substring(codeData.secret.length - 4);
-                            }
-                        }
-                    });
-                },
-                startSavedCodesRefresh() {
-                    if (this.state.savedCodesRefreshTimer) clearInterval(this.state.savedCodesRefreshTimer);
-                    this.refreshLiveSavedCodes();
-                    this.state.savedCodesRefreshTimer = setInterval(() => this.refreshLiveSavedCodes(), 1000);
-                },
-                stopSavedCodesRefresh() {
-                    if (this.state.savedCodesRefreshTimer) clearInterval(this.state.savedCodesRefreshTimer);
-                    this.state.savedCodesRefreshTimer = null;
-                },
-                loadSavedCode(index) {
-                    const code = this.state.savedCodes[index];
-                    if (!code || !this.els.secretInput || !this.els.algorithmSelectWrapper) return;
-                    this.els.secretInput.value = code.secret;
-                    this.state.algorithm = code.algorithm || 'SHA-1';
-                    const selectedOption = this.els.algorithmSelectWrapper.querySelector(`li[data-value="${this.state.algorithm}"]`);
-                    if(selectedOption) {
-                        this.els.algorithmSelectedValue.textContent = selectedOption.textContent;
-                        this.els.algorithmSelectWrapper.querySelectorAll('li').forEach(opt => opt.classList.remove('selected'));
-                        selectedOption.classList.add('selected');
-                    }
-                    this.els.secretInput.dispatchEvent(new Event('input'));
-                },
-                openModal(modal) { if(modal) modal.classList.add('active'); },
-                closeModal(modal) { if(modal) modal.classList.remove('active'); },
-                openAddModalWithCurrentSecret() {
-                    const secret = this.els.secretInput.value.trim();
-                    if (secret && this.state.currentToken && this.state.currentToken.indexOf('-') === -1 && this.state.currentToken.indexOf('Lỗi') === -1) {
-                        this.els.newSecret.value = secret;
-                        this.els.newLabel.value = '';
-                        this.openModal(this.els.addModal);
-                        this.els.newLabel.focus();
-                    } else { this.showNotification('Tạo mã hợp lệ trước khi lưu', 'error'); }
-                },
-                addNewCodeToList() {
-                    const label = this.els.newLabel.value.trim() || 'Chưa đặt tên';
-                    const secret = this.els.newSecret.value.trim();
-                    if (!secret) { this.showNotification('Cần có khóa thiết lập', 'error'); return; }
-                    try {
-                        if (!this.generateTOTP({ secret })) throw new Error('Invalid secret');
-                        this.state.savedCodes.unshift({ id: Date.now(), label, secret, algorithm: 'SHA-1', digits: 6, period: 30 });
-                        this.saveCodesToLocalStorage();
-                        this.showNotification(`Đã lưu mã "${label}"`, 'success');
-                        this.showTab('saved');
-                        this.closeModal(this.els.addModal);
-                    } catch (error) { this.showNotification('Khóa thiết lập không hợp lệ', 'error'); }
-                },
-                confirmDeletion(index) {
-                    const code = this.state.savedCodes[index];
-                    if (!code) return;
-                    this.state.codeToDeleteIndex = index;
-                    this.els.deleteConfirmMessage.innerHTML = `Bạn có chắc muốn xóa <strong>${code.label}</strong> không?`;
-                    this.openModal(this.els.confirmDeleteModal);
-                },
-                deleteCode() {
-                    const index = this.state.codeToDeleteIndex;
-                    if (index > -1) {
-                        this.state.savedCodes.splice(index, 1);
-                        this.saveCodesToLocalStorage();
-                        this.renderSavedCodes();
-                        this.showNotification('Đã xóa mã', 'success');
-                    }
-                    this.closeModal(this.els.confirmDeleteModal);
-                    this.state.codeToDeleteIndex = -1;
-                },
-                saveCodesToLocalStorage() { localStorage.setItem('2fa_codes_apple_v1', JSON.stringify(this.state.savedCodes)); },
-                loadCodesFromLocalStorage() {
-                    try {
-                        const codes = localStorage.getItem('2fa_codes_apple_v1');
-                        this.state.savedCodes = codes ? JSON.parse(codes) : [];
-                    } catch (e) { this.state.savedCodes = []; }
-                },
-                createBackup() { 
-                    if (this.state.savedCodes.length === 0) { this.showNotification('Không có mã để sao lưu', 'error'); return; }
-                    const data = JSON.stringify(this.state.savedCodes, null, 2);
-                    const blob = new Blob([data], { type: 'application/json' });
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = `2fa_backup_${new Date().toISOString().split('T')[0]}.json`;
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                    this.showNotification('Đã tạo tệp sao lưu', 'success');
-                },
-                restoreFromBackup() { 
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.json';
-                    input.onchange = e => {
-                        const file = e.target.files[0]; if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = event => {
-                            try {
-                                const restored = JSON.parse(event.target.result);
-                                if (Array.isArray(restored) && confirm('Thay thế các mã hiện tại bằng tệp sao lưu?')) {
-                                    this.state.savedCodes = restored;
-                                    this.saveCodesToLocalStorage();
-                                    this.renderSavedCodes();
-                                    this.showNotification('Đã khôi phục từ tệp sao lưu', 'success');
-                                } else { throw new Error('Invalid format'); }
-                            } catch (error) { this.showNotification('Tệp sao lưu không hợp lệ', 'error'); }
-                        };
-                        reader.readAsText(file);
-                    };
-                    input.click();
-                },
-                toggleTheme() {
-                    const isLight = document.documentElement.classList.toggle('light-theme');
-                    document.documentElement.classList.toggle('dark-theme', !isLight);
-                    localStorage.setItem('2fa_theme_apple', isLight ? 'light' : 'dark');
-                    this.updateThemeIcon(isLight);
-                },
-                loadTheme() {
-                    const theme = localStorage.getItem('2fa_theme_apple') || 'dark';
-                    const isLight = theme === 'light';
-                    document.documentElement.classList.toggle('light-theme', isLight);
-                    document.documentElement.classList.toggle('dark-theme', !isLight);
-                    this.updateThemeIcon(isLight);
-                },
-                updateThemeIcon(isLight) { if(this.els.themeToggleBtn) this.els.themeToggleBtn.innerHTML = `<i class="fa-solid ${isLight ? 'fa-moon' : 'fa-sun'}"></i>`; },
-                showTab(tabName) {
-                    if(!this.els.tabIndicator || !this.els.tabs || !this.els.tabContents) return;
-                    const tabIndex = Array.from(this.els.tabs).findIndex(t => t.dataset.tab === tabName);
-                    this.els.tabIndicator.style.transform = `translateX(${tabIndex * 100}%)`;
-                    this.els.tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
-                    this.els.tabContents.forEach(c => c.style.display = c.dataset.content === tabName ? 'block' : 'none');
-                    tabName === 'saved' ? this.startSavedCodesRefresh() : this.stopSavedCodesRefresh();
-                },
-                showNotification(message, type = 'success') {
-                    if(!this.els.notification) return;
-                    if (this.state.notificationTimer) { clearTimeout(this.state.notificationTimer); this.els.notification.classList.remove('show'); }
-                    this.els.notification.className = 'notification';
-                    this.els.notification.classList.add(type);
-                    this.els.notificationText.textContent = message;
-                    this.els.notificationIcon.className = `fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}`;
-                    setTimeout(() => this.els.notification.classList.add('show'), 10);
-                    this.state.notificationTimer = setTimeout(() => this.els.notification.classList.remove('show'), 3000);
-                },
-                async copyToClipboard(text, successMessage) {
-                    if (!text || text.includes('-') || text.includes('Lỗi')) { this.showNotification('Không có mã hợp lệ để sao chép', 'error'); return; }
-                    try { await navigator.clipboard.writeText(text.replace(/\s/g, '')); this.showNotification(successMessage, 'success'); } 
-                    catch (err) { this.showNotification('Không thể sao chép', 'error'); }
-                }
+                            <!-- Big Code -->
+                            <div class="relative mb-8 cursor-pointer group w-full my-auto" onclick="window.copyResultText()">
+                                <div id="quick-otp" class="otp-font text-5xl md:text-6xl font-bold text-gray-800 transition-transform group-hover:scale-105 select-none break-all tracking-tight">
+                                    --- ---
+                                </div>
+                                <p class="text-[11px] font-bold text-blue-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity absolute w-full -bottom-6 left-0 uppercase tracking-wide">Nhấn để sao chép</p>
+                            </div>
+
+                            <!-- Progress & Actions -->
+                            <div class="w-full mt-auto pb-4">
+                                <div class="w-32 h-2 bg-gray-200/80 rounded-full mb-6 overflow-hidden mx-auto">
+                                    <div id="quick-progress" class="h-full bg-blue-500 w-full transition-all duration-1000 ease-linear"></div>
+                                </div>
+
+                                <div class="flex gap-3 w-full">
+                                    <button onclick="window.copyResultText()" class="primary-btn flex-1 py-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wide">
+                                        <i data-lucide="copy" class="w-4 h-4"></i> Sao chép
+                                    </button>
+                                    <button onclick="window.openSaveModal()" class="crystal-btn w-12 rounded-xl flex items-center justify-center hover:text-blue-600 transition-colors" title="Lưu">
+                                        <i data-lucide="save" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: VAULT (5 Cols) -->
+        <div class="glass-panel col-span-1 lg:col-span-5 flex flex-col h-[640px]">
+            <div class="glass-noise"></div>
+            <div class="content-layer flex-1 flex flex-col h-full">
+                
+                <!-- Date/Time Header (Removed Sync Button) -->
+                <div class="p-6 border-b border-white/50 bg-white/20 flex justify-between items-center">
+                    <div>
+                        <div id="date-display" class="text-xs font-bold text-gray-500 uppercase tracking-wide">...</div>
+                        <div id="clock-display" class="text-3xl font-bold text-gray-800 otp-font leading-none mt-1 tracking-tight">00:00:00</div>
+                    </div>
+                    <!-- Sync Button Hidden -->
+                    <button id="btn-sync" class="hidden"></button> 
+                </div>
+
+                <!-- Search -->
+                <div class="px-6 py-4">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" placeholder="Tìm kiếm..." oninput="window.filterTokens(this.value)" class="w-full bg-white/40 border border-white/60 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium text-gray-800 outline-none focus:bg-white/80 focus:border-blue-400 transition-all shadow-inner">
+                    </div>
+                </div>
+
+                <!-- The List -->
+                <div class="flex-1 overflow-y-auto px-4 pb-4 custom-scroll space-y-3" id="token-list">
+                    <!-- Items -->
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="p-5 border-t border-white/50 bg-white/20 flex gap-3">
+                    <button onclick="window.openSaveModal(true)" class="crystal-btn flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-2 hover:text-black shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Thêm thủ công
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="window.exportData()" class="crystal-btn w-12 rounded-xl flex items-center justify-center text-gray-500 hover:text-blue-600 shadow-sm" title="Backup">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="document.getElementById('import-file').click()" class="crystal-btn w-12 rounded-xl flex items-center justify-center text-gray-500 hover:text-green-600 shadow-sm" title="Restore">
+                            <i data-lucide="upload" class="w-4 h-4"></i>
+                        </button>
+                        <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(this)">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL (Transparent Glass) -->
+    <div id="save-modal" class="modal-overlay">
+        <div class="modal-glass">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="save" class="w-5 h-5 text-blue-600"></i> Lưu Mã
+                </h3>
+                <button onclick="window.closeModal()" class="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors">
+                    <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Tên dịch vụ</label>
+                    <input type="text" id="modal-label" placeholder="Ví dụ: Google, Facebook..." class="crystal-input w-full p-3 text-base font-medium rounded-xl bg-white/60 focus:bg-white" autofocus>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Secret Key</label>
+                    <input type="text" id="modal-secret" placeholder="Mã khóa..." class="crystal-input w-full p-3 text-sm font-mono font-medium rounded-xl bg-white/60 focus:bg-white text-gray-600">
+                </div>
+                
+                <button onclick="window.addTokenFromModal()" class="primary-btn w-full py-3.5 rounded-xl text-sm font-bold uppercase tracking-wide shadow-lg shadow-blue-500/20 mt-2">
+                    Lưu vào Kho
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast">
+        <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-green-600"></i></div>
+        <span id="toast-msg">Thành công</span>
+    </div>
+
+    <script>
+        // --- ANIMATED BACKGROUND ---
+        const canvas = document.getElementById('fluid-canvas');
+        const ctxBg = canvas.getContext('2d');
+        let width, height, orbs = [];
+        const colors = [{r:59,g:130,b:246}, {r:139,g:92,b:246}, {r:236,g:72,b:153}, {r:16,g:185,b:129}];
+
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        class Orb {
+            constructor() { this.init(); }
+            init() { 
+                this.radius = Math.random()*120+80; this.x = Math.random()*width; this.y = Math.random()*height; 
+                this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; 
+                this.color = colors[Math.floor(Math.random()*colors.length)]; 
+            }
+            update() { 
+                this.x+=this.vx; this.y+=this.vy; 
+                if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; 
+            }
+            draw(ctx) { 
+                const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius);
+                g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.3)`); 
+                g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); 
+                ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; 
+                ctx.globalCompositeOperation='multiply'; ctx.fill(); 
+            }
+        }
+        function initBackground() { resize(); orbs=[]; for(let i=0;i<6;i++) orbs.push(new Orb()); loop(); }
+        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
+        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
+
+        // --- GLOBAL VARIABLES (Accessible from HTML) ---
+        let tokens = JSON.parse(localStorage.getItem('2fa_tokens')) || [];
+        let currentQuickSecret = null;
+        let quickInterval = null;
+        let currentFilter = "";
+        let timeOffset = 0;
+        let referenceServerTime = null;
+        let referencePerfTime = null;
+
+        // Init Lucide
+        lucide.createIcons();
+
+        // --- GLOBAL FUNCTIONS EXPOSED TO WINDOW ---
+        
+        window.updateClock = function() {
+            const now = new Date();
+            const dateOpts = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
+            const timeOpts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            
+            document.getElementById('date-display').innerText = now.toLocaleDateString('vi-VN', dateOpts);
+            document.getElementById('clock-display').innerText = now.toLocaleTimeString('vi-VN', timeOpts);
+        }
+
+        window.syncTime = async function() {
+            // No button spinning since it is hidden
+            const setTime = (serverTime) => {
+                referenceServerTime = serverTime;
+                referencePerfTime = performance.now();
+                window.updateVaultUI(); // Instant update
+                if(currentQuickSecret) window.updateQuickDisplay();
             };
-            TwoFactorApp.init();
+
+            try {
+                const s = performance.now();
+                const r = await fetch('https://1.1.1.1/cdn-cgi/trace');
+                if(r.ok) {
+                    const t = await r.text();
+                    const m = t.match(/ts=([0-9\.]+)/);
+                    if(m) return setTime(parseFloat(m[1])*1000 + (performance.now()-s)/2);
+                }
+            } catch(e) {}
+            
+            // Fallback
+            referenceServerTime = Date.now();
+            referencePerfTime = performance.now();
+        }
+
+        window.getCorrectTime = function() {
+            return (referenceServerTime && referencePerfTime) 
+                ? referenceServerTime + (performance.now() - referencePerfTime) 
+                : Date.now();
+        }
+
+        // --- VAULT ENGINE ---
+        
+        window.rebuildList = function() {
+            const list = document.getElementById('token-list');
+            const filtered = tokens.filter(t => t.label.toLowerCase().includes(currentFilter));
+            list.innerHTML = '';
+
+            if(filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-40 opacity-40 text-gray-500">
+                        <i data-lucide="archive" class="w-10 h-10 mb-2"></i>
+                        <p class="text-xs font-bold uppercase tracking-wide">Kho trống</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(token => {
+                const el = document.createElement('div');
+                el.className = 'token-item group relative overflow-hidden';
+                el.setAttribute('data-id', token.id);
+                el.setAttribute('data-secret', token.secret); 
+                
+                el.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="min-w-0 pr-4">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 truncate">${token.label}</p>
+                            <div class="token-code text-2xl font-bold text-gray-800 otp-font tracking-tight">--- ---</div>
+                        </div>
+                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors shadow-sm" onclick="window.copyTokenCode('${token.secret}')">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors shadow-sm delete-btn" onclick="window.deleteToken(${token.id})">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="token-timer text-[10px] font-mono font-bold text-gray-400 w-6 text-right">30s</div>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+            lucide.createIcons();
+            window.updateVaultUI(); 
+        }
+
+        window.updateVaultUI = function() {
+            const now = window.getCorrectTime();
+            const items = document.querySelectorAll('.token-item');
+
+            items.forEach(el => {
+                const secret = el.getAttribute('data-secret');
+                if(!secret) return;
+
+                try {
+                    const totp = new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(secret) });
+                    const code = totp.generate({ timestamp: now });
+                    const period = 30;
+                    const epoch = now / 1000.0;
+                    const countDown = period - (epoch % period);
+                    const pct = (countDown / period) * 100;
+
+                    const codeEl = el.querySelector('.token-code');
+                    const timerEl = el.querySelector('.token-timer');
+                    const fillEl = el.querySelector('.progress-fill');
+
+                    const fmt = `${code.substring(0,3)} ${code.substring(3)}`;
+                    if(codeEl.innerText !== fmt) codeEl.innerText = fmt;
+                    
+                    timerEl.innerText = Math.floor(countDown) + 's';
+                    fillEl.style.width = `${pct}%`;
+
+                    if(countDown < 5) {
+                        fillEl.style.backgroundColor = '#ef4444'; 
+                        timerEl.classList.add('text-red-500');
+                        codeEl.classList.add('text-red-500');
+                    } else {
+                        fillEl.style.backgroundColor = '#3b82f6';
+                        timerEl.classList.remove('text-red-500');
+                        codeEl.classList.remove('text-red-500');
+                    }
+                } catch(e) {}
+            });
+        }
+
+        // --- QUICK INPUT ---
+        window.clearQuickInput = function() {
+            document.getElementById('quick-input').value = '';
+            window.handleQuickInput({value: ''});
+        }
+
+        window.handleQuickInput = function(el) {
+            let raw = el.value.trim();
+            if(!raw) return window.resetQuickView();
+            
+            if (raw.includes('secret=')) {
+                const m = raw.match(/secret=([a-zA-Z2-7]+)/);
+                if (m) raw = m[1];
+            }
+            const secret = raw.replace(/\s/g, '').toUpperCase();
+
+            try {
+                const totp = new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(secret) });
+                totp.generate(); 
+                currentQuickSecret = secret;
+                window.showQuickResult();
+            } catch(e) {}
+        };
+
+        window.showQuickResult = function() {
+            const empty = document.getElementById('result-empty');
+            const content = document.getElementById('result-content');
+            
+            empty.style.opacity = '0';
+            content.style.opacity = '1';
+            content.style.pointerEvents = 'auto';
+            content.style.transform = 'scale(1)';
+            
+            if(quickInterval) clearInterval(quickInterval);
+            quickInterval = setInterval(window.updateQuickDisplay, 100);
+            window.updateQuickDisplay();
+        }
+
+        window.resetQuickView = function() {
+            const empty = document.getElementById('result-empty');
+            const content = document.getElementById('result-content');
+            
+            empty.style.opacity = '1';
+            content.style.opacity = '0';
+            content.style.pointerEvents = 'none';
+            content.style.transform = 'scale(0.95)';
+
+            currentQuickSecret = null;
+            if(quickInterval) clearInterval(quickInterval);
+        };
+
+        window.updateQuickDisplay = function() {
+            if(!currentQuickSecret) return;
+            const now = window.getCorrectTime();
+            const totp = new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(currentQuickSecret) });
+            const code = totp.generate({ timestamp: now });
+            const period = 30;
+            const epoch = now / 1000.0;
+            const countDown = period - (epoch % period);
+            const pct = (countDown / period) * 100;
+
+            const el = document.getElementById('quick-otp');
+            const fmt = `${code.substring(0,3)} ${code.substring(3)}`;
+            if(el.innerText !== fmt) el.innerText = fmt;
+
+            const bar = document.getElementById('quick-progress');
+            bar.style.width = `${pct}%`;
+            
+            if(countDown < 5) {
+                bar.style.backgroundColor = '#ef4444';
+                el.classList.add('text-red-500');
+            } else {
+                bar.style.backgroundColor = '#3b82f6';
+                el.classList.remove('text-red-500');
+            }
+        }
+
+        // --- MODAL ---
+        window.openSaveModal = function(isManual = false) {
+            const modal = document.getElementById('save-modal');
+            const lbl = document.getElementById('modal-label');
+            const sec = document.getElementById('modal-secret');
+
+            if(isManual) {
+                currentQuickSecret = null;
+                sec.value = "";
+                lbl.value = "";
+            } else {
+                sec.value = currentQuickSecret || "";
+                lbl.value = "";
+            }
+
+            modal.classList.add('open');
+            setTimeout(() => lbl.focus(), 100);
+        };
+
+        window.closeModal = function() {
+            document.getElementById('save-modal').classList.remove('open');
+        };
+
+        window.addTokenFromModal = function() {
+            const l = document.getElementById('modal-label').value;
+            const s = document.getElementById('modal-secret').value.replace(/\s/g, '').toUpperCase();
+            if(!s) return window.showToast("Thiếu mã khóa!", "alert-circle");
+            try {
+                new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(s) }).generate();
+                tokens.push({ id: Date.now(), label: l || "Dịch vụ", secret: s });
+                window.saveTokens();
+                window.closeModal();
+                if(currentQuickSecret && s === currentQuickSecret) {
+                    document.getElementById('quick-input').value = '';
+                    window.resetQuickView();
+                }
+                window.showToast("Đã lưu thành công");
+            } catch(e) { window.showToast("Mã khóa không hợp lệ", "alert-circle"); }
+        };
+
+        // --- UTILS ---
+        window.saveTokens = function() {
+            localStorage.setItem('2fa_tokens', JSON.stringify(tokens));
+            window.rebuildList();
+        };
+
+        window.deleteToken = function(id) {
+            if(confirm("Xóa mã này?")) {
+                tokens = tokens.filter(t => t.id !== id);
+                window.saveTokens();
+            }
+        };
+
+        window.filterTokens = function(val) {
+            currentFilter = val.toLowerCase();
+            window.rebuildList();
+        };
+
+        window.copyResultText = function() {
+            const el = document.getElementById('quick-otp');
+            window.copyText(el.innerText.replace(/\s/g, ''));
+        };
+
+        window.copyTokenCode = function(secret) {
+            const totp = new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(secret) });
+            window.copyText(totp.generate({timestamp: window.getCorrectTime()}));
+        };
+
+        window.copyText = function(text) {
+            const fallback = () => {
+                try {
+                    const ta = document.createElement("textarea");
+                    ta.value = text;
+                    ta.style.position="fixed"; ta.style.left="-9999px";
+                    document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                    window.showToast("Đã sao chép");
+                } catch(e) { window.showToast("Lỗi sao chép", "alert-circle"); }
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => window.showToast("Đã sao chép")).catch(fallback);
+            } else fallback();
+        }
+
+        window.showToast = function(msg, icon="check") {
+            const t = document.getElementById('toast');
+            t.innerHTML = `<div class="bg-green-100 p-1 rounded-full"><i data-lucide="${icon}" class="w-4 h-4 text-green-600"></i></div><span>${msg}</span>`;
+            lucide.createIcons();
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        window.exportData = function() {
+            const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tokens));
+            const a = document.createElement('a'); a.href = data; a.download = "2fa_backup.json"; a.click();
+        };
+        
+        window.importData = function(input) {
+            const f = input.files[0]; if(!f) return;
+            const r = new FileReader();
+            r.onload = (e) => {
+                try {
+                    const d = JSON.parse(e.target.result);
+                    if(Array.isArray(d)) {
+                        d.forEach(t => { if(t.secret && !tokens.some(x=>x.secret===t.secret)) tokens.push({id:Date.now()+Math.random(), label:t.label, secret:t.secret}); });
+                        window.saveTokens(); window.showToast("Đã nhập dữ liệu");
+                    }
+                } catch(e) { window.showToast("File lỗi", "alert-circle"); }
+            }; r.readAsText(f); input.value = '';
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(window.updateClock, 1000);
+            window.updateClock();
+            if(navigator.onLine) window.syncTime();
+            setInterval(window.updateVaultUI, 100);
+            window.rebuildList();
         });
     </script>
 </body>
 </html>
->>>>>>> Stashed changes

@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Âm Dương</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(180deg, #fef9f3 0%, #fef3e2 100%);
+            min-height: 100vh;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -200px;
+            left: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ========== SAKURA FALLING ========== */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .sakura {
+            position: absolute;
+            top: -50px;
+            animation: sakuraFall linear forwards;
+            pointer-events: none;
+        }
+
+        .sakura::before {
+            content: '';
+            display: block;
+            width: var(--size, 15px);
+            height: var(--size, 15px);
+            background: radial-gradient(ellipse at 30% 30%, #ffb7c5 0%, #ff91a4 40%, #ff69b4 100%);
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            box-shadow: 
+                inset -2px -2px 4px rgba(255,255,255,0.5),
+                0 2px 8px rgba(255,105,180,0.3);
+            animation: sakuraSpin linear infinite;
+            animation-duration: var(--spin-duration, 3s);
+        }
+
+        .sakura.type2::before {
+            background: radial-gradient(ellipse at 30% 30%, #ffc0cb 0%, #ffb6c1 40%, #ff91a4 100%);
+            border-radius: 50% 50% 0 50%;
+        }
+
+        .sakura.type3::before {
+            background: radial-gradient(ellipse at 30% 30%, #ffe4e9 0%, #ffb7c5 40%, #ffa0b4 100%);
+            border-radius: 0 50% 50% 50%;
+        }
+
+        @keyframes sakuraFall {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            25% {
+                transform: translateX(var(--drift1, 30px)) translateY(25vh);
+            }
+            50% {
+                transform: translateX(var(--drift2, -20px)) translateY(50vh);
+                opacity: 1;
+            }
+            75% {
+                transform: translateX(var(--drift3, 40px)) translateY(75vh);
+            }
+            100% {
+                transform: translateX(var(--drift4, -10px)) translateY(110vh);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sakuraSpin {
+            0% {
+                transform: rotate(45deg) rotateY(0deg) rotateX(0deg);
+            }
+            25% {
+                transform: rotate(45deg) rotateY(90deg) rotateX(45deg);
+            }
+            50% {
+                transform: rotate(45deg) rotateY(180deg) rotateX(0deg);
+            }
+            75% {
+                transform: rotate(45deg) rotateY(270deg) rotateX(-45deg);
+            }
+            100% {
+                transform: rotate(45deg) rotateY(360deg) rotateX(0deg);
+            }
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 400px 1fr 360px;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 4px 24px rgba(180, 83, 9, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            animation: cardIn 0.6s ease backwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #b45309;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-label::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #f59e0b, #dc2626);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        /* ========== WEATHER ========== */
+        .weather-widget {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-top: 28px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-widget::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .weather-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .weather-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .weather-icon {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .weather-temp {
+            font-size: 44px;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .weather-temp span {
+            font-size: 22px;
+        }
+
+        .weather-right {
+            text-align: right;
+        }
+
+        .weather-location {
+            font-size: 14px;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .weather-desc {
+            font-size: 13px;
+            color: #a16207;
+            margin-top: 4px;
+        }
+
+        .weather-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed rgba(146, 64, 14, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .weather-stat {
+            font-size: 13px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .weather-stat svg {
+            width: 16px;
+            height: 16px;
+            stroke: #b45309;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* ========== DATE DISPLAY ========== */
+        .date-display {
+            text-align: center;
+            padding: 20px 0 32px;
+        }
+
+        .date-number {
+            font-size: 150px;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 6px 12px rgba(220, 38, 38, 0.2));
+            animation: numberIn 0.8s ease backwards 0.3s;
+        }
+
+        @keyframes numberIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .date-weekday {
+            font-size: 20px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-top: 8px;
+        }
+
+        .date-full {
+            font-size: 15px;
+            color: #78716c;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* ========== LUNAR CARD ========== */
+        .lunar-card {
+            background: linear-gradient(145deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+            border-radius: 24px;
+            padding: 28px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lunar-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .lunar-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lunar-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .lunar-day {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .lunar-month {
+            font-size: 17px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .lunar-year-badge {
+            background: linear-gradient(145deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 14px 18px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .lunar-year-icon {
+            font-size: 26px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .lunar-year-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #78350f;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.12);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .tietkhi-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tietkhi-dot {
+            width: 10px;
+            height: 10px;
+            background: #fbbf24;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #fbbf24;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 8px #fbbf24; }
+            50% { box-shadow: 0 0 16px #fbbf24, 0 0 24px #fbbf24; }
+        }
+
+        /* ========== CALENDAR ========== */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            width: 46px;
+            height: 46px;
+            border: 2px solid #fde68a;
+            background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: #b45309;
+        }
+
+        .nav-btn:hover {
+            border-color: #fbbf24;
+            background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.96);
+        }
+
+        .nav-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .month-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .today-btn {
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #dc2626 0%, #b91c1c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .today-btn:hover {
+            background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .today-btn:active {
+            transform: scale(0.97);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 10px;
+            background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 14px;
+            padding: 4px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #92400e;
+            padding: 12px 0;
+        }
+
+        .weekday:first-child {
+            color: #dc2626;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid transparent;
+        }
+
+        .day:hover:not(.other-month):not(.today) {
+            background: #fef3c7;
+            border-color: #fde68a;
+        }
+
+        .day.other-month {
+            opacity: 0.2;
+            background: transparent;
+        }
+
+        .day.today {
+            background: linear-gradient(145deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+            transform: scale(1.05);
+        }
+
+        .day.today .day-num {
+            color: #fff;
+        }
+
+        .day.today .day-lunar {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .day.selected:not(.today) {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+        }
+
+        .day.sunday:not(.today) .day-num {
+            color: #dc2626;
+        }
+
+        .day-num {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .day-lunar {
+            font-size: 10px;
+            color: #a8a29e;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .day.first-lunar .day-lunar {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .day.holiday .day-lunar {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .day-dot {
+            position: absolute;
+            bottom: 6px;
+            width: 5px;
+            height: 5px;
+            background: #f59e0b;
+            border-radius: 50%;
+        }
+
+        .day.holiday .day-dot {
+            background: #dc2626;
+        }
+
+        /* ========== EVENTS ========== */
+        .events-card {
+            max-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .events-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .events-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .events-list::-webkit-scrollbar-track {
+            background: #fef3c7;
+            border-radius: 10px;
+        }
+
+        .events-list::-webkit-scrollbar-thumb {
+            background: #fbbf24;
+            border-radius: 10px;
+        }
+
+        .event-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            border: 1px solid #fef3c7;
+            transition: border-color 0.2s;
+        }
+
+        .event-item:hover {
+            border-color: #fde68a;
+        }
+
+        .event-item.lunar {
+            border-color: #fee2e2;
+        }
+
+        .event-item.lunar:hover {
+            border-color: #fecaca;
+        }
+
+        .event-item.soon {
+            border-color: #dcfce7;
+        }
+
+        .event-item.soon:hover {
+            border-color: #bbf7d0;
+        }
+
+        .event-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+            font-size: 20px;
+        }
+
+        .event-item.lunar .event-icon {
+            background: linear-gradient(145deg, #fee2e2 0%, #fecaca 100%);
+        }
+
+        .event-item.soon .event-icon {
+            background: linear-gradient(145deg, #dcfce7 0%, #bbf7d0 100%);
+        }
+
+        .event-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .event-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: #fef3c7;
+            color: #b45309;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-item.lunar .event-tag {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .event-item.soon .event-tag {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .event-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .event-date {
+            font-size: 13px;
+            color: #78716c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-date svg {
+            width: 14px;
+            height: 14px;
+            stroke: #a8a29e;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .event-lunar {
+            font-size: 12px;
+            color: #a8a29e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-lunar svg {
+            width: 14px;
+            height: 14px;
+            stroke: #a8a29e;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a8a29e;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 28px;
+            color: #92400e;
+            font-size: 13px;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #fde68a;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+            .events-card { max-height: none; }
+            .date-number { font-size: 120px; }
+            .calendar-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sakura Container -->
+    <div class="sakura-container" id="sakuraContainer"></div>
+
+    <div class="container">
+        <!-- DATE -->
+        <div class="card">
+            <div class="card-label">Hôm nay</div>
+
+            <div class="date-display">
+                <div class="date-number" id="dateNumber">26</div>
+                <div class="date-weekday" id="dateWeekday">Chủ Nhật</div>
+                <div class="date-full" id="dateFull">26 tháng 01, 2026</div>
+            </div>
+
+            <div class="lunar-card">
+                <div class="lunar-header">
+                    <div class="lunar-main">
+                        <div class="lunar-label">Ngày Âm Lịch</div>
+                        <div class="lunar-day" id="lunarDay">08/12</div>
+                        <div class="lunar-month" id="lunarMonth">Tháng Chạp</div>
+                    </div>
+                    <div class="lunar-year-badge">
+                        <span class="lunar-year-icon" id="lunarYearIcon">🐍</span>
+                        <div class="lunar-year-text" id="lunarYear">Ất Tỵ</div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Ngày</div>
+                        <div class="info-value" id="canChiNgay">Canh Tý</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tháng</div>
+                        <div class="info-value" id="canChiThang">Kỷ Sửu</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Năm</div>
+                        <div class="info-value" id="canChiNam">Ất Tỵ</div>
+                    </div>
+                </div>
+
+                <div class="tietkhi-badge" id="tietKhi">
+                    <span class="tietkhi-dot"></span>
+                    Tiết Đại Hàn
+                </div>
+            </div>
+
+            <!-- Weather moved to bottom -->
+            <div class="weather-widget" id="weatherWidget">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Đang tải thời tiết...
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDAR -->
+        <div class="card">
+            <div class="card-label">Lịch tháng</div>
+            
+            <div class="calendar-header">
+                <div class="calendar-nav">
+                    <button class="nav-btn" id="prevMonth">
+                        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="month-title" id="monthTitle">Tháng 1, 2026</div>
+                    <button class="nav-btn" id="nextMonth">
+                        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+                <button class="today-btn" id="todayBtn">✦ Hôm nay</button>
+            </div>
+
+            <div class="weekdays">
+                <div class="weekday">CN</div>
+                <div class="weekday">T2</div>
+                <div class="weekday">T3</div>
+                <div class="weekday">T4</div>
+                <div class="weekday">T5</div>
+                <div class="weekday">T6</div>
+                <div class="weekday">T7</div>
+            </div>
+
+            <div class="days" id="calendarDays"></div>
+        </div>
+
+        <!-- EVENTS -->
+        <div class="card events-card">
+            <div class="card-label">Sự kiện sắp tới</div>
+            <div class="events-list" id="eventsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== SAKURA ANIMATION ==========
+        function createSakura() {
+            const container = document.getElementById('sakuraContainer');
+            const sakura = document.createElement('div');
+            
+            // Random type
+            const types = ['', 'type2', 'type3'];
+            sakura.className = `sakura ${types[Math.floor(Math.random() * types.length)]}`;
+            
+            // Random properties
+            const size = Math.random() * 12 + 8; // 8-20px
+            const left = Math.random() * 100; // 0-100%
+            const duration = Math.random() * 5 + 8; // 8-13s fall duration
+            const spinDuration = Math.random() * 3 + 2; // 2-5s spin duration
+            const drift1 = (Math.random() - 0.5) * 100;
+            const drift2 = (Math.random() - 0.5) * 100;
+            const drift3 = (Math.random() - 0.5) * 100;
+            const drift4 = (Math.random() - 0.5) * 100;
+            const delay = Math.random() * 2;
+            
+            sakura.style.cssText = `
+                left: ${left}%;
+                --size: ${size}px;
+                --spin-duration: ${spinDuration}s;
+                --drift1: ${drift1}px;
+                --drift2: ${drift2}px;
+                --drift3: ${drift3}px;
+                --drift4: ${drift4}px;
+                animation-duration: ${duration}s;
+                animation-delay: ${delay}s;
+            `;
+            
+            container.appendChild(sakura);
+            
+            // Remove after animation
+            setTimeout(() => {
+                sakura.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        // Create sakura continuously
+        function startSakuraAnimation() {
+            // Initial burst
+            for (let i = 0; i < 15; i++) {
+                setTimeout(createSakura, i * 200);
+            }
+            
+            // Continuous creation
+            setInterval(() => {
+                if (document.querySelectorAll('.sakura').length < 30) {
+                    createSakura();
+                }
+            }, 400);
+        }
+
+        // Start sakura animation
+        startSakuraAnimation();
+
+        // ========== CALENDAR LOGIC ==========
+        const PI = Math.PI;
+        const CAN = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+        const CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+        const CHI_ICON = ["🐀", "🐂", "🐅", "🐇", "🐉", "🐍", "🐴", "🐐", "🐒", "🐓", "🐕", "🐖"];
+        const LUNAR_MONTHS = ["Giêng", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Một", "Chạp"];
+        const TIET_KHI = ["Xuân Phân", "Thanh Minh", "Cốc Vũ", "Lập Hạ", "Tiểu Mãn", "Mang Chủng", "Hạ Chí", "Tiểu Thử", "Đại Thử", "Lập Thu", "Xử Thử", "Bạch Lộ", "Thu Phân", "Hàn Lộ", "Sương Giáng", "Lập Đông", "Tiểu Tuyết", "Đại Tuyết", "Đông Chí", "Tiểu Hàn", "Đại Hàn", "Lập Xuân", "Vũ Thủy", "Kinh Trập"];
+
+        const LUNAR_HOLIDAYS = {"1/1": "Tết Nguyên Đán", "2/1": "Mùng 2 Tết", "3/1": "Mùng 3 Tết", "15/1": "Tết Nguyên Tiêu", "3/3": "Tết Hàn Thực", "10/3": "Giỗ Tổ Hùng Vương", "15/4": "Lễ Phật Đản", "5/5": "Tết Đoan Ngọ", "15/7": "Lễ Vu Lan", "15/8": "Tết Trung Thu", "23/12": "Ông Táo Chầu Trời", "30/12": "Tất Niên"};
+        const SOLAR_HOLIDAYS = {"1/1": "Tết Dương Lịch", "14/2": "Lễ Tình Nhân", "8/3": "Quốc Tế Phụ Nữ", "30/4": "Giải Phóng Miền Nam", "1/5": "Quốc Tế Lao Động", "1/6": "Quốc Tế Thiếu Nhi", "2/9": "Quốc Khánh", "20/10": "Phụ Nữ Việt Nam", "20/11": "Nhà Giáo Việt Nam", "24/12": "Đêm Giáng Sinh", "25/12": "Lễ Giáng Sinh"};
+        const EVENT_ICONS = {"Tết Nguyên Đán": "🧧", "Mùng 2 Tết": "🧧", "Mùng 3 Tết": "🧧", "Tết Nguyên Tiêu": "🏮", "Tết Hàn Thực": "🍡", "Giỗ Tổ Hùng Vương": "🏛️", "Lễ Phật Đản": "🪷", "Tết Đoan Ngọ": "🍃", "Lễ Vu Lan": "🪷", "Tết Trung Thu": "🥮", "Ông Táo Chầu Trời": "🔥", "Tất Niên": "🎊", "Tết Dương Lịch": "🎉", "Lễ Tình Nhân": "💝", "Quốc Tế Phụ Nữ": "💐", "Giải Phóng Miền Nam": "🎗️", "Quốc Tế Lao Động": "✊", "Quốc Tế Thiếu Nhi": "🎈", "Quốc Khánh": "🇻🇳", "Phụ Nữ Việt Nam": "🌸", "Nhà Giáo Việt Nam": "📚", "Đêm Giáng Sinh": "🎄", "Lễ Giáng Sinh": "🎄"};
+
+        function jdFromDate(dd, mm, yy) {
+            let a = Math.floor((14-mm)/12), y = yy+4800-a, m = mm+12*a-3;
+            let jd = dd + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045;
+            return jd < 2299161 ? dd + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - 32083 : jd;
+        }
+
+        function getNewMoonDay(k, tz) {
+            let T = k/1236.85, T2 = T*T, T3 = T2*T, dr = PI/180;
+            let Jd1 = 2415020.75933 + 29.53058868*k + 0.0001178*T2 - 0.000000155*T3 + 0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+            let M = 359.2242 + 29.10535608*k - 0.0000333*T2 - 0.00000347*T3;
+            let Mpr = 306.0253 + 385.81691806*k + 0.0107306*T2 + 0.00001236*T3;
+            let F = 21.2964 + 390.67050646*k - 0.0016528*T2 - 0.00000239*T3;
+            let C1 = (0.1734-0.000393*T)*Math.sin(M*dr) + 0.0021*Math.sin(2*dr*M) - 0.4068*Math.sin(Mpr*dr) + 0.0161*Math.sin(2*dr*Mpr) - 0.0004*Math.sin(3*dr*Mpr) + 0.0104*Math.sin(2*dr*F) - 0.0051*Math.sin((M+Mpr)*dr) - 0.0074*Math.sin((M-Mpr)*dr) + 0.0004*Math.sin((2*F+M)*dr) - 0.0004*Math.sin((2*F-M)*dr) - 0.0006*Math.sin((2*F+Mpr)*dr) + 0.001*Math.sin((2*F-Mpr)*dr) + 0.0005*Math.sin((2*Mpr+M)*dr);
+            let dt = T<-11 ? 0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3 : -0.000278+0.000265*T+0.000262*T2;
+            return Math.floor(Jd1 + C1 - dt + 0.5 + tz/24);
+        }
+
+        function getSunLongitude(jdn, tz) {
+            let T = (jdn-2451545.5-tz/24)/36525, T2 = T*T, dr = PI/180;
+            let M = 357.5291 + 35999.0503*T - 0.0001559*T2 - 0.00000048*T*T2;
+            let L0 = 280.46645 + 36000.76983*T + 0.0003032*T2;
+            let DL = (1.9146-0.004817*T-0.000014*T2)*Math.sin(dr*M) + (0.019993-0.000101*T)*Math.sin(2*dr*M) + 0.00029*Math.sin(3*dr*M);
+            let L = (L0+DL)*dr; L -= PI*2*Math.floor(L/(PI*2));
+            return Math.floor(L/PI*6);
+        }
+
+        function getLunarMonth11(yy, tz) {
+            let off = jdFromDate(31,12,yy)-2415021, k = Math.floor(off/29.530588853), nm = getNewMoonDay(k,tz);
+            return getSunLongitude(nm,tz)>=9 ? getNewMoonDay(k-1,tz) : nm;
+        }
+
+        function getLeapMonthOffset(a11, tz) {
+            let k = Math.floor((a11-2415021.076998695)/29.530588853+0.5), last=0, i=1, arc = getSunLongitude(getNewMoonDay(k+i,tz),tz);
+            do { last=arc; i++; arc=getSunLongitude(getNewMoonDay(k+i,tz),tz); } while(arc!=last && i<14);
+            return i-1;
+        }
+
+        function convertSolar2Lunar(dd, mm, yy, tz) {
+            let dayNumber = jdFromDate(dd,mm,yy), k = Math.floor((dayNumber-2415021.076998695)/29.530588853);
+            let monthStart = getNewMoonDay(k+1,tz); if(monthStart>dayNumber) monthStart = getNewMoonDay(k,tz);
+            let a11 = getLunarMonth11(yy,tz), b11 = a11, lunarYear = a11>=monthStart ? yy : yy+1;
+            if(a11>=monthStart) a11 = getLunarMonth11(yy-1,tz); else b11 = getLunarMonth11(yy+1,tz);
+            let lunarDay = dayNumber-monthStart+1, diff = Math.floor((monthStart-a11)/29), lunarLeap=0, lunarMonth = diff+11;
+            if(b11-a11>365) { let lmo = getLeapMonthOffset(a11,tz); if(diff>=lmo) { lunarMonth=diff+10; if(diff==lmo) lunarLeap=1; } }
+            if(lunarMonth>12) lunarMonth-=12; if(lunarMonth>=11 && diff<4) lunarYear-=1;
+            return [lunarDay, lunarMonth, lunarYear, lunarLeap];
+        }
+
+        const getCanChiYear = y => CAN[(y+6)%10]+" "+CHI[(y+8)%12];
+        const getChiIcon = y => CHI_ICON[(y+8)%12];
+        const getCanChiMonth = (m,y) => CAN[(y*12+m+3)%10]+" "+CHI[(m+1)%12];
+        const getCanChiDay = jd => CAN[(jd+9)%10]+" "+CHI[(jd+1)%12];
+        const getTietKhi = jd => TIET_KHI[getSunLongitude(jd+1,7)];
+
+        async function loadWeather() {
+            const w = document.getElementById('weatherWidget');
+            try {
+                let lat=21.0285, lon=105.8542, loc="Hà Nội";
+                try { const p = await new Promise((r,j)=>navigator.geolocation.getCurrentPosition(r,j,{timeout:5000})); lat=p.coords.latitude; lon=p.coords.longitude; loc="Vị trí của bạn"; } catch(e){}
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia/Bangkok`);
+                const data = await res.json(), c = data.current;
+                try { const g = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=vi`); const gd = await g.json(); if(gd.address) loc = gd.address.city||gd.address.town||gd.address.county||loc; } catch(e){}
+                const wi = getWeatherInfo(c.weather_code);
+                w.innerHTML = `<div class="weather-top"><div class="weather-left"><img class="weather-icon" src="${wi.icon}"><div class="weather-temp">${Math.round(c.temperature_2m)}<span>°C</span></div></div><div class="weather-right"><div class="weather-location">${loc}</div><div class="weather-desc">${wi.desc}</div></div></div><div class="weather-stats"><div class="weather-stat"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>${c.relative_humidity_2m}% độ ẩm</div><div class="weather-stat"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>${Math.round(c.wind_speed_10m)} km/h gió</div></div>`;
+            } catch(e) { w.innerHTML = `<div class="weather-top"><div class="weather-left"><div class="weather-temp">--<span>°C</span></div></div><div class="weather-right"><div class="weather-location">Hà Nội</div><div class="weather-desc">Không có dữ liệu</div></div></div>`; }
+        }
+
+        function getWeatherInfo(c) {
+            const m = {0:{d:"Trời quang",i:"01d"},1:{d:"Ít mây",i:"02d"},2:{d:"Có mây",i:"03d"},3:{d:"Nhiều mây",i:"04d"},45:{d:"Sương mù",i:"50d"},48:{d:"Sương mù",i:"50d"},51:{d:"Mưa phùn",i:"09d"},53:{d:"Mưa phùn",i:"09d"},55:{d:"Mưa phùn",i:"09d"},61:{d:"Mưa nhẹ",i:"10d"},63:{d:"Mưa vừa",i:"10d"},65:{d:"Mưa to",i:"10d"},80:{d:"Mưa rào",i:"09d"},81:{d:"Mưa rào",i:"09d"},82:{d:"Mưa to",i:"09d"},95:{d:"Giông bão",i:"11d"},96:{d:"Giông bão",i:"11d"},99:{d:"Giông bão",i:"11d"}};
+            const r = m[c]||{d:"--",i:"01d"}; return {desc:r.d, icon:`https://openweathermap.org/img/wn/${r.i}@2x.png`};
+        }
+
+        let currentDate = new Date(), selectedDate = new Date(), viewMonth = currentDate.getMonth(), viewYear = currentDate.getFullYear();
+
+        function init() {
+            renderCalendar(); updateDateDisplay(selectedDate); updateEvents(); loadWeather();
+            document.getElementById('prevMonth').onclick = () => { viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderCalendar(); };
+            document.getElementById('nextMonth').onclick = () => { viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderCalendar(); };
+            document.getElementById('todayBtn').onclick = () => { selectedDate=new Date(currentDate); viewMonth=currentDate.getMonth(); viewYear=currentDate.getFullYear(); renderCalendar(); updateDateDisplay(selectedDate); };
+        }
+
+        function renderCalendar() {
+            document.getElementById('monthTitle').textContent = `Tháng ${viewMonth+1}, ${viewYear}`;
+            const firstDay = new Date(viewYear,viewMonth,1), lastDay = new Date(viewYear,viewMonth+1,0);
+            const startDay = firstDay.getDay(), totalDays = lastDay.getDate(), prevLastDay = new Date(viewYear,viewMonth,0).getDate();
+            let html = '';
+            for(let i=startDay-1;i>=0;i--) { const d=prevLastDay-i, m=viewMonth===0?12:viewMonth, y=viewMonth===0?viewYear-1:viewYear, l=convertSolar2Lunar(d,m,y,7); html+=`<div class="day other-month"><span class="day-num">${d}</span><span class="day-lunar">${l[0]}</span></div>`; }
+            for(let d=1;d<=totalDays;d++) {
+                const date=new Date(viewYear,viewMonth,d), l=convertSolar2Lunar(d,viewMonth+1,viewYear,7);
+                const isToday=d===currentDate.getDate()&&viewMonth===currentDate.getMonth()&&viewYear===currentDate.getFullYear();
+                const isSelected=d===selectedDate.getDate()&&viewMonth===selectedDate.getMonth()&&viewYear===selectedDate.getFullYear();
+                const isSunday=date.getDay()===0, lk=`${l[0]}/${l[1]}`, sk=`${d}/${viewMonth+1}`, isHoliday=LUNAR_HOLIDAYS[lk]||SOLAR_HOLIDAYS[sk], isFirst=l[0]===1;
+                let cls=['day']; if(isToday)cls.push('today'); if(isSelected&&!isToday)cls.push('selected'); if(isSunday)cls.push('sunday'); if(isHoliday)cls.push('holiday'); if(isFirst&&!isHoliday)cls.push('first-lunar');
+                html+=`<div class="${cls.join(' ')}" data-day="${d}"><span class="day-num">${d}</span><span class="day-lunar">${isFirst?l[0]+'/'+l[1]:l[0]}</span>${isHoliday?'<div class="day-dot"></div>':''}</div>`;
+            }
+            const rem=42-(startDay+totalDays);
+            for(let d=1;d<=rem;d++) { const m=viewMonth===11?1:viewMonth+2, y=viewMonth===11?viewYear+1:viewYear, l=convertSolar2Lunar(d,m,y,7); html+=`<div class="day other-month"><span class="day-num">${d}</span><span class="day-lunar">${l[0]}</span></div>`; }
+            document.getElementById('calendarDays').innerHTML = html;
+            document.querySelectorAll('.day:not(.other-month)').forEach(el => { el.onclick = () => { selectedDate=new Date(viewYear,viewMonth,parseInt(el.dataset.day)); renderCalendar(); updateDateDisplay(selectedDate); }; });
+        }
+
+        function updateDateDisplay(date) {
+            const wd=["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"], d=date.getDate(), m=date.getMonth()+1, y=date.getFullYear();
+            document.getElementById('dateNumber').textContent = d.toString().padStart(2,'0');
+            document.getElementById('dateWeekday').textContent = wd[date.getDay()];
+            document.getElementById('dateFull').textContent = `${d} tháng ${m.toString().padStart(2,'0')}, ${y}`;
+            const l=convertSolar2Lunar(d,m,y,7), jd=jdFromDate(d,m,y);
+            document.getElementById('lunarDay').textContent = `${l[0].toString().padStart(2,'0')}/${l[1].toString().padStart(2,'0')}`;
+            document.getElementById('lunarMonth').textContent = `Tháng ${LUNAR_MONTHS[l[1]-1]}${l[3]?' (Nhuận)':''}`;
+            document.getElementById('lunarYear').textContent = getCanChiYear(l[2]);
+            document.getElementById('lunarYearIcon').textContent = getChiIcon(l[2]);
+            document.getElementById('canChiNgay').textContent = getCanChiDay(jd);
+            document.getElementById('canChiThang').textContent = getCanChiMonth(l[1],l[2]);
+            document.getElementById('canChiNam').textContent = getCanChiYear(l[2]);
+            document.getElementById('tietKhi').innerHTML = `<span class="tietkhi-dot"></span>Tiết ${getTietKhi(jd)}`;
+        }
+
+        function updateEvents() {
+            let events=[], today=new Date(currentDate);
+            for(let i=0;i<90;i++) { const cd=new Date(today); cd.setDate(today.getDate()+i); const d=cd.getDate(),m=cd.getMonth()+1,y=cd.getFullYear(),l=convertSolar2Lunar(d,m,y,7),lk=`${l[0]}/${l[1]}`,sk=`${d}/${m}`;
+                if(LUNAR_HOLIDAYS[lk]) events.push({date:new Date(cd),name:LUNAR_HOLIDAYS[lk],lunar:`${l[0]}/${l[1]} Âm lịch`,daysLeft:i,type:'lunar'});
+                if(SOLAR_HOLIDAYS[sk]) events.push({date:new Date(cd),name:SOLAR_HOLIDAYS[sk],lunar:`${l[0]}/${l[1]} Âm lịch`,daysLeft:i,type:i<=7?'soon':''});
+            }
+            events = events.filter((v,i,a)=>a.findIndex(t=>t.name===v.name&&t.date.getTime()===v.date.getTime())===i).sort((a,b)=>a.date-b.date).slice(0,10);
+            if(!events.length) { document.getElementById('eventsList').innerHTML='<div class="no-events">Không có sự kiện sắp tới</div>'; return; }
+            const wd=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
+            document.getElementById('eventsList').innerHTML = events.map(e=>{
+                const ds=`${wd[e.date.getDay()]}, ${e.date.getDate().toString().padStart(2,'0')}/${(e.date.getMonth()+1).toString().padStart(2,'0')}/${e.date.getFullYear()}`;
+                const ct=e.daysLeft===0?'Hôm nay':e.daysLeft===1?'Ngày mai':`Còn ${e.daysLeft} ngày`;
+                const icon = EVENT_ICONS[e.name] || '📅';
+                return `<div class="event-item ${e.type}">
+                    <div class="event-icon">${icon}</div>
+                    <div class="event-content">
+                        <span class="event-tag">${ct}</span>
+                        <div class="event-name">${e.name}</div>
+                        <div class="event-meta">
+                            <div class="event-date"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${ds}</div>
+                            <div class="event-lunar"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>${e.lunar}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>

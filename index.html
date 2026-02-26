@@ -2,1024 +2,1054 @@
 <html lang="vi" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
     <meta name="description" content="NDM Tool - Bộ công cụ toàn diện cho mọi nhu cầu">
-    <title>NDM TOOL | Commander Center</title>
+    <title>NDM TOOLS</title>
     
-    <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://sf-static.upanhlaylink.com">
     
-    <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-    
-    <!-- Favicon -->
     <link rel="icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
-    <link rel="shortcut icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lucide Icons - Defer loading -->
-    <script defer src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- Google Fonts - Optimized with display=swap -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Apple-like Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* === THEME VARIABLES === */
+        /* === ULTRA LIQUID GLASS VARIABLES === */
         :root {
-            --bg-main: #0A0A0A;
-            --bg-card: #111111;
-            --bg-sidebar: #080808;
-            --text-main: #FAFAFA;
-            --text-sub: #888888;
-            --border: #1F1F1F;
-            --accent: #FF4D00;
-            --accent-hover: #FF6A2E;
-            --accent-glow: rgba(255, 77, 0, 0.25);
-            --grid-color: #151515;
-            --scanline: rgba(0,0,0,0.5);
-            --success: #10B981;
-            --warning: #F59E0B;
+            /* Background Colors */
+            --bg-base: #e8ecef;
+            --grid-color: rgba(0, 0, 0, 0.08); 
+            --spotlight-1: rgba(255, 255, 255, 0.8);
+            --spotlight-2: rgba(144, 164, 184, 0.3);
+            
+            /* Text Colors */
+            --text-main: #111113;
+            --text-sub: #6e6e73;
+            
+            /* Ultra Glass Material - Light */
+            --glass-base: rgba(255, 255, 255, 0.2);
+            --glass-solid: rgba(255, 255, 255, 0.7);
+            --glass-hover: rgba(255, 255, 255, 0.35);
+            --glass-rim-top: rgba(255, 255, 255, 0.95);
+            --glass-rim-bot: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-drop-shadow: rgba(0, 0, 0, 0.06);
+            --glass-ambient-shadow: rgba(0, 0, 0, 0.02);
+            
+            --accent: #0066cc;
+            --success: #34c759;
+            --noise-opacity: 0.03;
+            --specular-glow: rgba(255, 255, 255, 0.9);
         }
 
-        [data-theme="light"] {
-            --bg-main: #F8FAFC;
-            --bg-card: #FFFFFF;
-            --bg-sidebar: #FFFFFF;
-            --text-main: #0F172A;
-            --text-sub: #64748B;
-            --border: #E2E8F0;
-            --accent: #EA580C;
-            --accent-hover: #DC2626;
-            --accent-glow: rgba(234, 88, 12, 0.15);
-            --grid-color: #E2E8F0;
-            --scanline: rgba(255,255,255,0);
-            --success: #059669;
-            --warning: #D97706;
+        [data-theme="dark"] {
+            /* Background Colors */
+            --bg-base: #0a0a0c;
+            --grid-color: rgba(255, 255, 255, 0.08);
+            --spotlight-1: rgba(60, 60, 70, 0.4);
+            --spotlight-2: rgba(20, 20, 30, 0.8);
+            
+            /* Text Colors */
+            --text-main: #f5f5f7;
+            --text-sub: #86868b;
+            
+            /* Ultra Glass Material - Dark */
+            --glass-base: rgba(30, 30, 35, 0.25);
+            --glass-solid: rgba(50, 50, 55, 0.8);
+            --glass-hover: rgba(50, 50, 55, 0.4);
+            --glass-rim-top: rgba(255, 255, 255, 0.15);
+            --glass-rim-bot: rgba(0, 0, 0, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-drop-shadow: rgba(0, 0, 0, 0.5);
+            --glass-ambient-shadow: rgba(0, 0, 0, 0.3);
+            
+            --accent: #2997ff;
+            --success: #32d74b;
+            --noise-opacity: 0.04;
+            --specular-glow: rgba(255, 255, 255, 0.25);
         }
 
-        /* === BASE STYLES === */
+        /* === CORE SETTINGS === */
         * {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body { 
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-base);
             color: var(--text-main);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.8s ease, color 0.8s ease;
             overflow-x: hidden;
-            font-weight: 400;
-            letter-spacing: -0.01em;
-        }
-        
-        /* Typography */
-        .font-display { 
-            font-family: 'Sora', sans-serif; 
-            letter-spacing: -0.03em;
-            font-weight: 700;
-        }
-        
-        .font-heading { 
-            font-family: 'Outfit', sans-serif; 
-            letter-spacing: -0.02em;
-            font-weight: 600;
-        }
-        
-        .font-code { 
-            font-family: 'IBM Plex Mono', monospace;
-            letter-spacing: -0.01em;
-        }
-        
-        .font-body {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
+            letter-spacing: -0.015em;
         }
 
-        /* Responsive Typography */
-        h1 { font-size: clamp(2.5rem, 8vw, 5rem); }
-        h2 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
-        h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
-        
-        .text-balance { text-wrap: balance; }
-
-        /* Hide scrollbar */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* === SCROLLBAR === */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { 
-            background: var(--border); 
-            border-radius: 3px;
-            transition: background 0.3s ease;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
-
-        /* === VISUAL EFFECTS === */
-        .scanlines {
+        /* === WWDC STUDIO BACKGROUND === */
+        .studio-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, 
-                rgba(255,255,255,0) 0%, 
-                rgba(255,255,255,0) 48%, 
-                var(--scanline) 50%, 
-                var(--scanline) 52%,
-                rgba(255,255,255,0) 54%);
-            background-size: 100% 4px; 
-            pointer-events: none; 
-            z-index: 90; 
-            opacity: 0.06;
-        }
-
-        /* Grid Background */
-        .bg-grid {
+            inset: -50%;
+            z-index: -1;
             background-image: 
-                linear-gradient(var(--grid-color) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, var(--grid-color) 1.5px, transparent 1.5px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
-            -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 30%, transparent 100%);
+                linear-gradient(to right, var(--grid-color) 2px, transparent 2px),
+                linear-gradient(to bottom, var(--grid-color) 2px, transparent 2px);
+            background-size: 80px 80px; 
+            background-position: center;
+            transform: perspective(1000px) rotateX(20deg) scale(1.5) translateY(-5%);
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
         }
 
-        /* === HOVER & GLOW EFFECTS === */
-        .hover-glow { 
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            cursor: pointer;
-            will-change: transform, border-color;
+        .studio-lights {
+            position: fixed;
+            inset: -20%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 30% 20%, var(--spotlight-1) 0%, transparent 40%),
+                radial-gradient(circle at 70% 60%, var(--spotlight-2) 0%, transparent 50%);
+            filter: blur(60px);
+            animation: light-flow 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
         }
-        
-        .hover-glow::before {
+
+        @keyframes light-flow {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(5%, 3%); }
+            100% { transform: scale(0.95) translate(-2%, -4%); }
+        }
+
+        /* === ULTRA CLEAR REFRACTION GLASS === */
+        .ultra-clear-glass {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 
+                inset 0 4px 6px -2px rgba(255, 255, 255, 0.9),
+                inset 0 -4px 6px -2px rgba(0, 0, 0, 0.05),
+                0 15px 35px rgba(0, 0, 0, 0.1) !important;
+        }
+        [data-theme="dark"] .ultra-clear-glass {
+            background: rgba(20, 20, 25, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 
+                inset 0 4px 6px -2px rgba(255, 255, 255, 0.2),
+                inset 0 -4px 6px -2px rgba(0, 0, 0, 0.5),
+                0 15px 35px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .nav-logo-bg {
+            background: radial-gradient(circle at top left, #4fc3f7, #0066cc);
+            padding: 2px;
+            border-radius: 50%;
+        }
+
+        .nav-title {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        [data-theme="light"] .nav-title {
+            color: #111113;
+            text-shadow: none;
+        }
+
+        /* === ULTRA LIQUID GLASS ENGINE (FOR CARDS) === */
+        .glass-panel {
+            background: var(--glass-base);
+            backdrop-filter: blur(48px) saturate(200%);
+            -webkit-backdrop-filter: blur(48px) saturate(200%);
+            border-radius: 36px;
+            box-shadow: 
+                inset 0 1.5px 1px var(--glass-rim-top), 
+                inset 0 -2px 3px var(--glass-rim-bot), 
+                inset 0 0 0 1px var(--glass-border), 
+                0 4px 12px var(--glass-ambient-shadow),
+                0 24px 48px -12px var(--glass-drop-shadow);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            isolation: isolate;
+        }
+
+        .glass-panel::before {
             content: '';
             position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg, var(--accent), transparent);
+            inset: 0;
             border-radius: inherit;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: var(--noise-opacity);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .liquid-tool-card {
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.2);
+            -webkit-backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.2);
+            border-radius: 40px; 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                inset 0 6px 10px -4px rgba(255, 255, 255, 1),
+                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.1),
+                inset 0 0 30px rgba(255, 255, 255, 0.3),
+                0 24px 48px -12px rgba(0, 0, 0, 0.12);
+            position: relative;
+            isolation: isolate;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        [data-theme="dark"] .liquid-tool-card {
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.15);
+            -webkit-backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                inset 0 6px 10px -4px rgba(255, 255, 255, 0.4),
+                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.6),
+                inset 0 0 30px rgba(255, 255, 255, 0.05),
+                0 24px 48px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .liquid-tool-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: var(--noise-opacity);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .liquid-tool-card.interactive-glass:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                inset 0 8px 12px -4px rgba(255, 255, 255, 1),
+                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.15),
+                inset 0 0 40px rgba(255, 255, 255, 0.4),
+                0 32px 64px -16px rgba(0, 0, 0, 0.2);
+        }
+        [data-theme="dark"] .liquid-tool-card.interactive-glass:hover {
+            box-shadow: 
+                inset 0 8px 12px -4px rgba(255, 255, 255, 0.6),
+                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.8),
+                inset 0 0 40px rgba(255, 255, 255, 0.1),
+                0 32px 64px -16px rgba(0, 0, 0, 0.7);
+        }
+
+        /* === SPECULAR HIGHLIGHT ENGINE === */
+        .interactive-glass::after,
+        .popup-item::after,
+        .dock-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0; 
+            border-radius: inherit;
+            padding: 1.5px; 
+            background: radial-gradient(
+                250px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+                var(--specular-glow),
+                transparent 100%
+            );
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             opacity: 0;
             transition: opacity 0.5s ease;
-            z-index: -1;
-            filter: blur(12px);
-        }
-
-        .hover-glow:hover::before { opacity: 0.6; }
-        
-        .hover-glow:hover {
-            border-color: var(--accent);
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 
-                0 16px 48px rgba(0, 0, 0, 0.4),
-                0 0 0 1px var(--accent),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        /* Mobile hover optimization */
-        @media (hover: none) and (pointer: coarse) {
-            .hover-glow:hover { transform: none; }
-            .hover-glow:active { transform: scale(0.98); }
-        }
-
-        /* === SIMPLE PINNED CARD STYLE === */
-        .pinned-card {
-            border: 2px solid var(--accent) !important;
-            box-shadow: 
-                0 0 0 1px var(--accent),
-                0 4px 16px var(--accent-glow);
-        }
-
-        .pinned-card:hover {
-            box-shadow: 
-                0 0 0 1px var(--accent),
-                0 8px 24px var(--accent-glow);
-        }
-
-        /* === ANIMATIONS === */
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(24px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .animate-enter { 
-            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-
-        /* Status pulse animation */
-        @keyframes status-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
-        }
-        
-        .status-online {
-            animation: status-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        /* === TOAST NOTIFICATIONS === */
-        #toast-container {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
             pointer-events: none;
+            z-index: 20;
         }
 
-        @media (max-width: 768px) {
-            #toast-container {
-                top: 24px;
-                right: 50%;
-                transform: translateX(50%);
-                width: max-content;
-                max-width: 90vw;
-            }
+        .glow-group:hover .interactive-glass::after,
+        .glow-group:hover .popup-item::after,
+        .interactive-glass:hover::after,
+        .popup-item:hover::after,
+        .dock-btn:hover::after {
+            opacity: 1;
         }
 
-        .toast-message {
-            pointer-events: auto;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+        /* === LIQUID GLASS POPUPS & ITEMS === */
+        .glass-popup {
+            border-radius: 24px !important;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .popup-item {
+            background: rgba(255, 255, 255, 0.15) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 16px !important;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; 
+        }
+        .popup-item:hover {
+            background: rgba(255, 255, 255, 0.25) !important;
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.5),
+                0 8px 24px rgba(0, 0, 0, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        [data-theme="dark"] .popup-item {
+            background: rgba(20, 20, 25, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.05),
+                0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+        [data-theme="dark"] .popup-item:hover {
+            background: rgba(30, 30, 35, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                0 8px 24px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .glass-pill {
+            border-radius: 9999px;
+        }
+
+        .interactive-glass {
+            position: relative; 
+        }
+
+        .category-scroll {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        
+        .glass-tab {
+            background: transparent;
+            color: var(--text-sub);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .glass-tab:hover {
             color: var(--text-main);
-            padding: 10px 16px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
         }
 
-        .toast-message.success { border-color: var(--success); }
-        .toast-message.accent { border-color: var(--accent); }
-
-        .toast-message.hiding {
-            animation: toastOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .glass-tab.active {
+            color: var(--text-main);
+            background: var(--glass-solid); 
+            box-shadow: 0 2px 8px var(--glass-ambient-shadow);
+            font-weight: 600;
         }
 
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateY(-12px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .nav-search-wrapper {
+            background: var(--glass-base);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 2px 4px var(--glass-ambient-shadow);
+        }
+        .nav-search-wrapper:focus-within {
+            background: var(--glass-hover);
+            border-color: var(--accent);
+            box-shadow: 
+                inset 0 2px 4px var(--glass-ambient-shadow),
+                0 0 0 3px rgba(0, 102, 204, 0.2);
+        }
+        [data-theme="dark"] .nav-search-wrapper:focus-within {
+            box-shadow: 
+                inset 0 2px 4px var(--glass-ambient-shadow),
+                0 0 0 3px rgba(41, 151, 255, 0.2);
         }
 
-        @keyframes toastOut {
-            from { opacity: 1; transform: translateY(0) scale(1); }
-            to { opacity: 0; transform: translateY(-12px) scale(0.95); }
+        .glass-input {
+            background: var(--glass-base);
+            box-shadow: 
+                inset 0 2px 4px var(--glass-ambient-shadow),
+                inset 0 0 0 1px var(--glass-border),
+                inset 0 -1px 1px var(--glass-rim-top);
+            transition: all 0.4s ease;
+        }
+        .glass-input:focus-within {
+            box-shadow: 
+                inset 0 2px 4px var(--glass-ambient-shadow),
+                0 0 0 4px var(--accent-glow),
+                inset 0 0 0 1px var(--accent);
+            background: var(--glass-hover);
         }
 
-        /* === CARD SHIMMER === */
-        .card-shimmer {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-shimmer::after {
-            content: '';
+        .pin-border-glow {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.04),
-                transparent
-            );
-            transform: rotate(45deg);
-            transition: transform 0.8s ease;
-        }
-
-        .card-shimmer:hover::after {
-            transform: rotate(45deg) translate(50%, 50%);
-        }
-
-        /* === GLASS MORPHISM === */
-        .glass {
-            background: rgba(17, 17, 17, 0.6);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        [data-theme="light"] .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-        }
-
-        /* === GRADIENT TEXT === */
-        .gradient-text {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* === BUTTON STYLES === */
-        .btn-primary {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* === DOCK & MOBILE MENU === */
-        .dock-container { 
-            transition: transform 0.5s cubic-bezier(0.2, 0, 0.1, 1);
-            will-change: transform;
-        }
-        .dock-hidden { transform: translate(-50%, 200%) !important; }
-        
-        .dock-glass {
-            background: rgba(10, 10, 10, 0.5);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-        }
-        
-        [data-theme="light"] .dock-glass {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
-        }
-
-        .dock-popup {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(12px) scale(0.9);
-            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.3s;
+            inset: -2px;
+            border-radius: 42px; 
+            padding: 2.5px;
+            background: linear-gradient(135deg, var(--accent), #4fc3f7, var(--accent));
+            background-size: 200% auto;
+            animation: pinGradient 3s linear infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             pointer-events: none;
+            z-index: 10;
         }
-        
-        #pinned-menu.dock-popup { 
-            transform: translateX(-50%) translateY(12px) scale(0.9); 
+
+        @keyframes pinGradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .pin-btn-active {
+            background: linear-gradient(135deg, var(--accent), #4fc3f7);
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        [data-theme="dark"] .pin-btn-active {
+            box-shadow: 0 4px 15px rgba(41, 151, 255, 0.4);
+        }
+
+        .super-dock {
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+            border-radius: 40px;
             transform-origin: bottom center;
         }
-        
-        #contact-menu.dock-popup { 
-            transform: translateY(12px) scale(0.9); 
-            transform-origin: bottom right;
-        }
-        
-        .dock-popup.active { 
-            opacity: 1; 
-            visibility: visible; 
-            pointer-events: auto;
-        }
-        
-        #pinned-menu.dock-popup.active { 
-            transform: translateX(-50%) translateY(0) scale(1);
-        }
-        
-        #contact-menu.dock-popup.active { 
-            transform: translateY(0) scale(1);
+
+        .dock-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            background: transparent;
         }
 
-        .category-active::after {
-            content: '';
+        .dock-btn:hover {
+            transform: scale(1.2) translateY(-8px);
+            background: var(--glass-hover);
+            box-shadow: 
+                inset 0 1.5px 1px var(--glass-rim-top),
+                inset 0 0 0 1px var(--glass-border),
+                0 8px 16px var(--glass-ambient-shadow);
+            z-index: 10;
+        }
+        
+        .dock-btn:active { transform: scale(0.95); }
+
+        .dock-dot {
             position: absolute;
-            bottom: -3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            border-radius: 3px;
+            bottom: -6px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-sub);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .dock-btn:hover .dock-dot { opacity: 1; transform: translateY(4px); }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--text-main), var(--text-sub));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* === MOBILE OPTIMIZATIONS === */
-        @media (max-width: 768px) {
-            .glass { 
-                backdrop-filter: blur(24px) saturate(160%); 
-                -webkit-backdrop-filter: blur(24px) saturate(160%);
-            }
-            .card-shimmer::after { display: none; }
-            button, a { 
-                min-height: 44px; 
-                min-width: 44px;
-            }
-            .mobile-compact { padding: 0.75rem !important; }
-        }
-
-        /* === SCROLL PROGRESS === */
-        #scroll-progress {
-            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-hover) 50%, var(--accent) 100%);
-            box-shadow: 0 0 20px var(--accent-glow);
-            will-change: width;
-        }
-        
-        /* === MOBILE MENU === */
-        #mobile-menu { 
-            backdrop-filter: blur(40px); 
-            -webkit-backdrop-filter: blur(40px);
+        #mobile-menu {
+            backdrop-filter: blur(60px) saturate(250%);
+            -webkit-backdrop-filter: blur(60px) saturate(250%);
+            background: var(--glass-base);
             will-change: transform;
         }
 
-        /* === FOCUS STYLES === */
-        *:focus-visible { 
-            outline: 2px solid var(--accent); 
-            outline-offset: 3px; 
-            border-radius: 4px;
+        @keyframes floatUp { 
+            0% { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(15px); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
+        }
+        .stagger-enter { 
+            animation: floatUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
 
-        /* === SELECTION === */
-        ::selection { 
-            background: var(--accent); 
-            color: white;
+        .icon-stroke {
+            stroke-width: 1.5;
         }
 
-        /* === CONTAINER === */
-        @media (max-width: 640px) {
-            .container-mobile { 
-                padding-left: 1rem; 
-                padding-right: 1rem;
-            }
+        .weather-pulse {
+            animation: weatherSoftPulse 3s ease-in-out infinite;
+        }
+        @keyframes weatherSoftPulse {
+            0% { transform: scale(1); opacity: 0.8;}
+            50% { transform: scale(1.1); opacity: 1;}
+            100% { transform: scale(1); opacity: 0.8;}
         }
 
-        /* === PERFORMANCE OPTIMIZATIONS === */
-        .perf-gpu {
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
-
-        /* CSS Containment for isolated components */
-        .card-container {
-            contain: layout style paint;
-        }
     </style>
 </head>
-<body class="min-h-screen relative">
+<body class="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
 
-    <!-- Scanlines -->
-    <div class="scanlines"></div>
+    <!-- The Studio Background -->
+    <div class="studio-lights"></div>
+    <div class="studio-bg"></div>
 
-    <!-- Background Grid -->
-    <div class="fixed inset-0 z-0 pointer-events-none">
-        <div class="absolute inset-0 bg-grid opacity-[0.12]"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg-main)]"></div>
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-[0.02] blur-[100px] rounded-full"></div>
-    </div>
+    <!-- Floating Toasts -->
+    <div id="toast-container" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-3 pointer-events-none w-max max-w-[90vw]"></div>
 
-    <!-- Toast Container -->
-    <div id="toast-container" role="status" aria-live="polite"></div>
+    <!-- === TOP NAVIGATION BAR === -->
+    <nav class="fixed top-6 left-0 right-0 z-50 px-4 md:px-8 flex justify-center pointer-events-none">
+        <div id="main-top-nav" class="ultra-clear-glass refract-element rounded-full p-2.5 px-3 flex items-center justify-between w-full max-w-[1400px] pointer-events-auto transition-colors duration-500 relative z-50">
+            
+            <!-- Left: Logo & Title -->
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer group pl-1 pr-2 md:pr-4 py-1.5 rounded-full hover:bg-[var(--glass-hover)] transition-colors shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="nav-logo-bg shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
+                </div>
+                <span class="font-bold tracking-tight text-[1.1rem] hidden lg:block nav-title">NDM TOOL</span>
+            </div>
 
-    <!-- === SIDEBAR === -->
-    <aside class="fixed top-0 left-0 w-full h-14 md:h-16 md:w-20 md:h-full z-50 glass border-b md:border-b-0 md:border-r border-[var(--border)] flex md:flex-col justify-between items-center py-3 md:py-6 px-4 md:px-0 transition-all duration-300" role="navigation" aria-label="Main navigation">
-        <!-- Logo -->
-        <div class="relative group cursor-pointer" onclick="window.location.reload()" role="button" tabindex="0" aria-label="Reload page">
-            <div class="absolute inset-0 bg-[var(--accent)] opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 rounded-xl"></div>
-            <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" 
-                 alt="NDM Logo" 
-                 class="relative w-10 h-10 md:w-12 md:h-12 rounded-xl shadow-2xl group-hover:border-[var(--accent)] border-2 border-[var(--border)] transition-all duration-300 group-hover:scale-105 object-cover"
-                 loading="eager">
+            <!-- Center: Thanh Tìm Kiếm Tích Hợp -->
+            <div class="flex-1 max-w-2xl mx-2 md:mx-6 group z-10">
+                <div class="nav-search-wrapper rounded-full flex items-center px-3 md:px-4 h-10 transition-all duration-300 w-full">
+                    <i data-lucide="search" class="w-4 h-4 md:w-5 md:h-5 text-[var(--text-sub)] group-focus-within:text-[var(--text-main)] transition-colors shrink-0"></i>
+                    <input type="text" 
+                           id="search-input" 
+                           placeholder="Tìm kiếm công cụ..." 
+                           class="bg-transparent border-none w-full px-2 md:px-3 text-[var(--text-main)] placeholder-[var(--text-sub)] focus:outline-none text-sm md:text-base font-medium">
+                    <button id="clear-search" class="hidden text-[var(--text-sub)] hover:text-[var(--text-main)] transition-colors shrink-0" onclick="AppController.clearSearch()">
+                        <i data-lucide="x-circle" class="w-4 h-4 md:w-5 md:h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0 pr-1 z-10">
+                <div class="hidden md:flex items-center gap-1">
+                    <button onclick="AppController.toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" title="Theme">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block icon-stroke"></i>
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden icon-stroke"></i>
+                    </button>
+                    <button onclick="AppController.toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all font-bold text-xs uppercase tracking-wider" title="Language">
+                        <span id="lang-btn-text">VN</span>
+                    </button>
+                    
+                    <div class="w-px h-5 bg-[var(--glass-border)] mx-2"></div>
+                    
+                    <!-- Donate Button with Text -->
+                    <a href="https://ducmanh.io.vn/donate" target="_blank" class="px-3 py-2 rounded-full flex items-center gap-2 text-pink-500 hover:bg-[var(--glass-base)] transition-all group" title="Donate">
+                        <i data-lucide="heart" class="w-5 h-5 fill-current group-hover:scale-110 transition-transform"></i>
+                        <span class="text-sm font-bold hidden lg:block tracking-wide">Donate</span>
+                    </a>
+                    <!-- Telegram Button with Text -->
+                    <a href="https://t.me/ducmanh" target="_blank" class="px-3 py-2 rounded-full flex items-center gap-2 text-[var(--text-sub)] hover:text-[#229ED9] hover:bg-[var(--glass-base)] transition-all group" title="Telegram">
+                        <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-1 transition-transform icon-stroke"></i>
+                        <span class="text-sm font-bold hidden lg:block tracking-wide">Telegram</span>
+                    </a>
+                </div>
+
+                <div class="hidden md:block w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_12px_var(--success)] animate-pulse ml-2 mr-1" title="System Online"></div>
+
+                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" onclick="AppController.toggleMobileMenu()">
+                    <i data-lucide="menu" class="w-6 h-6 icon-stroke"></i>
+                </button>
+            </div>
         </div>
+    </nav>
 
-        <!-- Desktop Controls -->
-        <div class="hidden md:flex flex-col gap-3 items-center">
-            <button onclick="AppController.toggleTheme()" 
-                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all duration-300 flex items-center justify-center group" 
-                    title="Toggle theme"
-                    aria-label="Toggle theme">
-                <i data-lucide="sun" class="w-5 h-5 hidden dark:block transition-transform group-hover:rotate-180 duration-700"></i>
-                <i data-lucide="moon" class="w-5 h-5 block dark:hidden transition-transform group-hover:-rotate-12 duration-500"></i>
+    <!-- === FULL SCREEN MOBILE MENU === -->
+    <div id="mobile-menu" class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] md:hidden flex flex-col p-6 overflow-y-auto glow-group">
+        <div class="flex justify-end mb-8 mt-2">
+            <button onclick="AppController.toggleMobileMenu()" class="w-12 h-12 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] active:scale-95 transition-transform">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="mb-10 text-center">
+            <div class="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden shadow-2xl">
+                <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="NDM Logo" class="w-full h-full object-cover">
+            </div>
+            <h2 class="font-bold text-2xl text-[var(--text-main)] mb-1 tracking-tight">Commander Center</h2>
+            <p class="text-sm text-[var(--text-sub)] font-medium">Bộ công cụ toàn diện</p>
+        </div>
+        
+        <nav class="flex-1 flex flex-col gap-3">
+            <button onclick="AppController.toggleTheme(); AppController.toggleMobileMenu();" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
+                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block icon-stroke"></i>
+                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden icon-stroke"></i>
+                </div>
+                <span>Chế độ hiển thị</span>
             </button>
             
-            <button onclick="AppController.toggleLang()" 
-                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] font-code font-bold text-[10px] transition-all duration-300 flex items-center justify-center group" 
-                    title="Change language"
-                    aria-label="Change language">
-                <span id="lang-btn-text" class="group-hover:scale-110 transition-transform">VN</span>
+            <button onclick="AppController.toggleLang(); AppController.toggleMobileMenu();" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
+                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
+                    <i data-lucide="globe" class="w-5 h-5 icon-stroke"></i>
+                </div>
+                <span id="lang-text-mobile">Tiếng Việt</span>
             </button>
 
-            <a href="https://ducmanh.io.vn/donate" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-pink-500 hover:text-pink-600 hover:border-pink-500 transition-all duration-300 flex items-center justify-center group" 
-               title="Donate"
-               aria-label="Donate">
-                <i data-lucide="heart" class="w-5 h-5 group-hover:scale-110 transition-transform fill-current"></i>
+            <a href="https://t.me/ducmanh" target="_blank" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
+                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
+                    <i data-lucide="send" class="w-5 h-5 icon-stroke"></i>
+                </div>
+                <span>Telegram</span>
             </a>
 
-            <div class="w-px h-6 bg-gradient-to-b from-transparent via-[var(--border)] to-transparent my-1"></div>
-
-            <button onclick="window.open('https://t.me/ducmanh', '_blank')" 
-                    class="relative w-11 h-11 rounded-xl glass border border-[var(--border)] text-[var(--text-sub)] hover:text-[#229ED9] hover:border-[#229ED9] transition-all duration-300 flex items-center justify-center group" 
-                    title="Telegram"
-                    aria-label="Contact via Telegram">
-                <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"></i>
-            </button>
-        </div>
-
-        <!-- Mobile Menu Button -->
-        <button class="md:hidden text-[var(--text-main)] w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--bg-card)] active:scale-95 transition-all" 
-                onclick="AppController.toggleMobileMenu()" 
-                aria-label="Open menu"
-                aria-expanded="false">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
-
-        <!-- Status -->
-        <div class="hidden md:flex flex-col items-center gap-1.5" role="status" aria-label="System status">
-            <div class="relative">
-                <div class="w-2.5 h-2.5 rounded-full bg-[var(--success)] status-online"></div>
-                <div class="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[var(--success)] animate-ping opacity-75"></div>
-            </div>
-            <span class="text-[7px] font-code text-[var(--text-sub)] uppercase tracking-wider font-medium">Live</span>
-        </div>
-    </aside>
-
-    <!-- === MOBILE MENU === -->
-    <div id="mobile-menu" 
-         class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-300 ease-out md:hidden"
-         role="dialog"
-         aria-modal="true"
-         aria-label="Mobile menu">
-        <div class="absolute inset-0 bg-[var(--bg-main)]/98 backdrop-blur-3xl"></div>
-        
-        <div class="relative h-full flex flex-col p-6 overflow-y-auto">
-            <!-- Close Button -->
-            <div class="flex justify-end mb-6">
-                <button onclick="AppController.toggleMobileMenu()" 
-                        class="text-[var(--text-main)] w-11 h-11 flex items-center justify-center rounded-xl glass border border-[var(--border)] active:scale-95 transition-all" 
-                        aria-label="Close menu">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- Logo & Brand -->
-            <div class="mb-8">
-                <div class="w-14 h-14 rounded-2xl mb-4 shadow-lg shadow-[var(--accent)]/20 overflow-hidden border-2 border-[var(--accent)]">
-                    <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" 
-                         alt="NDM Logo" 
-                         class="w-full h-full object-cover"
-                         loading="lazy">
+            <a href="https://ducmanh.io.vn/donate" target="_blank" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
+                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
+                    <i data-lucide="heart" class="w-5 h-5 icon-stroke"></i>
                 </div>
-                <h2 class="font-display text-xl text-[var(--text-main)] mb-1">Commander Center</h2>
-                <p class="text-xs text-[var(--text-sub)] font-body">Bộ công cụ toàn diện</p>
-            </div>
+                <span>Donate Ủng Hộ</span>
+            </a>
             
-            <!-- Menu Items -->
-            <nav class="flex-1 flex flex-col gap-3 min-h-0" role="navigation">
-                <button onclick="AppController.toggleTheme(); AppController.toggleMobileMenu();" 
-                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
-                    <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
-                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-                        <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
-                    </div>
-                    <span class="text-sm">Chế độ hiển thị</span>
-                </button>
-                
-                <button onclick="AppController.toggleLang(); AppController.toggleMobileMenu();" 
-                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
-                    <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
-                        <i data-lucide="globe" class="w-4 h-4"></i>
-                    </div>
-                    <span class="text-sm" id="lang-text-mobile">Tiếng Việt</span>
-                </button>
-
-                <button onclick="window.open('https://t.me/ducmanh', '_blank'); AppController.toggleMobileMenu();" 
-                        class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
-                    <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                    </div>
-                    <span class="text-sm">Telegram</span>
-                </button>
-
-                <a href="https://ducmanh.io.vn/donate" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="w-full h-12 text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-pink-500/20 p-3 rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98">
-                    <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <span class="text-sm">Donate Ủng Hộ</span>
-                </a>
-
-                <div class="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent my-1"></div>
-
-                <a href="https://ducmanh.io.vn" 
-                   class="w-full h-12 text-[var(--text-main)] hover:text-[var(--accent)] p-3 border border-[var(--border)] hover:border-[var(--accent)] rounded-xl flex items-center gap-4 font-heading font-semibold transition-all active:scale-98 glass">
-                    <div class="w-8 h-8 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
-                        <i data-lucide="home" class="w-4 h-4"></i>
-                    </div>
-                    <span class="text-sm">Trang chủ</span>
-                </a>
-            </nav>
-
-            <!-- Footer -->
-            <footer class="mt-6 pt-6 border-t border-[var(--border)]">
-                <div class="flex items-center gap-2 text-[var(--text-sub)] text-xs font-code">
-                    <div class="w-2 h-2 rounded-full bg-[var(--success)] status-online"></div>
-                    <span>System Online • V3.2 PRO</span>
+            <a href="https://ducmanh.io.vn" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
+                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
+                    <i data-lucide="home" class="w-5 h-5 icon-stroke"></i>
                 </div>
-            </footer>
-        </div>
+                <span>Trang chủ</span>
+            </a>
+        </nav>
+
+        <footer class="mt-8 pt-8 border-t border-[var(--glass-border)] flex items-center justify-center gap-2 text-[var(--text-sub)] text-xs font-medium">
+            <div class="w-2.5 h-2.5 rounded-full bg-[var(--success)] animate-pulse"></div>
+            <span>System Online • V3.2 PRO</span>
+        </footer>
     </div>
 
     <!-- === MAIN CONTENT === -->
-    <main class="relative z-10 md:ml-20 min-h-screen px-4 md:px-8 lg:px-12 py-6 md:py-12 max-w-[1800px] mx-auto pb-6 container-mobile">
+    <main class="relative z-10 min-h-screen px-4 md:px-8 pt-28 md:pt-32 pb-16 max-w-[1400px] mx-auto">
         
-        <!-- Header -->
-        <header class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10 animate-enter">
-            <div class="flex flex-col gap-3 md:gap-4 justify-center">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <div class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg glass border border-[var(--border)] flex items-center gap-1.5 md:gap-2 group hover:border-[var(--success)] transition-all">
-                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[var(--success)] status-online"></span>
-                        <span class="text-[9px] md:text-[10px] font-code text-[var(--text-sub)] group-hover:text-[var(--success)] tracking-widest uppercase transition-colors font-medium">System Online</span>
-                    </div>
-                    <div class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg glass border border-[var(--accent)]">
-                        <span class="text-[9px] md:text-[10px] font-code gradient-text tracking-widest uppercase font-bold">V 3.2 PRO</span>
+        <header class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 mb-20 stagger-enter glow-group">
+            
+            <!-- Cột Trái: Title -->
+            <div class="lg:col-span-5 flex flex-col justify-center gap-5 pr-0 md:pr-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="inline-flex items-center gap-2 px-5 py-2 glass-panel glass-pill w-max">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_8px_var(--success)] animate-pulse"></span>
+                        <span class="text-xs font-bold text-[var(--text-main)] tracking-widest uppercase">System Online</span>
                     </div>
                 </div>
-                <div>
-                    <h1 class="font-display text-[var(--text-main)] leading-[0.85] uppercase text-4xl md:text-5xl lg:text-6xl mb-2">
-                        NDM <span class="gradient-text">TOOL</span>
-                    </h1>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <p class="text-xs md:text-sm text-[var(--text-sub)] font-body max-w-md text-balance" id="subtitle-text">Bộ công cụ toàn diện cho mọi nhu cầu</p>
-                        <a href="https://ducmanh.io.vn/donate" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-bold text-[10px] uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/30 transition-all active:scale-95 group">
-                            <i data-lucide="heart" class="w-3 h-3 fill-current group-hover:scale-110 transition-transform"></i>
-                            <span>Donate</span>
-                        </a>
-                    </div>
+                
+                <h1 class="font-bold text-[var(--text-main)] text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] leading-[1] tracking-tighter">
+                    Duc <br> <span class="text-gradient">Tools</span>
+                </h1>
+                
+                <div class="flex flex-col sm:flex-row sm:items-center gap-5 mt-1">
+                    <p class="text-[var(--text-sub)] text-lg max-w-sm leading-relaxed font-medium" id="subtitle-text">Bộ công cụ toàn diện với trải nghiệm thị giác đỉnh cao.</p>
                 </div>
             </div>
 
-            <!-- Time & Greeting -->
-            <div class="w-full glass rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 relative overflow-hidden group border border-[var(--border)] hover:border-[var(--accent)] transition-all duration-500">
-                <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="absolute top-0 left-0 w-12 md:w-16 h-12 md:h-16 border-t-2 border-l-2 border-[var(--accent)]/20 rounded-tl-xl md:rounded-tl-2xl"></div>
-                <div class="absolute bottom-0 right-0 w-12 md:w-16 h-12 md:h-16 border-b-2 border-r-2 border-[var(--accent)]/20 rounded-br-xl md:rounded-br-2xl"></div>
+            <!-- Cột Phải - WIDGET ĐỒNG HỒ -->
+            <div id="clock-panel" class="lg:col-span-7 ultra-clear-glass refract-element interactive-glass rounded-[36px] p-5 md:p-6 flex flex-col justify-between relative overflow-hidden min-h-[260px] w-full">
+                
+                <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-[var(--accent)] opacity-[0.06] rounded-full blur-[80px] translate-x-1/4 -translate-y-1/4 pointer-events-none"></div>
 
-                <div class="flex-1 text-center md:text-left z-10 w-full md:w-auto">
-                    <p id="greeting-text" class="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-[var(--text-main)] mb-1.5 md:mb-2 font-heading text-balance">Chào buổi sáng, Sếp!</p>
-                    <div class="flex items-center gap-1.5 md:gap-2 justify-center md:justify-start">
-                        <i data-lucide="calendar-days" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[var(--accent)]"></i>
-                        <p id="date-display" class="text-xs md:text-sm font-code text-[var(--text-sub)] uppercase tracking-wider font-medium">Thứ Bảy, 05/12/2025</p>
+                <div class="flex justify-between items-start z-10 w-full mb-2">
+                    <div class="flex flex-col gap-0.5">
+                        <p id="greeting-text" class="text-lg md:text-xl font-bold text-[var(--text-main)] tracking-tight">Chào buổi sáng,</p>
+                        <div class="flex items-center gap-1.5 text-[var(--text-sub)]">
+                            <i data-lucide="map-pin" class="w-3 h-3"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Hà Nội, VN</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5">
+                        <div class="glass-input rounded-full px-2.5 py-1 flex items-center gap-1.5 border border-[var(--glass-border)] shadow-sm">
+                            <i data-lucide="battery" id="battery-icon" class="w-3.5 h-3.5 text-[var(--text-sub)] shrink-0"></i>
+                            <span class="text-[10px] font-bold text-[var(--text-main)] w-[28px] text-right" id="battery-text">--%</span>
+                        </div>
+                        <div class="glass-input rounded-full px-2.5 py-1 flex items-center gap-1.5 border border-[var(--glass-border)] shadow-sm">
+                            <i data-lucide="wifi" id="network-icon" class="w-3.5 h-3.5 text-[var(--text-sub)] shrink-0"></i>
+                            <span class="text-[10px] font-bold text-[var(--text-main)] hidden sm:block" id="network-text">N/A</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="relative z-10">
-                    <div class="flex items-baseline gap-0.5 md:gap-1 font-code font-bold text-3xl md:text-4xl lg:text-5xl tracking-wide md:tracking-wider">
-                        <div class="flex items-center gap-0.5 md:gap-1">
-                            <span id="clock-hours" class="gradient-text">09</span>
-                            <span class="text-[var(--accent)] animate-pulse">:</span>
-                            <span id="clock-minutes" class="gradient-text">41</span>
+                <!-- Đã Sửa Lỗi Clock & Ngày theo yêu cầu -->
+                <div class="flex flex-col gap-3 my-auto z-10 w-full mb-4 pt-4">
+                    
+                    <!-- Khối Ngày: Được tách ra hàng trên riêng biệt -->
+                    <div class="flex justify-start">
+                        <div class="px-4 py-2.5 rounded-2xl bg-[var(--glass-hover)] border border-[var(--glass-border)] shadow-inner flex items-center gap-3 backdrop-blur-md w-max">
+                            <span class="text-[10px] text-[var(--text-sub)] font-bold uppercase tracking-widest flex items-center gap-1.5 border-r border-[var(--glass-border)]/50 pr-3">
+                                <i data-lucide="calendar-days" class="w-4 h-4"></i> Hôm nay
+                            </span>
+                            <span id="date-display" class="text-[13px] font-bold text-[var(--text-main)] uppercase tracking-wider">Thứ Năm, 26/02</span>
+                            <span class="text-[10px] text-[var(--accent)] font-bold uppercase tracking-widest bg-[var(--accent)]/10 px-1.5 py-0.5 rounded-md" id="week-display">Tuần --</span>
                         </div>
-                        <span class="text-base md:text-lg text-[var(--text-sub)] ml-1 md:ml-2" id="clock-seconds">30</span>
                     </div>
-                    <div class="text-[9px] md:text-[10px] font-code text-[var(--text-sub)] text-center md:text-right mt-1 tracking-wider uppercase font-medium">Local Time</div>
+
+                    <!-- Khối Giờ: Sử dụng tabular-nums để số không bị nhảy khung và fix width cho giây -->
+                    <div class="text-[4rem] md:text-[5rem] font-extrabold text-[var(--text-main)] tracking-tighter leading-none flex items-baseline drop-shadow-sm tabular-nums">
+                        <span id="clock-hours">09</span>
+                        <span class="text-[var(--text-sub)] animate-pulse mx-1.5 transform -translate-y-2 md:-translate-y-3">:</span>
+                        <span id="clock-minutes">36</span>
+                        
+                        <!-- Bọc giây trong div có width cố định để không bị xô lệch layout -->
+                        <div class="flex justify-start w-[65px] md:w-[85px]">
+                            <span class="text-[2rem] md:text-[2.5rem] font-bold text-[var(--text-sub)] ml-2 tracking-normal tabular-nums" id="clock-seconds">00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto z-10 w-full">
+                    
+                    <div class="glass-input rounded-xl p-2.5 md:p-3 flex items-center justify-between border border-[var(--glass-border)] hover:bg-[var(--glass-hover)] transition-colors">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 weather-pulse shadow-inner">
+                                <i data-lucide="cloud-sun" id="main-weather-icon" class="w-4 h-4 md:w-5 md:h-5 icon-stroke"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-bold text-[var(--text-sub)] uppercase tracking-widest mb-0.5" id="weather-desc">Đang tải</span>
+                                <span class="text-sm md:text-base font-bold text-[var(--text-main)]" id="weather-temp">--°C</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-0.5 text-[10px] font-semibold text-[var(--text-sub)] border-l border-[var(--glass-border)] pl-2.5 md:pl-3">
+                            <div class="flex items-center gap-1 justify-end" title="Cảm giác như">
+                                <span id="weather-feels">--°C</span><i data-lucide="thermometer-sun" class="w-3 h-3 text-orange-400"></i>
+                            </div>
+                            <div class="flex items-center gap-1 justify-end" title="Độ ẩm">
+                                <span id="weather-hum">--%</span><i data-lucide="droplets" class="w-3 h-3 text-blue-400"></i>
+                            </div>
+                            <div class="flex items-center gap-1 justify-end" title="Gió">
+                                <span id="weather-wind">--</span><i data-lucide="wind" class="w-3 h-3 text-teal-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-input rounded-xl p-2.5 md:p-3 flex items-center justify-between border border-[var(--glass-border)] hover:bg-[var(--glass-hover)] transition-colors">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 relative overflow-hidden shadow-inner">
+                                <i data-lucide="moon" class="w-4 h-4 md:w-5 md:h-5 fill-current opacity-80"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-bold text-[var(--text-sub)] uppercase tracking-widest mb-0.5">Lịch Âm</span>
+                                <span id="lunar-date" class="text-sm md:text-base font-bold text-[var(--text-main)]">--/--</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center border-l border-[var(--glass-border)] pl-2.5 md:pl-3">
+                            <div id="lunar-year" class="text-[9px] md:text-[10px] font-bold text-[var(--accent)] bg-[var(--accent)]/10 px-1.5 py-1 rounded-md uppercase tracking-wider border border-[var(--accent)]/20 text-center leading-tight">
+                                Năm Nay
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </header>
 
-        <!-- Search & Filter -->
-        <section class="flex flex-col gap-4 md:gap-6 mb-8 md:mb-12 pb-6 border-b border-[var(--border)] animate-enter" style="animation-delay: 0.1s;">
-            <div class="relative w-full group">
-                <div class="relative flex items-center glass rounded-xl overflow-hidden border border-[var(--border)] group-hover:border-[var(--accent)] focus-within:border-[var(--accent)] transition-all duration-300">
-                    <div class="p-3 md:p-4 text-[var(--text-sub)] group-hover:text-[var(--accent)] group-focus-within:text-[var(--accent)] transition-colors border-r border-[var(--border)]">
-                        <i data-lucide="search" class="w-4 h-4 md:w-5 md:h-5"></i>
-                    </div>
-                    <input type="text" 
-                           id="search-input" 
-                           placeholder="TÌM KIẾM CÔNG CỤ..." 
-                           class="bg-transparent border-none w-full px-3 md:px-4 py-3 md:py-4 text-[var(--text-main)] placeholder-[var(--text-sub)] focus:outline-none font-code text-xs md:text-sm uppercase tracking-wider font-medium"
-                           aria-label="Search tools">
-                    <button id="clear-search" 
-                            class="hidden p-3 md:p-4 text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 transition-all" 
-                            onclick="AppController.clearSearch()" 
-                            aria-label="Clear search">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
+        <!-- Lọc Danh Mục -->
+        <section class="stagger-enter mb-10" style="animation-delay: 0.1s;">
+            <div class="category-scroll pb-4">
+                <div id="categories-container" class="flex gap-1 glass-panel glass-pill p-1.5 w-max mx-auto"></div>
             </div>
-            <div id="categories-container" 
-                 class="flex flex-wrap gap-2 justify-start" 
-                 role="tablist" 
-                 aria-label="Tool categories"></div>
         </section>
 
         <!-- Tools Grid -->
-        <section class="mb-8 animate-enter" style="animation-delay: 0.2s;">
-            <div class="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
-                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg glass border border-[var(--border)] flex items-center justify-center">
-                    <i data-lucide="grid-3x3" class="w-4 h-4 md:w-5 md:h-5 text-[var(--text-sub)]"></i>
+        <section class="stagger-enter" style="animation-delay: 0.2s;">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-2xl glass-input flex items-center justify-center">
+                    <i data-lucide="layers" class="w-6 h-6 text-[var(--text-main)] icon-stroke"></i>
                 </div>
-                <h2 class="text-base md:text-lg font-heading font-bold text-[var(--text-main)] tracking-wide uppercase" id="tools-title">Tất cả công cụ</h2>
-                <div class="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
+                <h2 class="text-2xl font-bold text-[var(--text-main)] tracking-tight" id="tools-title">Tất cả công cụ</h2>
+                <div class="h-px flex-1 bg-gradient-to-r from-[var(--glass-border)] to-transparent ml-4"></div>
             </div>
-            <div id="projects-grid" 
-                 class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"
-                 role="list"></div>
+            
+            <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 glow-group justify-center"></div>
         </section>
 
         <!-- Empty State -->
-        <div id="empty-state" 
-             class="hidden py-16 md:py-24 text-center glass border-2 border-dashed border-[var(--border)] rounded-xl md:rounded-2xl mt-8 animate-enter"
-             role="status">
-            <div class="flex flex-col items-center gap-4 px-4">
-                <div class="w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl glass border border-[var(--border)] flex items-center justify-center">
-                    <i data-lucide="search-x" class="w-8 h-8 md:w-10 md:h-10 text-[var(--text-sub)] opacity-50"></i>
-                </div>
-                <div>
-                    <p class="text-[var(--text-main)] font-bold text-lg md:text-xl mb-2 font-heading" id="empty-title">Không tìm thấy kết quả</p>
-                    <p class="text-[var(--text-sub)] font-body text-sm tracking-wide text-balance" id="empty-text">Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
-                </div>
-                <button onclick="AppController.resetFilters()" 
-                        class="mt-4 px-6 md:px-8 py-2.5 md:py-3 border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white font-code text-xs md:text-sm uppercase tracking-widest transition-all rounded-xl font-bold btn-primary active:scale-95" 
-                        id="reset-btn">
-                    <span class="relative z-10">Đặt lại bộ lọc</span>
-                </button>
+        <div id="empty-state" class="hidden py-24 text-center glass-panel mt-10 stagger-enter">
+            <div class="w-24 h-24 mx-auto glass-panel glass-pill flex items-center justify-center mb-6">
+                <i data-lucide="search-x" class="w-10 h-10 text-[var(--text-sub)] icon-stroke"></i>
             </div>
+            <p class="text-[var(--text-main)] font-bold text-3xl mb-3 tracking-tight" id="empty-title">Không tìm thấy</p>
+            <p class="text-[var(--text-sub)] text-lg mb-8" id="empty-text">Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
+            <button onclick="AppController.resetFilters()" class="px-10 py-4 glass-panel glass-pill interactive-glass font-bold text-[var(--text-main)] uppercase tracking-wider text-sm">
+                Đặt lại bộ lọc
+            </button>
         </div>
 
-        <!-- Why Choose Us -->
-        <section id="why-choose-us" 
-                 class="mt-16 md:mt-24 pt-8 border-t border-[var(--border)] animate-enter" 
-                 style="animation-delay: 0.3s;">
-            <div class="flex flex-col items-center text-center mb-8 md:mb-12">
-                <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-[var(--accent)]/10 border border-[var(--accent)]/30 mb-4 shadow-[0_0_40px_-10px_var(--accent-glow)]">
-                    <i data-lucide="award" class="w-6 h-6 md:w-8 md:h-8 text-[var(--accent)]"></i>
-                </div>
-                <h2 class="text-xl md:text-2xl lg:text-3xl font-heading font-bold text-[var(--text-main)] mb-2" id="why-choose-title">Vì sao chọn chúng tôi</h2>
-                <p class="text-sm md:text-base text-[var(--text-sub)] max-w-lg mx-auto text-balance">Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày</p>
+        <!-- Why Choose Us Section -->
+        <section id="why-choose-us" class="mt-32 pt-16 border-t border-[var(--glass-border)] stagger-enter" style="animation-delay: 0.3s;">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-[var(--text-main)] mb-4 tracking-tight" id="why-choose-title">Vì sao chọn chúng tôi</h2>
+                <p class="text-lg text-[var(--text-sub)] max-w-2xl mx-auto font-medium" id="why-choose-desc">Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày</p>
             </div>
-            <div id="why-choose-grid" 
-                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"></div>
+            <div id="why-choose-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 glow-group"></div>
         </section>
 
         <!-- Footer -->
-        <footer class="py-4 text-center text-[var(--text-sub)] text-[10px] md:text-xs font-code border-t border-[var(--border)] mt-8 opacity-80">
-            <span id="copyright"></span>
+        <footer class="mt-16 py-6 text-center border-t border-[var(--glass-border)]">
+            <p class="text-sm text-[var(--text-sub)] font-medium tracking-wide" id="copyright"></p>
         </footer>
 
     </main>
 
-    <!-- === TACTICAL DOCK === -->
-    <nav id="tactical-dock" 
-         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container dock-hidden"
-         role="navigation"
-         aria-label="Quick actions">
-        
-        <!-- Pinned Menu -->
-        <div id="pinned-menu" 
-             class="dock-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 md:w-80 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 max-h-[50vh] overflow-hidden"
-             role="menu"
-             aria-label="Pinned tools">
-            <div class="flex items-center justify-between px-2.5 py-1.5 border-b border-[var(--border)]">
-                <div class="flex items-center gap-1.5">
-                    <i data-lucide="pin" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
-                    <span class="text-[10px] md:text-xs text-[var(--text-sub)] font-code font-bold uppercase tracking-widest" id="pinned-menu-title">Đã ghim</span>
+    <!-- === THE SUPER DOCK === -->
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-transform duration-500" id="tactical-dock">
+        <!-- Pinned Popup -->
+        <div id="pinned-menu" class="absolute bottom-[calc(100%+20px)] left-1/2 -translate-x-1/2 w-[340px] md:w-[400px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+            <div class="flex items-center justify-between mb-6 px-2">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="bookmark" class="w-5 h-5 text-[var(--text-main)] icon-stroke"></i>
+                    <span class="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider" id="pinned-menu-title">Đã ghim</span>
                 </div>
-                <span class="text-[10px] md:text-xs font-code text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full font-medium" id="pinned-badge-menu">0</span>
+                <span class="w-8 h-8 rounded-full glass-input flex items-center justify-center text-sm font-bold text-[var(--text-main)]" id="pinned-badge-menu">0</span>
             </div>
-            <div id="pinned-menu-content" 
-                 class="flex flex-col gap-1 overflow-y-auto scrollbar-hide py-1"></div>
+            <div id="pinned-menu-content" class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto category-scroll pr-2 glow-group"></div>
         </div>
 
-        <!-- Contact Menu -->
-        <div id="contact-menu" 
-             class="dock-popup absolute bottom-full right-0 mb-4 w-72 dock-glass rounded-2xl p-2.5 md:p-3 flex flex-col gap-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30"
-             role="menu"
-             aria-label="Contact options">
-            <div class="flex items-center justify-between px-2.5 py-1.5 border-b border-[var(--border)]">
-                <div class="flex items-center gap-1.5">
-                    <i data-lucide="mail" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
-                    <span class="text-[10px] md:text-xs text-[var(--text-sub)] font-code font-bold uppercase tracking-widest">Kết nối</span>
-                </div>
+        <!-- Contact Popup -->
+        <div id="contact-menu" class="absolute bottom-[calc(100%+20px)] right-0 md:left-1/2 md:-translate-x-1/2 md:translate-x-[60px] w-[300px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+            <div class="flex items-center gap-2 mb-6 px-2">
+                <i data-lucide="mail" class="w-5 h-5 text-[var(--text-main)] icon-stroke"></i>
+                <span class="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Kết nối</span>
             </div>
-            <a href="https://www.facebook.com/ducmanh" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
-               role="menuitem">
-                <div class="w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-lg shadow-lg">
-                    <i data-lucide="facebook" class="w-4 h-4"></i>
-                </div>
-                <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-blue-500 transition-colors">Facebook</span>
-            </a>
-            <a href="https://t.me/ducmanh" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
-               role="menuitem">
-                <div class="w-8 h-8 flex items-center justify-center bg-sky-500 text-white rounded-lg shadow-lg">
-                    <i data-lucide="send" class="w-4 h-4"></i>
-                </div>
-                <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-sky-500 transition-colors">Telegram</span>
-            </a>
-            <a href="mailto:contact@ducmanh.io.vn" 
-               class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
-               role="menuitem">
-                <div class="w-8 h-8 flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-lg">
-                    <i data-lucide="mail" class="w-4 h-4"></i>
-                </div>
-                <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-rose-500 transition-colors">Email</span>
-            </a>
+            <div class="flex flex-col gap-3 glow-group">
+                <a href="https://www.facebook.com/ducmanh" target="_blank" class="popup-item p-3.5 flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="facebook" class="w-5 h-5 icon-stroke"></i>
+                    </div>
+                    <span class="font-bold text-[var(--text-main)]">Facebook</span>
+                </a>
+                <a href="https://t.me/ducmanh" target="_blank" class="popup-item p-3.5 flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="send" class="w-5 h-5 icon-stroke"></i>
+                    </div>
+                    <span class="font-bold text-[var(--text-main)]">Telegram</span>
+                </a>
+                <a href="mailto:contact@ducmanh.io.vn" class="popup-item p-3.5 flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="mail" class="w-5 h-5 icon-stroke"></i>
+                    </div>
+                    <span class="font-bold text-[var(--text-main)]">Email</span>
+                </a>
+            </div>
         </div>
 
-        <!-- Dock Actions -->
-        <div class="flex items-center justify-center gap-1 p-1.5 dock-glass rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.3)] transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-            <a href="https://ducmanh.io.vn" 
-               class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
-               aria-label="Go to home page">
-                <i data-lucide="home" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
+        <!-- The Dock -->
+        <nav class="super-dock ultra-clear-glass refract-element">
+            <a href="https://ducmanh.io.vn" class="dock-btn hidden sm:flex" title="Trang chủ">
+                <i data-lucide="home" class="w-6 h-6 icon-stroke"></i>
+                <span class="dock-dot"></span>
             </a>
-            <div class="w-px h-4 bg-white/10 mx-1"></div>
-            <button onclick="AppController.togglePinnedMenu()" 
-                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90 relative" 
-                    aria-label="View pinned tools">
-                <i data-lucide="pin" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
-                <span id="dock-pin-indicator" class="hidden absolute top-2 right-2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-pulse"></span>
+            <div class="w-px h-8 bg-[var(--glass-border)] self-center mx-2 hidden sm:block"></div>
+            
+            <button onclick="AppController.togglePinnedMenu()" class="dock-btn" title="Đã ghim">
+                <i data-lucide="bookmark" class="w-6 h-6 icon-stroke"></i>
+                <span id="dock-pin-indicator" class="absolute top-[10px] right-[10px] w-2 h-2 bg-[var(--accent)] rounded-full hidden"></span>
+                <span class="dock-dot"></span>
             </button>
-            <button onclick="AppController.toggleContactMenu()" 
-                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
-                    aria-label="Contact options">
-                <i data-lucide="message-circle" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
+            
+            <button onclick="AppController.toggleContactMenu()" class="dock-btn" title="Liên hệ">
+                <i data-lucide="message-circle" class="w-6 h-6 icon-stroke"></i>
+                <span class="dock-dot"></span>
             </button>
-            <div class="w-px h-4 bg-white/10 mx-1"></div>
-            <button onclick="AppController.scrollToTop()" 
-                    class="w-10 h-10 rounded-full hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] flex items-center justify-center transition-all group active:scale-90" 
-                    aria-label="Scroll to top">
-                <i data-lucide="arrow-up" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
+            
+            <div class="w-px h-8 bg-[var(--glass-border)] self-center mx-2"></div>
+            <button class="dock-btn" onclick="AppController.scrollToTop()" title="Lên trên">
+                <i data-lucide="arrow-up" class="w-6 h-6 icon-stroke"></i>
+                <span class="dock-dot"></span>
             </button>
-        </div>
-    </nav>
-
-    <!-- Scroll Progress -->
-    <div class="fixed top-0 left-0 w-full h-0.5 md:h-1 bg-[var(--border)] z-[100]" role="progressbar" aria-label="Scroll progress">
-        <div id="scroll-progress" class="h-full transition-all duration-150" style="width: 0%"></div>
+        </nav>
     </div>
 
-    <!-- === OPTIMIZED JAVASCRIPT === -->
+    <!-- === JAVASCRIPT === -->
     <script>
         'use strict';
 
-        const CONSTANTS = {
-            STORAGE_KEYS: {
-                LANG: 'app_lang',
-                THEME: 'app_theme',
-                PINS: 'ndm_pins_v8'
-            },
-            DEFAULTS: {
-                LANG: 'vi',
-                THEME: 'light'
-            },
-            TIMINGS: {
-                TOAST_DURATION: 3000,
-                DOCK_IDLE: 4000,
-                SCROLL_THRESHOLD: 5,
-                DEBOUNCE_DELAY: 300
+        // =========================================================================
+        // LIQUID LENS ENGINE
+        // =========================================================================
+        const LiquidLensEngine = (() => {
+            function applyToElement(element) {
+                if (!element) return;
+
+                const rect = element.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+
+                const width = Math.round(rect.width);
+                const height = Math.round(rect.height);
+                
+                let activeFilterId = element.getAttribute('data-refract-id');
+                if (activeFilterId) {
+                    const oldSvg = document.getElementById(activeFilterId + '-container');
+                    if (oldSvg) oldSvg.remove();
+                } else {
+                    activeFilterId = 'liquid-lens-' + Math.random().toString(36).substr(2, 9);
+                    element.setAttribute('data-refract-id', activeFilterId);
+                }
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.id = activeFilterId + '-container';
+                svg.style.cssText = 'position: absolute; width: 0; height: 0; pointer-events: none; z-index: -9999;';
+
+                const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+                filter.setAttribute('id', activeFilterId);
+                filter.setAttribute('filterUnits', 'userSpaceOnUse');
+                filter.setAttribute('x', '0'); filter.setAttribute('y', '0');
+                filter.setAttribute('width', width.toString()); filter.setAttribute('height', height.toString());
+
+                const feImage = document.createElementNS('http://www.w3.org/2000/svg', 'feImage');
+                feImage.setAttribute('id', `${activeFilterId}_map`);
+                feImage.setAttribute('width', width.toString()); feImage.setAttribute('height', height.toString());
+
+                const feDisplacementMap = document.createElementNS('http://www.w3.org/2000/svg', 'feDisplacementMap');
+                feDisplacementMap.setAttribute('in', 'SourceGraphic');
+                feDisplacementMap.setAttribute('in2', `${activeFilterId}_map`);
+                feDisplacementMap.setAttribute('xChannelSelector', 'R');
+                feDisplacementMap.setAttribute('yChannelSelector', 'G');
+                
+                filter.appendChild(feImage); filter.appendChild(feDisplacementMap);
+                svg.appendChild(filter); document.body.appendChild(svg);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                const data = new Uint8ClampedArray(width * height * 4);
+                const rawValues = new Float32Array(width * height * 2);
+                
+                const R = Math.min(width, height) / 2; 
+                const cx = width / 2; 
+                const cy = height / 2;
+                let index = 0, maxAbs = 0;
+
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const spineX = Math.max(R, Math.min(width - R, x));
+                        const spineY = Math.max(R, Math.min(height - R, y));
+                        const distX = x - spineX; 
+                        const distY = y - spineY;
+                        const d = Math.sqrt(distX*distX + distY*distY);
+                        
+                        let dx = 0, dy = 0;
+
+                        if (d <= R) {
+                            const mag = 0.04; 
+                            const edgeDistortion = Math.pow(d/R, 3) * 35; 
+                            dx = -(x - cx) * mag + (distX/R) * edgeDistortion;
+                            dy = -(y - cy) * mag + (distY/R) * edgeDistortion;
+                        }
+
+                        rawValues[index++] = dx; rawValues[index++] = dy;
+                        if (Math.abs(dx) > maxAbs) maxAbs = Math.abs(dx);
+                        if (Math.abs(dy) > maxAbs) maxAbs = Math.abs(dy);
+                    }
+                }
+
+                if (maxAbs === 0) maxAbs = 1;
+                const scaleAttr = maxAbs * 2;
+
+                index = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = (rawValues[index++] / scaleAttr) + 0.5;
+                    const g = (rawValues[index++] / scaleAttr) + 0.5;
+                    data[i] = r * 255; data[i + 1] = g * 255; data[i + 2] = 0; data[i + 3] = 255;
+                }
+
+                ctx.putImageData(new ImageData(data, width, height), 0, 0);
+                feImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL());
+                feDisplacementMap.setAttribute('scale', scaleAttr.toString());
+
+                element.style.backdropFilter = `url(#${activeFilterId}) blur(2px) saturate(200%) brightness(1.15)`;
+                element.style.webkitBackdropFilter = `url(#${activeFilterId}) blur(2px) saturate(200%) brightness(1.15)`;
             }
+
+            const resizeObserver = new ResizeObserver(entries => {
+                entries.forEach(entry => {
+                    requestAnimationFrame(() => applyToElement(entry.target));
+                });
+            });
+
+            function init(selector) {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    applyToElement(el);
+                    resizeObserver.observe(el);
+                });
+            }
+            return { init };
+        })();
+        // =========================================================================
+
+        const CONSTANTS = {
+            STORAGE_KEYS: { LANG: 'app_lang_ul_glass', THEME: 'app_theme_ul_glass', PINS: 'ndm_pins_ul_glass' },
+            DEFAULTS: { LANG: 'vi', THEME: 'dark' }
         };
 
         const Utils = {
-            debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
+            $: selector => document.querySelector(selector),
+            $$: selector => document.querySelectorAll(selector),
+            setText: (selector, text) => {
+                const el = document.querySelector(selector);
+                if (el) el.textContent = text;
             },
-
-            throttle(func, limit) {
-                let inThrottle;
-                return function(...args) {
-                    if (!inThrottle) {
-                        func.apply(this, args);
-                        inThrottle = true;
-                        setTimeout(() => inThrottle = false, limit);
-                    }
-                };
-            },
-
             storage: {
-                get(key, defaultValue = null) {
-                    try {
-                        const item = localStorage.getItem(key);
-                        return item ? JSON.parse(item) : defaultValue;
-                    } catch (e) {
-                        console.error('Storage get error:', e);
-                        return defaultValue;
-                    }
-                },
-                set(key, value) {
-                    try {
-                        localStorage.setItem(key, JSON.stringify(value));
-                        return true;
-                    } catch (e) {
-                        console.error('Storage set error:', e);
-                        return false;
-                    }
-                }
-            },
-
-            $(selector) {
-                return document.querySelector(selector);
-            },
-
-
-            $$(selector) {
-                return document.querySelectorAll(selector);
-            },
-
-            formatDate(date, lang) {
-                const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
-                return date.toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', options);
+                get: (key, def) => { try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; } },
+                set: (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
             }
         };
 
         const dictionary = {
             vi: {
-                subtitle: "Bộ công cụ toàn diện cho mọi nhu cầu",
+                subtitle: "Bộ công cụ toàn diện với trải nghiệm thị giác đỉnh cao.",
+                searchPlaceholder: "Tìm kiếm công cụ...",
                 emptyTitle: "Không tìm thấy kết quả",
-                emptyText: "Thử điều chỉnh bộ lọc hoặc tìm kiếm khác",
-                resetBtn: "Đặt lại bộ lọc",
-                searchPlaceholder: "TÌM KIẾM CÔNG CỤ...",
+                emptyText: "Thử điều chỉnh bộ lọc hoặc tìm kiếm khác.",
                 toolsTitle: "Tất cả công cụ",
-                langMobile: "Tiếng Việt",
-                morning: "Chào buổi sáng, Sếp!",
-                afternoon: "Chào buổi chiều, Sếp!",
-                evening: "Chào buổi tối, Sếp!",
-                night: "Chúc ngủ ngon, Sếp!",
-                cat_ALL: "Tất cả",
-                cat_FINANCE: "Tài chính",
-                cat_MATH: "Toán học",
-                cat_UTILITY: "Tiện ích",
-                cat_TIME: "Thời gian",
-                cat_HEALTH: "Sức khỏe",
-                cat_DEV: "Dev Tools",
-                cat_DESIGN: "Thiết kế",
-                cat_MKT: "Marketing",
-                cat_PRODUCTIVITY: "Năng suất",
-                cat_NETWORK: "Mạng",
-                cat_TEXT: "Văn bản",
-                statusActive: "Hoạt động",
                 whyChooseTitle: "Vì sao chọn chúng tôi",
+                whyChooseDesc: "Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày",
+                langMobile: "Tiếng Việt",
+                morning: "Chào buổi sáng,",
+                afternoon: "Chào buổi chiều,",
+                evening: "Chào buổi tối,",
+                night: "Chúc ngủ ngon,",
+                cat_ALL: "Tất cả", cat_FINANCE: "Tài chính", cat_MATH: "Toán học", cat_UTILITY: "Tiện ích",
+                cat_TIME: "Thời gian", cat_HEALTH: "Sức khỏe", cat_DEV: "Lập trình", cat_DESIGN: "Thiết kế",
+                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Năng suất", cat_NETWORK: "Mạng", cat_TEXT: "Văn bản",
                 pinnedTitle: "Đã ghim",
                 noPinnedTools: "Chưa có công cụ nào được ghim",
-                footerText: "DucManh © ",
-                linkCopied: "Đã sao chép liên kết",
-                pinned: "Đã ghim công cụ",
-                unpinned: "Đã bỏ ghim"
+                copied: "Đã sao chép liên kết",
+                footerText: "DucManh © "
             },
             en: {
-                subtitle: "Comprehensive toolkit for all your needs",
+                subtitle: "Comprehensive toolkit with the ultimate visual experience.",
+                searchPlaceholder: "Search tools...",
                 emptyTitle: "No results found",
-                emptyText: "Try adjusting your filters or search terms",
-                resetBtn: "Reset Filters",
-                searchPlaceholder: "SEARCH TOOLS...",
+                emptyText: "Try adjusting your filters or search terms.",
                 toolsTitle: "All Tools",
-                langMobile: "English",
-                morning: "Good Morning, Boss!",
-                afternoon: "Good Afternoon, Boss!",
-                evening: "Good Evening, Boss!",
-                night: "Good Night, Boss!",
-                cat_ALL: "All",
-                cat_FINANCE: "Finance",
-                cat_MATH: "Math",
-                cat_UTILITY: "Utility",
-                cat_TIME: "Time",
-                cat_HEALTH: "Health",
-                cat_DEV: "Dev Tools",
-                cat_DESIGN: "Design",
-                cat_MKT: "Marketing",
-                cat_PRODUCTIVITY: "Productivity",
-                cat_NETWORK: "Network",
-                cat_TEXT: "Text",
-                statusActive: "Active",
                 whyChooseTitle: "Why Choose Us",
+                whyChooseDesc: "Outstanding advantages to optimize your daily work",
+                langMobile: "English",
+                morning: "Good Morning,",
+                afternoon: "Good Afternoon,",
+                evening: "Good Evening,",
+                night: "Good Night,",
+                cat_ALL: "All", cat_FINANCE: "Finance", cat_MATH: "Math", cat_UTILITY: "Utility",
+                cat_TIME: "Time", cat_HEALTH: "Health", cat_DEV: "Dev", cat_DESIGN: "Design",
+                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Productivity", cat_NETWORK: "Network", cat_TEXT: "Text",
                 pinnedTitle: "Pinned",
                 noPinnedTools: "No pinned tools yet",
-                footerText: "DucManh © ",
-                linkCopied: "Link copied to clipboard",
-                pinned: "Tool pinned",
-                unpinned: "Tool unpinned"
+                copied: "Link copied to clipboard",
+                footerText: "DucManh © "
             }
         };
 
@@ -1050,7 +1080,7 @@
             { id: 11, name_vi: "Bấm Giờ", name_en: "Chrono", code: "TIME", desc_vi: "Đồng hồ bấm giờ.", desc_en: "Stopwatch timer.", url: "https://ducmanh.io.vn/chronometer/", category: "TIME", icon: 'watch' },
             { id: 12, name_vi: "IP Lookup", name_en: "IP Lookup", code: "NET", desc_vi: "Tra cứu thông tin IP.", desc_en: "Check IP information.", url: "https://ducmanh.io.vn/ip/", category: "NETWORK", icon: 'globe' },
             { id: 13, name_vi: "Đổi Chữ", name_en: "Text Case", code: "TXT", desc_vi: "Chuyển đổi định dạng chữ.", desc_en: "Convert text case.", url: "https://ducmanh.io.vn/chuyen-doi-chu/", category: "TEXT", icon: 'type' },
-            { id: 14, name_vi: "Sửa Link", name_en: "Fix Link", code: "FIX", desc_vi: "Sửa lỗi link bị lỗi.", desc_en: "Fix broken links.", url: "https://ducmanh.io.vn/link-fixer/", category: "UTILITY", icon: 'wrench' },
+            { id: 14, name_vi: "Sửa Link", name_en: "Fix Link", code: "FIX", desc_vi: "Sửa lỗi link bị lỗi.", desc_en: "Fix broken links.", url: "https://ducmanh.io.vn/link-fixer/", category: "UTILITY", icon: 'wrench' }
         ];
 
         const AppController = (() => {
@@ -1058,58 +1088,77 @@
                 categories: ["ALL", ...new Set(projectsData.map(p => p.category))],
                 activeCategory: "ALL",
                 searchTerm: "",
-                currentLang: CONSTANTS.DEFAULTS.LANG,
-                currentTheme: CONSTANTS.DEFAULTS.THEME,
-                lastScrollY: window.scrollY,
-                pinnedIds: [],
-                dockIdleTimer: null,
-                isProgrammaticScroll: false
+                lang: Utils.storage.get(CONSTANTS.STORAGE_KEYS.LANG, CONSTANTS.DEFAULTS.LANG),
+                theme: Utils.storage.get(CONSTANTS.STORAGE_KEYS.THEME, CONSTANTS.DEFAULTS.THEME),
+                pins: Utils.storage.get(CONSTANTS.STORAGE_KEYS.PINS, [])
             };
 
+            function updateIcon(id, newIconName, newClass) {
+                const oldElement = Utils.$(`#${id}`);
+                if (!oldElement) return;
+                
+                const newElement = document.createElement('i');
+                newElement.id = id;
+                newElement.setAttribute('data-lucide', newIconName);
+                if (newClass) newElement.setAttribute('class', newClass);
+                
+                oldElement.replaceWith(newElement);
+            }
+
             function init() {
-                loadState();
-                applyTheme();
-                setupEventListeners();
-                updateTime();
-                renderUI();
-                updatePinnedState();
+                document.documentElement.setAttribute('data-theme', state.theme);
+                setupEvents();
                 setInterval(updateTime, 1000);
+                updateTime();
+                updateLunarDate();
+                fetchWeather(); 
+                initSystemStatus(); 
+                renderAll();
+
+                setTimeout(() => {
+                    LiquidLensEngine.init('.refract-element');
+                }, 100);
             }
 
-            function loadState() {
-                state.currentLang = Utils.storage.get(CONSTANTS.STORAGE_KEYS.LANG, CONSTANTS.DEFAULTS.LANG);
-                state.currentTheme = Utils.storage.get(CONSTANTS.STORAGE_KEYS.THEME, CONSTANTS.DEFAULTS.THEME);
-                state.pinnedIds = Utils.storage.get(CONSTANTS.STORAGE_KEYS.PINS, []);
-            }
-
-            function setupEventListeners() {
-                const searchInput = Utils.$('#search-input');
-                if (searchInput) {
-                    searchInput.addEventListener('input', Utils.debounce((e) => {
-                        state.searchTerm = e.target.value.toLowerCase();
-                        const clearBtn = Utils.$('#clear-search');
-                        if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchTerm);
-                        renderProjects();
-                    }, CONSTANTS.TIMINGS.DEBOUNCE_DELAY));
-                }
+            function setupEvents() {
+                Utils.$('#search-input')?.addEventListener('input', e => {
+                    state.searchTerm = e.target.value.toLowerCase();
+                    Utils.$('#clear-search').classList.toggle('hidden', !state.searchTerm);
+                    renderProjects();
+                });
+                
+                let lastScrollY = window.scrollY;
+                window.addEventListener('scroll', () => {
+                    const currentScrollY = window.scrollY;
+                    const dock = Utils.$('#tactical-dock');
+                    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                        dock.style.transform = 'translate(-50%, 150%)';
+                        closeAllDockMenus();
+                    } else {
+                        dock.style.transform = 'translate(-50%, 0)';
+                    }
+                    lastScrollY = currentScrollY;
+                }, { passive: true });
 
                 document.addEventListener('click', handleOutsideClick);
-                window.addEventListener('scroll', Utils.throttle(() => {
-                    updateScrollProgress();
-                    handleDockVisibility();
-                }, 100), { passive: true });
 
-                ['touchstart', 'mousemove', 'click', 'keydown'].forEach(event => {
-                    document.addEventListener(event, resetDockIdleTimer, { passive: true });
+                let glowTicking = false;
+                document.addEventListener('mousemove', (e) => {
+                    if (!glowTicking) {
+                        window.requestAnimationFrame(() => {
+                            const glowItems = document.querySelectorAll('.interactive-glass, .popup-item, .dock-btn');
+                            glowItems.forEach(item => {
+                                const rect = item.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                item.style.setProperty('--mouse-x', `${x}px`);
+                                item.style.setProperty('--mouse-y', `${y}px`);
+                            });
+                            glowTicking = false;
+                        });
+                        glowTicking = true;
+                    }
                 });
-
-                document.addEventListener('keydown', handleKeyboard);
-
-                if (typeof lucide !== 'undefined') {
-                    createIcons();
-                } else {
-                    document.addEventListener('DOMContentLoaded', createIcons);
-                }
             }
 
             function handleOutsideClick(e) {
@@ -1118,388 +1167,291 @@
                 const contactBtn = e.target.closest('button[onclick*="toggleContactMenu"]');
                 const pinnedBtn = e.target.closest('button[onclick*="togglePinnedMenu"]');
                 
-                if (contactMenu && !contactMenu.contains(e.target) && !contactBtn && contactMenu.classList.contains('active')) toggleContactMenu();
-                if (pinnedMenu && !pinnedMenu.contains(e.target) && !pinnedBtn && pinnedMenu.classList.contains('active')) togglePinnedMenu();
-            }
-
-            function handleKeyboard(e) {
-                const searchInput = Utils.$('#search-input');
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    searchInput?.focus();
+                if (contactMenu && !contactMenu.contains(e.target) && !contactBtn) {
+                    contactMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    contactMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
                 }
-                if (e.key === 'Escape') {
-                    searchInput?.blur();
-                    const contactMenu = Utils.$('#contact-menu');
-                    const pinnedMenu = Utils.$('#pinned-menu');
-                    if (contactMenu?.classList.contains('active')) toggleContactMenu();
-                    if (pinnedMenu?.classList.contains('active')) togglePinnedMenu();
+                if (pinnedMenu && !pinnedMenu.contains(e.target) && !pinnedBtn) {
+                    pinnedMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    pinnedMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
                 }
             }
 
-            function applyTheme() {
-                document.documentElement.setAttribute('data-theme', state.currentTheme);
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.THEME, state.currentTheme);
-            }
+            function t(key) { return dictionary[state.lang]?.[key] || key; }
 
             function toggleTheme() {
-                state.currentTheme = state.currentTheme === 'dark' ? 'light' : 'dark';
-                applyTheme();
+                state.theme = state.theme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', state.theme);
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.THEME, state.theme);
+                renderAll();
             }
 
             function toggleLang() {
-                state.currentLang = state.currentLang === 'vi' ? 'en' : 'vi';
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.LANG, state.currentLang);
-                updateGreeting();
-                renderUI();
-            }
-
-            function getText(key) {
-                return dictionary[state.currentLang]?.[key] || key;
+                state.lang = state.lang === 'vi' ? 'en' : 'vi';
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.LANG, state.lang);
+                renderAll();
             }
 
             function updateTime() {
                 const now = new Date();
-                const h = String(now.getHours()).padStart(2, '0');
-                const m = String(now.getMinutes()).padStart(2, '0');
-                const s = String(now.getSeconds()).padStart(2, '0');
+                Utils.setText('#clock-hours', String(now.getHours()).padStart(2, '0'));
+                Utils.setText('#clock-minutes', String(now.getMinutes()).padStart(2, '0'));
+                Utils.setText('#clock-seconds', String(now.getSeconds()).padStart(2, '0'));
                 
-                const hoursEl = Utils.$('#clock-hours');
-                const minsEl = Utils.$('#clock-minutes');
-                const secsEl = Utils.$('#clock-seconds');
+                const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+                d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+                Utils.setText('#week-display', `Tuần ${weekNo}`);
                 
-                if (hoursEl) hoursEl.textContent = h;
-                if (minsEl) minsEl.textContent = m;
-                if (secsEl) secsEl.textContent = s;
+                const options = { weekday: 'long', month: '2-digit', day: '2-digit' };
+                let dateStr = now.toLocaleDateString(state.lang === 'vi' ? 'vi-VN' : 'en-US', options);
+                Utils.setText('#date-display', dateStr);
                 
-                const dateEl = Utils.$('#date-display');
-                if (dateEl) dateEl.textContent = Utils.formatDate(now, state.currentLang);
-                
-                updateGreeting(now.getHours());
+                let h = now.getHours(), greet = 'morning';
+                if(h>=12 && h<18) greet = 'afternoon'; else if(h>=18 && h<22) greet = 'evening'; else if(h>=22 || h<5) greet = 'night';
+                Utils.setText('#greeting-text', t(greet));
             }
 
-            function updateGreeting(hour) {
-                if (hour === undefined) hour = new Date().getHours();
-                let greetingKey = 'morning';
-                if (hour >= 12 && hour < 18) greetingKey = 'afternoon';
-                else if (hour >= 18 && hour < 22) greetingKey = 'evening';
-                else if (hour >= 22 || hour < 5) greetingKey = 'night';
-                
-                const greetingEl = Utils.$('#greeting-text');
-                if (greetingEl) greetingEl.textContent = getText(greetingKey);
-            }
-
-            function createIcons() {
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                } else {
-                    setTimeout(createIcons, 100);
+            function updateLunarDate() {
+                try {
+                    const now = new Date();
+                    const formatterDM = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { month: 'numeric', day: 'numeric' });
+                    const parts = formatterDM.format(now).split('/');
+                    if (parts.length === 2) {
+                        Utils.setText('#lunar-date', `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}`);
+                    }
+                    
+                    const formatterY = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { year: 'numeric' });
+                    const yearStr = formatterY.format(now); 
+                    
+                    const yearNode = Utils.$('#lunar-year');
+                    if (yearNode) {
+                        let textOnly = yearStr.replace(/[0-9,]/g, '').trim();
+                        if (!textOnly) textOnly = "Năm Nay";
+                        yearNode.innerHTML = textOnly.replace('Năm', 'Năm<br>');
+                    }
+                } catch(e) {
+                    Utils.setText('#lunar-date', "Lỗi");
                 }
             }
 
-            function renderUI() {
-                const searchInput = Utils.$('#search-input');
-                if (searchInput) searchInput.placeholder = getText('searchPlaceholder');
-                
-                const subtitleEl = Utils.$('#subtitle-text');
-                if (subtitleEl) subtitleEl.textContent = getText('subtitle');
-                
-                const whyTitleEl = Utils.$('#why-choose-title');
-                if (whyTitleEl) whyTitleEl.textContent = getText('whyChooseTitle');
-                
-                const toolsTitleEl = Utils.$('#tools-title');
-                if (toolsTitleEl) toolsTitleEl.textContent = getText('toolsTitle');
-                
-                const emptyTitleEl = Utils.$('#empty-title');
-                if (emptyTitleEl) emptyTitleEl.textContent = getText('emptyTitle');
-                
-                const emptyTextEl = Utils.$('#empty-text');
-                if (emptyTextEl) emptyTextEl.textContent = getText('emptyText');
-                
-                const resetBtnEl = Utils.$('#reset-btn');
-                if (resetBtnEl) resetBtnEl.innerHTML = `<span class="relative z-10">${getText('resetBtn')}</span>`;
-                
-                const langBtnEl = Utils.$('#lang-btn-text');
-                if (langBtnEl) langBtnEl.textContent = state.currentLang === 'vi' ? 'VN' : 'EN';
-                
-                const langMobileEl = Utils.$('#lang-text-mobile');
-                if (langMobileEl) langMobileEl.textContent = getText('langMobile');
-                
-                const pinnedTitleEl = Utils.$('#pinned-menu-title');
-                if (pinnedTitleEl) pinnedTitleEl.textContent = getText('pinnedTitle');
-                
-                const copyrightEl = Utils.$('#copyright');
-                if (copyrightEl) copyrightEl.textContent = getText('footerText') + new Date().getFullYear();
+            function initSystemStatus() {
+                if ('getBattery' in navigator) {
+                    navigator.getBattery().then(battery => {
+                        const updateBattery = () => {
+                            const level = Math.round(battery.level * 100);
+                            Utils.setText('#battery-text', `${level}%`);
+                            
+                            if (battery.charging) {
+                                updateIcon('battery-icon', 'battery-charging', 'w-3.5 h-3.5 text-emerald-500 shrink-0');
+                            } else {
+                                if(level > 20) {
+                                    updateIcon('battery-icon', 'battery-full', 'w-3.5 h-3.5 text-emerald-500 shrink-0');
+                                } else {
+                                    updateIcon('battery-icon', 'battery-warning', 'w-3.5 h-3.5 text-rose-500 shrink-0');
+                                }
+                            }
+                            lucide.createIcons();
+                        };
+                        updateBattery();
+                        battery.addEventListener('levelchange', updateBattery);
+                        battery.addEventListener('chargingchange', updateBattery);
+                    });
+                } else {
+                    Utils.setText('#battery-text', "N/A");
+                }
 
-                renderCategories();
-                renderProjects();
-                renderWhyChooseUs();
-                renderPinnedMenu();
-                createIcons();
+                const updateNetwork = () => {
+                    const isOnline = navigator.onLine;
+                    if (isOnline) {
+                        updateIcon('network-icon', 'wifi', 'w-3.5 h-3.5 text-blue-500 shrink-0');
+                        Utils.setText('#network-text', 'Online');
+                    } else {
+                        updateIcon('network-icon', 'wifi-off', 'w-3.5 h-3.5 text-rose-500 shrink-0');
+                        Utils.setText('#network-text', 'Offline');
+                    }
+                    lucide.createIcons();
+                };
+                window.addEventListener('online', updateNetwork);
+                window.addEventListener('offline', updateNetwork);
+                updateNetwork();
             }
 
-            function renderCategories() {
-                const container = Utils.$('#categories-container');
-                if (!container) return;
-                
-                container.innerHTML = state.categories.map(cat => {
-                    const displayCat = getText('cat_' + cat);
-                    const isActive = state.activeCategory === cat;
-                    return `
-                    <button onclick="AppController.setCategory('${cat}')" 
-                        class="px-3 md:px-4 py-2 md:py-2.5 border-2 text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg md:rounded-xl font-code active:scale-95
-                        ${isActive 
-                            ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)] text-white border-[var(--accent)] shadow-lg shadow-[var(--accent)]/30 category-active' 
-                            : 'glass text-[var(--text-sub)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)]'}"
-                        role="tab"
-                        aria-selected="${isActive}"
-                        aria-label="Filter by ${displayCat}">
-                        ${displayCat}
-                    </button>
-                `}).join('');
+            async function fetchWeather() {
+                try {
+                    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.0285&longitude=105.8542&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m');
+                    const data = await res.json();
+                    
+                    const temp = Math.round(data.current.temperature_2m);
+                    const feels = Math.round(data.current.apparent_temperature);
+                    const hum = data.current.relative_humidity_2m;
+                    const wind = Math.round(data.current.wind_speed_10m);
+                    const code = data.current.weather_code;
+                    
+                    let icon = 'cloud-sun';
+                    let text = 'Nhiều mây';
+
+                    if(code === 0) { icon = 'sun'; text = 'Trời quang'; }
+                    else if(code === 1 || code === 2) { icon = 'cloud-sun'; text = 'Ít mây'; }
+                    else if(code === 3) { icon = 'cloud'; text = 'Nhiều mây'; }
+                    else if(code >= 51 && code <= 67) { icon = 'cloud-rain'; text = 'Có mưa'; }
+                    else if(code >= 71 && code <= 77) { icon = 'snowflake'; text = 'Trời lạnh'; }
+                    else if(code >= 95) { icon = 'cloud-lightning'; text = 'Mưa dông'; }
+
+                    Utils.setText('#weather-temp', `${temp}°C`);
+                    Utils.setText('#weather-feels', `${feels}°C`);
+                    Utils.setText('#weather-desc', text);
+                    Utils.setText('#weather-hum', `${hum}%`);
+                    Utils.setText('#weather-wind', `${wind}km/h`);
+                    
+                    updateIcon('main-weather-icon', icon, 'w-4 h-4 md:w-5 md:h-5 icon-stroke');
+                    lucide.createIcons();
+                } catch (error) {
+                    console.error("Lỗi lấy thời tiết", error);
+                    Utils.setText('#weather-temp', '--°C');
+                    Utils.setText('#weather-feels', '--°C');
+                    Utils.setText('#weather-desc', 'Mất kết nối');
+                    Utils.setText('#weather-hum', '--%');
+                    Utils.setText('#weather-wind', '--');
+                }
             }
 
             function getCardHTML(p, isPinned) {
-                const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
-                const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
-                const pinClass = isPinned ? 'text-[var(--accent)] fill-[var(--accent)]' : 'text-[var(--text-sub)]';
-                const cardClass = isPinned ? 'pinned-card' : '';
-                
+                const name = state.lang === 'vi' ? p.name_vi : p.name_en;
+                const desc = state.lang === 'vi' ? p.desc_vi : p.desc_en;
+                const pinBtnClass = isPinned ? 'pin-btn-active' : 'text-[var(--text-sub)] hover:bg-[var(--glass-base)] hover:text-[var(--text-main)]';
+                const pinnedGlow = isPinned ? `<div class="pin-border-glow"></div>` : '';
+
                 return `
-                <article class="hover-glow card-shimmer card-container ${cardClass} relative glass border border-[var(--border)] p-3 md:p-5 lg:p-6 group flex flex-col justify-between min-h-[140px] md:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden" role="listitem">
-                    <a href="${p.url}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="absolute inset-0 z-30" 
-                       aria-label="${name}">
-                    </a>
-
-                    <div class="flex justify-between items-start relative z-40 pointer-events-none">
-                        <div class="w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110 pointer-events-none ${isPinned ? 'border-[var(--accent)] text-[var(--accent)]' : ''}">
-                            <i data-lucide="${p.icon}" class="w-4 h-4 md:w-6 md:h-6"></i>
+                <div class="liquid-tool-card interactive-glass p-6 flex flex-col justify-between min-h-[200px] cursor-pointer" onclick="window.open('${p.url}', '_blank')">
+                    ${pinnedGlow}
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-14 h-14 rounded-[24px] glass-input flex items-center justify-center text-[var(--text-main)] transition-transform duration-300 group-hover:scale-110">
+                            <i data-lucide="${p.icon}" class="w-7 h-7 icon-stroke"></i>
                         </div>
-                        
-                        <div class="flex items-center gap-1 pointer-events-auto">
-                            <button onclick="AppController.copyLink(event, '${p.url}')" 
-                                    class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] text-[var(--text-sub)] hover:text-[var(--accent)] active:scale-95 group/copy" 
-                                    title="Copy Link"
-                                    aria-label="Copy link for ${name}">
-                                <i data-lucide="copy" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/copy:scale-110"></i>
+                        <div class="flex gap-2 relative z-10" onclick="event.stopPropagation()">
+                            <button onclick="AppController.copyLink('${p.url}')" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:bg-[var(--glass-base)] hover:text-[var(--text-main)] transition-colors active:scale-90">
+                                <i data-lucide="copy" class="w-4 h-4 icon-stroke"></i>
                             </button>
-                            <button onclick="AppController.togglePin(event, ${p.id})" 
-                                    class="transition-all duration-300 p-1.5 md:p-2 rounded-lg hover:bg-[var(--bg-main)] ${pinClass} active:scale-95 group/pin" 
-                                    title="${isPinned ? 'Unpin' : 'Pin'} Tool"
-                                    aria-label="${isPinned ? 'Unpin' : 'Pin'} ${name}"
-                                    aria-pressed="${isPinned}">
-                                <i data-lucide="pin" class="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform group-hover/pin:scale-110 ${isPinned ? 'fill-current' : ''}"></i>
+                            <button onclick="AppController.togglePin(${p.id})" class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 ${pinBtnClass}">
+                                <i data-lucide="bookmark" class="w-4 h-4 icon-stroke ${isPinned?'fill-current':''}"></i>
                             </button>
                         </div>
                     </div>
-
-                    <div class="mt-3 md:mt-5 pointer-events-none relative z-20">
-                        <div class="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-2">
-                            <span class="text-[8px] md:text-[10px] text-[var(--accent)] font-code font-bold tracking-widest bg-[var(--accent)]/10 px-1.5 md:px-2 py-0.5 md:py-1 rounded">${p.code}</span>
+                    <div>
+                        <div class="mb-3">
+                            <span class="text-[10px] text-[var(--text-main)] font-bold tracking-widest bg-[var(--text-main)]/5 px-2.5 py-1 rounded-md uppercase border border-[var(--glass-border)]">${p.code}</span>
                         </div>
-                        <h3 class="text-sm md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance leading-tight">${name}</h3>
-                        <p class="text-[10px] md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance line-clamp-2">${desc}</p>
+                        <h3 class="text-xl font-bold text-[var(--text-main)] mb-2 tracking-tight">${name}</h3>
+                        <p class="text-sm text-[var(--text-sub)] font-medium leading-relaxed">${desc}</p>
                     </div>
-                    
-                    <div class="absolute top-0 left-0 w-2 md:w-3 h-2 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
-                    <div class="absolute bottom-0 right-0 w-2 md:w-3 h-2 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
-                </article>
+                </div>
                 `;
             }
 
+            function renderAll() {
+                Utils.setText('#subtitle-text', t('subtitle'));
+                const searchInput = Utils.$('#search-input');
+                if (searchInput) searchInput.placeholder = t('searchPlaceholder');
+                Utils.setText('#lang-btn-text', state.lang === 'vi' ? 'VN' : 'EN');
+                Utils.setText('#lang-text-mobile', t('langMobile'));
+                
+                Utils.setText('#pinned-menu-title', t('pinnedTitle'));
+                Utils.setText('#empty-title', t('emptyTitle'));
+                Utils.setText('#empty-text', t('emptyText'));
+                Utils.setText('#tools-title', t('toolsTitle'));
+                
+                Utils.setText('#why-choose-title', t('whyChooseTitle'));
+                Utils.setText('#why-choose-desc', t('whyChooseDesc'));
+                
+                Utils.setText('#copyright', t('footerText') + new Date().getFullYear());
+                
+                renderCategories();
+                renderProjects();
+                renderWhyChooseUs();
+                renderPins();
+                lucide.createIcons();
+            }
+
+            function renderCategories() {
+                const html = state.categories.map(cat => {
+                    const activeClass = state.activeCategory === cat ? 'active' : '';
+                    return `<button onclick="AppController.setCategory('${cat}')" class="glass-tab text-sm tracking-wider ${activeClass}">${t('cat_'+cat)}</button>`;
+                }).join('');
+                const el = Utils.$('#categories-container');
+                if (el) el.innerHTML = html;
+            }
+
             function renderProjects() {
-                const grid = Utils.$('#projects-grid');
-                const emptyState = Utils.$('#empty-state');
-                
-                if (!grid || !emptyState) return;
-                
                 const filtered = projectsData.filter(p => {
-                    const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
-                    const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
-                    const matchesSearch = name.toLowerCase().includes(state.searchTerm) || 
-                                        desc.toLowerCase().includes(state.searchTerm) || 
-                                        p.code.toLowerCase().includes(state.searchTerm);
-                    const matchesCategory = state.activeCategory === 'ALL' || p.category === state.activeCategory;
-                    return matchesSearch && matchesCategory;
+                    const name = (state.lang === 'vi' ? p.name_vi : p.name_en).toLowerCase();
+                    const matchSearch = name.includes(state.searchTerm) || p.code.toLowerCase().includes(state.searchTerm);
+                    const matchCat = state.activeCategory === 'ALL' || p.category === state.activeCategory;
+                    return matchSearch && matchCat;
                 });
+
+                const el = Utils.$('#projects-grid');
+                if (el) el.innerHTML = filtered.map(p => getCardHTML(p, state.pins.includes(p.id))).join('');
                 
-                const fragment = document.createDocumentFragment();
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = filtered.map(p => getCardHTML(p, state.pinnedIds.includes(p.id))).join('');
-                
-                while (tempDiv.firstChild) fragment.appendChild(tempDiv.firstChild);
-                
-                grid.innerHTML = '';
-                grid.appendChild(fragment);
-                
-                emptyState.classList.toggle('hidden', filtered.length > 0);
-                
-                createIcons();
+                const emptyEl = Utils.$('#empty-state');
+                if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);
+                lucide.createIcons();
             }
 
             function renderWhyChooseUs() {
                 const container = Utils.$('#why-choose-grid');
                 if (!container) return;
                 
-                container.innerHTML = WHY_CHOOSE_US_DATA[state.currentLang].map(item => `
-                    <div class="hover-glow relative glass border border-[var(--border)] p-4 md:p-5 lg:p-6 group flex flex-col rounded-xl md:rounded-2xl overflow-hidden">
-                        <div class="flex justify-between items-start relative z-10 mb-4 md:mb-5">
-                            <div class="w-10 h-10 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] group-hover:shadow-lg group-hover:shadow-[var(--accent)]/20 transition-all duration-300 group-hover:scale-110">
-                                <i data-lucide="${item.icon}" class="w-5 h-5 md:w-6 md:h-6"></i>
-                            </div>
+                container.innerHTML = WHY_CHOOSE_US_DATA[state.lang].map(item => `
+                    <div class="liquid-tool-card interactive-glass p-8 md:p-10 flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-[24px] glass-input flex items-center justify-center text-[var(--text-main)] mb-6">
+                            <i data-lucide="${item.icon}" class="w-8 h-8 icon-stroke"></i>
                         </div>
-                        <div class="relative z-10">
-                            <h3 class="text-base md:text-lg lg:text-xl font-bold text-[var(--text-main)] mb-1.5 md:mb-2 font-heading uppercase tracking-tight group-hover:text-[var(--accent)] transition-colors text-balance">${item.title}</h3>
-                            <p class="text-xs md:text-sm text-[var(--text-sub)] font-body leading-relaxed text-balance">${item.desc}</p>
-                        </div>
-                        <div class="absolute top-0 left-0 w-2.5 md:w-3 h-2.5 md:h-3 border-t-2 border-l-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-tl-xl md:rounded-tl-2xl"></div>
-                        <div class="absolute bottom-0 right-0 w-2.5 md:w-3 h-2.5 md:h-3 border-b-2 border-r-2 border-[var(--border)] group-hover:border-[var(--accent)] transition-colors rounded-br-xl md:rounded-br-2xl"></div>
-                        <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/0 to-[var(--accent)]/0 group-hover:from-[var(--accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
+                        <h3 class="text-xl font-bold text-[var(--text-main)] mb-3 tracking-tight">${item.title}</h3>
+                        <p class="text-base text-[var(--text-sub)] font-medium leading-relaxed">${item.desc}</p>
                     </div>
                 `).join('');
             }
 
-            function togglePin(e, id) {
-                e.stopPropagation();
-                e.preventDefault();
-                
-                if (state.pinnedIds.includes(id)) {
-                    state.pinnedIds = state.pinnedIds.filter(pid => pid !== id);
-                    showToast(getText('unpinned'), 'default');
-                } else {
-                    state.pinnedIds.push(id);
-                    showToast(getText('pinned'), 'accent');
-                }
-                
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.PINS, state.pinnedIds);
-                renderProjects();
-                updatePinnedState();
-                renderPinnedMenu();
-            }
-
-            function updatePinnedState() {
+            function renderPins() {
                 const badge = Utils.$('#dock-pin-indicator');
                 const menuBadge = Utils.$('#pinned-badge-menu');
                 
-                if (badge) badge.classList.toggle('hidden', state.pinnedIds.length === 0);
-                if (menuBadge) menuBadge.textContent = state.pinnedIds.length;
-            }
+                if (badge) badge.classList.toggle('hidden', state.pins.length === 0);
+                if (menuBadge) menuBadge.textContent = state.pins.length;
 
-            function renderPinnedMenu() {
                 const container = Utils.$('#pinned-menu-content');
                 if (!container) return;
-                
-                if (state.pinnedIds.length === 0) {
-                    container.innerHTML = `
-                        <div class="p-6 text-center">
-                            <div class="w-12 h-12 rounded-xl glass border border-[var(--border)] flex items-center justify-center mx-auto mb-2">
-                                <i data-lucide="pin-off" class="w-6 h-6 text-[var(--text-sub)] opacity-50"></i>
-                            </div>
-                            <p class="text-xs text-[var(--text-sub)] font-body">${getText('noPinnedTools')}</p>
-                        </div>
-                    `;
-                    createIcons();
+
+                if (state.pins.length === 0) {
+                    container.innerHTML = `<div class="p-8 text-center text-[var(--text-sub)] font-medium">${t('noPinnedTools')}</div>`;
                     return;
                 }
-                
-                const pinnedTools = projectsData.filter(p => state.pinnedIds.includes(p.id));
-                container.innerHTML = pinnedTools.map(p => {
-                    const name = state.currentLang === 'vi' ? p.name_vi : p.name_en;
-                    const desc = state.currentLang === 'vi' ? p.desc_vi : p.desc_en;
-                    return `
-                        <a href="${p.url}" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-[var(--bg-main)] active:scale-98 transition-all group border border-transparent hover:border-[var(--border)]"
-                           role="menuitem">
-                            <div class="w-8 h-8 flex items-center justify-center glass border border-[var(--border)] text-[var(--text-sub)] group-hover:text-[var(--accent)] group-hover:border-[var(--accent)] transition-all rounded-lg group-hover:scale-110 flex-shrink-0">
-                                <i data-lucide="${p.icon}" class="w-4 h-4"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-xs font-bold text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors uppercase truncate font-heading">${name}</div>
-                                <div class="text-[10px] text-[var(--text-sub)] font-code truncate">${desc}</div>
-                            </div>
-                            <i data-lucide="external-link" class="w-3.5 h-3.5 text-[var(--text-sub)] group-hover:text-[var(--accent)] transition-colors flex-shrink-0"></i>
-                        </a>
-                    `;
-                }).join('');
-                createIcons();
+
+                container.innerHTML = projectsData.filter(p => state.pins.includes(p.id)).map(p => `
+                    <div class="popup-item p-4 flex items-center gap-4 cursor-pointer rounded-2xl group" onclick="window.open('${p.url}', '_blank')">
+                        <div class="w-12 h-12 rounded-xl glass-input flex items-center justify-center text-[var(--text-main)] border border-[var(--glass-border)] shadow-inner group-hover:scale-105 transition-transform">
+                            <i data-lucide="${p.icon}" class="w-6 h-6 icon-stroke"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bold text-lg text-[var(--text-main)] tracking-tight">${state.lang==='vi'?p.name_vi:p.name_en}</div>
+                        </div>
+                        <button onclick="event.stopPropagation(); AppController.togglePin(${p.id})" class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-sub)] hover:text-rose-500 hover:bg-rose-500/10 transition-colors">
+                            <i data-lucide="x" class="w-5 h-5 icon-stroke"></i>
+                        </button>
+                    </div>
+                `).join('');
+                lucide.createIcons();
             }
 
-            function copyLink(e, url) {
-                e.stopPropagation();
-                e.preventDefault();
+            function togglePin(id) {
+                if (state.pins.includes(id)) state.pins = state.pins.filter(pid => pid !== id);
+                else state.pins.push(id);
                 
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(url).then(() => {
-                        showToast(getText('linkCopied'), 'success');
-                    }).catch(err => {
-                        console.error('Clipboard error:', err);
-                        fallbackCopy(url);
-                    });
-                } else {
-                    fallbackCopy(url);
-                }
-            }
-
-            function fallbackCopy(url) {
-                const textarea = document.createElement('textarea');
-                textarea.value = url;
-                textarea.setAttribute('readonly', '');
-                textarea.style.position = 'absolute';
-                textarea.style.left = '-9999px';
-                document.body.appendChild(textarea);
-                
-                const selected = document.getSelection().rangeCount > 0 ? 
-                    document.getSelection().getRangeAt(0) : false;
-                textarea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    showToast(getText('linkCopied'), 'success');
-                } catch (err) {
-                    console.error('Fallback copy failed', err);
-                }
-                
-                document.body.removeChild(textarea);
-                if (selected) {
-                    document.getSelection().removeAllRanges();
-                    document.getSelection().addRange(selected);
-                }
-            }
-
-            function showToast(message, type = 'default') {
-                const container = Utils.$('#toast-container');
-                if (!container) return;
-                
-                const toast = document.createElement('div');
-                
-                let iconName = 'info';
-                if (type === 'success') iconName = 'check-circle';
-                else if (type === 'accent') iconName = 'pin';
-                
-                toast.className = `toast-message ${type}`;
-                toast.setAttribute('role', 'status');
-                toast.setAttribute('aria-live', 'polite');
-                toast.innerHTML = `
-                    <i data-lucide="${iconName}" class="w-4 h-4 ${type === 'success' ? 'text-[var(--success)]' : 'text-[var(--accent)]'}"></i>
-                    <span class="text-xs font-bold font-heading uppercase tracking-wide">${message}</span>
-                `;
-                
-                container.appendChild(toast);
-                
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-
-                setTimeout(() => {
-                    toast.classList.add('hiding');
-                    toast.addEventListener('animationend', () => {
-                        if (toast.parentElement) toast.parentElement.removeChild(toast);
-                    });
-                }, CONSTANTS.TIMINGS.TOAST_DURATION);
+                Utils.storage.set(CONSTANTS.STORAGE_KEYS.PINS, state.pins);
+                renderProjects();
+                renderPins();
             }
 
             function setCategory(cat) {
@@ -1508,152 +1460,116 @@
                 renderProjects();
             }
 
-            function resetFilters() {
-                state.searchTerm = "";
-                state.activeCategory = "ALL";
-                
-                const searchInput = Utils.$('#search-input');
-                if (searchInput) searchInput.value = "";
-                
-                const clearBtn = Utils.$('#clear-search');
-                if (clearBtn) clearBtn.classList.add('hidden');
-                
-                renderCategories();
-                renderProjects();
+            function closeAllDockMenus() {
+                const pinnedMenu = Utils.$('#pinned-menu');
+                const contactMenu = Utils.$('#contact-menu');
+                if (pinnedMenu) {
+                    pinnedMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    pinnedMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                }
+                if (contactMenu) {
+                    contactMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    contactMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                }
             }
 
-            function clearSearch() {
-                state.searchTerm = "";
-                
-                const searchInput = Utils.$('#search-input');
-                if (searchInput) searchInput.value = "";
-                
-                const clearBtn = Utils.$('#clear-search');
-                if (clearBtn) clearBtn.classList.add('hidden');
-                
-                renderProjects();
-            }
-
-            function toggleMobileMenu() {
-                const menu = Utils.$('#mobile-menu');
-                if (menu) {
-                    menu.classList.toggle('translate-x-full');
-                    const button = Utils.$('button[onclick*="toggleMobileMenu"]');
-                    if (button) {
-                        const isOpen = !menu.classList.contains('translate-x-full');
-                        button.setAttribute('aria-expanded', isOpen);
-                    }
+            function togglePinnedMenu() {
+                const menu = Utils.$('#pinned-menu');
+                if (menu.classList.contains('opacity-0')) {
+                    closeAllDockMenus();
+                    menu.classList.remove('opacity-0', 'invisible', 'translate-y-8');
+                    menu.classList.add('opacity-100', 'visible', 'translate-y-0');
+                } else {
+                    menu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
                 }
             }
 
             function toggleContactMenu() {
                 const menu = Utils.$('#contact-menu');
-                const pinnedMenu = Utils.$('#pinned-menu');
-                
-                if (pinnedMenu?.classList.contains('active')) pinnedMenu.classList.remove('active');
-                menu?.classList.toggle('active');
+                if (menu.classList.contains('opacity-0')) {
+                    closeAllDockMenus();
+                    menu.classList.remove('opacity-0', 'invisible', 'translate-y-8');
+                    menu.classList.add('opacity-100', 'visible', 'translate-y-0');
+                } else {
+                    menu.classList.add('opacity-0', 'invisible', 'translate-y-8');
+                    menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                }
             }
 
-            function togglePinnedMenu() {
-                const menu = Utils.$('#pinned-menu');
-                const contactMenu = Utils.$('#contact-menu');
-                
-                if (contactMenu?.classList.contains('active')) contactMenu.classList.remove('active');
-                menu?.classList.toggle('active');
+            function toggleMobileMenu() {
+                const menu = Utils.$('#mobile-menu');
+                if (menu) menu.classList.toggle('translate-x-full');
+            }
+
+            function copyLink(url) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(url).then(() => showToast(t('copied')))
+                    .catch(err => fallbackCopy(url));
+                } else {
+                    fallbackCopy(url);
+                }
+            }
+
+            function fallbackCopy(url) {
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast(t('copied'));
+                } catch (err) {}
+                document.body.removeChild(textarea);
             }
 
             function scrollToTop() {
-                state.isProgrammaticScroll = true;
-                
-                const dock = Utils.$('#tactical-dock');
-                if (dock) dock.classList.add('dock-hidden');
-                
-                const contactMenu = Utils.$('#contact-menu');
-                const pinnedMenu = Utils.$('#pinned-menu');
-                if (contactMenu) contactMenu.classList.remove('active');
-                if (pinnedMenu) pinnedMenu.classList.remove('active');
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                setTimeout(() => { state.isProgrammaticScroll = false; }, 1000);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                closeAllDockMenus();
             }
 
-            function updateScrollProgress() {
-                const windowHeight = window.innerHeight;
-                const documentHeight = document.documentElement.scrollHeight;
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
-                
-                const progress = Utils.$('#scroll-progress');
-                if (progress) progress.style.width = scrollPercent + '%';
+            function showToast(msg) {
+                const tst = document.createElement('div');
+                tst.className = 'glass-panel glass-pill px-8 py-4 flex items-center justify-center gap-3 font-bold text-[var(--text-main)] shadow-2xl animate-enter w-full max-w-[90vw] md:max-w-none mx-auto';
+                tst.style.animation = 'floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                tst.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-[var(--text-main)] icon-stroke"></i> <span>${msg}</span>`;
+                Utils.$('#toast-container').appendChild(tst);
+                lucide.createIcons();
+                setTimeout(() => {
+                    tst.style.opacity = '0';
+                    tst.style.transform = 'translateY(-20px)';
+                    tst.style.transition = 'all 0.4s ease';
+                    setTimeout(() => tst.remove(), 400);
+                }, 2500);
             }
 
-            function resetDockIdleTimer() {
-                const dock = Utils.$('#tactical-dock');
-                if (!dock) return;
-                
-                clearTimeout(state.dockIdleTimer);
-                
-                if (!dock.classList.contains('dock-hidden')) {
-                    state.dockIdleTimer = setTimeout(() => {
-                        dock.classList.add('dock-hidden');
-                        const contactMenu = Utils.$('#contact-menu');
-                        const pinnedMenu = Utils.$('#pinned-menu');
-                        if (contactMenu) contactMenu.classList.remove('active');
-                        if (pinnedMenu) pinnedMenu.classList.remove('active');
-                    }, CONSTANTS.TIMINGS.DOCK_IDLE);
-                }
-            }
-
-            function handleDockVisibility() {
-                const dock = Utils.$('#tactical-dock');
-                if (!dock) return;
-                
-                const currentScrollY = window.scrollY;
-                const isScrollingDown = currentScrollY > state.lastScrollY;
-                const isScrollingUp = currentScrollY < state.lastScrollY;
-                
-                if (Math.abs(currentScrollY - state.lastScrollY) < CONSTANTS.TIMINGS.SCROLL_THRESHOLD || state.isProgrammaticScroll) {
-                    state.lastScrollY = currentScrollY;
-                    return;
-                }
-                
-                if (isScrollingDown && currentScrollY > 100) {
-                    dock.classList.add('dock-hidden');
-                    const contactMenu = Utils.$('#contact-menu');
-                    const pinnedMenu = Utils.$('#pinned-menu');
-                    if (contactMenu) contactMenu.classList.remove('active');
-                    if (pinnedMenu) pinnedMenu.classList.remove('active');
-                    clearTimeout(state.dockIdleTimer);
-                } else if (isScrollingUp) {
-                    dock.classList.remove('dock-hidden');
-                    resetDockIdleTimer();
-                }
-                
-                state.lastScrollY = currentScrollY;
-            }
-
-            return {
-                init,
-                toggleTheme,
-                toggleLang,
-                toggleMobileMenu,
-                toggleContactMenu,
-                togglePinnedMenu,
-                setCategory,
-                resetFilters,
-                clearSearch,
-                scrollToTop,
-                togglePin,
-                copyLink
+            return { 
+                init, toggleTheme, toggleLang, setCategory, togglePin, 
+                togglePinnedMenu, toggleContactMenu, toggleMobileMenu,
+                copyLink, scrollToTop,
+                clearSearch: () => { 
+                    const el = Utils.$('#search-input');
+                    if(el) el.value=''; 
+                    state.searchTerm=''; 
+                    renderProjects(); 
+                    const clearBtn = Utils.$('#clear-search');
+                    if(clearBtn) clearBtn.classList.add('hidden'); 
+                }, 
+                resetFilters: () => { 
+                    state.activeCategory = 'ALL'; 
+                    const el = Utils.$('#search-input');
+                    if(el) el.value=''; 
+                    state.searchTerm=''; 
+                    const clearBtn = Utils.$('#clear-search');
+                    if(clearBtn) clearBtn.classList.add('hidden'); 
+                    renderCategories(); renderProjects(); 
+                } 
             };
         })();
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', AppController.init);
-        } else {
-            AppController.init();
-        }
+        document.addEventListener('DOMContentLoaded', AppController.init);
     </script>
 </body>
 </html>

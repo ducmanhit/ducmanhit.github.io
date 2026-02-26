@@ -159,6 +159,51 @@
             text-shadow: none;
         }
 
+        /* === NAV COMPACT TRANSITIONS === */
+        #main-top-nav {
+            transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                        padding 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                        background-color 0.6s ease;
+        }
+        
+        #main-top-nav.is-compact {
+            max-width: 760px;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            background: var(--glass-solid) !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08) !important;
+        }
+        [data-theme="dark"] #main-top-nav.is-compact {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
+        }
+
+        .nav-text-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            transition: grid-template-columns 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+            opacity: 1;
+        }
+        .nav-text-inner {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        #main-top-nav.is-compact .nav-text-container {
+            grid-template-columns: 0fr;
+            opacity: 0;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .nav-action-pill {
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #main-top-nav.is-compact .nav-action-pill {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            gap: 0 !important;
+        }
+
         /* === ULTRA LIQUID GLASS ENGINE (FOR CARDS) === */
         .glass-panel {
             background: var(--glass-base);
@@ -516,14 +561,16 @@
 
     <!-- === TOP NAVIGATION BAR === -->
     <nav class="fixed top-6 left-0 right-0 z-50 px-4 md:px-8 flex justify-center pointer-events-none">
-        <div id="main-top-nav" class="ultra-clear-glass refract-element rounded-full p-2.5 px-3 flex items-center justify-between w-full max-w-[1400px] pointer-events-auto transition-colors duration-500 relative z-50">
+        <div id="main-top-nav" class="ultra-clear-glass refract-element rounded-full p-2.5 px-3 flex items-center justify-between w-full max-w-[1400px] pointer-events-auto relative z-50">
             
             <!-- Left: Logo & Title -->
             <div class="flex items-center gap-2 md:gap-3 cursor-pointer group pl-1 pr-2 md:pr-4 py-1.5 rounded-full hover:bg-[var(--glass-hover)] transition-colors shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <div class="nav-logo-bg shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div class="nav-logo-bg shadow-lg group-hover:scale-110 transition-transform duration-300 shrink-0">
                     <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
                 </div>
-                <span class="font-bold tracking-tight text-[1.1rem] hidden lg:block nav-title">NDM TOOL</span>
+                <div class="hidden lg:grid nav-text-container ml-1">
+                    <span class="nav-text-inner font-bold tracking-tight text-[1.1rem] nav-title">NDM TOOL</span>
+                </div>
             </div>
 
             <!-- Center: Thanh Tìm Kiếm Tích Hợp -->
@@ -551,21 +598,25 @@
                         <span id="lang-btn-text">VN</span>
                     </button>
                     
-                    <div class="w-px h-5 bg-[var(--glass-border)] mx-2"></div>
+                    <div class="w-px h-5 bg-[var(--glass-border)] mx-2 shrink-0"></div>
                     
                     <!-- Donate Button with Text -->
-                    <a href="https://ducmanh.io.vn/donate" target="_blank" class="px-3 py-2 rounded-full flex items-center gap-2 text-pink-500 hover:bg-[var(--glass-base)] transition-all group" title="Donate">
-                        <i data-lucide="heart" class="w-5 h-5 fill-current group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-bold hidden lg:block tracking-wide">Donate</span>
+                    <a href="https://ducmanh.io.vn/donate" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-pink-500 hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Donate">
+                        <i data-lucide="heart" class="w-5 h-5 fill-current group-hover:scale-110 transition-transform shrink-0"></i>
+                        <div class="hidden lg:grid nav-text-container">
+                            <span class="nav-text-inner text-sm font-bold tracking-wide">Donate</span>
+                        </div>
                     </a>
                     <!-- Telegram Button with Text -->
-                    <a href="https://t.me/ducmanh" target="_blank" class="px-3 py-2 rounded-full flex items-center gap-2 text-[var(--text-sub)] hover:text-[#229ED9] hover:bg-[var(--glass-base)] transition-all group" title="Telegram">
-                        <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-1 transition-transform icon-stroke"></i>
-                        <span class="text-sm font-bold hidden lg:block tracking-wide">Telegram</span>
+                    <a href="https://t.me/ducmanh" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-[var(--text-sub)] hover:text-[#229ED9] hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Telegram">
+                        <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-1 transition-transform icon-stroke shrink-0"></i>
+                        <div class="hidden lg:grid nav-text-container">
+                            <span class="nav-text-inner text-sm font-bold tracking-wide">Telegram</span>
+                        </div>
                     </a>
                 </div>
 
-                <div class="hidden md:block w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_12px_var(--success)] animate-pulse ml-2 mr-1" title="System Online"></div>
+                <div class="hidden md:block w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_12px_var(--success)] animate-pulse ml-2 mr-1 shrink-0" title="System Online"></div>
 
                 <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" onclick="AppController.toggleMobileMenu()">
                     <i data-lucide="menu" class="w-6 h-6 icon-stroke"></i>
@@ -682,10 +733,7 @@
                     </div>
                 </div>
 
-                <!-- Đã Sửa Lỗi Clock & Ngày theo yêu cầu -->
                 <div class="flex flex-col gap-3 my-auto z-10 w-full mb-4 pt-4">
-                    
-                    <!-- Khối Ngày: Được tách ra hàng trên riêng biệt -->
                     <div class="flex justify-start">
                         <div class="px-4 py-2.5 rounded-2xl bg-[var(--glass-hover)] border border-[var(--glass-border)] shadow-inner flex items-center gap-3 backdrop-blur-md w-max">
                             <span class="text-[10px] text-[var(--text-sub)] font-bold uppercase tracking-widest flex items-center gap-1.5 border-r border-[var(--glass-border)]/50 pr-3">
@@ -696,13 +744,11 @@
                         </div>
                     </div>
 
-                    <!-- Khối Giờ: Sử dụng tabular-nums để số không bị nhảy khung và fix width cho giây -->
                     <div class="text-[4rem] md:text-[5rem] font-extrabold text-[var(--text-main)] tracking-tighter leading-none flex items-baseline drop-shadow-sm tabular-nums">
                         <span id="clock-hours">09</span>
                         <span class="text-[var(--text-sub)] animate-pulse mx-1.5 transform -translate-y-2 md:-translate-y-3">:</span>
                         <span id="clock-minutes">36</span>
                         
-                        <!-- Bọc giây trong div có width cố định để không bị xô lệch layout -->
                         <div class="flex justify-start w-[65px] md:w-[85px]">
                             <span class="text-[2rem] md:text-[2.5rem] font-bold text-[var(--text-sub)] ml-2 tracking-normal tabular-nums" id="clock-seconds">00</span>
                         </div>
@@ -1131,11 +1177,17 @@
                 window.addEventListener('scroll', () => {
                     const currentScrollY = window.scrollY;
                     const dock = Utils.$('#tactical-dock');
+                    const mainNav = Utils.$('#main-top-nav');
+                    
                     if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                        // Scrolling down: Ẩn dock dưới và thu hẹp (compact) Navbar trên cùng
                         dock.style.transform = 'translate(-50%, 150%)';
                         closeAllDockMenus();
+                        mainNav.classList.add('is-compact');
                     } else {
+                        // Scrolling up: Hiện dock dưới và mở rộng Navbar
                         dock.style.transform = 'translate(-50%, 0)';
+                        mainNav.classList.remove('is-compact');
                     }
                     lastScrollY = currentScrollY;
                 }, { passive: true });

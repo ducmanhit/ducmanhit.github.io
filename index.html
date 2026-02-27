@@ -10,29 +10,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     
+    <link rel="preload" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" as="image">
+    
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- Apple-like Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* === ULTRA LIQUID GLASS VARIABLES === */
         :root {
-            /* Background Colors */
             --bg-base: #e8ecef;
             --grid-color: rgba(0, 0, 0, 0.08); 
             --spotlight-1: rgba(255, 255, 255, 0.8);
             --spotlight-2: rgba(144, 164, 184, 0.3);
             
-            /* Text Colors */
             --text-main: #111113;
             --text-sub: #6e6e73;
             
-            /* Ultra Glass Material - Light */
             --glass-base: rgba(255, 255, 255, 0.2);
             --glass-solid: rgba(255, 255, 255, 0.7);
             --glass-hover: rgba(255, 255, 255, 0.35);
@@ -49,17 +47,14 @@
         }
 
         [data-theme="dark"] {
-            /* Background Colors */
             --bg-base: #0a0a0c;
             --grid-color: rgba(255, 255, 255, 0.08);
             --spotlight-1: rgba(60, 60, 70, 0.4);
             --spotlight-2: rgba(20, 20, 30, 0.8);
             
-            /* Text Colors */
             --text-main: #f5f5f7;
             --text-sub: #86868b;
             
-            /* Ultra Glass Material - Dark */
             --glass-base: rgba(30, 30, 35, 0.25);
             --glass-solid: rgba(50, 50, 55, 0.8);
             --glass-hover: rgba(50, 50, 55, 0.4);
@@ -92,7 +87,7 @@
             letter-spacing: -0.015em;
         }
 
-        /* === WWDC STUDIO BACKGROUND === */
+        /* Tối ưu GPU cho hình nền & ánh sáng */
         .studio-bg {
             position: fixed;
             inset: -50%;
@@ -106,6 +101,7 @@
             pointer-events: none;
             mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
             -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+            will-change: transform;
         }
 
         .studio-lights {
@@ -118,6 +114,7 @@
             filter: blur(60px);
             animation: light-flow 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
+            will-change: transform;
         }
 
         @keyframes light-flow {
@@ -126,7 +123,7 @@
             100% { transform: scale(0.95) translate(-2%, -4%); }
         }
 
-        /* === ULTRA CLEAR REFRACTION GLASS === */
+        /* Tối ưu render các thành phần tĩnh */
         .ultra-clear-glass {
             background: rgba(255, 255, 255, 0.15) !important;
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
@@ -134,6 +131,7 @@
                 inset 0 4px 6px -2px rgba(255, 255, 255, 0.9),
                 inset 0 -4px 6px -2px rgba(0, 0, 0, 0.05),
                 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+            will-change: transform, opacity;
         }
         [data-theme="dark"] .ultra-clear-glass {
             background: rgba(20, 20, 25, 0.2) !important;
@@ -159,11 +157,11 @@
             text-shadow: none;
         }
 
-        /* === NAV COMPACT TRANSITIONS === */
         #main-top-nav {
             transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
                         padding 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                         background-color 0.6s ease;
+            will-change: max-width, padding, background-color;
         }
         
         #main-top-nav.is-compact {
@@ -221,7 +219,7 @@
             isolation: isolate;
         }
 
-        .glass-panel::before {
+        .glass-panel::before, .liquid-tool-card::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -247,13 +245,13 @@
                 0 24px 48px -12px rgba(0, 0, 0, 0.12);
             position: relative;
             isolation: isolate;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform, box-shadow;
         }
 
         [data-theme="dark"] .liquid-tool-card {
             background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
             backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.15);
-            -webkit-backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.15);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-bottom-color: rgba(255, 255, 255, 0.05);
             box-shadow: 
@@ -261,18 +259,6 @@
                 inset 0 -8px 16px -4px rgba(0, 0, 0, 0.6),
                 inset 0 0 30px rgba(255, 255, 255, 0.05),
                 0 24px 48px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        .liquid-tool-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: var(--noise-opacity);
-            mix-blend-mode: overlay;
-            pointer-events: none;
-            z-index: -1;
         }
 
         .liquid-tool-card.interactive-glass:hover {
@@ -291,7 +277,7 @@
                 0 32px 64px -16px rgba(0, 0, 0, 0.7);
         }
 
-        /* === SPECULAR HIGHLIGHT ENGINE === */
+        /* Tối ưu SPECULAR HIGHLIGHT: Bỏ pointer-events và thêm hardware accell */
         .interactive-glass::after,
         .popup-item::after,
         .dock-btn::after {
@@ -311,9 +297,10 @@
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
             pointer-events: none;
             z-index: 20;
+            will-change: opacity, background;
         }
 
         .glow-group:hover .interactive-glass::after,
@@ -329,6 +316,7 @@
             border-radius: 24px !important;
             position: relative;
             isolation: isolate;
+            will-change: transform, opacity;
         }
 
         .popup-item {
@@ -338,8 +326,9 @@
                 inset 0 2px 4px rgba(255, 255, 255, 0.3),
                 0 4px 12px rgba(0, 0, 0, 0.05) !important;
             border-radius: 16px !important;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
             position: relative; 
+            will-change: transform;
         }
         .popup-item:hover {
             background: rgba(255, 255, 255, 0.25) !important;
@@ -474,6 +463,7 @@
             gap: 8px;
             border-radius: 40px;
             transform-origin: bottom center;
+            will-change: transform;
         }
 
         .dock-btn {
@@ -484,9 +474,10 @@
             align-items: center;
             justify-content: center;
             color: var(--text-main);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
             position: relative;
             background: transparent;
+            will-change: transform;
         }
 
         .dock-btn:hover {
@@ -509,7 +500,7 @@
             border-radius: 50%;
             background: var(--text-sub);
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
         }
         .dock-btn:hover .dock-dot { opacity: 1; transform: translateY(4px); }
 
@@ -531,8 +522,9 @@
             100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
         }
         .stagger-enter { 
-            animation: floatUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: floatUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
+            will-change: transform, opacity, filter;
         }
 
         .icon-stroke {
@@ -552,18 +544,14 @@
 </head>
 <body class="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
 
-    <!-- The Studio Background -->
     <div class="studio-lights"></div>
     <div class="studio-bg"></div>
 
-    <!-- Floating Toasts -->
     <div id="toast-container" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-3 pointer-events-none w-max max-w-[90vw]"></div>
 
-    <!-- === TOP NAVIGATION BAR === -->
     <nav class="fixed top-6 left-0 right-0 z-50 px-4 md:px-8 flex justify-center pointer-events-none">
         <div id="main-top-nav" class="ultra-clear-glass refract-element rounded-full p-2.5 px-3 flex items-center justify-between w-full max-w-[1400px] pointer-events-auto relative z-50">
             
-            <!-- Left: Logo & Title -->
             <div class="flex items-center gap-2 md:gap-3 cursor-pointer group pl-1 pr-2 md:pr-4 py-1.5 rounded-full hover:bg-[var(--glass-hover)] transition-colors shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 <div class="nav-logo-bg shadow-lg group-hover:scale-110 transition-transform duration-300 shrink-0">
                     <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
@@ -573,7 +561,6 @@
                 </div>
             </div>
 
-            <!-- Center: Thanh Tìm Kiếm Tích Hợp -->
             <div class="flex-1 max-w-2xl mx-2 md:mx-6 group z-10">
                 <div class="nav-search-wrapper rounded-full flex items-center px-3 md:px-4 h-10 transition-all duration-300 w-full">
                     <i data-lucide="search" class="w-4 h-4 md:w-5 md:h-5 text-[var(--text-sub)] group-focus-within:text-[var(--text-main)] transition-colors shrink-0"></i>
@@ -587,7 +574,6 @@
                 </div>
             </div>
 
-            <!-- Right: Actions -->
             <div class="flex items-center gap-1 sm:gap-2 shrink-0 pr-1 z-10">
                 <div class="hidden md:flex items-center gap-1">
                     <button onclick="AppController.toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" title="Theme">
@@ -600,14 +586,12 @@
                     
                     <div class="w-px h-5 bg-[var(--glass-border)] mx-2 shrink-0"></div>
                     
-                    <!-- Donate Button with Text -->
                     <a href="https://ducmanh.io.vn/donate" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-pink-500 hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Donate">
                         <i data-lucide="heart" class="w-5 h-5 fill-current group-hover:scale-110 transition-transform shrink-0"></i>
                         <div class="hidden lg:grid nav-text-container">
                             <span class="nav-text-inner text-sm font-bold tracking-wide">Donate</span>
                         </div>
                     </a>
-                    <!-- Telegram Button with Text -->
                     <a href="https://t.me/ducmanh" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-[var(--text-sub)] hover:text-[#229ED9] hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Telegram">
                         <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-1 transition-transform icon-stroke shrink-0"></i>
                         <div class="hidden lg:grid nav-text-container">
@@ -625,7 +609,6 @@
         </div>
     </nav>
 
-    <!-- === FULL SCREEN MOBILE MENU === -->
     <div id="mobile-menu" class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] md:hidden flex flex-col p-6 overflow-y-auto glow-group">
         <div class="flex justify-end mb-8 mt-2">
             <button onclick="AppController.toggleMobileMenu()" class="w-12 h-12 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] active:scale-95 transition-transform">
@@ -684,12 +667,9 @@
         </footer>
     </div>
 
-    <!-- === MAIN CONTENT === -->
     <main class="relative z-10 min-h-screen px-4 md:px-8 pt-28 md:pt-32 pb-16 max-w-[1400px] mx-auto">
         
         <header class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 mb-20 stagger-enter glow-group">
-            
-            <!-- Cột Trái: Title -->
             <div class="lg:col-span-5 flex flex-col justify-center gap-5 pr-0 md:pr-4">
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="inline-flex items-center gap-2 px-5 py-2 glass-panel glass-pill w-max">
@@ -707,7 +687,6 @@
                 </div>
             </div>
 
-            <!-- Cột Phải - WIDGET ĐỒNG HỒ -->
             <div id="clock-panel" class="lg:col-span-7 ultra-clear-glass refract-element interactive-glass rounded-[36px] p-5 md:p-6 flex flex-col justify-between relative overflow-hidden min-h-[260px] w-full">
                 
                 <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-[var(--accent)] opacity-[0.06] rounded-full blur-[80px] translate-x-1/4 -translate-y-1/4 pointer-events-none"></div>
@@ -801,14 +780,12 @@
             </div>
         </header>
 
-        <!-- Lọc Danh Mục -->
         <section class="stagger-enter mb-10" style="animation-delay: 0.1s;">
             <div class="category-scroll pb-4">
                 <div id="categories-container" class="flex gap-1 glass-panel glass-pill p-1.5 w-max mx-auto"></div>
             </div>
         </section>
 
-        <!-- Tools Grid -->
         <section class="stagger-enter" style="animation-delay: 0.2s;">
             <div class="flex items-center gap-4 mb-10">
                 <div class="w-12 h-12 rounded-2xl glass-input flex items-center justify-center">
@@ -821,7 +798,6 @@
             <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 glow-group justify-center"></div>
         </section>
 
-        <!-- Empty State -->
         <div id="empty-state" class="hidden py-24 text-center glass-panel mt-10 stagger-enter">
             <div class="w-24 h-24 mx-auto glass-panel glass-pill flex items-center justify-center mb-6">
                 <i data-lucide="search-x" class="w-10 h-10 text-[var(--text-sub)] icon-stroke"></i>
@@ -833,7 +809,6 @@
             </button>
         </div>
 
-        <!-- Why Choose Us Section -->
         <section id="why-choose-us" class="mt-32 pt-16 border-t border-[var(--glass-border)] stagger-enter" style="animation-delay: 0.3s;">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-[var(--text-main)] mb-4 tracking-tight" id="why-choose-title">Vì sao chọn chúng tôi</h2>
@@ -842,16 +817,13 @@
             <div id="why-choose-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 glow-group"></div>
         </section>
 
-        <!-- Footer -->
         <footer class="mt-16 py-6 text-center border-t border-[var(--glass-border)]">
             <p class="text-sm text-[var(--text-sub)] font-medium tracking-wide" id="copyright"></p>
         </footer>
 
     </main>
 
-    <!-- === THE SUPER DOCK === -->
     <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-transform duration-500" id="tactical-dock">
-        <!-- Pinned Popup -->
         <div id="pinned-menu" class="absolute bottom-[calc(100%+20px)] left-1/2 -translate-x-1/2 w-[340px] md:w-[400px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
             <div class="flex items-center justify-between mb-6 px-2">
                 <div class="flex items-center gap-2">
@@ -863,7 +835,6 @@
             <div id="pinned-menu-content" class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto category-scroll pr-2 glow-group"></div>
         </div>
 
-        <!-- Contact Popup -->
         <div id="contact-menu" class="absolute bottom-[calc(100%+20px)] right-0 md:left-1/2 md:-translate-x-1/2 md:translate-x-[60px] w-[300px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
             <div class="flex items-center gap-2 mb-6 px-2">
                 <i data-lucide="mail" class="w-5 h-5 text-[var(--text-main)] icon-stroke"></i>
@@ -891,7 +862,6 @@
             </div>
         </div>
 
-        <!-- The Dock -->
         <nav class="super-dock ultra-clear-glass refract-element">
             <a href="https://ducmanh.io.vn" class="dock-btn hidden sm:flex" title="Trang chủ">
                 <i data-lucide="home" class="w-6 h-6 icon-stroke"></i>
@@ -918,12 +888,11 @@
         </nav>
     </div>
 
-    <!-- === JAVASCRIPT === -->
     <script>
         'use strict';
 
         // =========================================================================
-        // LIQUID LENS ENGINE
+        // LIQUID LENS ENGINE (TỐI ƯU HÓA)
         // =========================================================================
         const LiquidLensEngine = (() => {
             function applyToElement(element) {
@@ -1019,10 +988,15 @@
                 element.style.webkitBackdropFilter = `url(#${activeFilterId}) blur(2px) saturate(200%) brightness(1.15)`;
             }
 
+            // Tối ưu debounce ResizeObserver
+            let resizeTimeout;
             const resizeObserver = new ResizeObserver(entries => {
-                entries.forEach(entry => {
-                    requestAnimationFrame(() => applyToElement(entry.target));
-                });
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    entries.forEach(entry => {
+                        window.requestAnimationFrame(() => applyToElement(entry.target));
+                    });
+                }, 150);
             });
 
             function init(selector) {
@@ -1139,6 +1113,13 @@
                 pins: Utils.storage.get(CONSTANTS.STORAGE_KEYS.PINS, [])
             };
 
+            // Tối ưu DOM Caching cho các hiệu ứng ánh sáng
+            let cachedGlowItems = [];
+
+            function updateGlowCache() {
+                cachedGlowItems = document.querySelectorAll('.interactive-glass, .popup-item, .dock-btn');
+            }
+
             function updateIcon(id, newIconName, newClass) {
                 const oldElement = Utils.$(`#${id}`);
                 if (!oldElement) return;
@@ -1161,9 +1142,12 @@
                 initSystemStatus(); 
                 renderAll();
 
+                // Trì hoãn script vẽ hiệu ứng Canvas (lỏng) để HTML/CSS render trước không bị khựng
                 setTimeout(() => {
+                    if (window.lucide) lucide.createIcons();
                     LiquidLensEngine.init('.refract-element');
-                }, 100);
+                    updateGlowCache();
+                }, 500);
             }
 
             function setupEvents() {
@@ -1180,12 +1164,10 @@
                     const mainNav = Utils.$('#main-top-nav');
                     
                     if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                        // Scrolling down: Ẩn dock dưới và thu hẹp (compact) Navbar trên cùng
                         dock.style.transform = 'translate(-50%, 150%)';
                         closeAllDockMenus();
                         mainNav.classList.add('is-compact');
                     } else {
-                        // Scrolling up: Hiện dock dưới và mở rộng Navbar
                         dock.style.transform = 'translate(-50%, 0)';
                         mainNav.classList.remove('is-compact');
                     }
@@ -1194,12 +1176,12 @@
 
                 document.addEventListener('click', handleOutsideClick);
 
+                // Tối ưu hóa cực mạnh cho hiệu ứng ánh sáng chạy theo chuột
                 let glowTicking = false;
                 document.addEventListener('mousemove', (e) => {
                     if (!glowTicking) {
                         window.requestAnimationFrame(() => {
-                            const glowItems = document.querySelectorAll('.interactive-glass, .popup-item, .dock-btn');
-                            glowItems.forEach(item => {
+                            cachedGlowItems.forEach(item => {
                                 const rect = item.getBoundingClientRect();
                                 const x = e.clientX - rect.left;
                                 const y = e.clientY - rect.top;
@@ -1210,7 +1192,7 @@
                         });
                         glowTicking = true;
                     }
-                });
+                }, { passive: true });
             }
 
             function handleOutsideClick(e) {
@@ -1304,7 +1286,7 @@
                                     updateIcon('battery-icon', 'battery-warning', 'w-3.5 h-3.5 text-rose-500 shrink-0');
                                 }
                             }
-                            lucide.createIcons();
+                            if (window.lucide) lucide.createIcons();
                         };
                         updateBattery();
                         battery.addEventListener('levelchange', updateBattery);
@@ -1323,7 +1305,7 @@
                         updateIcon('network-icon', 'wifi-off', 'w-3.5 h-3.5 text-rose-500 shrink-0');
                         Utils.setText('#network-text', 'Offline');
                     }
-                    lucide.createIcons();
+                    if (window.lucide) lucide.createIcons();
                 };
                 window.addEventListener('online', updateNetwork);
                 window.addEventListener('offline', updateNetwork);
@@ -1358,9 +1340,8 @@
                     Utils.setText('#weather-wind', `${wind}km/h`);
                     
                     updateIcon('main-weather-icon', icon, 'w-4 h-4 md:w-5 md:h-5 icon-stroke');
-                    lucide.createIcons();
+                    if (window.lucide) lucide.createIcons();
                 } catch (error) {
-                    console.error("Lỗi lấy thời tiết", error);
                     Utils.setText('#weather-temp', '--°C');
                     Utils.setText('#weather-feels', '--°C');
                     Utils.setText('#weather-desc', 'Mất kết nối');
@@ -1423,7 +1404,9 @@
                 renderProjects();
                 renderWhyChooseUs();
                 renderPins();
-                lucide.createIcons();
+                
+                if (window.lucide) lucide.createIcons();
+                updateGlowCache();
             }
 
             function renderCategories() {
@@ -1448,7 +1431,9 @@
                 
                 const emptyEl = Utils.$('#empty-state');
                 if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);
-                lucide.createIcons();
+                
+                if (window.lucide) lucide.createIcons();
+                updateGlowCache();
             }
 
             function renderWhyChooseUs() {
@@ -1494,7 +1479,9 @@
                         </button>
                     </div>
                 `).join('');
-                lucide.createIcons();
+                
+                if (window.lucide) lucide.createIcons();
+                updateGlowCache();
             }
 
             function togglePin(id) {
@@ -1588,7 +1575,7 @@
                 tst.style.animation = 'floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
                 tst.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-[var(--text-main)] icon-stroke"></i> <span>${msg}</span>`;
                 Utils.$('#toast-container').appendChild(tst);
-                lucide.createIcons();
+                if (window.lucide) lucide.createIcons();
                 setTimeout(() => {
                     tst.style.opacity = '0';
                     tst.style.transform = 'translateY(-20px)';

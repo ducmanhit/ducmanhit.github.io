@@ -13,27 +13,21 @@
         /* --- CORE STYLES --- */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f2f2f7;
+            background-color: #f3f4f6; /* Nền xám nhạt, nhẹ nhàng, không gradient */
             margin: 0; padding: 0;
             height: 100vh;
             width: 100vw;
             color: #1d1d1f;
-            overflow: hidden; /* Chốt cứng không cuộn */
             display: flex; flex-direction: column;
             justify-content: center; /* Căn giữa dọc */
-            font-size: 16px; /* Base font to hơn */
-        }
-
-        #fluid-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            filter: blur(90px) saturate(1.4); 
-            opacity: 0.65; pointer-events: none;
+            font-size: 16px; 
+            overflow: hidden;
         }
 
         /* HOME BUTTON */
         .glass-btn-home {
             position: fixed; top: 24px; left: 24px; z-index: 50;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -45,8 +39,8 @@
             text-decoration: none; color: #1d1d1f; font-size: 1rem; font-weight: 600;
         }
         .glass-btn-home:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-2px) scale(1.05);
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
         }
 
         /* MAIN CONTAINER */
@@ -54,62 +48,52 @@
             width: 100%; max-width: 1280px; 
             margin: 0 auto;
             padding: 0 40px; 
-            height: 90vh; /* Chiếm 90% chiều cao màn hình để cân đối */
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 30px;
             z-index: 10;
-            justify-content: center;
         }
 
         /* HEADER */
         .header-section {
             text-align: center;
-            margin-bottom: 10px;
         }
         .header-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; color: #111827; }
-        .header-subtitle { font-size: 1rem; color: #6b7280; font-weight: 500; }
+        .header-subtitle { font-size: 1rem; color: #6b7280; font-weight: 500; margin-top: 5px; }
 
-        /* GRID LAYOUT */
+        /* GRID LAYOUT - Tối ưu cho 4 card */
         .calc-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr); 
-            grid-template-rows: auto auto 1fr; /* Hàng cuối tự giãn */
-            gap: 20px;
-            height: 100%;
+            gap: 24px;
         }
 
         /* CARD STYLES */
         .calc-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 24px;
             padding: 24px 28px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex; flex-direction: column; justify-content: center;
         }
         .calc-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-            background: rgba(255, 255, 255, 0.85);
-            border-color: #fff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
         }
 
-        /* Full Width Card */
-        .card-full-width { grid-column: 1 / -1; }
-
-        /* INPUTS - SIZE L */
+        /* INPUTS */
         .crystal-input {
-            background: #ffffff; border: 1px solid #e5e7eb;
+            background: #f9fafb; border: 1px solid #e5e7eb;
             color: #111827; border-radius: 14px; 
             transition: all 0.2s; 
-            font-size: 1.15rem; /* Chữ to */
+            font-size: 1.15rem; 
             font-weight: 600;
             width: 100%; padding: 0 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            height: 52px; /* Cao, dễ bấm */
+            height: 52px; 
         }
         .crystal-input:focus {
+            background: #ffffff;
             border-color: #3b82f6;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); 
             outline: none;
@@ -117,16 +101,16 @@
 
         /* RESULT BOX */
         .result-wrapper {
-            background: #f9fafb;
+            background: #f3f4f6;
             border: 1px solid #e5e7eb;
             border-radius: 14px;
             padding: 0 16px;
             display: flex; align-items: center; justify-content: space-between;
-            height: 52px; /* Bằng chiều cao input */
+            height: 52px; 
             gap: 12px;
         }
         .result-display { 
-            font-weight: 700; color: #059669; font-size: 1.4rem; /* Kết quả to đùng */
+            font-weight: 700; color: #059669; font-size: 1.4rem; 
             flex: 1; text-align: right; white-space: nowrap; 
         }
 
@@ -143,60 +127,46 @@
         .btn-copy-sm {
             padding: 8px; border-radius: 10px; color: #9ca3af; cursor: pointer;
             transition: all 0.2s; opacity: 0; transform: scale(0.9);
+            background: transparent; border: none;
         }
         .btn-copy-sm.show { opacity: 1; transform: scale(1); }
-        .btn-copy-sm:hover { background: #dbeafe; color: #2563eb; }
+        .btn-copy-sm:hover { background: #e0e7ff; color: #4f46e5; }
 
         /* FOOTER */
-        .footer-actions { margin-top: 10px; text-align: center; }
+        .footer-actions { text-align: center; }
         .reset-all-btn {
-            background: white; border: 1px solid #fee2e2;
+            background: white; border: 1px solid #fecaca;
             color: #ef4444; padding: 12px 32px; border-radius: 99px;
             font-weight: 600; font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1);
             transition: all 0.2s; cursor: pointer;
             display: inline-flex; align-items: center; gap: 8px;
         }
-        .reset-all-btn:hover { background: #fef2f2; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2); }
-
-        /* CARD 5 SPECIAL */
-        .card5 { 
-            background: linear-gradient(135deg, rgba(239, 246, 255, 0.8), rgba(255, 255, 255, 0.9));
-            border: 2px solid rgba(59, 130, 246, 0.2);
-        }
-        .card5-title { font-size: 1.5rem; color: #1e3a8a; }
-        .card5-input { height: 64px; font-size: 1.4rem; border-color: #bfdbfe; background: white; }
-        .card5-result-box { 
-            height: 64px; border: 2px solid #bfdbfe; background: white; 
-            border-radius: 16px; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
-            display: flex; align-items: center; padding: 0 20px;
-        }
-        .card5-result-text { font-size: 2rem; font-weight: 800; color: #2563eb; }
+        .reset-all-btn:hover { background: #fef2f2; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.15); }
 
         /* TOAST */
         .toast {
             position: fixed; top: 30px; right: 30px;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px);
-            padding: 16px 24px; border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            background: #ffffff; 
+            padding: 16px 24px; border-radius: 16px; border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 100; font-weight: 600; display: flex; align-items: center; gap: 12px;
         }
 
         /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .main-container { padding: 20px; height: auto; display: block; overflow-y: auto; }
-            body { overflow: auto; display: block; }
+            body { overflow-y: auto; height: auto; }
+            .main-container { padding: 80px 20px 40px; }
             .calc-grid { display: flex; flex-direction: column; }
+            .glass-btn-home { top: 16px; left: 16px; padding: 8px 16px; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="fluid-canvas"></canvas>
-
     <!-- HOME BUTTON -->
-    <a href="https://ducmanh.io.vn/" class="glass-btn-home group">
+    <a href="https://ducmanh.io.vn/" class="glass-btn-home">
         <i data-lucide="arrow-left" class="w-5 h-5"></i>
         <span>Trang chủ</span>
     </a>
@@ -317,42 +287,10 @@
                 </div>
             </div>
 
-            <!-- 5. SALE CALCULATOR (HERO) -->
-            <div class="calc-card card-full-width card5 !flex-row items-center gap-8 py-6">
-                <div class="min-w-[200px]">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-500/30"><i data-lucide="tag" class="w-7 h-7 text-white"></i></div>
-                        <h3 class="card5-title font-bold">Tìm Giá Gốc</h3>
-                    </div>
-                    <p class="text-sm text-blue-800 font-medium opacity-80">Từ giá Sale đã giảm</p>
-                </div>
-                
-                <div class="flex-1 grid grid-cols-3 gap-6 items-end">
-                    <div class="relative">
-                        <label class="input-label text-blue-700">Giá Sale</label>
-                        <input type="number" id="c5-sale" class="crystal-input card5-input" placeholder="5000" oninput="calc5()">
-                        <button onclick="clearField('c5-sale'); calc5()" class="absolute right-4 top-[38px] text-gray-400 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
-                    </div>
-                    
-                    <div class="relative">
-                        <label class="input-label text-blue-700">% Giảm</label>
-                        <input type="number" id="c5-percent" class="crystal-input card5-input" placeholder="50" oninput="calc5()">
-                        <button onclick="clearField('c5-percent'); calc5()" class="absolute right-4 top-[38px] text-gray-400 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
-                    </div>
-
-                    <div class="relative">
-                        <div class="absolute -top-7 right-0 text-xs font-bold text-blue-600 uppercase tracking-widest opacity-80">Giá trị kết quả gốc</div>
-                        <div class="card5-result-box">
-                            <span id="c5-result" class="card5-result-text flex-1 text-right pr-4"></span>
-                            <button id="c5-copy" onclick="copyResult('c5-result')" class="btn-copy-sm scale-125 show"><i data-lucide="copy" class="w-6 h-6 text-blue-400 hover:text-blue-600"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <div class="footer-actions">
+        <!-- FOOTER ACTIONS -->
+        <div class="footer-actions mt-4">
             <button onclick="clearAll()" class="reset-all-btn">
                 <i data-lucide="trash-2" class="w-5 h-5"></i> Xóa tất cả
             </button>
@@ -360,52 +298,36 @@
 
     </div>
 
-    <!-- TOAST -->
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast">
         <div class="bg-green-100 p-2 rounded-full"><i data-lucide="check" class="w-5 h-5 text-green-600"></i></div>
         <span class="text-gray-800">Đã sao chép vào bộ nhớ tạm!</span>
     </div>
 
     <script>
+        // Khởi tạo icon Lucide
         lucide.createIcons();
 
-        // --- BACKGROUND ANIMATION ---
-        const canvas = document.getElementById('fluid-canvas');
-        const ctxBg = canvas.getContext('2d');
-        let width, height, orbs = [];
-        const colors = [{r:0,g:122,b:255}, {r:52,g:199,b:89}, {r:255,g:149,b:0}, {r:175,g:82,b:222}];
-        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
-        class Orb {
-            constructor() { this.init(); }
-            init() { this.radius = Math.random()*150+120; this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.color = colors[Math.floor(Math.random()*colors.length)]; }
-            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<-200||this.x>width+200) this.vx*=-1; if(this.y<-200||this.y>height+200) this.vy*=-1; }
-            draw(ctx) { const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius); g.addColorStop(0,`rgba(${this.color.r},${this.color.g},${this.color.b},0.35)`); g.addColorStop(1,`rgba(${this.color.r},${this.color.g},${this.color.b},0)`); ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=g; ctx.globalCompositeOperation='source-over'; ctx.fill(); }
-        }
-        function initBackground() { resize(); orbs=[]; for(let i=0;i<6;i++) orbs.push(new Orb()); loop(); }
-        function loop() { ctxBg.clearRect(0,0,width,height); orbs.forEach(o=>{o.update();o.draw(ctxBg)}); requestAnimationFrame(loop); }
-        window.addEventListener('resize', ()=>{resize(); initBackground();}); initBackground();
-
-        // --- HELPER ---
+        // Định dạng số (thêm dấu phẩy)
         function formatNum(num) {
             return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num);
         }
-        function clearField(id) {
-            document.getElementById(id).value = '';
-        }
+
+        // Xóa toàn bộ dữ liệu
         function clearAll() {
             const inputs = document.querySelectorAll('input[type="number"]');
             inputs.forEach(input => input.value = '');
-            const results = document.querySelectorAll('[id$="-result"]');
+            
+            const results = document.querySelectorAll('.result-display');
             results.forEach(res => {
                 res.innerText = '';
-                res.className = 'result-display'; 
-                if(res.id === 'c5-result') res.className = 'card5-result-text flex-1 text-right pr-4';
+                res.className = 'result-display'; // Reset màu sắc (đặc biệt cho card 4)
             });
+            
             document.querySelectorAll('.btn-copy-sm').forEach(btn => btn.classList.remove('show'));
-            // Keep card 5 button visible but inactive logic handled separately if needed
         }
 
-        // Toggle Copy Button visibility based on result
+        // Hiển thị/Ẩn nút Copy
         function toggleCopyBtn(resId, hasResult) {
             const btnId = resId.replace('result', 'copy');
             const btn = document.getElementById(btnId);
@@ -415,7 +337,7 @@
             }
         }
 
-        // --- COPY FUNCTION ---
+        // Copy kết quả
         function copyResult(elementId) {
             const text = document.getElementById(elementId).innerText;
             if(!text) return; 
@@ -434,12 +356,12 @@
                 t.style.transform = 'translateX(0)';
                 setTimeout(() => t.style.transform = 'translateX(150%)', 2500);
             } catch (err) {
-                console.error('Fallback: Oops, unable to copy', err);
+                console.error('Không thể copy', err);
             }
             document.body.removeChild(textArea);
         }
 
-        // --- CALC LOGIC ---
+        // Card 1: X% of Y
         function calc1() {
             const p = parseFloat(document.getElementById('c1-percent').value);
             const v = parseFloat(document.getElementById('c1-value').value);
@@ -453,6 +375,7 @@
             }
         }
 
+        // Card 2: Find Percentage
         function calc2() {
             const x = parseFloat(document.getElementById('c2-part').value);
             const y = parseFloat(document.getElementById('c2-total').value);
@@ -466,6 +389,7 @@
             }
         }
 
+        // Card 3: Find Whole
         function calc3() {
             const x = parseFloat(document.getElementById('c3-val').value);
             const p = parseFloat(document.getElementById('c3-percent').value);
@@ -479,6 +403,7 @@
             }
         }
 
+        // Card 4: Change %
         function calc4() {
             const f = parseFloat(document.getElementById('c4-from').value);
             const t = parseFloat(document.getElementById('c4-to').value);
@@ -494,25 +419,6 @@
                 res.innerText = "";
                 res.className = "result-display";
                 toggleCopyBtn('c4-result', false);
-            }
-        }
-
-        function calc5() {
-            const sale = parseFloat(document.getElementById('c5-sale').value);
-            const percent = parseFloat(document.getElementById('c5-percent').value);
-            const res = document.getElementById('c5-result');
-            if(!isNaN(sale) && !isNaN(percent)) {
-                if(percent >= 100) {
-                    res.innerText = "Vô lý";
-                    toggleCopyBtn('c5-result', false);
-                } else {
-                    const original = sale / (1 - (percent / 100));
-                    res.innerText = formatNum(original);
-                    toggleCopyBtn('c5-result', true);
-                }
-            } else {
-                res.innerText = "";
-                toggleCopyBtn('c5-result', false);
             }
         }
     </script>

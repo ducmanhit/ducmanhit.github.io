@@ -13,14 +13,14 @@
                 extend: {
                     colors: {
                         dark: {
-                            bg: '#0a0d14',
-                            card: '#111620',
-                            input: '#0d111a',
-                            border: '#1f2937'
+                            bg: '#0f1523',      /* Màu nền tổng thể xanh đen dịu mắt */
+                            card: '#171e2e',    /* Màu nền của các thẻ card */
+                            input: '#0f1523',   /* Màu nền ô input */
+                            border: '#263147'   /* Màu viền card tinh tế hơn */
                         },
                         brand: {
-                            DEFAULT: '#ff5c35', 
-                            hover: '#e84a25'
+                            DEFAULT: '#f05a28', /* Màu cam chủ đạo giống trong ảnh */
+                            hover: '#d94d1f'
                         }
                     },
                     fontFamily: {
@@ -35,54 +35,51 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
         
         body {
-            background-color: #0a0d14;
+            background-color: #0f1523;
             color: #d1d5db;
-            background-image: 
-                linear-gradient(to right, rgba(31, 41, 55, 0.3) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(31, 41, 55, 0.3) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-attachment: fixed;
         }
 
         .btn-outline {
             background: transparent;
-            border: 1px solid #ff5c35;
-            color: #ff5c35;
+            border: 1px solid #f05a28;
+            color: #f05a28;
             transition: all 0.2s ease;
         }
         .btn-outline:hover:not(:disabled) {
-            background: rgba(255, 92, 53, 0.1);
+            background: rgba(240, 90, 40, 0.1);
         }
         .btn-outline:active:not(:disabled) {
             transform: scale(0.98);
         }
 
         .btn-solid {
-            background: #ff5c35;
+            background: #f05a28;
             color: #fff;
             transition: all 0.2s ease;
-            box-shadow: 4px 4px 0px rgba(255, 92, 53, 0.2);
+            box-shadow: 4px 4px 0px rgba(240, 90, 40, 0.2);
         }
         .btn-solid:hover:not(:disabled) {
-            background: #e84a25;
-            box-shadow: 2px 2px 0px rgba(255, 92, 53, 0.2);
+            background: #d94d1f;
+            box-shadow: 2px 2px 0px rgba(240, 90, 40, 0.2);
             transform: translate(2px, 2px);
         }
         .btn-solid:active:not(:disabled) {
-            box-shadow: 0px 0px 0px rgba(255, 92, 53, 0.2);
+            box-shadow: 0px 0px 0px rgba(240, 90, 40, 0.2);
             transform: translate(4px, 4px);
         }
 
         .info-card {
-            background-color: #111620;
-            border: 1px solid #1f2937;
+            background-color: #171e2e;
+            border: 1px solid #263147;
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+            border-radius: 4px;
         }
         .info-card:hover {
-            border-color: #ff5c35;
-            background-color: #151a26;
+            border-color: #f05a28;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .card-watermark {
@@ -98,7 +95,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
         .info-card:hover .card-watermark {
-            color: rgba(255, 92, 53, 0.05);
+            color: rgba(240, 90, 40, 0.05);
         }
 
         .card-content {
@@ -107,34 +104,33 @@
         }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0d14; }
-        ::-webkit-scrollbar-thumb { background: #1f2937; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff5c35; }
+        ::-webkit-scrollbar-track { background: #0f1523; }
+        ::-webkit-scrollbar-thumb { background: #263147; }
+        ::-webkit-scrollbar-thumb:hover { background: #f05a28; }
 
         .loader {
             width: 32px;
             height: 32px;
-            border: 2px solid #ff5c35;
+            border: 2px solid #f05a28;
             animation: spin 2s infinite linear;
         }
         .loader::before {
             content: '';
             position: absolute;
             top: 4px; left: 4px; right: 4px; bottom: 4px;
-            background: #ff5c35;
+            background: #f05a28;
             animation: pulse 1s infinite ease-in-out;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 50% { opacity: 0.5; } }
         
-        /* Hiệu ứng cho nút chọn giới tính */
         .gender-btn {
             transition: all 0.2s ease;
         }
         .gender-btn.active {
-            background: rgba(255, 92, 53, 0.15);
-            border-color: #ff5c35;
-            color: #ff5c35;
+            background: rgba(240, 90, 40, 0.15);
+            border-color: #f05a28;
+            color: #f05a28;
         }
     </style>
 </head>
@@ -161,11 +157,7 @@
         </div>
 
         <!-- Bảng điều khiển chính (Control Panel) -->
-        <div class="bg-dark-card border border-dark-border p-6 mb-8 relative">
-            <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-brand"></div>
-            <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-brand"></div>
-            <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-brand"></div>
-            <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-brand"></div>
+        <div class="bg-dark-card border border-dark-border p-6 mb-8 relative rounded-sm">
 
             <div class="flex flex-col md:flex-row gap-5 items-end">
                 
@@ -179,28 +171,27 @@
                             <i class="fas fa-globe"></i>
                         </span>
                         <input type="text" id="countryInput" placeholder="VD: vietnam, vn ,us, korrea..." 
-                            class="w-full bg-dark-input border border-dark-border text-white pl-12 pr-4 py-4 focus:outline-none focus:border-brand transition-colors font-mono text-sm placeholder-gray-700 rounded-none"
+                            class="w-full bg-dark-input border border-dark-border text-white pl-12 pr-4 py-4 focus:outline-none focus:border-brand transition-colors font-mono text-sm placeholder-gray-600 rounded-sm"
                             value="vietnam"
                             onkeypress="handleKeyPress(event)">
                     </div>
                 </div>
 
-                <!-- Gender Select (Dạng List Buttons) -->
+                <!-- Gender Select -->
                 <div class="flex-grow w-full md:w-4/12">
                     <label class="block text-xs font-bold text-brand uppercase tracking-widest mb-2 font-mono">
                         <i class="fas fa-venus-mars text-xs mr-1"></i> Gender
                     </label>
                     <div class="flex gap-2">
-                        <!-- Biến ẩn để lưu giá trị giới tính hiện tại -->
                         <input type="hidden" id="genderInput" value="random">
                         
-                        <button onclick="selectGender('random')" id="btn-gender-random" class="gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-none">
+                        <button onclick="selectGender('random')" id="btn-gender-random" class="gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
                             <i class="fas fa-dice mr-1"></i> Random
                         </button>
-                        <button onclick="selectGender('male')" id="btn-gender-male" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-none">
+                        <button onclick="selectGender('male')" id="btn-gender-male" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
                             <i class="fas fa-mars mr-1"></i> Nam
                         </button>
-                        <button onclick="selectGender('female')" id="btn-gender-female" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-none">
+                        <button onclick="selectGender('female')" id="btn-gender-female" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
                             <i class="fas fa-venus mr-1"></i> Nữ
                         </button>
                     </div>
@@ -208,14 +199,14 @@
 
                 <!-- Generate Button -->
                 <div class="w-full md:w-3/12">
-                    <button id="generateBtn" onclick="generateData()" class="btn-solid w-full py-4 font-mono font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 rounded-none">
+                    <button id="generateBtn" onclick="generateData()" class="btn-solid w-full py-4 font-mono font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 rounded-sm">
                         <i class="fas fa-bolt"></i> EXECUTE
                     </button>
                 </div>
             </div>
 
             <!-- Error Message -->
-            <div id="errorMsg" class="hidden mt-4 p-4 bg-red-950/30 border-l-4 border-red-500 text-red-400 text-sm flex items-start gap-3 font-mono">
+            <div id="errorMsg" class="hidden mt-4 p-4 bg-red-900/30 border-l-4 border-red-500 text-red-400 text-sm flex items-start gap-3 font-mono">
                 <i class="fas fa-exclamation-triangle mt-0.5"></i>
                 <span id="errorText"></span>
             </div>
@@ -224,14 +215,14 @@
         <!-- Khu vực hiển thị kết quả -->
         <div class="relative min-h-[450px]">
             
-            <div id="loadingOverlay" class="absolute inset-0 bg-dark-bg/90 backdrop-blur-sm flex flex-col items-center justify-center hidden z-20">
+            <div id="loadingOverlay" class="absolute inset-0 bg-dark-bg/80 backdrop-blur-sm flex flex-col items-center justify-center hidden z-20">
                 <div class="loader mb-6 relative"></div>
                 <p class="text-brand font-mono text-sm tracking-widest uppercase animate-pulse">> Accessing database...</p>
             </div>
 
-            <div id="emptyState" class="h-full flex flex-col items-center justify-center text-gray-600 py-24 border border-dashed border-dark-border bg-dark-card/30">
+            <div id="emptyState" class="h-full flex flex-col items-center justify-center text-gray-600 py-24 border border-dashed border-dark-border bg-dark-card/50 rounded-sm">
                 <i class="fas fa-user-secret text-5xl mb-4 opacity-30"></i>
-                <p class="font-mono text-sm uppercase tracking-widest">System Standby</p>
+                <p class="font-mono text-sm uppercase tracking-widest text-gray-400">System Standby</p>
                 <p class="text-xs mt-2 opacity-50 font-mono">Input location and press EXECUTE</p>
             </div>
 
@@ -241,12 +232,12 @@
                     <div class="card-watermark">ID</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Họ và Tên</h3>
-                            <button onclick="copyText('resFullName')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Họ và Tên</h3>
+                            <button onclick="copyText('resFullName')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resFullName" class="text-2xl font-bold text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resFullName" class="text-2xl font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -254,12 +245,12 @@
                     <div class="card-watermark">SEX</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Giới Tính</h3>
-                            <button onclick="copyText('resGender')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Giới Tính</h3>
+                            <button onclick="copyText('resGender')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resGender" class="text-lg font-bold text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resGender" class="text-lg font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -267,12 +258,12 @@
                     <div class="card-watermark">AGE</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Tuổi</h3>
-                            <button onclick="copyText('resAge')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Tuổi</h3>
+                            <button onclick="copyText('resAge')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resAge" class="text-lg font-mono text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resAge" class="text-lg font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -280,12 +271,12 @@
                     <div class="card-watermark">JOB</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Nghề Nghiệp</h3>
-                            <button onclick="copyText('resOccupation')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Nghề Nghiệp</h3>
+                            <button onclick="copyText('resOccupation')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resOccupation" class="text-lg font-medium text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resOccupation" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -293,12 +284,12 @@
                     <div class="card-watermark">TEL</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Điện Thoại</h3>
-                            <button onclick="copyText('resPhone')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Điện Thoại</h3>
+                            <button onclick="copyText('resPhone')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resPhone" class="text-xl font-mono text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resPhone" class="text-xl font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -306,12 +297,12 @@
                     <div class="card-watermark">STR</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Địa Chỉ Đường (Street)</h3>
-                            <button onclick="copyText('resStreet')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Địa Chỉ Đường (Street)</h3>
+                            <button onclick="copyText('resStreet')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resStreet" class="text-xl font-medium text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resStreet" class="text-xl font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -319,12 +310,12 @@
                     <div class="card-watermark">CTY</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Thành Phố</h3>
-                            <button onclick="copyText('resCity')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Thành Phố</h3>
+                            <button onclick="copyText('resCity')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resCity" class="text-lg font-medium text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resCity" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -332,12 +323,12 @@
                     <div class="card-watermark">STA</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Bang / Tỉnh</h3>
-                            <button onclick="copyText('resState')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Bang / Tỉnh</h3>
+                            <button onclick="copyText('resState')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resState" class="text-lg font-medium text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resState" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -345,12 +336,12 @@
                     <div class="card-watermark">ZIP</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Mã Bưu Điện</h3>
-                            <button onclick="copyText('resZip')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Mã Bưu Điện</h3>
+                            <button onclick="copyText('resZip')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resZip" class="text-lg font-mono text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resZip" class="text-lg font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
@@ -358,29 +349,32 @@
                     <div class="card-watermark">LOC</div>
                     <div class="card-content">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Quốc Gia</h3>
-                            <button onclick="copyText('resCountry')" class="text-gray-600 hover:text-brand transition-colors">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Quốc Gia</h3>
+                            <button onclick="copyText('resCountry')" class="text-gray-500 hover:text-brand transition-colors">
                                 <i class="far fa-copy"></i>
                             </button>
                         </div>
-                        <p id="resCountry" class="text-lg font-bold text-white mb-1 group-hover:text-brand transition-colors"></p>
+                        <p id="resCountry" class="text-lg font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
                     </div>
                 </div>
 
             </div>
         </div>
         
-        <div id="toast" class="fixed bottom-6 right-6 bg-brand text-white px-5 py-3 shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 font-mono text-sm font-bold">
+        <div id="toast" class="fixed bottom-6 right-6 bg-brand text-white px-5 py-3 shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 font-mono text-sm font-bold rounded-sm">
             <i class="fas fa-check-square"></i>
             <span id="toastMsg">Copied to clipboard</span>
         </div>
     </div>
 
     <script>
-        // API Key: 
-        // - Để trống "" nếu chạy trực tiếp trên web Canvas này (nhấn nút Preview).
-        // - NẾU BẠN CHẠY CODE Ở MÁY TÍNH CỦA BẠN: Hãy điền Key của bạn vào đây (Ví dụ: "AIzaSyCX1bWXjkV0...")
-        const apiKey = "AIzaSyCX1bWXjkV0kfJg_IPFpJjhbofw8mrkWIo"; 
+        // LƯU Ý QUAN TRỌNG:
+        // 1. NẾU CHẠY TRÊN WEB NÀY (PREVIEW): Bạn BẮT BUỘC phải để rỗng chuỗi apiKey = ""
+        //    (hệ thống web sẽ tự động nhúng Key ngầm để bạn test thoải mái)
+        // 2. NẾU BẠN DOWNLOAD VỀ MÁY TÍNH CHẠY: Bạn PHẢI tạo một API Key mới hoàn toàn
+        //    tại Google AI Studio rồi dán vào đây (Key cũ trong ảnh của bạn đã bị hỏng/khóa).
+        
+        const apiKey = "AIzaSyDypV9w59nxzBiQnQx5UmSHPoFgXURc_ks"; 
         
         let currentGeneratedData = null;
 
@@ -390,21 +384,17 @@
             }
         }
 
-        // Hàm xử lý UI chọn giới tính
         function selectGender(gender) {
-            // Cập nhật giá trị vào biến ẩn
             document.getElementById('genderInput').value = gender;
             
-            // Đặt lại style mặc định cho tất cả nút
             const buttons = ['random', 'male', 'female'];
             buttons.forEach(g => {
                 const btn = document.getElementById('btn-gender-' + g);
-                btn.className = 'gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-none';
+                btn.className = 'gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm';
             });
             
-            // Áp dụng style cho nút đang được chọn
             const activeBtn = document.getElementById('btn-gender-' + gender);
-            activeBtn.className = 'gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-none';
+            activeBtn.className = 'gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm';
         }
 
         async function fetchWithRetry(url, options, retries = 3) {
@@ -440,7 +430,6 @@
             errorText.innerHTML = '';
             document.getElementById('copyAllBtnContainer').classList.add('hidden');
             
-            // Reset tiêu đề (title) khi bắt đầu gen mới
             document.title = "Identity Gen";
 
             if (!countryInput) {
@@ -451,15 +440,12 @@
 
             showLoading(true);
 
-            // Xử lý logic giới tính cho Prompt
             let genderPrompt = "The gender should be randomized (Male or Female).";
             if (genderInput === "male") genderPrompt = "The generated person MUST be Male.";
             if (genderInput === "female") genderPrompt = "The generated person MUST be Female.";
 
             const prompt = `Generate completely fictional mock user profile and address data for UI testing. The target location is the country: "${countryInput}". Ensure the format of the zip code, phone number, state/province, and street address strictly follows the realistic local format of that specific country. Make names sound authentic to that region. Return the precise full English name of the target country in the 'country' field. Ensure age is a number between 18 and 65. ${genderPrompt}`;
 
-            // Tự động sử dụng model 'gemini-2.5-flash' bản public nếu bạn đã điền API Key của mình,
-            // ngược lại dùng bản preview nếu đang chạy trên môi trường giả lập web này.
             const modelName = apiKey !== "" ? "gemini-2.5-flash" : "gemini-2.5-flash-preview-09-2025";
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
@@ -514,7 +500,8 @@
                 } else if (error.status === 401) {
                     showError("Lỗi 401: Unauthorized. Chưa có quyền hoặc thiếu API Key.");
                 } else if (error.status === 403) {
-                    showError("Lỗi 403: API Key bị từ chối truy cập.");
+                    // Cập nhật câu báo lỗi để nhắc người dùng tạo Key mới
+                    showError("Lỗi 403: API Key bị từ chối truy cập. Vui lòng tạo một API Key MỚI TẠI AI STUDIO!");
                 } else if (error.status === 404) {
                     showError(`Lỗi 404: Mô hình không khả dụng với API Key này.`);
                 } else {
@@ -550,7 +537,6 @@
             document.getElementById('resZip').textContent = data.zipCode || 'N/A';
             document.getElementById('resCountry').textContent = data.country || 'N/A';
 
-            // Cập nhật thẻ title tự động
             if (data.country) {
                 document.title = `Identity Gen | ${data.country}`;
             }

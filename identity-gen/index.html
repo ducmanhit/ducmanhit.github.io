@@ -5,600 +5,392 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Identity Gen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-	<link rel="icon" href="favicon.ico">
+    <link rel="icon" href="favicon.ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        dark: {
-                            bg: '#0f1523',      /* Màu nền tổng thể xanh đen dịu mắt */
-                            card: '#171e2e',    /* Màu nền của các thẻ card */
-                            input: '#0f1523',   /* Màu nền ô input */
-                            border: '#263147'   /* Màu viền card tinh tế hơn */
-                        },
-                        brand: {
-                            DEFAULT: '#f05a28', /* Màu cam chủ đạo giống trong ảnh */
-                            hover: '#d94d1f'
-                        }
+                        light: { bg:'#f3f4f6', card:'#ffffff', input:'#f9fafb', border:'#d1d5db' },
+                        brand: { DEFAULT:'#f05a28', hover:'#d94d1f' }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
+                    fontFamily: { sans:['Inter','sans-serif'], mono:['JetBrains Mono','monospace'] }
                 }
             }
         }
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-        
-        body {
-            background-color: #0f1523;
-            color: #d1d5db;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #f05a28;
-            color: #f05a28;
-            transition: all 0.2s ease;
-        }
-        .btn-outline:hover:not(:disabled) {
-            background: rgba(240, 90, 40, 0.1);
-        }
-        .btn-outline:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        .btn-solid {
-            background: #f05a28;
-            color: #fff;
-            transition: all 0.2s ease;
-            box-shadow: 4px 4px 0px rgba(240, 90, 40, 0.2);
-        }
-        .btn-solid:hover:not(:disabled) {
-            background: #d94d1f;
-            box-shadow: 2px 2px 0px rgba(240, 90, 40, 0.2);
-            transform: translate(2px, 2px);
-        }
-        .btn-solid:active:not(:disabled) {
-            box-shadow: 0px 0px 0px rgba(240, 90, 40, 0.2);
-            transform: translate(4px, 4px);
-        }
-
-        .info-card {
-            background-color: #171e2e;
-            border: 1px solid #263147;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-        .info-card:hover {
-            border-color: #f05a28;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .card-watermark {
-            position: absolute;
-            top: -15px;
-            right: 0px;
-            font-size: 6rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.02);
-            z-index: 0;
-            pointer-events: none;
-            transition: color 0.3s ease;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .info-card:hover .card-watermark {
-            color: rgba(240, 90, 40, 0.05);
-        }
-
-        .card-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f1523; }
-        ::-webkit-scrollbar-thumb { background: #263147; }
-        ::-webkit-scrollbar-thumb:hover { background: #f05a28; }
-
-        .loader {
-            width: 32px;
-            height: 32px;
-            border: 2px solid #f05a28;
-            animation: spin 2s infinite linear;
-        }
-        .loader::before {
-            content: '';
-            position: absolute;
-            top: 4px; left: 4px; right: 4px; bottom: 4px;
-            background: #f05a28;
-            animation: pulse 1s infinite ease-in-out;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 50% { opacity: 0.5; } }
-        
-        .gender-btn {
-            transition: all 0.2s ease;
-        }
-        .gender-btn.active {
-            background: rgba(240, 90, 40, 0.15);
-            border-color: #f05a28;
-            color: #f05a28;
-        }
+        body{background:#f3f4f6;color:#1f2937}
+        .btn-solid{background:#f05a28;color:#fff;transition:all .2s;box-shadow:4px 4px 0 rgba(240,90,40,.2);border-radius:0}
+        .btn-solid:hover:not(:disabled){background:#d94d1f;box-shadow:2px 2px 0 rgba(240,90,40,.2);transform:translate(2px,2px)}
+        .btn-solid:active:not(:disabled){box-shadow:0 0 0 rgba(240,90,40,.2);transform:translate(4px,4px)}
+        .info-card{background:#ffffff;border:1px solid #d1d5db;transition:all .2s;position:relative;overflow:hidden;border-radius:0}
+        .info-card:hover{border-color:#f05a28;transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+        .card-wm{position:absolute;top:-10px;right:2px;font-size:5rem;font-weight:800;color:rgba(0,0,0,.03);pointer-events:none;transition:color .3s;font-family:'JetBrains Mono',monospace}
+        .info-card:hover .card-wm{color:rgba(240,90,40,.05)}
+        .card-c{position:relative;z-index:1}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#f3f4f6}::-webkit-scrollbar-thumb{background:#9ca3af}::-webkit-scrollbar-thumb:hover{background:#f05a28}
+        .loader{width:32px;height:32px;border:2px solid #f05a28;animation:spin 2s infinite linear;border-radius:0}
+        .loader::before{content:'';position:absolute;inset:5px;background:#f05a28;animation:pulse 1s infinite ease-in-out;border-radius:0}
+        @keyframes spin{100%{transform:rotate(360deg)}}@keyframes pulse{50%{opacity:.5}}
+        .gender-btn{transition:all .2s;border-radius:0}.gender-btn.active{background:rgba(240,90,40,.1);border-color:#f05a28;color:#f05a28}
+        .hint-tag{display:inline-block;padding:2px 8px;font-size:10px;border-radius:0;background:rgba(240,90,40,.08);color:#d94d1f;border:1px solid rgba(240,90,40,.15);font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;line-height:1.7}
+        .hint-tag:hover{background:rgba(240,90,40,.15);color:#f05a28;border-color:#f05a28}
+        .speed-bar{height:3px;background:rgba(240,90,40,.15);border-radius:0;overflow:hidden;margin-top:6px}
+        .speed-fill{height:100%;border-radius:0;transition:width .3s}
     </style>
 </head>
-<body class="min-h-screen flex flex-col p-4 sm:p-8 font-sans">
+<body class="min-h-screen flex flex-col p-4 sm:p-6 font-sans">
+<div class="w-full max-w-6xl mx-auto flex-grow flex flex-col">
 
-    <div class="w-full max-w-6xl mx-auto">
-        
-        <!-- Header -->
-        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-2 border-dark-border pb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-white mb-1 flex items-center gap-3 font-mono">
-                    <div class="w-4 h-8 bg-brand"></div>
-                    IDENTITY_GEN<span class="text-brand">.EXE</span>
-                </h1>
-                <p class="text-sm text-gray-500 font-mono pl-7">> generating mock human data...</p>
-            </div>
-            <div class="flex gap-3 relative">
-                <div id="copyAllBtnContainer" class="hidden">
-                    <button onclick="copyAllData()" class="btn-solid px-5 py-2 text-sm font-mono font-bold flex items-center gap-2 rounded-none">
-                        <i class="fas fa-code"></i> COPY ALL (JSON)
-                    </button>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b-2 border-light-border pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-0.5 flex items-center gap-2.5 font-mono">
+                <div class="w-3 h-7 bg-brand"></div>
+                IDENTITY_GEN<span class="text-brand">.PRO</span>
+            </h1>
+            <p class="text-xs text-gray-500 font-mono pl-[22px]">> dual-engine • 60+ countries • zero latency</p>
         </div>
-
-        <!-- Bảng điều khiển chính (Control Panel) -->
-        <div class="bg-dark-card border border-dark-border p-6 mb-8 relative rounded-sm">
-
-            <div class="flex flex-col md:flex-row gap-5 items-end">
-                
-                <!-- Country Input -->
-                <div class="flex-grow w-full md:w-5/12">
-                    <label class="block text-xs font-bold text-brand uppercase tracking-widest mb-2 font-mono">
-                        <i class="fas fa-terminal text-xs mr-1"></i> Target_Location
-                    </label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
-                            <i class="fas fa-globe"></i>
-                        </span>
-                        <input type="text" id="countryInput" placeholder="VD: vietnam, vn ,us, korrea..." 
-                            class="w-full bg-dark-input border border-dark-border text-white pl-12 pr-4 py-4 focus:outline-none focus:border-brand transition-colors font-mono text-sm placeholder-gray-600 rounded-sm"
-                            value="vietnam"
-                            onkeypress="handleKeyPress(event)">
-                    </div>
-                </div>
-
-                <!-- Gender Select -->
-                <div class="flex-grow w-full md:w-4/12">
-                    <label class="block text-xs font-bold text-brand uppercase tracking-widest mb-2 font-mono">
-                        <i class="fas fa-venus-mars text-xs mr-1"></i> Gender
-                    </label>
-                    <div class="flex gap-2">
-                        <input type="hidden" id="genderInput" value="random">
-                        
-                        <button onclick="selectGender('random')" id="btn-gender-random" class="gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
-                            <i class="fas fa-dice mr-1"></i> Random
-                        </button>
-                        <button onclick="selectGender('male')" id="btn-gender-male" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
-                            <i class="fas fa-mars mr-1"></i> Nam
-                        </button>
-                        <button onclick="selectGender('female')" id="btn-gender-female" class="gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm">
-                            <i class="fas fa-venus mr-1"></i> Nữ
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Generate Button -->
-                <div class="w-full md:w-3/12">
-                    <button id="generateBtn" onclick="generateData()" class="btn-solid w-full py-4 font-mono font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 rounded-sm">
-                        <i class="fas fa-bolt"></i> EXECUTE
-                    </button>
-                </div>
-            </div>
-
-            <!-- Error Message -->
-            <div id="errorMsg" class="hidden mt-4 p-4 bg-red-900/30 border-l-4 border-red-500 text-red-400 text-sm flex items-start gap-3 font-mono">
-                <i class="fas fa-exclamation-triangle mt-0.5"></i>
-                <span id="errorText"></span>
-            </div>
-        </div>
-
-        <!-- Khu vực hiển thị kết quả -->
-        <div class="relative min-h-[450px]">
-            
-            <div id="loadingOverlay" class="absolute inset-0 bg-dark-bg/80 backdrop-blur-sm flex flex-col items-center justify-center hidden z-20">
-                <div class="loader mb-6 relative"></div>
-                <p class="text-brand font-mono text-sm tracking-widest uppercase animate-pulse">> Accessing database...</p>
-            </div>
-
-            <div id="emptyState" class="h-full flex flex-col items-center justify-center text-gray-600 py-24 border border-dashed border-dark-border bg-dark-card/50 rounded-sm">
-                <i class="fas fa-user-secret text-5xl mb-4 opacity-30"></i>
-                <p class="font-mono text-sm uppercase tracking-widest text-gray-400">System Standby</p>
-                <p class="text-xs mt-2 opacity-50 font-mono">Input location and press EXECUTE</p>
-            </div>
-
-            <div id="dataContainer" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <div class="info-card p-5 group lg:col-span-2">
-                    <div class="card-watermark">ID</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Họ và Tên</h3>
-                            <button onclick="copyText('resFullName')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resFullName" class="text-2xl font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">SEX</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Giới Tính</h3>
-                            <button onclick="copyText('resGender')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resGender" class="text-lg font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">AGE</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Tuổi</h3>
-                            <button onclick="copyText('resAge')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resAge" class="text-lg font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group lg:col-span-2">
-                    <div class="card-watermark">JOB</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Nghề Nghiệp</h3>
-                            <button onclick="copyText('resOccupation')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resOccupation" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group lg:col-span-2">
-                    <div class="card-watermark">TEL</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Điện Thoại</h3>
-                            <button onclick="copyText('resPhone')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resPhone" class="text-xl font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group lg:col-span-4 border-l-2 border-l-brand">
-                    <div class="card-watermark">STR</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Địa Chỉ Đường (Street)</h3>
-                            <button onclick="copyText('resStreet')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resStreet" class="text-xl font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">CTY</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Thành Phố</h3>
-                            <button onclick="copyText('resCity')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resCity" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">STA</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Bang / Tỉnh</h3>
-                            <button onclick="copyText('resState')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resState" class="text-lg font-medium text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">ZIP</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Mã Bưu Điện</h3>
-                            <button onclick="copyText('resZip')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resZip" class="text-lg font-mono text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-                <div class="info-card p-5 group">
-                    <div class="card-watermark">LOC</div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Quốc Gia</h3>
-                            <button onclick="copyText('resCountry')" class="text-gray-500 hover:text-brand transition-colors">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <p id="resCountry" class="text-lg font-bold text-gray-100 mb-1 group-hover:text-brand transition-colors"></p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div id="toast" class="fixed bottom-6 right-6 bg-brand text-white px-5 py-3 shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 font-mono text-sm font-bold rounded-sm">
-            <i class="fas fa-check-square"></i>
-            <span id="toastMsg">Copied to clipboard</span>
+        <div id="copyAllBtnContainer" class="hidden">
+            <button onclick="copyAllData()" class="btn-solid px-4 py-1.5 text-xs font-mono font-bold flex items-center gap-2 rounded-none">
+                <i class="fas fa-code"></i> COPY JSON
+            </button>
         </div>
     </div>
 
-    <script>
-        // LƯU Ý QUAN TRỌNG:
-        // 1. NẾU CHẠY TRÊN WEB NÀY (PREVIEW): Bạn BẮT BUỘC phải để rỗng chuỗi apiKey = ""
-        //    (hệ thống web sẽ tự động nhúng Key ngầm để bạn test thoải mái)
-        // 2. NẾU BẠN DOWNLOAD VỀ MÁY TÍNH CHẠY: Bạn PHẢI tạo một API Key mới hoàn toàn
-        //    tại Google AI Studio rồi dán vào đây (Key cũ trong ảnh của bạn đã bị hỏng/khóa).
+    <!-- Control -->
+    <div class="bg-light-card border border-light-border p-5 mb-5 rounded-none shadow-sm">
+        <div class="flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-grow w-full md:w-5/12">
+                <label class="block text-[10px] font-bold text-brand uppercase tracking-widest mb-1.5 font-mono">
+                    <i class="fas fa-terminal text-[9px] mr-1"></i> Country Code
+                </label>
+                <div class="relative">
+                    <i class="fas fa-globe absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input type="text" id="countryInput" placeholder="vn, us, kr, jp, th..."
+                        class="w-full bg-light-input border border-light-border text-gray-900 pl-10 pr-3 py-3 text-sm font-mono rounded-none focus:outline-none focus:border-brand/50 transition-colors placeholder-gray-400 uppercase tracking-widest"
+                        value="us" maxlength="5" onkeypress="if(event.key==='Enter')generateData()"
+                        oninput="this.value=this.value.replace(/[^a-zA-Z]/g,'').toLowerCase()">
+                </div>
+                <div class="mt-2 flex flex-wrap gap-1">
+                    <span class="hint-tag" onclick="q('us')">us</span><span class="hint-tag" onclick="q('vn')">vn</span><span class="hint-tag" onclick="q('kr')">kr</span><span class="hint-tag" onclick="q('jp')">jp</span><span class="hint-tag" onclick="q('th')">th</span><span class="hint-tag" onclick="q('gb')">gb</span><span class="hint-tag" onclick="q('de')">de</span><span class="hint-tag" onclick="q('fr')">fr</span><span class="hint-tag" onclick="q('cn')">cn</span><span class="hint-tag" onclick="q('in')">in</span><span class="hint-tag" onclick="q('br')">br</span><span class="hint-tag" onclick="q('ru')">ru</span><span class="hint-tag" onclick="q('it')">it</span><span class="hint-tag" onclick="q('id')">id</span><span class="hint-tag" onclick="q('mx')">mx</span><span class="hint-tag" onclick="q('pl')">pl</span>
+                </div>
+            </div>
+            <div class="flex-grow w-full md:w-4/12">
+                <label class="block text-[10px] font-bold text-brand uppercase tracking-widest mb-1.5 font-mono">
+                    <i class="fas fa-venus-mars text-[9px] mr-1"></i> Gender
+                </label>
+                <div class="flex gap-2">
+                    <input type="hidden" id="genderInput" value="random">
+                    <button onclick="sg('random')" id="btn-gender-random" class="gender-btn active flex-1 py-3 border border-brand text-brand font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-dice mr-1"></i>Random</button>
+                    <button onclick="sg('male')" id="btn-gender-male" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-mars mr-1"></i>Nam</button>
+                    <button onclick="sg('female')" id="btn-gender-female" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-venus mr-1"></i>Nữ</button>
+                </div>
+            </div>
+            <div class="w-full md:w-3/12">
+                <button id="generateBtn" onclick="generateData()" class="btn-solid w-full py-3 font-mono font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 rounded-none">
+                    <i class="fas fa-bolt"></i> EXECUTE
+                </button>
+            </div>
+        </div>
+        <div id="speedInfo" class="hidden mt-3">
+            <div class="flex justify-end items-center text-[10px] font-mono text-gray-500 uppercase tracking-wider">
+                <span id="speedTime"></span>
+            </div>
+            <div class="speed-bar"><div id="speedFill" class="speed-fill" style="width:0%"></div></div>
+        </div>
+        <div id="errorMsg" class="hidden mt-3 p-3 bg-red-50 border-l-4 border-red-500 text-red-600 text-xs flex items-start gap-2 font-mono rounded-none">
+            <i class="fas fa-exclamation-triangle mt-0.5"></i><span id="errorText"></span>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="relative flex-grow">
+        <div id="loadingOverlay" class="absolute inset-0 bg-light-bg/80 backdrop-blur-sm flex flex-col items-center justify-center hidden z-20 rounded-none">
+            <div class="loader mb-5 relative"></div>
+            <p class="font-mono text-xs text-brand uppercase tracking-[0.2em] animate-pulse">> SYSTEM_PROCESSING...</p>
+        </div>
+
+        <div id="emptyState" class="flex flex-col items-center justify-center text-gray-400 py-20 border border-dashed border-light-border bg-light-card/50 rounded-none h-full">
+            <i class="fas fa-user-secret text-4xl mb-4 opacity-30"></i>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-gray-500 mb-1">> AWAITING_INPUT_</p>
+            <p class="text-[10px] mt-1 opacity-70 font-mono text-gray-400 tracking-widest uppercase">Nhập mã quốc gia rồi bấm EXECUTE</p>
+        </div>
+
+        <div id="dataContainer" class="hidden grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 pb-8">
+
+            <!-- Name (3col) + Gender + Age + Country -->
+            <div class="info-card p-4 group col-span-2 lg:col-span-3">
+                <div class="card-wm">ID</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Họ và Tên</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="cp('resFullName')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <img id="resAvatar" src="" alt="" class="w-14 h-14 rounded-none border border-light-border hidden object-cover flex-shrink-0">
+                        <p id="resFullName" class="text-[22px] font-bold text-gray-900 group-hover:text-brand transition-colors leading-tight"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="info-card p-4 group">
+                <div class="card-wm">SEX</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Giới tính</span>
+                        <button onclick="cp('resGender')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resGender" class="text-lg font-bold text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+            <div class="info-card p-4 group">
+                <div class="card-wm">AGE</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Tuổi</span>
+                        <button onclick="cp('resAge')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resAge" class="text-lg font-mono font-bold text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+            <div class="info-card p-4 group">
+                <div class="card-wm">LOC</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Quốc gia</span>
+                        <button onclick="cp('resCountry')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resCountry" class="text-lg font-bold text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+
+            <!-- Street (full) -->
+            <div class="info-card p-4 group col-span-2 lg:col-span-6 border-l-2 border-l-brand">
+                <div class="card-wm">STR</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Địa chỉ đường</span>
+                        <button onclick="cp('resStreet')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resStreet" class="text-lg font-medium text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+
+            <!-- Ward(3) + District(3) -->
+            <div class="info-card p-4 group col-span-1 lg:col-span-3 border-l-2 border-l-emerald-500">
+                <div class="card-wm">WRD</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono" id="wardLabel">Xã / Phường</span>
+                        <button onclick="cp('resWard')" class="text-gray-400 hover:text-emerald-500 transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resWard" class="text-lg font-medium text-gray-900 group-hover:text-emerald-500 transition-colors"></p>
+                </div>
+            </div>
+            <div class="info-card p-4 group col-span-1 lg:col-span-3 border-l-2 border-l-sky-500">
+                <div class="card-wm">DST</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono" id="districtLabel">Quận / Huyện</span>
+                        <button onclick="cp('resDistrict')" class="text-gray-400 hover:text-sky-500 transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resDistrict" class="text-lg font-medium text-gray-900 group-hover:text-sky-500 transition-colors"></p>
+                </div>
+            </div>
+
+            <!-- City(2) + State(2) + Zip(2) -->
+            <div class="info-card p-4 group col-span-1 lg:col-span-2">
+                <div class="card-wm">CTY</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Thành phố</span>
+                        <button onclick="cp('resCity')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resCity" class="text-lg font-medium text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+            <div class="info-card p-4 group col-span-1 lg:col-span-2">
+                <div class="card-wm">STA</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Tỉnh / Bang</span>
+                        <button onclick="cp('resState')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resState" class="text-lg font-medium text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+            <div class="info-card p-4 group col-span-2 lg:col-span-2">
+                <div class="card-wm">ZIP</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Mã bưu điện</span>
+                        <button onclick="cp('resZip')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resZip" class="text-lg font-mono font-medium text-gray-900 group-hover:text-brand transition-colors"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redesigned Terminal Footer -->
+    <div class="mt-auto pt-6 pb-2 border-t border-light-border flex flex-col items-center justify-center gap-2">
+        <div id="sysStatus" class="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] text-gray-400 transition-colors">
+            > SYSTEM_STANDBY_
+        </div>
+        <div class="font-mono text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-[0.15em] sm:tracking-[0.2em] flex flex-wrap items-center justify-center gap-2 sm:gap-4 w-full">
+            <span class="text-gray-300 hidden sm:inline">|</span>
+            <p class="text-center whitespace-nowrap">
+                OPERATED BY DUCMANH
+                <a href="https://ducmanh.io.vn" target="_blank" class="text-brand hover:text-brand-hover mx-1 transition-colors">DUCMANH.IO.VN</a>
+                &ndash; DO NOT COPY
+            </p>
+            <span class="text-gray-300 hidden sm:inline">|</span>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 bg-brand text-white px-4 py-2.5 shadow-2xl transform translate-y-16 opacity-0 transition-all duration-200 z-50 flex items-center gap-2 font-mono text-xs font-bold rounded-none">
+        <i class="fas fa-check-square"></i><span id="toastMsg">Copied</span>
+    </div>
+</div>
+
+<script>
+let currentData=null;
+const RU={au:'AU',br:'BR',ca:'CA',ch:'CH',de:'DE',dk:'DK',es:'ES',fi:'FI',fr:'FR',gb:'GB',ie:'IE',in:'IN',ir:'IR',mx:'MX',nl:'NL',no:'NO',nz:'NZ',rs:'RS',tr:'TR',ua:'UA',us:'US'};
+const FA={eg:{l:'ar_EG',c:'EG',n:'Egypt'},sa:{l:'ar_SA',c:'SA',n:'Saudi Arabia'},bg:{l:'bg_BG',c:'BG',n:'Bulgaria'},bd:{l:'bn_BD',c:'BD',n:'Bangladesh'},cz:{l:'cs_CZ',c:'CZ',n:'Czech Republic'},gr:{l:'el_GR',c:'GR',n:'Greece'},ee:{l:'et_EE',c:'EE',n:'Estonia'},il:{l:'he_IL',c:'IL',n:'Israel'},hr:{l:'hr_HR',c:'HR',n:'Croatia'},hu:{l:'hu_HU',c:'HU',n:'Hungary'},am:{l:'hy_AM',c:'AM',n:'Armenia'},id:{l:'id_ID',c:'ID',n:'Indonesia'},is:{l:'is_IS',c:'IS',n:'Iceland'},it:{l:'it_IT',c:'IT',n:'Italy'},jp:{l:'ja_JP',c:'JP',n:'Japan'},ge:{l:'ka_GE',c:'GE',n:'Georgia'},kz:{l:'kk_KZ',c:'KZ',n:'Kazakhstan'},kr:{l:'ko_KR',c:'KR',n:'South Korea'},lt:{l:'lt_LT',c:'LT',n:'Lithuania'},lv:{l:'lv_LV',c:'LV',n:'Latvia'},mn:{l:'mn_MN',c:'MN',n:'Mongolia'},my:{l:'ms_MY',c:'MY',n:'Malaysia'},np:{l:'ne_NP',c:'NP',n:'Nepal'},be:{l:'nl_BE',c:'BE',n:'Belgium'},pl:{l:'pl_PL',c:'PL',n:'Poland'},pt:{l:'pt_PT',c:'PT',n:'Portugal'},ro:{l:'ro_RO',c:'RO',n:'Romania'},ru:{l:'ru_RU',c:'RU',n:'Russia'},sk:{l:'sk_SK',c:'SK',n:'Slovakia'},si:{l:'sl_SI',c:'SI',n:'Slovenia'},se:{l:'sv_SE',c:'SE',n:'Sweden'},th:{l:'th_TH',c:'TH',n:'Thailand'},vn:{l:'vi_VN',c:'VN',n:'Vietnam'},cn:{l:'zh_CN',c:'CN',n:'China'},tw:{l:'zh_TW',c:'TW',n:'Taiwan'},za:{l:'af_ZA',c:'ZA',n:'South Africa'},ng:{l:'en_NG',c:'NG',n:'Nigeria'},pk:{l:'ur',c:'PK',n:'Pakistan'},ar:{l:'es_AR',c:'AR',n:'Argentina'},pe:{l:'es_PE',c:'PE',n:'Peru'},ph:{l:'en_PH',c:'PH',n:'Philippines'}};
+
+const W={
+    vn:{wl:'Xã / Phường',dl:'Quận / Huyện',w:['Phường Bến Nghé','Phường Tân Định','Phường Đa Kao','Phường Nguyễn Thái Bình','Phường Phạm Ngũ Lão','Xã Vĩnh Lộc A','Xã Bình Hưng','Phường Thảo Điền','Phường An Phú','Phường Bình Thọ','Xã Tân Kiên','Phường Linh Trung','Phường Hiệp Bình Chánh','Phường Tân Phong','Phường Cầu Kho','Phường Cô Giang','Phường Trường Thọ','Phường Long Thạnh Mỹ','Xã Bà Điểm','Phường Tân Hưng','Phường Bình Trưng Đông','Phường Tăng Nhơn Phú A','Phường Phú Hữu','Phường An Khánh','Phường Bình Chiểu'],d:['Quận 1','Quận 3','Quận 5','Quận 7','Quận 10','Quận 12','Quận Bình Thạnh','Quận Gò Vấp','Quận Phú Nhuận','Quận Tân Bình','Quận Tân Phú','Quận Thủ Đức','Quận Bình Tân','Huyện Bình Chánh','Huyện Hóc Môn','Huyện Củ Chi','Quận Hai Bà Trưng','Quận Đống Đa','Quận Hoàn Kiếm','Quận Ba Đình','Quận Cầu Giấy','Quận Long Biên','Quận Hà Đông','Quận Hoàng Mai','Quận Sơn Trà']},
+    us:{wl:'Neighborhood',dl:'County',w:['Downtown','Midtown','Upper East Side','Westside','Northgate','Southpark','Riverside','Lakeview','Oakwood','Greenfield','Maplewood','Sunset Hills','Cedar Park','Pinecrest','Brookside','Fairview','Highland Park','Eastgate','Spring Valley','Heritage Hills','Creekside','Meadowbrook','Silverlake','Fox Chapel','Mission Bay'],d:['Los Angeles County','Cook County','Harris County','Maricopa County','San Diego County','Orange County','Miami-Dade County','Dallas County','King County','Clark County','Tarrant County','Bexar County','Wayne County','Alameda County','Sacramento County','Palm Beach County','Franklin County','Hennepin County','Travis County','Fairfax County','Salt Lake County','Mecklenburg County','Hillsborough County','Fulton County','Montgomery County']},
+    kr:{wl:'동 (Dong)',dl:'구/군 (Gu)',w:['역삼동','강남동','서초동','잠실동','신사동','청담동','논현동','대치동','삼성동','도곡동','방이동','송파동','문정동','가락동','마포동','서교동','합정동','연남동','용산동','이태원동','한남동','신촌동','돈암동','보문동','혜화동'],d:['강남구','서초구','송파구','강동구','마포구','용산구','종로구','중구','성동구','광진구','동대문구','성북구','강북구','노원구','서대문구','영등포구','동작구','관악구','해운대구','부산진구']},
+    jp:{wl:'町 (Chō)',dl:'区 (Ku)',w:['赤坂','六本木','麻布','青山','表参道','恵比寿','代官山','自由が丘','三軒茶屋','下北沢','吉祥寺','中目黒','品川','新宿','渋谷','池袋','上野','浅草','秋葉原','銀座','日本橋','丸の内','お台場','築地','豊洲'],d:['港区','渋谷区','新宿区','千代田区','中央区','台東区','墨田区','江東区','品川区','目黒区','大田区','世田谷区','中野区','杉並区','豊島区','北区','板橋区','練馬区','足立区','江戸川区']},
+    th:{wl:'ตำบล/แขวง',dl:'อำเภอ/เขต',w:['แขวงสีลม','แขวงสุริยวงศ์','แขวงบางรัก','แขวงลุมพินี','แขวงปทุมวัน','แขวงวังใหม่','แขวงคลองเตย','ตำบลบางนา','แขวงจตุจักร','แขวงลาดยาว','แขวงบางซื่อ','แขวงดุสิต','ตำบลท่าศาลา','ตำบลหนองหอย','ตำบลช้างเผือก','ตำบลศรีภูมิ','ตำบลสุเทพ','ตำบลแม่เหียะ'],d:['เขตบางรัก','เขตปทุมวัน','เขตสาทร','เขตคลองเตย','เขตวัฒนา','เขตจตุจักร','เขตบางซื่อ','เขตดุสิต','เขตพญาไท','เขตราชเทวี','เขตดินแดง','เขตห้วยขวาง','อำเภอเมืองเชียงใหม่','อำเภอหางดง','อำเภอเมืองภูเก็ต']},
+    cn:{wl:'街道/社区',dl:'区 (District)',w:['南京东路街道','外滩街道','豫园街道','静安寺街道','曹家渡街道','江苏路街道','天山路街道','虹桥街道','北京路街道','东风路街道','珠江新城街道','天河南街道','沙面街道','五山街道','石牌街道','朝阳门街道','建国门街道','东直门街道','安定门街道'],d:['黄浦区','静安区','徐汇区','长宁区','普陀区','虹口区','杨浦区','浦东新区','天河区','越秀区','海珠区','荔湾区','朝阳区','海淀区','东城区','西城区','丰台区','通州区']},
+    gb:{wl:'Ward / Suburb',dl:'Borough',w:['Mayfair','Soho','Covent Garden','Shoreditch','Kensington','Chelsea','Notting Hill','Brixton','Camden Town','Islington','Greenwich','Hackney','Fulham','Battersea','Clapham','Dulwich','Wimbledon','Richmond','Hampstead','Belgravia','Westminster','Marylebone','Bloomsbury','Fitzrovia','Bermondsey'],d:['City of Westminster','Camden','Islington','Hackney','Tower Hamlets','Greenwich','Lewisham','Southwark','Lambeth','Wandsworth','Hammersmith and Fulham','Kensington and Chelsea','Brent','Ealing','Richmond upon Thames','Merton','Croydon','Bromley','Newham','Haringey']},
+    de:{wl:'Stadtteil',dl:'Bezirk',w:['Mitte','Prenzlauer Berg','Kreuzberg','Friedrichshain','Charlottenburg','Schöneberg','Neukölln','Tempelhof','Steglitz','Wilmersdorf','Wedding','Moabit','Altona','Eimsbüttel','Winterhude','St. Pauli','Schwabing','Maxvorstadt','Haidhausen','Sendling'],d:['Berlin-Mitte','Friedrichshain-Kreuzberg','Pankow','Charlottenburg-Wilmersdorf','Steglitz-Zehlendorf','Tempelhof-Schöneberg','Neukölln','Lichtenberg','Reinickendorf','Hamburg-Mitte','Hamburg-Nord','Altona','Eimsbüttel','Wandsbek','Schwabing-West','Bogenhausen','Sendling','Moosach','Laim','Trudering-Riem']},
+    fr:{wl:'Quartier',dl:'Arrondissement',w:['Le Marais','Montmartre','Saint-Germain-des-Prés','Quartier Latin','Belleville','Bastille','Oberkampf','Pigalle','Batignolles','Les Halles','Trocadéro','Passy','Bercy','République','Sentier','Opéra','Champs-Élysées','Châtelet','Saint-Michel','Luxembourg'],d:['1er Arr.','2ème Arr.','3ème Arr.','4ème Arr.','5ème Arr.','6ème Arr.','7ème Arr.','8ème Arr.','9ème Arr.','10ème Arr.','11ème Arr.','12ème Arr.','13ème Arr.','14ème Arr.','15ème Arr.','16ème Arr.','17ème Arr.','18ème Arr.','19ème Arr.','20ème Arr.']},
+    br:{wl:'Bairro',dl:'Região',w:['Copacabana','Ipanema','Leblon','Botafogo','Flamengo','Lapa','Santa Teresa','Tijuca','Jardim Botânico','Barra da Tijuca','Centro','Laranjeiras','Humaitá','Gávea','Lagoa','Pinheiros','Vila Madalena','Jardins','Itaim Bibi','Moema','Vila Mariana','Liberdade','Bela Vista'],d:['Zona Sul','Zona Norte','Zona Oeste','Centro','Zona Leste','Subpref. Sé','Subpref. Pinheiros','Subpref. Lapa','Subpref. Vila Mariana','Subpref. Santana','Subpref. Mooca','Subpref. Santo Amaro','Subpref. Butantã','Subpref. Penha']},
+    in:{wl:'Locality',dl:'District',w:['Connaught Place','Karol Bagh','Lajpat Nagar','Hauz Khas','Greater Kailash','Saket','Vasant Kunj','Dwarka','Rohini','Andheri','Bandra','Juhu','Powai','Worli','Colaba','Koramangala','Indiranagar','Whitefield','HSR Layout','Jayanagar'],d:['New Delhi','South Delhi','North Delhi','East Delhi','Mumbai City','Mumbai Suburban','Thane','Pune','Bangalore Urban','Chennai','Hyderabad','Kolkata','Ahmedabad','Jaipur','Lucknow']},
+    ru:{wl:'Район',dl:'Округ',w:['Арбат','Тверская','Пресня','Якиманка','Хамовники','Китай-город','Замоскворечье','Таганка','Лефортово','Басманный','Сокольники','Черёмушки','Ясенево','Коньково','Тёплый Стан','Бутово','Митино'],d:['Центральный АО','Северный АО','Северо-Восточный АО','Восточный АО','Юго-Восточный АО','Южный АО','Юго-Западный АО','Западный АО','Северо-Западный АО','Зеленоградский АО']},
+    it:{wl:'Quartiere',dl:'Municipio',w:['Trastevere','Monti','Testaccio','Prati','San Lorenzo','Parioli','Esquilino','Ostiense','EUR','Navigli','Brera','Isola','Porta Romana','Città Studi','Garibaldi','Tortona','Lambrate'],d:['Municipio I','Municipio II','Municipio III','Municipio IV','Municipio V','Municipio VI','Municipio VII','Municipio VIII','Municipio IX','Municipio X']},
+    id:{wl:'Kelurahan',dl:'Kecamatan',w:['Kel. Menteng','Kel. Kebon Sirih','Kel. Gondangdia','Kel. Tanah Abang','Kel. Setiabudi','Kel. Kuningan','Kel. Senayan','Kel. Kebayoran Baru','Kel. Pondok Indah','Kel. Kemang','Desa Canggu','Desa Kerobokan','Desa Seminyak','Desa Ubud','Desa Kuta'],d:['Kec. Menteng','Kec. Tanah Abang','Kec. Setiabudi','Kec. Kebayoran Baru','Kec. Mampang Prapatan','Kec. Tebet','Kec. Cilandak','Kec. Pasar Minggu','Kec. Gambir','Kec. Kuta','Kec. Denpasar Selatan','Kec. Ubud']},
+    mx:{wl:'Colonia',dl:'Alcaldía',w:['Col. Roma','Col. Condesa','Col. Polanco','Col. Del Valle','Col. Nápoles','Col. Juárez','Col. Centro','Col. Santa Fe','Col. Coyoacán','Col. San Ángel','Col. Anáhuac','Col. Escandón','Col. Tabacalera','Col. Doctores','Col. Obrera'],d:['Alc. Cuauhtémoc','Alc. Miguel Hidalgo','Alc. Benito Juárez','Alc. Coyoacán','Alc. Álvaro Obregón','Alc. Tlalpan','Alc. Gustavo A. Madero','Alc. Iztapalapa','Alc. Azcapotzalco','Alc. Venustiano Carranza']},
+};
+const GEN={wl:'Ward / Suburb',dl:'District',w:['Central Ward','North Ward','South Ward','East Ward','West Ward','Old Town','New Town','Riverside','Lakeside','Garden District','Market Quarter','University Quarter','Harbor Area','Hillside','Meadowbrook'],d:['Central District','Northern District','Southern District','Eastern District','Western District','Metro District','Urban District','Suburban District','Downtown District','Uptown District']};
+
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+
+function q(c){document.getElementById('countryInput').value=c;generateData()}
+function sg(g){
+    document.getElementById('genderInput').value=g;
+    ['random','male','female'].forEach(x=>{document.getElementById('btn-gender-'+x).className='gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none'});
+    document.getElementById('btn-gender-'+g).className='gender-btn active flex-1 py-3 border border-brand text-brand font-mono text-[10px] font-bold uppercase tracking-wider rounded-none';
+}
+
+function updateFooterStatus(text, statusClass) {
+    const s = $('sysStatus');
+    if(s) {
+        s.textContent = text;
+        s.className = `font-mono text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] transition-colors ${statusClass}`;
+    }
+}
+
+async function generateData(){
+    const code=document.getElementById('countryInput').value.trim().toLowerCase();
+    const gender=document.getElementById('genderInput').value;
+    hide('errorMsg');hide('copyAllBtnContainer');hide('speedInfo');hide('dataContainer');document.title='Identity Gen';
+    
+    if(!code||code.length<2){
+        showErr("Nhập mã 2 ký tự: <b>us</b>, <b>vn</b>, <b>kr</b>...");
+        document.getElementById('countryInput').focus();
+        updateFooterStatus('> INPUT_ERROR', 'text-red-500');
+        return;
+    }
+    const hasRU=!!RU[code],hasFA=!!FA[code];
+    if(!hasRU&&hasFA===false){
+        showErr(`"<b>${code.toUpperCase()}</b>" không hỗ trợ`);
+        updateFooterStatus('> REGION_UNSUPPORTED', 'text-red-500');
+        return;
+    }
+    
+    hide('emptyState');
+    show('loadingOverlay');
+    setBtn(true);
+    updateFooterStatus('> FETCHING...', 'text-brand animate-pulse');
+    
+    const t0=performance.now();
+    try{
+        let result,source;
+        if(hasRU&&hasFA){const w=await Promise.any([fetchRU(RU[code],gender).then(r=>({...r,_src:'RandomUser.me'})),fetchFA(FA[code],gender).then(r=>({...r,_src:'FakerAPI.it'}))]);result=w;source=w._src}
+        else if(hasRU){result=await fetchRU(RU[code],gender);source='RandomUser.me'}
+        else{result=await fetchFA(FA[code],gender);source='FakerAPI.it'}
+        const ww=W[code]||GEN;
+        result.ward=pk(ww.w);result.district=pk(ww.d);result._wl=ww.wl;result._dl=ww.dl;
+        result._source=source;currentData=result;
         
-        const apiKey = "AIzaSyDypV9w59nxzBiQnQx5UmSHPoFgXURc_ks"; 
-        
-        let currentGeneratedData = null;
+        hide('loadingOverlay');
+        displayData(result);
+        showSpeed(source,Math.round(performance.now()-t0));
+        show('copyAllBtnContainer');
+        updateFooterStatus('> EXECUTION_SUCCESS', 'text-green-600');
+    }catch(err){
+        console.error(err);
+        hide('loadingOverlay');
+        showErr(err.message);
+        show('emptyState');
+        updateFooterStatus('> SYS_ERROR', 'text-red-500');
+    }
+    finally{setBtn(false)}
+}
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                generateData();
-            }
-        }
+async function fetchRU(nat,gender){
+    let url=`https://randomuser.me/api/?nat=${nat}&noinfo`;
+    if(gender==='male')url+='&gender=male';if(gender==='female')url+='&gender=female';
+    const r=await fetch(url);if(!r.ok)throw new Error(`RandomUser ${r.status}`);
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    const u=d.results[0],l=u.location;
+    return{fullName:`${u.name.title} ${u.name.first} ${u.name.last}`,gender:u.gender[0].toUpperCase()+u.gender.slice(1),age:u.dob.age,streetAddress:`${l.street.number} ${l.street.name}`,city:l.city,state:l.state,zipCode:String(l.postcode),country:l.country,avatar:u.picture.large};
+}
+async function fetchFA({l,c,n},gender){
+    const gp=gender==='male'?'&_gender=male':(gender==='female'?'&_gender=female':'');
+    const [pR,aR]=await Promise.all([fetch(`https://fakerapi.it/api/v2/persons?_quantity=1&_locale=${l}${gp}`),fetch(`https://fakerapi.it/api/v2/addresses?_quantity=1&_locale=${l}&_country_code=${c}`)]);
+    if(!pR.ok)throw new Error(`FakerAPI ${pR.status}`);if(!aR.ok)throw new Error(`FakerAPI ${aR.status}`);
+    const pD=await pR.json(),aD=await aR.json(),p=pD.data[0],a=aD.data[0];
+    let age=new Date().getFullYear()-new Date(p.birthday).getFullYear();age=Math.max(18,Math.min(65,age));
+    return{fullName:`${p.firstname} ${p.lastname}`,gender:p.gender==='male'?'Male':(p.gender==='female'?'Female':'Other'),age,streetAddress:a.street,city:a.city,state:a.country||n,zipCode:a.zipcode,country:a.country||n,avatar:null};
+}
 
-        function selectGender(gender) {
-            document.getElementById('genderInput').value = gender;
-            
-            const buttons = ['random', 'male', 'female'];
-            buttons.forEach(g => {
-                const btn = document.getElementById('btn-gender-' + g);
-                btn.className = 'gender-btn flex-1 py-4 border border-dark-border bg-dark-input text-gray-500 hover:text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm';
-            });
-            
-            const activeBtn = document.getElementById('btn-gender-' + gender);
-            activeBtn.className = 'gender-btn active flex-1 py-4 border border-brand text-brand font-mono text-[11px] font-bold uppercase tracking-wider rounded-sm';
-        }
+function displayData(d){
+    const c=document.getElementById('dataContainer');c.classList.remove('hidden');c.style.display='grid';
+    $('resFullName').textContent=d.fullName;$('resGender').textContent=d.gender;$('resAge').textContent=d.age;
+    $('resStreet').textContent=d.streetAddress;$('resWard').textContent=d.ward;$('resDistrict').textContent=d.district;
+    $('resCity').textContent=d.city;$('resState').textContent=d.state;$('resZip').textContent=d.zipCode;$('resCountry').textContent=d.country;
+    $('wardLabel').textContent=d._wl;$('districtLabel').textContent=d._dl;
+    const av=$('resAvatar');if(d.avatar){av.src=d.avatar;av.classList.remove('hidden')}else av.classList.add('hidden');
+    if(d.country)document.title=`ID | ${d.country}`;
+}
+function showSpeed(src,ms){
+    show('speedInfo');
+    $('speedTime').innerHTML=`<i class="fas fa-stopwatch mr-1"></i>${ms}ms`;
+    const pct=ms<100?100:ms<300?80:ms<500?60:ms<1000?40:20;
+    $('speedFill').style.width=pct+'%';
+    $('speedFill').style.background=pct>=60?'#22c55e':pct>=40?'#f05a28':'#ef4444';
+}
 
-        async function fetchWithRetry(url, options, retries = 3) {
-            const delays = [1000, 2000, 4000]; 
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errMsg = errorData?.error?.message || `HTTP Server Error: ${response.status}`;
-                        const err = new Error(errMsg);
-                        err.status = response.status;
-                        throw err;
-                    }
-                    return await response.json();
-                } catch (e) {
-                    if (e.status === 400 || e.status === 401 || e.status === 403 || e.status === 404 || i === retries - 1) {
-                        throw e;
-                    }
-                    console.log(`Network error, retrying ${i + 1}...`);
-                    await new Promise(resolve => setTimeout(resolve, delays[i]));
-                }
-            }
-        }
-
-        async function generateData() {
-            const countryInput = document.getElementById('countryInput').value.trim();
-            const genderInput = document.getElementById('genderInput').value;
-            const errorMsg = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
-            
-            errorMsg.classList.add('hidden');
-            errorText.innerHTML = '';
-            document.getElementById('copyAllBtnContainer').classList.add('hidden');
-            
-            document.title = "Identity Gen";
-
-            if (!countryInput) {
-                showError("Missing Target_Location. Vui lòng nhập quốc gia.");
-                document.getElementById('countryInput').focus();
-                return;
-            }
-
-            showLoading(true);
-
-            let genderPrompt = "The gender should be randomized (Male or Female).";
-            if (genderInput === "male") genderPrompt = "The generated person MUST be Male.";
-            if (genderInput === "female") genderPrompt = "The generated person MUST be Female.";
-
-            const prompt = `Generate completely fictional mock user profile and address data for UI testing. The target location is the country: "${countryInput}". Ensure the format of the zip code, phone number, state/province, and street address strictly follows the realistic local format of that specific country. Make names sound authentic to that region. Return the precise full English name of the target country in the 'country' field. Ensure age is a number between 18 and 65. ${genderPrompt}`;
-
-            const modelName = apiKey !== "" ? "gemini-2.5-flash" : "gemini-2.5-flash-preview-09-2025";
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            fullName: { type: "STRING" },
-                            gender: { type: "STRING", description: "Male or Female" },
-                            age: { type: "NUMBER" },
-                            occupation: { type: "STRING", description: "A realistic job title" },
-                            streetAddress: { type: "STRING" },
-                            city: { type: "STRING" },
-                            state: { type: "STRING" },
-                            zipCode: { type: "STRING" },
-                            phoneNumber: { type: "STRING" },
-                            country: { type: "STRING" }
-                        },
-                        required: ["fullName", "gender", "age", "occupation", "streetAddress", "city", "state", "zipCode", "phoneNumber", "country"]
-                    }
-                }
-            };
-
-            try {
-                const data = await fetchWithRetry(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                let jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                
-                if (jsonText) {
-                    const parsedData = JSON.parse(jsonText);
-                    currentGeneratedData = parsedData;
-                    displayData(parsedData);
-                    document.getElementById('copyAllBtnContainer').classList.remove('hidden');
-                } else {
-                    if (data.promptFeedback?.blockReason) {
-                        throw new Error(`Bị chặn bởi bộ lọc an toàn: ${data.promptFeedback.blockReason}`);
-                    }
-                    throw new Error("Không nhận được dữ liệu hợp lệ từ AI.");
-                }
-
-            } catch (error) {
-                console.error("Lỗi:", error);
-                if (error.status === 400) {
-                    showError("Lỗi 400: API Key bị lỗi cấu trúc hoặc không hợp lệ.");
-                } else if (error.status === 401) {
-                    showError("Lỗi 401: Unauthorized. Chưa có quyền hoặc thiếu API Key.");
-                } else if (error.status === 403) {
-                    // Cập nhật câu báo lỗi để nhắc người dùng tạo Key mới
-                    showError("Lỗi 403: API Key bị từ chối truy cập. Vui lòng tạo một API Key MỚI TẠI AI STUDIO!");
-                } else if (error.status === 404) {
-                    showError(`Lỗi 404: Mô hình không khả dụng với API Key này.`);
-                } else {
-                    showError(`Lỗi hệ thống: ${error.message}`);
-                }
-                
-                document.getElementById('emptyState').classList.remove('hidden');
-                document.getElementById('dataContainer').classList.add('hidden');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function showError(htmlMessage) {
-            const errorMsg = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
-            errorText.innerHTML = htmlMessage;
-            errorMsg.classList.remove('hidden');
-        }
-
-        function displayData(data) {
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('dataContainer').classList.remove('hidden');
-
-            document.getElementById('resFullName').textContent = data.fullName || 'N/A';
-            document.getElementById('resGender').textContent = data.gender || 'N/A';
-            document.getElementById('resAge').textContent = data.age || 'N/A';
-            document.getElementById('resOccupation').textContent = data.occupation || 'N/A';
-            document.getElementById('resPhone').textContent = data.phoneNumber || 'N/A';
-            document.getElementById('resStreet').textContent = data.streetAddress || 'N/A';
-            document.getElementById('resCity').textContent = data.city || 'N/A';
-            document.getElementById('resState').textContent = data.state || 'N/A';
-            document.getElementById('resZip').textContent = data.zipCode || 'N/A';
-            document.getElementById('resCountry').textContent = data.country || 'N/A';
-
-            if (data.country) {
-                document.title = `Identity Gen | ${data.country}`;
-            }
-        }
-
-        function showLoading(isLoading) {
-            const overlay = document.getElementById('loadingOverlay');
-            const btn = document.getElementById('generateBtn');
-            const icon = btn.querySelector('i');
-            
-            if (isLoading) {
-                overlay.classList.remove('hidden');
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                icon.className = 'fas fa-spinner fa-spin';
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> EXECUTING...';
-            } else {
-                overlay.classList.add('hidden');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                btn.innerHTML = '<i class="fas fa-bolt"></i> EXECUTE';
-            }
-        }
-
-        function copyText(elementId) {
-            const textToCopy = document.getElementById(elementId).textContent;
-            if (!textToCopy || textToCopy === 'N/A') return;
-            executeCopy(textToCopy, "DATA COPIED");
-        }
-
-        function copyAllData() {
-            if (!currentGeneratedData) return;
-            const jsonString = JSON.stringify(currentGeneratedData, null, 2);
-            executeCopy(jsonString, "JSON COPIED");
-        }
-
-        function executeCopy(text, toastMessage) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast(toastMessage);
-            } catch (err) {
-                alert("Trình duyệt không hỗ trợ copy.");
-            }
-            document.body.removeChild(textArea);
-        }
-
-        let toastTimeout;
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            clearTimeout(toastTimeout);
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 2000);
-        }
-    </script>
+function $(id){return document.getElementById(id)}
+function show(id){$(id).classList.remove('hidden')}
+function hide(id){$(id).classList.add('hidden')}
+function showErr(h){$('errorText').innerHTML=h;show('errorMsg')}
+function setBtn(on){const b=$('generateBtn');b.disabled=on;if(on){b.classList.add('opacity-50','cursor-not-allowed');b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...'}else{b.classList.remove('opacity-50','cursor-not-allowed');b.innerHTML='<i class="fas fa-bolt"></i> EXECUTE'}}
+function cp(id){const t=$(id).textContent;if(!t||t==='N/A')return;doCopy(t,'DATA COPIED')}
+function copyAllData(){if(!currentData)return;const e={...currentData};['_source','_src','avatar','_wl','_dl'].forEach(k=>delete e[k]);doCopy(JSON.stringify(e,null,2),'JSON COPIED')}
+function doCopy(t,m){if(navigator.clipboard?.writeText)navigator.clipboard.writeText(t).then(()=>toast(m)).catch(()=>fb(t,m));else fb(t,m)}
+function fb(t,m){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(e){}document.body.removeChild(a)}
+let tt;function toast(m){const t=$('toast');$('toastMsg').textContent=m;clearTimeout(tt);t.classList.remove('translate-y-16','opacity-0');tt=setTimeout(()=>t.classList.add('translate-y-16','opacity-0'),1500)}
+</script>
 </body>
 </html>

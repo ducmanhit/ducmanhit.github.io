@@ -36,7 +36,7 @@
         .loader::before{content:'';position:absolute;inset:5px;background:#f05a28;animation:pulse 1s infinite ease-in-out;border-radius:0}
         @keyframes spin{100%{transform:rotate(360deg)}}@keyframes pulse{50%{opacity:.5}}
         .gender-btn{transition:all .2s;border-radius:0}.gender-btn.active{background:rgba(240,90,40,.1);border-color:#f05a28;color:#f05a28}
-        .hint-tag{display:inline-block;padding:2px 8px;font-size:10px;border-radius:0;background:rgba(240,90,40,.08);color:#d94d1f;border:1px solid rgba(240,90,40,.15);font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;line-height:1.7}
+        .hint-tag{display:flex;align-items:center;justify-content:center;padding:8px 2px;font-size:11px;font-weight:600;border-radius:0;background:rgba(240,90,40,.05);color:#d94d1f;border:1px solid rgba(240,90,40,.15);font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase}
         .hint-tag:hover{background:rgba(240,90,40,.15);color:#f05a28;border-color:#f05a28}
         .speed-bar{height:3px;background:rgba(240,90,40,.15);border-radius:0;overflow:hidden;margin-top:6px}
         .speed-fill{height:100%;border-radius:0;transition:width .3s}
@@ -63,8 +63,9 @@
 
     <!-- Control -->
     <div class="bg-light-card border border-light-border p-5 mb-5 rounded-none shadow-sm">
-        <div class="flex flex-col md:flex-row gap-4 items-end">
-            <div class="flex-grow w-full md:w-5/12">
+        <div class="flex flex-col md:flex-row gap-4 items-stretch">
+            
+            <div class="flex-grow w-full md:w-5/12 flex flex-col justify-end">
                 <label class="block text-[10px] font-bold text-brand uppercase tracking-widest mb-1.5 font-mono">
                     <i class="fas fa-terminal text-[9px] mr-1"></i> Country Code
                 </label>
@@ -75,26 +76,73 @@
                         value="us" maxlength="5" onkeypress="if(event.key==='Enter')generateData()"
                         oninput="this.value=this.value.replace(/[^a-zA-Z]/g,'').toLowerCase()">
                 </div>
-                <div class="mt-2 flex flex-wrap gap-1">
-                    <span class="hint-tag" onclick="q('us')">us</span><span class="hint-tag" onclick="q('vn')">vn</span><span class="hint-tag" onclick="q('kr')">kr</span><span class="hint-tag" onclick="q('jp')">jp</span><span class="hint-tag" onclick="q('th')">th</span><span class="hint-tag" onclick="q('gb')">gb</span><span class="hint-tag" onclick="q('de')">de</span><span class="hint-tag" onclick="q('fr')">fr</span><span class="hint-tag" onclick="q('cn')">cn</span><span class="hint-tag" onclick="q('in')">in</span><span class="hint-tag" onclick="q('br')">br</span><span class="hint-tag" onclick="q('ru')">ru</span><span class="hint-tag" onclick="q('it')">it</span><span class="hint-tag" onclick="q('id')">id</span><span class="hint-tag" onclick="q('mx')">mx</span><span class="hint-tag" onclick="q('pl')">pl</span>
+                <div class="mt-3 grid grid-cols-8 gap-1.5 sm:gap-2">
+                    <button class="hint-tag" onclick="q('us')">us</button>
+                    <button class="hint-tag" onclick="q('vn')">vn</button>
+                    <button class="hint-tag" onclick="q('kr')">kr</button>
+                    <button class="hint-tag" onclick="q('jp')">jp</button>
+                    <button class="hint-tag" onclick="q('th')">th</button>
+                    <button class="hint-tag" onclick="q('gb')">gb</button>
+                    <button class="hint-tag" onclick="q('de')">de</button>
+                    <button class="hint-tag" onclick="q('fr')">fr</button>
+                    <button class="hint-tag" onclick="q('cn')">cn</button>
+                    <button class="hint-tag" onclick="q('in')">in</button>
+                    <button class="hint-tag" onclick="q('br')">br</button>
+                    <button class="hint-tag" onclick="q('ru')">ru</button>
+                    <button class="hint-tag" onclick="q('it')">it</button>
+                    <button class="hint-tag" onclick="q('id')">id</button>
+                    <button class="hint-tag" onclick="q('mx')">mx</button>
+                    <button class="hint-tag" onclick="q('pl')">pl</button>
                 </div>
             </div>
-            <div class="flex-grow w-full md:w-4/12">
-                <label class="block text-[10px] font-bold text-brand uppercase tracking-widest mb-1.5 font-mono">
-                    <i class="fas fa-venus-mars text-[9px] mr-1"></i> Gender
-                </label>
-                <div class="flex gap-2">
-                    <input type="hidden" id="genderInput" value="random">
-                    <button onclick="sg('random')" id="btn-gender-random" class="gender-btn active flex-1 py-3 border border-brand text-brand font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-dice mr-1"></i>Random</button>
-                    <button onclick="sg('male')" id="btn-gender-male" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-mars mr-1"></i>Nam</button>
-                    <button onclick="sg('female')" id="btn-gender-female" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-venus mr-1"></i>Nữ</button>
+
+            <div class="flex-grow w-full md:w-4/12 flex flex-col">
+                <!-- Decorative System Widget (Lấp đầy khoảng trống) -->
+                <div class="hidden md:flex flex-col w-full border-b border-dashed border-light-border pb-2.5 mb-auto pt-0.5">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[9px] font-mono font-bold text-gray-400 uppercase tracking-widest">
+                            <i class="fas fa-microchip text-[9px] mr-1"></i> System_Core
+                        </span>
+                        <span class="flex items-center gap-1.5 text-[8px] font-mono text-emerald-500 tracking-[0.2em] font-bold">
+                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-none animate-pulse"></span> ONLINE
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-end mt-1">
+                        <div class="text-[8px] font-mono text-gray-500 tracking-[0.2em] leading-[1.6]">
+                            > NODE: <span class="text-brand font-bold">ALPHA-7</span><br>
+                            > SEC : <span class="text-gray-900 font-bold">AES-256</span>
+                        </div>
+                        <div class="flex gap-[2px] items-end opacity-40 pb-0.5">
+                            <div class="w-[1.5px] h-2 bg-gray-600"></div>
+                            <div class="w-[2px] h-3.5 bg-gray-600"></div>
+                            <div class="w-[1px] h-1.5 bg-gray-600"></div>
+                            <div class="w-[3px] h-3 bg-gray-600"></div>
+                            <div class="w-[1.5px] h-2 bg-gray-600"></div>
+                            <div class="w-[1px] h-3.5 bg-gray-600"></div>
+                            <div class="w-[2px] h-2 bg-gray-600"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-3 md:pt-0">
+                    <label class="block text-[10px] font-bold text-brand uppercase tracking-widest mb-1.5 font-mono">
+                        <i class="fas fa-venus-mars text-[9px] mr-1"></i> Gender
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="hidden" id="genderInput" value="random">
+                        <button onclick="sg('random')" id="btn-gender-random" class="gender-btn active flex-1 py-3 border border-brand text-brand font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-dice mr-1"></i>Random</button>
+                        <button onclick="sg('male')" id="btn-gender-male" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-mars mr-1"></i>Nam</button>
+                        <button onclick="sg('female')" id="btn-gender-female" class="gender-btn flex-1 py-3 border border-light-border bg-light-input text-gray-500 hover:text-gray-900 font-mono text-[10px] font-bold uppercase tracking-wider rounded-none"><i class="fas fa-venus mr-1"></i>Nữ</button>
+                    </div>
                 </div>
             </div>
-            <div class="w-full md:w-3/12">
+
+            <div class="w-full md:w-3/12 flex flex-col justify-end">
                 <button id="generateBtn" onclick="generateData()" class="btn-solid w-full py-3 font-mono font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 rounded-none">
                     <i class="fas fa-bolt"></i> EXECUTE
                 </button>
             </div>
+
         </div>
         <div id="speedInfo" class="hidden mt-3">
             <div class="flex justify-end items-center text-[10px] font-mono text-gray-500 uppercase tracking-wider">
@@ -122,20 +170,30 @@
 
         <div id="dataContainer" class="hidden grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 pb-8">
 
-            <!-- Name (3col) + Gender + Age + Country -->
-            <div class="info-card p-4 group col-span-2 lg:col-span-3">
-                <div class="card-wm">ID</div>
+            <!-- First Name (2col) + Last Name (1col) + Gender + Age + Country -->
+            <div class="info-card p-4 group col-span-2 md:col-span-2 lg:col-span-2">
+                <div class="card-wm">1ST</div>
                 <div class="card-c">
                     <div class="flex items-center justify-between mb-2.5">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Họ và Tên</span>
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Tên (First)</span>
                         <div class="flex items-center gap-2">
-                            <button onclick="cp('resFullName')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                            <button onclick="cp('resFirstName')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <img id="resAvatar" src="" alt="" class="w-14 h-14 rounded-none border border-light-border hidden object-cover flex-shrink-0">
-                        <p id="resFullName" class="text-[22px] font-bold text-gray-900 group-hover:text-brand transition-colors leading-tight"></p>
+                        <p id="resFirstName" class="text-[22px] font-bold text-gray-900 group-hover:text-brand transition-colors leading-tight"></p>
                     </div>
+                </div>
+            </div>
+            <div class="info-card p-4 group col-span-2 md:col-span-2 lg:col-span-1">
+                <div class="card-wm">LST</div>
+                <div class="card-c">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Họ (Last)</span>
+                        <button onclick="cp('resLastName')" class="text-gray-400 hover:text-brand transition-colors text-xs"><i class="far fa-copy"></i></button>
+                    </div>
+                    <p id="resLastName" class="text-[20px] font-bold text-gray-900 group-hover:text-brand transition-colors leading-tight mt-1"></p>
                 </div>
             </div>
             <div class="info-card p-4 group">
@@ -353,7 +411,7 @@ async function fetchRU(nat,gender){
     const r=await fetch(url);if(!r.ok)throw new Error(`RandomUser ${r.status}`);
     const d=await r.json();if(d.error)throw new Error(d.error);
     const u=d.results[0],l=u.location;
-    return{fullName:`${u.name.title} ${u.name.first} ${u.name.last}`,gender:u.gender[0].toUpperCase()+u.gender.slice(1),age:u.dob.age,streetAddress:`${l.street.number} ${l.street.name}`,city:l.city,state:l.state,zipCode:String(l.postcode),country:l.country,avatar:u.picture.large};
+    return{firstName:u.name.first,lastName:u.name.last,gender:u.gender[0].toUpperCase()+u.gender.slice(1),age:u.dob.age,streetAddress:`${l.street.number} ${l.street.name}`,city:l.city,state:l.state,zipCode:String(l.postcode),country:l.country,avatar:u.picture.large};
 }
 async function fetchFA({l,c,n},gender){
     const gp=gender==='male'?'&_gender=male':(gender==='female'?'&_gender=female':'');
@@ -361,12 +419,12 @@ async function fetchFA({l,c,n},gender){
     if(!pR.ok)throw new Error(`FakerAPI ${pR.status}`);if(!aR.ok)throw new Error(`FakerAPI ${aR.status}`);
     const pD=await pR.json(),aD=await aR.json(),p=pD.data[0],a=aD.data[0];
     let age=new Date().getFullYear()-new Date(p.birthday).getFullYear();age=Math.max(18,Math.min(65,age));
-    return{fullName:`${p.firstname} ${p.lastname}`,gender:p.gender==='male'?'Male':(p.gender==='female'?'Female':'Other'),age,streetAddress:a.street,city:a.city,state:a.country||n,zipCode:a.zipcode,country:a.country||n,avatar:null};
+    return{firstName:p.firstname,lastName:p.lastname,gender:p.gender==='male'?'Male':(p.gender==='female'?'Female':'Other'),age,streetAddress:a.street,city:a.city,state:a.country||n,zipCode:a.zipcode,country:a.country||n,avatar:null};
 }
 
 function displayData(d){
     const c=document.getElementById('dataContainer');c.classList.remove('hidden');c.style.display='grid';
-    $('resFullName').textContent=d.fullName;$('resGender').textContent=d.gender;$('resAge').textContent=d.age;
+    $('resFirstName').textContent=d.firstName;$('resLastName').textContent=d.lastName;$('resGender').textContent=d.gender;$('resAge').textContent=d.age;
     $('resStreet').textContent=d.streetAddress;$('resWard').textContent=d.ward;$('resDistrict').textContent=d.district;
     $('resCity').textContent=d.city;$('resState').textContent=d.state;$('resZip').textContent=d.zipCode;$('resCountry').textContent=d.country;
     $('wardLabel').textContent=d._wl;$('districtLabel').textContent=d._dl;

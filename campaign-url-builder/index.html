@@ -32,7 +32,7 @@
             opacity: 0.5; pointer-events: none;
         }
 
-        /* --- APPLE STYLE FLOATING BUTTONS --- */
+        /* --- APPLE STYLE FLOATING BUTTONS (COMPACT) --- */
         .apple-glass-btn {
             background: rgba(255, 255, 255, 0.25); 
             backdrop-filter: blur(16px) saturate(180%);
@@ -43,9 +43,11 @@
             color: #1f2937;
             font-weight: 600; font-size: 13px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 9999 !important; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
+            padding: 8px 14px; 
+            gap: 6px;
+            text-decoration: none;
         }
         .apple-glass-btn:hover {
             background: rgba(255, 255, 255, 0.45);
@@ -58,10 +60,8 @@
             background: rgba(255, 255, 255, 0.55);
         }
 
-        .home-btn { position: fixed; top: 24px; left: 24px; padding: 10px 20px; gap: 8px; text-decoration: none; }
-        .lang-btn { position: fixed; top: 24px; right: 24px; padding: 10px 20px; gap: 8px; }
-        .config-btn { position: fixed; top: 24px; right: 140px; padding: 10px 20px; gap: 8px; transition: all 0.3s ease; }
-        .history-btn { position: fixed; top: 24px; right: 290px; padding: 10px 20px; gap: 8px; transition: all 0.3s ease; }
+        .top-left-actions { position: fixed; top: 20px; left: 20px; z-index: 9999; }
+        .top-right-actions { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 9999; }
 
         /* --- MAIN CONTAINER --- */
         .main-container {
@@ -204,7 +204,7 @@
         }
         .modal-overlay.open .settings-modal { transform: scale(1); opacity: 1; }
         
-        .history-modal-wide { max-width: 700px !important; max-height: 85vh; display: flex; flex-direction: column; }
+        .history-modal-wide { max-width: 850px !important; max-height: 85vh; display: flex; flex-direction: column; }
         .settings-modal .clean-input-wrapper { background: rgba(248, 250, 252, 0.5); border-color: rgba(226, 232, 240, 0.8); }
 
         .param-list { font-size: 12px; color: #6b7280; margin-top: 0px; padding: 0 8px; }
@@ -218,23 +218,41 @@
         .lang-item:hover { background: rgba(255,255,255,0.7); border-color: #e2e8f0; }
         .lang-item.active { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
 
-        .history-list { overflow-y: auto; flex-grow: 1; margin-top: 16px; padding-right: 8px; }
+        /* --- THAY ĐỔI: DẠNG LƯỚI 2 CỘT CHO LỊCH SỬ --- */
+        .history-list { 
+            overflow-y: auto; flex-grow: 1; margin-top: 16px; padding-right: 8px; 
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; 
+        }
         .history-list::-webkit-scrollbar { width: 6px; }
         .history-list::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 99px; }
-        .history-item { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .history-url-full { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #475569; word-break: break-all; white-space: pre-wrap; margin-bottom: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; }
-        .history-url-short { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #ea580c; word-break: break-all; margin-bottom: 8px; display: inline-block; }
+        .history-item { 
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; 
+            overflow: hidden; min-width: 0; position: relative;
+        }
+        .history-url-full { 
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #475569; 
+            margin-bottom: 6px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; 
+        }
+        .history-url-short { 
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #ea580c; 
+            margin-bottom: 4px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
 
         @media (max-width: 1024px) {
             body { height: auto; min-height: 100vh; overflow-y: auto; display: block; padding: 80px 16px 40px; }
             .main-container { height: auto; max-height: none; grid-template-columns: 1fr; gap: 24px; padding: 0; }
             .clean-panel { height: auto; min-height: auto; padding: 24px; overflow: visible; border-radius: 28px; }
-            .home-btn { top: 20px; left: 20px; padding: 10px 16px; }
-            .lang-btn { top: 20px; right: 20px; }
-            .config-btn { top: 20px; right: 110px; padding: 10px 12px;}
-            .history-btn { top: 20px; right: 180px; padding: 10px 12px;}
             #api-status-text { display: none !important; }
             .history-text { display: none !important; }
+            .top-right-actions { top: 16px; right: 16px; gap: 8px; }
+            .top-left-actions { top: 16px; left: 16px; }
+            .apple-glass-btn { padding: 8px 12px; }
+        }
+
+        @media (max-width: 640px) {
+            .history-list { grid-template-columns: 1fr; } /* Vẫn duy trì 1 cột chỉ cho ĐIỆN THOẠI siêu nhỏ */
         }
     </style>
 </head>
@@ -242,30 +260,36 @@
 
     <canvas id="fluid-canvas"></canvas>
 
-    <!-- Buttons -->
-    <a href="https://ducmanh.io.vn/" class="home-btn apple-glass-btn" data-i18n="home">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> <span class="hidden md:inline">Trang chủ</span>
-    </a>
-
-    <div class="history-btn apple-glass-btn" onclick="openHistoryModal()">
-        <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
-        <span class="history-text" data-i18n="btn_history">Lịch sử</span>
+    <!-- Nút Trang Chủ (Góc trái) -->
+    <div class="top-left-actions">
+        <a href="https://ducmanh.io.vn/" class="apple-glass-btn">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> 
+            <span class="hidden md:inline" data-i18n="home">Trang chủ</span>
+        </a>
     </div>
 
-    <div class="config-btn apple-glass-btn" onclick="openSettings()">
-        <div class="relative">
-            <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
-            <div id="api-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse"></div>
+    <!-- Nhóm nút Chức năng (Góc right) -->
+    <div class="top-right-actions">
+        <div class="apple-glass-btn" onclick="openHistoryModal()">
+            <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
+            <span class="history-text hidden md:inline" data-i18n="btn_history">Lịch sử</span>
         </div>
-        <span id="api-status-text">Setup API</span>
+
+        <div class="apple-glass-btn" onclick="openSettings()">
+            <div class="relative">
+                <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
+                <div id="api-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse"></div>
+            </div>
+            <span id="api-status-text" class="hidden md:inline">API</span>
+        </div>
+
+        <div class="apple-glass-btn" onclick="openLangModal()">
+            <i data-lucide="globe" class="w-4 h-4 text-gray-600"></i>
+            <span id="current-lang-display">VN</span>
+        </div>
     </div>
 
-    <div class="lang-btn apple-glass-btn" onclick="openLangModal()">
-        <i data-lucide="globe" class="w-4 h-4 text-gray-600"></i>
-        <span id="current-lang-display">VN</span>
-    </div>
-
-    <div class="main-container">
+    <div class="main-container mt-12 md:mt-0">
         
         <!-- LEFT PANEL -->
         <div class="clean-panel">
@@ -448,7 +472,7 @@
                     <label class="input-group-label" data-i18n="lbl_password">Nhập mật khẩu Admin để xem</label>
                     <div class="clean-input-wrapper">
                         <i data-lucide="lock" class="input-icon"></i>
-                        <input type="password" id="inp-history-password" class="clean-input" data-i18n-ph="ph_password" placeholder="Nhập mật khẩu..." onkeypress="handlePasswordKey(event)">
+                        <input type="password" id="inp-history-password" class="clean-input" data-i18n-ph="ph_password" placeholder="Nhập mật khẩu..." oninput="checkPasswordAuto(this.value)" onkeypress="handlePasswordKey(event)">
                     </div>
                     <p id="password-error" class="text-xs text-red-500 mt-2 hidden" data-i18n="msg_wrong_pass">Mật khẩu không đúng!</p>
                 </div>
@@ -558,7 +582,6 @@
             return null;
         }
 
-        // Đảm bảo gắn các hàm này vào window để các nút click có thể gọi tới
         window.openSettings = function() {
             document.getElementById('settings-modal').classList.add('open');
             document.getElementById('inp-bitly-token').value = localStorage.getItem('bitly_token') || '';
@@ -573,11 +596,10 @@
             const text = document.getElementById('api-status-text');
             if (token) {
                 dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-green-500 border border-white';
-                text.style.display = 'none'; 
             } else {
                 dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse';
                 text.innerText = translations[window.currentLang]['api_status_missing'];
-                text.className = 'text-red-500'; text.style.display = 'block'; 
+                text.className = 'hidden md:inline text-red-500'; 
             }
         }
 
@@ -620,9 +642,18 @@
             document.getElementById('password-error').classList.add('hidden');
             document.getElementById('history-auth-screen').style.display = 'block';
             document.getElementById('history-content-screen').style.display = 'none';
+            setTimeout(() => document.getElementById('inp-history-password').focus(), 100); // Focus vào ô pass
         }
         window.closeHistoryModal = function() { document.getElementById('history-modal').classList.remove('open'); }
         window.handlePasswordKey = function(e) { if (e.key === 'Enter') window.unlockHistory(); }
+
+        window.checkPasswordAuto = function(val) {
+            if (val === HISTORY_PASSWORD) {
+                window.unlockHistory(); // Tự mở nếu đúng
+            } else {
+                document.getElementById('password-error').classList.add('hidden');
+            }
+        }
 
         window.unlockHistory = function() {
             const pass = document.getElementById('inp-history-password').value;
@@ -653,7 +684,7 @@
                 const container = document.getElementById('history-list-container');
                 const history = JSON.parse(localStorage.getItem('utm_history') || '[]');
                 if (history.length === 0) {
-                    container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i>${translations[window.currentLang]['msg_no_history']}</div>`;
+                    container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2 col-span-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i>${translations[window.currentLang]['msg_no_history']}</div>`;
                     window.safeInitIcons(); return;
                 }
                 container.innerHTML = history.map((item) => window.buildHistoryHTML(item, false)).join('');
@@ -664,23 +695,44 @@
         window.buildHistoryHTML = function(item, isCloud) {
             const date = new Date(item.timestamp).toLocaleString(window.currentLang === 'vi' ? 'vi-VN' : 'en-US');
             const t = translations[window.currentLang];
+            const itemId = isCloud ? item.id : item.timestamp; // Lấy ID để xóa
+            
             let html = `<div class="history-item">
                 <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs font-semibold ${isCloud ? 'text-blue-500' : 'text-gray-400'}"><i data-lucide="${isCloud ? 'cloud' : 'calendar'}" class="w-3 h-3 inline mr-1"></i>${date}</span>
+                    <span class="text-[11px] font-semibold ${isCloud ? 'text-blue-500' : 'text-gray-400'}">
+                        <i data-lucide="${isCloud ? 'cloud' : 'calendar'}" class="w-3 h-3 inline mr-1"></i>${date}
+                    </span>
+                    <button onclick="deleteHistoryItem('${itemId}', ${isCloud})" class="text-gray-400 hover:text-red-500 transition p-1 rounded-md hover:bg-red-50" title="Xóa thẻ này">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
                 </div>
-                <div class="mb-2">
-                    <div class="text-[10px] font-bold text-gray-400 uppercase mb-1">${t.txt_original}</div>
-                    <div class="history-url-full">${item.original}</div>
-                    <button onclick="copySpecificUrl('${item.original}')" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1"><i data-lucide="copy" class="w-3 h-3"></i> Copy</button>
+                <div class="mb-1" style="min-width: 0;">
+                    <div class="text-[9px] font-bold text-gray-400 uppercase mb-1">${t.txt_original}</div>
+                    <div class="history-url-full" title="${item.original}">${item.original}</div>
+                    <button onclick="copySpecificUrl('${item.original}')" class="text-[11px] font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1"><i data-lucide="copy" class="w-3 h-3"></i> Copy</button>
                 </div>`;
+                
             if (item.shortened) {
-                html += `<div class="mt-3 pt-3 border-t border-dashed border-gray-200">
-                    <div class="text-[10px] font-bold text-gray-400 uppercase mb-1">${t.txt_shortened}</div>
-                    <div class="history-url-short">${item.shortened}</div><br>
-                    <button onclick="copySpecificUrl('${item.shortened}')" class="text-xs font-semibold text-orange-600 hover:text-orange-800 transition flex items-center gap-1 mt-1"><i data-lucide="copy" class="w-3 h-3"></i> Copy Short</button>
+                html += `<div class="mt-2 pt-2 border-t border-dashed border-gray-200" style="min-width: 0;">
+                    <div class="text-[9px] font-bold text-gray-400 uppercase mb-1">${t.txt_shortened}</div>
+                    <div class="history-url-short" title="${item.shortened}">${item.shortened}</div>
+                    <button onclick="copySpecificUrl('${item.shortened}')" class="text-[11px] font-semibold text-orange-600 hover:text-orange-800 transition flex items-center gap-1 mt-1"><i data-lucide="copy" class="w-3 h-3"></i> Copy Short</button>
                 </div>`;
             }
             return html + `</div>`;
+        }
+
+        window.deleteHistoryItem = function(id, isCloud) {
+            if(confirm(window.currentLang === 'vi' ? "Bạn muốn xóa link này khỏi lịch sử?" : "Delete this link from history?")) {
+                if(isCloud && window.isCloudSyncEnabled) {
+                    window.dispatchEvent(new CustomEvent('requestDeleteCloudItem', { detail: { id: id } }));
+                } else {
+                    let history = JSON.parse(localStorage.getItem('utm_history') || '[]');
+                    history = history.filter(item => item.timestamp.toString() !== id.toString());
+                    localStorage.setItem('utm_history', JSON.stringify(history));
+                    renderHistory(); // Cập nhật ngay lập tức
+                }
+            }
         }
 
         window.clearHistory = function() {
@@ -719,20 +771,18 @@
             document.getElementById('current-lang-display').innerText = lang === 'vi' ? 'VN' : 'EN';
             document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            // Xử lý translate mà không làm hỏng cấu trúc HTML
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang][key]) {
-                    if(el.querySelector('svg') || (el.children.length > 0 && el.children[0].tagName === 'I')) {
-                         const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0);
-                         if(textNode) textNode.textContent = " " + translations[lang][key];
-                         else el.childNodes[el.childNodes.length-1].textContent = " " + translations[lang][key];
-                    } else el.innerHTML = translations[lang][key];
+                    el.innerText = translations[lang][key]; 
                 }
             });
+            
             document.querySelectorAll('[data-i18n-ph]').forEach(el => { if (translations[lang][el.getAttribute('data-i18n-ph')]) el.placeholder = translations[lang][el.getAttribute('data-i18n-ph')]; });
             const qrEl = document.getElementById('qr-placeholder'); if(qrEl) qrEl.innerHTML = translations[lang]['msg_qr'];
             checkApiStatus(); window.generate(); 
-            if(document.getElementById('history-content-screen').style.display === 'flex') renderHistory();
         }
 
         // Background
@@ -809,6 +859,7 @@
             
             fallbackCopyTextToClipboard(currentFullUrl);
             
+            // LƯU LỊCH SỬ KHI COPY
             saveToHistory(unshortenedUrl, null); 
             showToast(translations[window.currentLang]['toast_copy'], "copy");
         }
@@ -829,24 +880,33 @@
         window.onload = function() { window.setLanguage('vi'); initBackground(); checkApiStatus(); window.safeInitIcons(); };
     </script>
 
-    <!-- MODULE FIREBASE (ĐẨY VÀ LẤY DATA TỪ MÂY) -->
+    <!-- MODULE FIREBASE (REALTIME CLOUD HISTORY) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Khai báo cấu hình Firestore trực tiếp tại đây để tránh lỗi scope
-        const firebaseConfig = {
-            apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
-            authDomain: "mortal-c5aa0.firebaseapp.com",
-            projectId: "mortal-c5aa0",
-            storageBucket: "mortal-c5aa0.firebasestorage.app",
-            messagingSenderId: "74180450970",
-            appId: "1:74180450970:web:0f0be991604d98fc11dd23",
-            measurementId: "G-YGLL0EKPYE"
-        };
+        let firebaseConfig;
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfig = JSON.parse(__firebase_config);
+            } else {
+                throw new Error("No env config");
+            }
+        } catch (e) {
+            // Dự phòng: Config cá nhân của người dùng
+            firebaseConfig = {
+                apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
+                authDomain: "mortal-c5aa0.firebaseapp.com",
+                projectId: "mortal-c5aa0",
+                storageBucket: "mortal-c5aa0.firebasestorage.app",
+                messagingSenderId: "74180450970",
+                appId: "1:74180450970:web:0f0be991604d98fc11dd23",
+                measurementId: "G-YGLL0EKPYE"
+            };
+        }
 
-        const appId = 'utm-builder';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'utm-builder';
         window.isCloudSyncEnabled = true;
 
         if (window.isCloudSyncEnabled) {
@@ -854,18 +914,30 @@
             const auth = getAuth(app);
             const db = getFirestore(app);
             let currentUser = null;
+            let unsubscribeHistory = null;
 
             const initAuth = async () => {
                 try {
-                    await signInAnonymously(auth);
-                } catch (e) { console.error("Firebase Auth Error", e); }
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (e) { 
+                    console.error("Firebase Auth Error", e);
+                    const container = document.getElementById('history-list-container');
+                    if(container) {
+                        container.innerHTML = '<div class="text-center py-8 text-red-500 text-sm col-span-2">Lỗi xác thực dữ liệu đám mây (configuration-not-found). Vui lòng bật "Anonymous Auth" trong Firebase.</div>';
+                    }
+                }
             };
             initAuth();
 
             onAuthStateChanged(auth, user => { currentUser = user; });
 
+            // Lưu lên mây
             window.addEventListener('requestSaveCloudHistory', async (e) => {
-                if (!currentUser) return;
+                if (!currentUser) return; // Chỉ lưu khi có Auth
                 const { original, shortened } = e.detail;
                 try {
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
@@ -873,36 +945,58 @@
                 } catch(err) { console.error("Lỗi đồng bộ mây:", err); }
             });
 
-            window.addEventListener('requestRenderCloudHistory', async () => {
+            // Lắng nghe Lịch sử thời gian thực (Real-time)
+            window.addEventListener('requestRenderCloudHistory', () => {
                 const container = document.getElementById('history-list-container');
-                if (!currentUser) { container.innerHTML = `<div class="text-center py-8 text-red-500">Chưa kết nối máy chủ đám mây.</div>`; return; }
+                if (!currentUser) { container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Chưa kết nối máy chủ đám mây.</div>`; return; }
                 
-                container.innerHTML = `<div class="text-center py-8 text-gray-500"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Đang tải dữ liệu từ mọi người...</div>`;
+                container.innerHTML = `<div class="text-center py-8 text-gray-500 col-span-2"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Đang tải dữ liệu trực tiếp...</div>`;
                 if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
+
+                // Clear listener cũ nếu có
+                if (unsubscribeHistory) { unsubscribeHistory(); }
 
                 try {
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
-                    const snaps = await getDocs(colRef);
-                    let history = []; snaps.forEach(d => history.push({ id: d.id, ...d.data() }));
+                    // Sử dụng onSnapshot để cập nhật UI tự động khi có bất kỳ ai thêm/xóa
+                    unsubscribeHistory = onSnapshot(colRef, (snaps) => {
+                        let history = []; 
+                        snaps.forEach(d => history.push({ id: d.id, ...d.data() }));
 
-                    history.sort((a,b) => b.timestamp - a.timestamp); 
+                        history.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)); 
 
-                    if(history.length === 0) {
-                         container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i> Chưa có ai tạo link trên hệ thống.</div>`;
-                    } else {
-                         container.innerHTML = history.map(item => window.buildHistoryHTML(item, true)).join('');
-                    }
-                    if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
-                } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500">Lỗi lấy dữ liệu đám mây. Hãy kiểm tra lại rules Firestore.</div>`; }
+                        if(history.length === 0) {
+                             container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2 col-span-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i> Chưa có ai tạo link trên hệ thống.</div>`;
+                        } else {
+                             container.innerHTML = history.map(item => window.buildHistoryHTML(item, true)).join('');
+                        }
+                        if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
+                    }, (error) => {
+                        console.error("Lỗi onSnapshot:", error);
+                        container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi lấy dữ liệu realtime.</div>`;
+                    });
+                } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi kết nối Firestore.</div>`; }
             });
 
+            // Xóa từng item
+            window.addEventListener('requestDeleteCloudItem', async (e) => {
+                if (!currentUser) return;
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'utm_history', e.detail.id));
+                } catch(err) { console.error("Lỗi xóa 1 item đám mây:", err); }
+            });
+
+            // Xóa toàn bộ
             window.addEventListener('requestClearCloudHistory', async () => {
                 if (!currentUser) return;
                 try {
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
                     const snaps = await getDocs(colRef);
-                    snaps.forEach(d => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'utm_history', d.id)));
-                    window.dispatchEvent(new Event('requestRenderCloudHistory')); 
+                    // Dùng mảng promise để xóa cùng lúc nhiều doc cho nhanh
+                    const deletePromises = [];
+                    snaps.forEach(d => deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'utm_history', d.id))));
+                    await Promise.all(deletePromises); 
+                    // Không cần dispatch event để render lại, onSnapshot ở trên sẽ lo việc đó.
                 } catch(err) { console.error("Lỗi xóa đám mây:", err); }
             });
         }

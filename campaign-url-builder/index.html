@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -8,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons (Đã đổi sang JSDelivr ổn định hơn) -->
+    <!-- Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 
     <style>
@@ -43,7 +44,7 @@
             color: #1f2937;
             font-weight: 600; font-size: 13px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 9999 !important; /* Fixed Z-index để không bao giờ bị che */
+            z-index: 9999 !important; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
         }
@@ -507,20 +508,6 @@
         const DEFAULT_BITLY_TOKEN = "f8bd3c97a2a2fe2115a9d71c71e22ba8d50ea3f2"; 
         const HISTORY_PASSWORD = "451230"; 
 
-        // ==========================================
-        // 2. CẤU HÌNH CLOUD SYNC (FIREBASE)
-        // ==========================================
-       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
-  authDomain: "mortal-c5aa0.firebaseapp.com",
-  projectId: "mortal-c5aa0",
-  storageBucket: "mortal-c5aa0.firebasestorage.app",
-  messagingSenderId: "74180450970",
-  appId: "1:74180450970:web:0f0be991604d98fc11dd23",
-  measurementId: "G-YGLL0EKPYE"
-};
-
         const translations = {
             vi: {
                 home: "Trang chủ", title: "Tạo URL Chiến Dịch", subtitle: "Thêm tham số vào URL để đo lường hiệu quả marketing.",
@@ -846,14 +833,22 @@ const firebaseConfig = {
     <!-- MODULE FIREBASE (ĐẨY VÀ LẤY DATA TỪ MÂY) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Lấy cấu hình tự động nếu chạy trên môi trường test, hoặc lấy từ config tay do Admin nhập
-        const firebaseConfig = USER_FIREBASE_CONFIG || (typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'utm-builder';
+        // Khai báo cấu hình Firestore trực tiếp tại đây để tránh lỗi scope
+        const firebaseConfig = {
+            apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
+            authDomain: "mortal-c5aa0.firebaseapp.com",
+            projectId: "mortal-c5aa0",
+            storageBucket: "mortal-c5aa0.firebasestorage.app",
+            messagingSenderId: "74180450970",
+            appId: "1:74180450970:web:0f0be991604d98fc11dd23",
+            measurementId: "G-YGLL0EKPYE"
+        };
 
-        window.isCloudSyncEnabled = !!firebaseConfig;
+        const appId = 'utm-builder';
+        window.isCloudSyncEnabled = true;
 
         if (window.isCloudSyncEnabled) {
             const app = initializeApp(firebaseConfig);
@@ -863,11 +858,7 @@ const firebaseConfig = {
 
             const initAuth = async () => {
                 try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                    await signInAnonymously(auth);
                 } catch (e) { console.error("Firebase Auth Error", e); }
             };
             initAuth();
@@ -903,7 +894,7 @@ const firebaseConfig = {
                          container.innerHTML = history.map(item => window.buildHistoryHTML(item, true)).join('');
                     }
                     if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
-                } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500">Lỗi lấy dữ liệu đám mây. Hãy tải lại.</div>`; }
+                } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500">Lỗi lấy dữ liệu đám mây. Hãy kiểm tra lại rules Firestore.</div>`; }
             });
 
             window.addEventListener('requestClearCloudHistory', async () => {
@@ -919,3 +910,5 @@ const firebaseConfig = {
     </script>
 </body>
 </html>
+
+```

@@ -32,7 +32,7 @@
             opacity: 0.5; pointer-events: none;
         }
 
-        /* --- APPLE STYLE FLOATING BUTTONS --- */
+        /* --- APPLE STYLE FLOATING BUTTONS (COMPACT) --- */
         .apple-glass-btn {
             background: rgba(255, 255, 255, 0.25); 
             backdrop-filter: blur(16px) saturate(180%);
@@ -43,9 +43,11 @@
             color: #1f2937;
             font-weight: 600; font-size: 13px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 9999 !important; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
+            padding: 8px 14px; 
+            gap: 6px;
+            text-decoration: none;
         }
         .apple-glass-btn:hover {
             background: rgba(255, 255, 255, 0.45);
@@ -58,10 +60,8 @@
             background: rgba(255, 255, 255, 0.55);
         }
 
-        .home-btn { position: fixed; top: 24px; left: 24px; padding: 10px 20px; gap: 8px; text-decoration: none; }
-        .lang-btn { position: fixed; top: 24px; right: 24px; padding: 10px 20px; gap: 8px; }
-        .config-btn { position: fixed; top: 24px; right: 140px; padding: 10px 20px; gap: 8px; transition: all 0.3s ease; }
-        .history-btn { position: fixed; top: 24px; right: 290px; padding: 10px 20px; gap: 8px; transition: all 0.3s ease; }
+        .top-left-actions { position: fixed; top: 20px; left: 20px; z-index: 9999; }
+        .top-right-actions { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 9999; }
 
         /* --- MAIN CONTAINER --- */
         .main-container {
@@ -250,10 +250,7 @@
             .history-btn { top: 20px; right: 180px; padding: 10px 12px;}
             #api-status-text { display: none !important; }
             .history-text { display: none !important; }
-        }
-
-        @media (max-width: 640px) {
-            .history-list { grid-template-columns: 1fr; } /* Vẫn duy trì 1 cột cho điện thoại siêu nhỏ */
+            .history-list { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -261,30 +258,36 @@
 
     <canvas id="fluid-canvas"></canvas>
 
-    <!-- Buttons -->
-    <a href="https://ducmanh.io.vn/" class="home-btn apple-glass-btn" data-i18n="home">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> <span class="hidden md:inline">Trang chủ</span>
-    </a>
-
-    <div class="history-btn apple-glass-btn" onclick="openHistoryModal()">
-        <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
-        <span class="history-text" data-i18n="btn_history">Lịch sử</span>
+    <!-- Nút Trang Chủ (Góc trái) -->
+    <div class="top-left-actions">
+        <a href="https://ducmanh.io.vn/" class="apple-glass-btn">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> 
+            <span class="hidden md:inline" data-i18n="home"></span>
+        </a>
     </div>
 
-    <div class="config-btn apple-glass-btn" onclick="openSettings()">
-        <div class="relative">
-            <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
-            <div id="api-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse"></div>
+    <!-- Nhóm nút Chức năng (Góc phải) -->
+    <div class="top-right-actions">
+        <div class="apple-glass-btn" onclick="openHistoryModal()">
+            <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
+            <span class="history-text hidden md:inline" data-i18n="btn_history"></span>
         </div>
-        <span id="api-status-text">Setup API</span>
+
+        <div class="apple-glass-btn" onclick="openSettings()" title="Cài đặt API">
+            <div class="relative">
+                <i data-lucide="settings-2" class="w-4 h-4 text-gray-600"></i>
+                <div id="api-status-dot" class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white animate-pulse"></div>
+            </div>
+            <!-- Bỏ text API đi để gọn như hình vẽ -->
+        </div>
+
+        <div class="apple-glass-btn" onclick="openLangModal()">
+            <i data-lucide="globe" class="w-4 h-4 text-gray-600"></i>
+            <span id="current-lang-display">VN</span>
+        </div>
     </div>
 
-    <div class="lang-btn apple-glass-btn" onclick="openLangModal()">
-        <i data-lucide="globe" class="w-4 h-4 text-gray-600"></i>
-        <span id="current-lang-display">VN</span>
-    </div>
-
-    <div class="main-container">
+    <div class="main-container mt-12 md:mt-0">
         
         <!-- LEFT PANEL -->
         <div class="clean-panel">
@@ -590,12 +593,14 @@
             const dot = document.getElementById('api-status-dot');
             const text = document.getElementById('api-status-text');
             if (token) {
-                dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-green-500 border border-white';
-                text.style.display = 'none'; 
+                if (dot) dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-green-500 border border-white';
+                if (text) text.style.display = 'none'; 
             } else {
-                dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse';
-                text.innerText = translations[window.currentLang]['api_status_missing'];
-                text.className = 'text-red-500'; text.style.display = 'block'; 
+                if (dot) dot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 border border-white animate-pulse';
+                if (text) {
+                    text.innerText = translations[window.currentLang]['api_status_missing'];
+                    text.className = 'text-red-500'; text.style.display = 'block'; 
+                }
             }
         }
 
@@ -768,23 +773,23 @@
             document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`lang-${lang}`).classList.add('active');
             
+            // Xử lý translate mà không làm hỏng cấu trúc HTML
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang][key]) {
-                    if(el.querySelector('svg') || (el.children.length > 0 && el.children[0].tagName === 'I')) {
-                         const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0);
-                         if(textNode) textNode.textContent = " " + translations[lang][key];
-                         else el.childNodes[el.childNodes.length-1].textContent = " " + translations[lang][key];
-                    } else el.innerHTML = translations[lang][key];
+                    el.innerText = translations[lang][key]; 
                 }
             });
             
             document.querySelectorAll('[data-i18n-ph]').forEach(el => { if (translations[lang][el.getAttribute('data-i18n-ph')]) el.placeholder = translations[lang][el.getAttribute('data-i18n-ph')]; });
             const qrEl = document.getElementById('qr-placeholder'); if(qrEl) qrEl.innerHTML = translations[lang]['msg_qr'];
             checkApiStatus(); window.generate(); 
-            if(document.getElementById('history-content-screen').style.display === 'flex') renderHistory();
+            
+            // Gán lại Title do có thay đổi DOM
+            document.title = translations[lang]['title'];
         }
 
+        // Background
         const canvas = document.getElementById('fluid-canvas'); const ctxBg = canvas.getContext('2d');
         let width, height, orbs = []; const colors = [{r:59,g:130,b:246}, {r:37,g:99,b:235}, {r:16,g:185,b:129}, {r:99,g:102,b:241}];
         function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
@@ -878,33 +883,24 @@
         window.onload = function() { window.setLanguage('vi'); initBackground(); checkApiStatus(); window.safeInitIcons(); };
     </script>
 
-    <!-- MODULE FIREBASE CẢI TIẾN: SỬA LỖI RACE CONDITION VÀ CHƯA KẾT NỐI -->
+    <!-- MODULE FIREBASE (ĐẨY VÀ LẤY DATA TỪ MÂY) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let firebaseConfig;
-        try {
-            if (typeof __firebase_config !== 'undefined') {
-                firebaseConfig = JSON.parse(__firebase_config);
-            } else {
-                throw new Error("No env config");
-            }
-        } catch (e) {
-            // Dự phòng: Config cá nhân của người dùng
-            firebaseConfig = {
-                apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
-                authDomain: "mortal-c5aa0.firebaseapp.com",
-                projectId: "mortal-c5aa0",
-                storageBucket: "mortal-c5aa0.firebasestorage.app",
-                messagingSenderId: "74180450970",
-                appId: "1:74180450970:web:0f0be991604d98fc11dd23",
-                measurementId: "G-YGLL0EKPYE"
-            };
-        }
+        // Khai báo cấu hình Firestore trực tiếp tại đây để tránh lỗi scope
+        const firebaseConfig = {
+            apiKey: "AIzaSyCa4qMMHjbhFGf6aI5V0rwOtODercUWqGw",
+            authDomain: "mortal-c5aa0.firebaseapp.com",
+            projectId: "mortal-c5aa0",
+            storageBucket: "mortal-c5aa0.firebasestorage.app",
+            messagingSenderId: "74180450970",
+            appId: "1:74180450970:web:0f0be991604d98fc11dd23",
+            measurementId: "G-YGLL0EKPYE"
+        };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'utm-builder';
+        const appId = 'utm-builder';
         window.isCloudSyncEnabled = true;
 
         if (window.isCloudSyncEnabled) {
@@ -913,28 +909,18 @@
             const db = getFirestore(app);
             let currentUser = null;
             let unsubscribeHistory = null;
-            let isAuthReady = false; // Biến cờ: Đánh dấu đã xác thực ngầm xong hay chưa
 
             const initAuth = async () => {
                 try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (e) { 
-                    console.error("Firebase Auth Error", e);
-                } finally {
-                    isAuthReady = true; // Dù lỗi hay không cũng đánh dấu là đã gọi xong
-                }
+                    await signInAnonymously(auth);
+                } catch (e) { console.error("Firebase Auth Error", e); }
             };
             initAuth();
 
             onAuthStateChanged(auth, user => { currentUser = user; });
 
-            // Lưu lên mây
             window.addEventListener('requestSaveCloudHistory', async (e) => {
-                if (!currentUser) return; 
+                if (!currentUser) return;
                 const { original, shortened } = e.detail;
                 try {
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
@@ -942,62 +928,39 @@
                 } catch(err) { console.error("Lỗi đồng bộ mây:", err); }
             });
 
-            // Lắng nghe Lịch sử thời gian thực (Real-time) và Sửa lỗi Chưa kết nối
             window.addEventListener('requestRenderCloudHistory', () => {
                 const container = document.getElementById('history-list-container');
+                if (!currentUser) { container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Chưa kết nối máy chủ đám mây.</div>`; return; }
                 
-                // Hàm thử kết nối lại nếu chưa sẵn sàng
-                const tryRender = () => {
-                    // Cố tình tạo vòng đợi tự động nếu quá trình đăng nhập đang diễn ra
-                    if (!isAuthReady) {
-                        container.innerHTML = `<div class="text-center py-8 text-gray-500 col-span-2"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Đang chờ máy chủ đám mây...</div>`;
-                        if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
-                        setTimeout(tryRender, 400); // Thử lại sau 0.4s
-                        return;
-                    }
+                container.innerHTML = `<div class="text-center py-8 text-gray-500 col-span-2"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Đang đồng bộ thời gian thực...</div>`;
+                if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
 
-                    // Nếu đã auth xong mà vẫn không có user => Tức là không cho phép Anonymous Auth
-                    if (!currentUser) { 
-                        container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2 text-sm leading-relaxed">
-                            <i data-lucide="cloud-off" class="w-8 h-8 mx-auto mb-2 text-red-400"></i>
-                            Chưa kết nối máy chủ đám mây.<br>
-                            <span class="text-xs text-gray-400">Gợi ý: Cần bật "Anonymous" trong Authentication của Firebase.</span>
-                        </div>`; 
-                        if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
-                        return; 
-                    }
+                // Clear listener cũ nếu có để tránh trùng lặp
+                if (unsubscribeHistory) { unsubscribeHistory(); }
+
+                try {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
                     
-                    container.innerHTML = `<div class="text-center py-8 text-gray-500 col-span-2"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Đang đồng bộ lịch sử...</div>`;
-                    if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
+                    // SỬ DỤNG onSnapshot ĐỂ ĐỒNG BỘ REAL-TIME TRÊN MỌI THIẾT BỊ
+                    unsubscribeHistory = onSnapshot(colRef, (snaps) => {
+                        let history = []; 
+                        snaps.forEach(d => history.push({ id: d.id, ...d.data() }));
 
-                    if (unsubscribeHistory) { unsubscribeHistory(); }
+                        history.sort((a,b) => b.timestamp - a.timestamp); 
 
-                    try {
-                        const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'utm_history');
-                        // Sử dụng onSnapshot để bất kỳ ai ở đâu cập nhật cũng tự động nhảy
-                        unsubscribeHistory = onSnapshot(colRef, (snaps) => {
-                            let history = []; 
-                            snaps.forEach(d => history.push({ id: d.id, ...d.data() }));
-
-                            history.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)); 
-
-                            if(history.length === 0) {
-                                 container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2 col-span-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i> Chưa có ai tạo link trên hệ thống.</div>`;
-                            } else {
-                                 container.innerHTML = history.map(item => window.buildHistoryHTML(item, true)).join('');
-                            }
-                            if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
-                        }, (error) => {
-                            console.error("Lỗi onSnapshot:", error);
-                            container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi lấy dữ liệu realtime.</div>`;
-                        });
-                    } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi kết nối Firestore.</div>`; }
-                };
-
-                tryRender(); // Kích hoạt thử nghiệm ngay
+                        if(history.length === 0) {
+                             container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm flex flex-col items-center gap-2 col-span-2"><i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i> Chưa có ai tạo link trên hệ thống.</div>`;
+                        } else {
+                             container.innerHTML = history.map(item => window.buildHistoryHTML(item, true)).join('');
+                        }
+                        if (typeof window.safeInitIcons === 'function') window.safeInitIcons();
+                    }, (error) => {
+                        console.error("Lỗi onSnapshot:", error);
+                        container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi lấy dữ liệu đám mây. Hãy kiểm tra lại rules Firestore.</div>`;
+                    });
+                } catch(err) { container.innerHTML = `<div class="text-center py-8 text-red-500 col-span-2">Lỗi kết nối Firestore.</div>`; }
             });
 
-            // Xóa 1 thẻ tùy chọn
             window.addEventListener('requestDeleteCloudItem', async (e) => {
                 if (!currentUser) return;
                 try {
@@ -1005,7 +968,6 @@
                 } catch(err) { console.error("Lỗi xóa 1 item đám mây:", err); }
             });
 
-            // Xóa tất cả
             window.addEventListener('requestClearCloudHistory', async () => {
                 if (!currentUser) return;
                 try {
@@ -1013,7 +975,8 @@
                     const snaps = await getDocs(colRef);
                     const deletePromises = [];
                     snaps.forEach(d => deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'utm_history', d.id))));
-                    await Promise.all(deletePromises); 
+                    await Promise.all(deletePromises);
+                    // Dùng onSnapshot rồi nên không cần dispatch requestRenderCloudHistory thủ công nữa
                 } catch(err) { console.error("Lỗi xóa đám mây:", err); }
             });
         }

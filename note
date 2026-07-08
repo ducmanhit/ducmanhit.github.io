@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Modern Glass Notes</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Phosphor Icons (S? d?ng version m?i nh?t d? có Duotone) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg-color: #f4f4f5; /* Zinc 100 */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #09090b;
+            --text-muted: #71717a;
+            --accent: #18181b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+
+        /* Tùy ch?nh màu bôi den ch? (Selection) hi?n d?i */
+        ::selection {
+            background-color: #e4e4e7;
+            color: #000;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Nâng c?p hi?u ?ng th? ghi chú */
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+            border-color: rgba(255, 255, 255, 1);
+            background: rgba(255,255,255,0.95);
+        }
+
+        textarea:focus, input:focus { outline: none; box-shadow: none; border-color: transparent; }
+        textarea::placeholder, input::placeholder { color: #a1a1aa; font-weight: 400; }
+
+        /* Animations */
+        .fade-enter { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .spring-up { animation: springUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes springUp {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Hi?u ?ng bay lo l?ng cho Empty state */
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: floating 4s ease-in-out infinite; }
+
+        .line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Dropdown Animation */
+        .dropdown-content {
+            transform-origin: top right;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: scale(0.9) translateY(-10px);
+            pointer-events: none;
+        }
+        .dropdown-content.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Ch?m tr?ng thái sáng ch?p */
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px currentColor; }
+        .status-syncing { color: #F59E0B; background-color: #F59E0B; animation: pulse 1s infinite; }
+        .status-synced { color: #10B981; background-color: #10B981; }
+        .status-error { color: #EF4444; background-color: #EF4444; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+
+        * { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col items-center">
+
+    <!-- Floating Glass Header -->
+    <nav id="main-nav" class="fixed top-4 md:top-6 w-[92%] max-w-5xl glass-panel rounded-full px-2 py-2 flex items-center justify-between z-50 transition-all duration-500">
+        
+        <!-- Left: Logo -->
+        <div class="flex items-center gap-3 pl-4 cursor-pointer" onclick="appState.closeEditor()">
+            <div class="w-9 h-9 bg-gradient-to-br from-zinc-800 to-black text-white rounded-2xl flex items-center justify-center shadow-lg transform transition hover:rotate-6">
+                <i class="ph-duotone ph-notebook text-xl"></i>
+            </div>
+            <span class="font-bold text-lg tracking-tight text-zinc-900 hidden sm:block">Mobbin<span class="font-light text-zinc-400">Note</span></span>
+        </div>
+
+        <!-- Center: Status -->
+        <div class="hidden md:flex items-center text-xs font-medium text-zinc-500 bg-white/60 px-4 py-2 rounded-full border border-white shadow-sm">
+            <span id="nav-status-dot" class="status-dot status-synced"></span>
+            <span id="nav-status">Ðã d?ng b?</span>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-1 sm:gap-2 pr-1">
+            <button onclick="appState.createNewNote()" class="px-5 py-2.5 bg-black hover:bg-zinc-800 text-white text-sm font-medium rounded-full transition-all flex items-center gap-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_12px_rgba(0,0,0,0.15)] active:scale-95">
+                <i class="ph-bold ph-plus"></i>
+                <span class="hidden sm:inline">T?o m?i</span>
+            </button>
+
+            <!-- Menu Dropdown -->
+            <div class="relative ml-1">
+                <button id="btn-menu" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 text-zinc-600 transition-colors">
+                    <i class="ph-bold ph-dots-nine text-2xl"></i>
+                </button>
+                
+                <div id="dropdown-menu" class="dropdown-content absolute right-0 mt-3 w-64 glass-panel rounded-[1.5rem] p-2 shadow-2xl border border-white/80 z-[60]">
+                    <div class="px-3 py-3 border-b border-zinc-200/50 mb-1 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500"><i class="ph-duotone ph-user text-xl"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-zinc-900">Workspace</p>
+                            <p class="text-[10px] text-zinc-500 font-medium font-mono" id="workspace-id">ID: ...</p>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-copy-link" class="w-full text-left px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-white hover:text-zinc-900 rounded-2xl transition-all flex items-center gap-3 group mt-1">
+                        <i class="ph-duotone ph-link text-xl text-zinc-400 group-hover:text-blue-500 transition-colors"></i>
+                        Ð?ng b? thi?t b?
+                    </button>
+                    
+                    <button class="w-full text-left px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-white hover:text-zinc-900 rounded-2xl transition-all flex items-center gap-3 group" onclick="appState.showToast('Giao di?n t?i dang du?c phát tri?n', false)">
+                        <i class="ph-duotone ph-moon-stars text-xl text-zinc-400 group-hover:text-indigo-500 transition-colors"></i>
+                        Ch? d? ban dêm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- View 1: Main Grid -->
+    <main id="view-grid" class="w-full max-w-6xl mt-28 md:mt-32 px-4 sm:px-6 pb-20 fade-enter flex-1 transition-opacity duration-500">
+        
+        <!-- Empty State hi?n d?i -->
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-24 mt-10 text-center">
+            <div class="relative w-28 h-28 mb-8 animate-float">
+                <!-- Vòng sáng m? phía sau -->
+                <div class="absolute inset-0 bg-blue-100 rounded-full blur-2xl opacity-60"></div>
+                <!-- Icon chính -->
+                <div class="relative w-full h-full bg-white/80 backdrop-blur-xl rounded-[2rem] flex items-center justify-center border border-white shadow-xl">
+                    <i class="ph-duotone ph-files text-5xl text-zinc-400"></i>
+                </div>
+            </div>
+            <h2 class="text-3xl font-bold text-zinc-900 mb-4 tracking-tight">Chua có d? li?u</h2>
+            <p class="text-zinc-500 mb-10 max-w-sm mx-auto text-base leading-relaxed">Ghi l?i nh?ng ý tu?ng sáng t?o, danh sách công vi?c hay b?t c? di?u gì b?n mu?n.</p>
+            <button onclick="appState.createNewNote()" class="px-8 py-4 bg-black hover:bg-zinc-800 text-white font-medium rounded-full transition-all shadow-[0_8px_20px_rgba(0,0,0,0.15)] active:scale-95 flex items-center gap-3 mx-auto">
+                T?o Note d?u tiên
+                <i class="ph-bold ph-arrow-right"></i>
+            </button>
+        </div>
+
+        <div id="notes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
+            <!-- N?i dung render b?ng JS -->
+        </div>
+    </main>
+
+    <!-- View 2: Fullscreen Editor -->
+    <div id="view-editor" class="fixed inset-0 bg-[#f4f4f5]/90 backdrop-blur-2xl z-[100] hidden flex-col transition-all duration-500 opacity-0 overflow-y-auto">
+        
+        <!-- Minimal Editor Header -->
+        <div class="sticky top-0 w-full max-w-4xl mx-auto px-4 py-6 flex justify-between items-center z-10">
+            <button onclick="appState.closeEditor()" class="w-12 h-12 bg-white/50 hover:bg-white text-zinc-700 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-sm border border-white/60 active:scale-90">
+                <i class="ph-bold ph-arrow-left text-xl"></i>
+            </button>
+            
+            <div class="flex items-center text-xs font-medium text-zinc-400 bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/60">
+                <span id="editor-status-dot" class="status-dot status-synced"></span>
+                <span id="editor-status">Ðã luu</span>
+            </div>
+
+            <!-- Nút xóa phong cách Danger -->
+            <button onclick="appState.deleteCurrentNote()" class="w-12 h-12 bg-white/50 hover:bg-red-50 text-zinc-400 hover:text-red-500 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-sm border border-white/60 hover:border-red-100 active:scale-90 group" title="Xóa ghi chú">
+                <i class="ph-duotone ph-trash text-2xl group-hover:scale-110 transition-transform"></i>
+            </button>
+        </div>
+
+        <!-- Editor Workspace -->
+        <div class="flex-1 w-full max-w-3xl mx-auto px-6 md:px-12 pb-32 pt-8 flex flex-col">
+            <input type="text" id="note-title" placeholder="Tiêu d? ghi chú..." 
+                class="w-full text-4xl md:text-5xl font-bold text-zinc-900 bg-transparent border-none placeholder-zinc-300 mb-8 tracking-tight resize-none focus:ring-0">
+            
+            <textarea id="note-body" placeholder="Nh?p n?i dung ? dây..." 
+                class="w-full flex-1 text-lg md:text-xl text-zinc-600 leading-relaxed bg-transparent border-none placeholder-zinc-300 resize-none focus:ring-0 min-h-[50vh] pb-10 font-medium"></textarea>
+            
+            <!-- Meta Info footer -->
+            <div id="note-meta-info" class="mt-auto pt-8 border-t border-zinc-200/50 text-sm text-zinc-400 font-medium hidden flex-col sm:flex-row gap-4 sm:gap-8 justify-center">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Dynamic Island Toast -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 -translate-y-[150%] bg-zinc-900/95 backdrop-blur-xl text-white px-6 py-3 rounded-full shadow-2xl transition-transform duration-500 cubic-bezier(0.175, 0.885, 0.32, 1.275) z-[200] font-medium text-sm flex items-center gap-3 border border-zinc-700/50">
+        <div id="toast-icon-bg" class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <i class="ph-bold ph-check text-emerald-400" id="toast-icon"></i>
+        </div>
+        <span id="toast-msg">Thành công!</span>
+    </div>
+
+    <!-- Ultra-modern Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-zinc-900/40 z-[300] hidden items-center justify-center backdrop-blur-md px-4 opacity-0 transition-opacity duration-300">
+        <!-- H?p Modal bo góc siêu tròn -->
+        <div class="bg-white/90 backdrop-blur-2xl p-8 rounded-[2.5rem] shadow-2xl max-w-sm w-full border border-white transform scale-90 transition-transform duration-300" id="confirm-modal-box">
+            
+            <div class="w-16 h-16 bg-red-50 rounded-[1.5rem] flex items-center justify-center mb-6 mx-auto border border-red-100">
+                <i class="ph-duotone ph-warning-circle text-3xl text-red-500"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-zinc-900 mb-3 text-center tracking-tight">Xóa Ghi chú?</h3>
+            <p class="text-zinc-500 text-sm mb-8 leading-relaxed text-center font-medium">Hành d?ng này không th? hoàn tác. Ghi chú s? b? xóa vinh vi?n trên m?i thi?t b?.</p>
+            
+            <div class="flex flex-col gap-3">
+                <button id="btn-confirm-delete" class="w-full px-4 py-3.5 font-bold text-white bg-red-500 hover:bg-red-600 rounded-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_12px_rgba(239,68,68,0.2)] active:scale-95">
+                    Xóa vinh vi?n
+                </button>
+                <button onclick="appState.closeModal()" class="w-full px-4 py-3.5 font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 rounded-2xl transition-all active:scale-95">
+                    H?y b?
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initial Loading Overlay -->
+    <div id="loading" class="fixed inset-0 bg-[#f4f4f5] z-[999] flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-xl shadow-black/5 animate-bounce border border-white">
+            <i class="ph-duotone ph-spinner-gap text-3xl text-zinc-900 animate-spin"></i>
+        </div>
+        <span class="font-bold text-zinc-400 text-sm tracking-widest uppercase">Ðang d?ng b?...</span>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'modern-glass-notes';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let db, auth, user;
+        let unsubscribeSnapshot = null;
+
+        window.appState = {
+            notebookId: null,
+            notes: [],
+            activeNoteId: null,
+            isSaving: false,
+            saveTimeout: null,
+
+            async init() {
+                if (!firebaseConfig) {
+                    this.showToast("L?i: Thi?u c?u hình Database", false);
+                    return;
+                }
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        const credential = await signInWithCustomToken(auth, __initial_auth_token);
+                        user = credential.user;
+                    } else {
+                        const credential = await signInAnonymously(auth);
+                        user = credential.user;
+                    }
+                    this.setupURLId();
+                    this.listenToData();
+                    this.setupEventListeners();
+                } catch (error) {
+                    this.showToast("L?i k?t n?i", false);
+                }
+            },
+
+            /* L?y ho?c t?o mã thi?t b? (ID) */
+            setupURLId() {
+                const urlParams = new URLSearchParams(window.location.search);
+                let id = urlParams.get('id');
+                
+                if (!id) {
+                    try { id = localStorage.getItem('mobbin_note_id'); } catch(e) {}
+                }
+                if (!id) {
+                    id = crypto.randomUUID().replace(/-/g, '').substring(0, 16);
+                }
+                
+                try { localStorage.setItem('mobbin_note_id', id); } catch(e) {}
+
+                try {
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('id', id);
+                    window.history.replaceState({path: currentUrl.href}, '', currentUrl.href);
+                } catch (error) {
+                    // Ch?y trong iFrame preview
+                }
+                this.notebookId = id;
+                document.getElementById('workspace-id').textContent = 'ID: ' + id.substring(0,8) + '...';
+            },
+
+            listenToData() {
+                if (!user || !this.notebookId) return;
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'notebooks', this.notebookId);
+                
+                unsubscribeSnapshot = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        this.notes = docSnap.data().notes || [];
+                    } else {
+                        this.notes = [];
+                    }
+                    
+                    const loader = document.getElementById('loading');
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.classList.add('hidden'), 700);
+
+                    this.renderGrid();
+                    
+                    if(this.activeNoteId && !this.isSaving) {
+                         const current = this.notes.find(n => n.id === this.activeNoteId);
+                         if(current) {
+                             const tInput = document.getElementById('note-title');
+                             const bInput = document.getElementById('note-body');
+                             if(document.activeElement !== tInput) tInput.value = current.title;
+                             if(document.activeElement !== bInput) bInput.value = current.body;
+                         }
+                    }
+                }, (error) => {
+                    this.showToast("M?t k?t n?i d?ng b?", false);
+                });
+            },
+
+            async saveToCloud() {
+                if (!user || !this.notebookId) return;
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'notebooks', this.notebookId);
+                this.updateStatusUI('syncing', 'Ðang luu...');
+                
+                try {
+                    if(this.activeNoteId) {
+                        const note = this.notes.find(n => n.id === this.activeNoteId);
+                        if(note) note.updatedAt = Date.now();
+                    }
+                    await setDoc(docRef, { notes: this.notes, updatedAt: Date.now() });
+                    this.updateStatusUI('synced', 'Ðã luu');
+                    if(this.activeNoteId) this.updateMetaInfo(this.activeNoteId);
+                } catch (error) {
+                    this.updateStatusUI('error', 'L?i luu');
+                } finally {
+                    this.isSaving = false;
+                }
+            },
+
+            debouncedSave() {
+                this.isSaving = true;
+                this.updateStatusUI('syncing', 'Ðang so?n...');
+                clearTimeout(this.saveTimeout);
+                this.saveTimeout = setTimeout(() => this.saveToCloud(), 800);
+            },
+
+            updateStatusUI(state, text) {
+                const navText = document.getElementById('nav-status');
+                const navDot = document.getElementById('nav-status-dot');
+                const edText = document.getElementById('editor-status');
+                const edDot = document.getElementById('editor-status-dot');
+
+                if(navText) navText.textContent = text;
+                if(edText) edText.textContent = text;
+                [navDot, edDot].forEach(el => {
+                    if(el) el.className = `status-dot status-${state}`;
+                });
+            },
+
+            formatDate(timestamp) {
+                const date = new Date(timestamp);
+                const today = new Date();
+                const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+                const time = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                if (isToday) return `Hôm nay, ${time}`;
+                return `${date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}, ${time}`;
+            },
+
+            renderGrid() {
+                const container = document.getElementById('notes-container');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (this.notes.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.classList.replace('hidden', 'flex');
+                    return;
+                }
+                emptyState.classList.replace('flex', 'hidden');
+                
+                const sorted = [...this.notes].sort((a, b) => b.updatedAt - a.updatedAt);
+                
+                container.innerHTML = sorted.map(note => {
+                    let displayTitle = note.title.trim();
+                    let displayBody = note.body.trim();
+                    
+                    if (!displayTitle) {
+                        if (displayBody) {
+                            const firstLine = displayBody.split('\n')[0];
+                            displayTitle = firstLine.length > 35 ? firstLine.substring(0, 35) + '...' : firstLine;
+                            displayBody = displayBody.substring(firstLine.length).trim();
+                        } else {
+                            displayTitle = 'Ghi chú tr?ng';
+                        }
+                    }
+
+                    return `
+                        <div onclick="appState.openEditor('${note.id}')" 
+                             class="glass-card rounded-[1.5rem] p-6 cursor-pointer group flex flex-col h-[280px] relative overflow-hidden spring-up">
+                            
+                            <h3 class="font-bold text-xl mb-3 text-zinc-900 line-clamp-2 leading-snug">
+                                ${displayTitle}
+                            </h3>
+                            
+                            <p class="text-zinc-500 text-sm leading-relaxed line-clamp-4 flex-1 whitespace-pre-wrap font-medium opacity-90">
+                                ${displayBody || '<span class="italic font-normal opacity-50">Không có n?i dung...</span>'}
+                            </p>
+                            
+                            <div class="mt-4 pt-4 border-t border-zinc-200/50 flex items-center justify-between text-[11px] text-zinc-400 font-bold uppercase tracking-wide">
+                                <span>${this.formatDate(note.updatedAt)}</span>
+                                <div class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-300 transform group-hover:scale-110 group-hover:-rotate-12 shadow-sm">
+                                    <i class="ph-bold ph-arrow-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            createNewNote() {
+                const newId = crypto.randomUUID();
+                this.notes.unshift({ id: newId, title: '', body: '', createdAt: Date.now(), updatedAt: Date.now() });
+                this.saveToCloud(); 
+                this.openEditor(newId);
+            },
+
+            openEditor(id) {
+                const note = this.notes.find(n => n.id === id);
+                if (!note) return;
+
+                this.activeNoteId = id;
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-body').value = note.body;
+                this.updateMetaInfo(id);
+
+                const editor = document.getElementById('view-editor');
+                const grid = document.getElementById('view-grid');
+                const nav = document.getElementById('main-nav');
+                
+                editor.classList.remove('hidden');
+                // S? d?ng requestAnimationFrame d? animation mu?t hon
+                requestAnimationFrame(() => {
+                    editor.classList.remove('opacity-0');
+                    grid.style.opacity = '0';
+                    grid.style.transform = 'scale(0.95)';
+                    nav.style.transform = 'translateY(-150%)';
+                });
+
+                const tx = document.getElementById('note-body');
+                tx.style.height = 'auto';
+                tx.style.height = (tx.scrollHeight) + 'px';
+
+                if(!note.title && !note.body) {
+                    setTimeout(() => document.getElementById('note-title').focus(), 400);
+                }
+            },
+
+            closeEditor() {
+                this.activeNoteId = null;
+                const editor = document.getElementById('view-editor');
+                const grid = document.getElementById('view-grid');
+                const nav = document.getElementById('main-nav');
+                
+                editor.classList.add('opacity-0');
+                grid.style.opacity = '1';
+                grid.style.transform = 'scale(1)';
+                nav.style.transform = 'translateY(0)';
+                
+                setTimeout(() => editor.classList.add('hidden'), 500);
+                this.renderGrid();
+            },
+
+            updateMetaInfo(id) {
+                const note = this.notes.find(n => n.id === id);
+                if(!note) return;
+                const metaDiv = document.getElementById('note-meta-info');
+                metaDiv.classList.remove('hidden');
+                metaDiv.classList.add('flex');
+                const c = new Date(note.createdAt).toLocaleDateString('vi-VN', {day:'2-digit', month:'2-digit', year:'numeric'});
+                metaDiv.innerHTML = `
+                    <span class="flex items-center gap-2"><i class="ph-duotone ph-calendar-plus text-lg"></i> T?o: ${c}</span>
+                    <span class="flex items-center gap-2"><i class="ph-duotone ph-clock-counter-clockwise text-lg"></i> Luu: ${this.formatDate(note.updatedAt)}</span>
+                `;
+            },
+
+            deleteCurrentNote() {
+                const modal = document.getElementById('confirm-modal');
+                const box = document.getElementById('confirm-modal-box');
+                modal.classList.replace('hidden', 'flex');
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    box.classList.remove('scale-90');
+                });
+                
+                document.getElementById('btn-confirm-delete').onclick = () => {
+                    this.notes = this.notes.filter(n => n.id !== this.activeNoteId);
+                    this.saveToCloud();
+                    this.closeModal();
+                    this.closeEditor();
+                    this.showToast("Ðã xóa vinh vi?n ghi chú");
+                };
+            },
+
+            closeModal() {
+                const modal = document.getElementById('confirm-modal');
+                const box = document.getElementById('confirm-modal-box');
+                modal.classList.add('opacity-0');
+                box.classList.add('scale-90');
+                setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
+            },
+
+            showToast(msg, isSuccess = true) {
+                const toast = document.getElementById('toast');
+                const icon = document.getElementById('toast-icon');
+                const bg = document.getElementById('toast-icon-bg');
+                
+                document.getElementById('toast-msg').textContent = msg;
+                
+                if(isSuccess) {
+                    icon.className = 'ph-bold ph-check text-emerald-400';
+                    bg.className = 'w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center';
+                } else {
+                    icon.className = 'ph-bold ph-warning text-red-400';
+                    bg.className = 'w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center';
+                }
+
+                // Animation d?ng tru?t t? trên xu?ng (Dynamic Island)
+                toast.classList.remove('-translate-y-[150%]');
+                toast.classList.add('translate-y-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('-translate-y-[150%]');
+                    toast.classList.remove('translate-y-0');
+                }, 3500);
+            },
+
+            setupEventListeners() {
+                const btnMenu = document.getElementById('btn-menu');
+                const dropdown = document.getElementById('dropdown-menu');
+                
+                btnMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target) && !btnMenu.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+
+                document.getElementById('btn-copy-link').addEventListener('click', () => {
+                    dropdown.classList.remove('show');
+                    let finalUrl = window.location.href;
+                    try {
+                        const u = new URL(window.location.href);
+                        u.searchParams.set('id', this.notebookId);
+                        finalUrl = u.href;
+                        if (u.protocol === 'blob:') throw new Error('Preview mode');
+                    } catch(e) {
+                        // Fallback URL construct n?u ? ch? d? Preview iframe
+                        finalUrl = window.location.origin + window.location.pathname + '?id=' + this.notebookId;
+                    }
+
+                    const textArea = document.createElement("textarea");
+                    textArea.value = finalUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        this.showToast("Ðã copy Link thành công!");
+                    } catch (err) {
+                        this.showToast("L?i khi copy", false);
+                    }
+                    document.body.removeChild(textArea);
+                });
+
+                const handleInput = (e) => {
+                    if (!this.activeNoteId) return;
+                    const note = this.notes.find(n => n.id === this.activeNoteId);
+                    if (note) {
+                        if (e.target.id === 'note-title') note.title = e.target.value;
+                        if (e.target.id === 'note-body') note.body = e.target.value;
+                        note.updatedAt = Date.now(); 
+                        this.debouncedSave();
+                        this.updateMetaInfo(this.activeNoteId);
+                    }
+                };
+
+                document.getElementById('note-title').addEventListener('input', handleInput);
+                document.getElementById('note-body').addEventListener('input', handleInput);
+                
+                const tx = document.getElementById('note-body');
+                tx.addEventListener("input", function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                }, false);
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => appState.init());
+    </script>
+</body>
+</html>

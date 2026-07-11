@@ -66,7 +66,7 @@
         .app {
             width: min(940px, calc(100vw - 28px));
             margin: 0 auto;
-            padding: 32px 0 48px;
+            padding: 18px 0 40px;
         }
 
         .topbar {
@@ -74,9 +74,9 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            min-height: 54px;
+            min-height: 42px;
             border-bottom: 1px solid var(--line-dark);
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .brand {
@@ -115,17 +115,18 @@
 
         .hero {
             display: grid;
-            gap: 14px;
-            margin-bottom: 24px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         h1 {
             margin: 0;
-            font-size: clamp(44px, 10vw, 112px);
-            line-height: 0.9;
+            font-size: clamp(38px, 9.5vw, 92px);
+            line-height: 0.86;
             font-weight: 950;
             letter-spacing: 0;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .subtitle {
@@ -133,8 +134,8 @@
             margin: 0;
             color: var(--muted);
             font-family: var(--mono);
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.35;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -172,7 +173,7 @@
 
         textarea {
             width: 100%;
-            min-height: 130px;
+            min-height: 96px;
             resize: vertical;
             border: 0;
             outline: 0;
@@ -424,19 +425,52 @@
             text-transform: uppercase;
         }
 
+        .format-groups {
+            display: grid;
+            gap: 14px;
+            padding: 14px;
+        }
+
+        .format-section {
+            display: grid;
+            gap: 10px;
+        }
+
+        .format-section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 34px;
+            border: 1px solid var(--line-dark);
+            background: var(--surface-2);
+            padding: 0 10px;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
         .format-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
-            padding: 14px;
         }
 
         .format-card {
             display: grid;
             border: 1px solid var(--line-dark);
             background: var(--surface-2);
-            min-height: 124px;
+            min-height: 132px;
             transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+        }
+
+        .format-card.is-video {
+            border-left: 5px solid var(--accent);
+        }
+
+        .format-card.is-audio {
+            border-left: 5px solid var(--success);
         }
 
         .format-card:hover {
@@ -446,8 +480,11 @@
         }
 
         .format-label {
-            display: grid;
-            place-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 16px 12px;
             border-bottom: 1px solid var(--line-dark);
             text-align: center;
@@ -455,6 +492,19 @@
             line-height: 1;
             font-weight: 950;
             text-transform: uppercase;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 24px;
+            border: 1px solid var(--line-dark);
+            background: var(--surface);
+            padding: 0 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 900;
         }
 
         .format-bottom {
@@ -535,7 +585,12 @@
         @media (max-width: 760px) {
             .app {
                 width: min(100vw - 20px, 940px);
-                padding: 20px 0 34px;
+                padding: 12px 0 30px;
+            }
+
+            .download-box,
+            .results {
+                box-shadow: none;
             }
 
             .topbar {
@@ -543,7 +598,7 @@
                 flex-direction: column;
                 gap: 8px;
                 padding-bottom: 12px;
-                margin-bottom: 22px;
+                margin-bottom: 12px;
             }
 
             .status-text {
@@ -571,7 +626,13 @@
             }
 
             h1 {
-                font-size: clamp(42px, 16vw, 72px);
+                font-size: clamp(28px, 9vw, 38px);
+            }
+
+            .hero,
+            .subtitle {
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .box-head,
@@ -614,7 +675,7 @@
 
         <section class="hero">
             <h1>MMO DOWNLOAD</h1>
-            <p class="subtitle">Dán link video, hệ thống tự nhận dạng, chọn chất lượng và tải xuống.</p>
+            <p class="subtitle">Dán link, chọn chất lượng, tải video hoặc audio.</p>
         </section>
 
         <section class="download-box">
@@ -726,7 +787,7 @@
                 <span id="formatCount">0 định dạng</span>
             </div>
 
-            <div id="formatGrid" class="format-grid"></div>
+            <div id="formatGroups" class="format-groups"></div>
         </section>
     </main>
 
@@ -804,7 +865,7 @@
             videoTitle: document.getElementById('videoTitle'),
             videoMeta: document.getElementById('videoMeta'),
             formatCount: document.getElementById('formatCount'),
-            formatGrid: document.getElementById('formatGrid')
+            formatGroups: document.getElementById('formatGroups')
         };
 
         const state = {
@@ -925,10 +986,12 @@
 
         function renderVideo(data) {
             const formats = filterAndSortFormats(data.formats || [], dom.qualitySelect.value);
+            const videoFormats = formats.filter(format => !isAudioFormat(format));
+            const audioFormats = formats.filter(format => isAudioFormat(format));
             dom.videoTitle.textContent = data.title || 'Video không xác định';
             dom.videoSource.textContent = data.source || 'Nguồn';
             dom.videoMeta.textContent = [data.author, formatViews(data.views), formatDuration(data.duration)].filter(Boolean).join(' • ') || 'Không có thông tin thêm';
-            dom.formatCount.textContent = `${formats.length} định dạng`;
+            dom.formatCount.textContent = `${videoFormats.length} video • ${audioFormats.length} audio`;
 
             if (data.thumbnail) {
                 dom.videoThumb.src = data.thumbnail;
@@ -938,25 +1001,46 @@
                 dom.videoThumb.classList.remove('has-image');
             }
 
-            dom.formatGrid.innerHTML = formats.length
-                ? formats.map(format => createFormatCard(format)).join('')
+            dom.formatGroups.innerHTML = formats.length
+                ? [
+                    createFormatSection('VIDEO', videoFormats, 'video'),
+                    createFormatSection('AUDIO', audioFormats, 'audio')
+                ].filter(Boolean).join('')
                 : '<div class="empty">Không có định dạng phù hợp</div>';
         }
 
-        function createFormatCard(format) {
-            const isAudio = isAudioFormat(format);
-            const label = escapeHtml(format.label || (isAudio ? 'Audio' : 'Video'));
-            const ext = escapeHtml(String(format.ext || (isAudio ? 'm4a' : 'mp4')).toUpperCase());
+        function createFormatSection(title, formats, kind) {
+            if (!formats.length) return '';
+            return `
+                <section class="format-section">
+                    <div class="format-section-title">
+                        <span>${title}</span>
+                        <span>${formats.length} lựa chọn</span>
+                    </div>
+                    <div class="format-grid">
+                        ${formats.map(format => createFormatCard(format, kind)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function createFormatCard(format, kind) {
+            const audio = kind === 'audio' || isAudioFormat(format);
+            const label = escapeHtml(format.label || (audio ? 'Audio' : 'Video'));
+            const ext = escapeHtml(String(format.ext || (audio ? 'm4a' : 'mp4')).toUpperCase());
             const size = escapeHtml(format.filesize ? formatBytes(format.filesize) : 'AUTO');
-            const type = escapeHtml(format.type || (isAudio ? 'audio' : 'video'));
+            const type = audio ? 'AUDIO' : 'VIDEO';
             const url = escapeAttribute(format.url || '#');
 
             return `
-                <a class="format-card" href="${url}" target="_blank" rel="noopener" download>
-                    <div class="format-label">${label}</div>
+                <a class="format-card ${audio ? 'is-audio' : 'is-video'}" href="${url}" target="_blank" rel="noopener" download>
+                    <div class="format-label">
+                        <span class="type-badge">${audio ? audioIcon() : videoIcon()}${type}</span>
+                        <span>${label}</span>
+                    </div>
                     <div class="format-bottom">
                         <div class="format-stat"><b>${ext}</b><span>File</span></div>
-                        <div class="format-stat"><b>${size}</b><span>${type}</span></div>
+                        <div class="format-stat"><b>${size}</b><span>Dung lượng</span></div>
                         <div class="format-stat">↓</div>
                     </div>
                 </a>
@@ -1082,6 +1166,14 @@
 
         function checkIcon() {
             return '<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg></span>';
+        }
+
+        function videoIcon() {
+            return '<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="14" x="3" y="5" rx="1"></rect><path d="m10 9 5 3-5 3z"></path></svg></span>';
+        }
+
+        function audioIcon() {
+            return '<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>';
         }
 
         function escapeHtml(value) {

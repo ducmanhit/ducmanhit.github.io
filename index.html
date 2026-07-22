@@ -1,1614 +1,484 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
-    <meta name="description" content="NDM Tool - Bộ công cụ toàn diện cho mọi nhu cầu">
-    <title>NDM TOOLS</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
-    <link rel="preload" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" as="image">
-    
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-    <link rel="icon" href="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        /* === ULTRA LIQUID GLASS VARIABLES === */
-        :root {
-            --bg-base: #e8ecef;
-            --grid-color: rgba(0, 0, 0, 0.08); 
-            --spotlight-1: rgba(255, 255, 255, 0.8);
-            --spotlight-2: rgba(144, 164, 184, 0.3);
-            
-            --text-main: #111113;
-            --text-sub: #6e6e73;
-            
-            --glass-base: rgba(255, 255, 255, 0.2);
-            --glass-solid: rgba(255, 255, 255, 0.7);
-            --glass-hover: rgba(255, 255, 255, 0.35);
-            --glass-rim-top: rgba(255, 255, 255, 0.95);
-            --glass-rim-bot: rgba(0, 0, 0, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-drop-shadow: rgba(0, 0, 0, 0.06);
-            --glass-ambient-shadow: rgba(0, 0, 0, 0.02);
-            
-            --accent: #0066cc;
-            --success: #34c759;
-            --noise-opacity: 0.03;
-            --specular-glow: rgba(255, 255, 255, 0.9);
-        }
-
-        [data-theme="dark"] {
-            --bg-base: #0a0a0c;
-            --grid-color: rgba(255, 255, 255, 0.08);
-            --spotlight-1: rgba(60, 60, 70, 0.4);
-            --spotlight-2: rgba(20, 20, 30, 0.8);
-            
-            --text-main: #f5f5f7;
-            --text-sub: #86868b;
-            
-            --glass-base: rgba(30, 30, 35, 0.25);
-            --glass-solid: rgba(50, 50, 55, 0.8);
-            --glass-hover: rgba(50, 50, 55, 0.4);
-            --glass-rim-top: rgba(255, 255, 255, 0.15);
-            --glass-rim-bot: rgba(0, 0, 0, 0.5);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-drop-shadow: rgba(0, 0, 0, 0.5);
-            --glass-ambient-shadow: rgba(0, 0, 0, 0.3);
-            
-            --accent: #2997ff;
-            --success: #32d74b;
-            --noise-opacity: 0.04;
-            --specular-glow: rgba(255, 255, 255, 0.25);
-        }
-
-        /* === CORE SETTINGS === */
-        * {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            transition: background-color 0.8s ease, color 0.8s ease;
-            overflow-x: hidden;
-            letter-spacing: -0.015em;
-        }
-
-        /* Tối ưu GPU cho hình nền & ánh sáng */
-        .studio-bg {
-            position: fixed;
-            inset: -50%;
-            z-index: -1;
-            background-image: 
-                linear-gradient(to right, var(--grid-color) 2px, transparent 2px),
-                linear-gradient(to bottom, var(--grid-color) 2px, transparent 2px);
-            background-size: 80px 80px; 
-            background-position: center;
-            transform: perspective(1000px) rotateX(20deg) scale(1.5) translateY(-5%);
-            pointer-events: none;
-            mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
-            -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
-            will-change: transform;
-        }
-
-        .studio-lights {
-            position: fixed;
-            inset: -20%;
-            z-index: -2;
-            background: 
-                radial-gradient(circle at 30% 20%, var(--spotlight-1) 0%, transparent 40%),
-                radial-gradient(circle at 70% 60%, var(--spotlight-2) 0%, transparent 50%);
-            filter: blur(60px);
-            animation: light-flow 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        @keyframes light-flow {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.1) translate(5%, 3%); }
-            100% { transform: scale(0.95) translate(-2%, -4%); }
-        }
-
-        /* Tối ưu render các thành phần tĩnh */
-        .ultra-clear-glass {
-            background: rgba(255, 255, 255, 0.15) !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            box-shadow: 
-                inset 0 4px 6px -2px rgba(255, 255, 255, 0.9),
-                inset 0 -4px 6px -2px rgba(0, 0, 0, 0.05),
-                0 15px 35px rgba(0, 0, 0, 0.1) !important;
-            will-change: transform, opacity;
-        }
-        [data-theme="dark"] .ultra-clear-glass {
-            background: rgba(20, 20, 25, 0.2) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            box-shadow: 
-                inset 0 4px 6px -2px rgba(255, 255, 255, 0.2),
-                inset 0 -4px 6px -2px rgba(0, 0, 0, 0.5),
-                0 15px 35px rgba(0, 0, 0, 0.4) !important;
-        }
-
-        .nav-logo-bg {
-            background: radial-gradient(circle at top left, #4fc3f7, #0066cc);
-            padding: 2px;
-            border-radius: 50%;
-        }
-
-        .nav-title {
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        [data-theme="light"] .nav-title {
-            color: #111113;
-            text-shadow: none;
-        }
-
-        #main-top-nav {
-            transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
-                        padding 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        background-color 0.6s ease;
-            will-change: max-width, padding, background-color;
-        }
-        
-        #main-top-nav.is-compact {
-            max-width: 760px;
-            padding-top: 6px !important;
-            padding-bottom: 6px !important;
-            background: var(--glass-solid) !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08) !important;
-        }
-        [data-theme="dark"] #main-top-nav.is-compact {
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
-        }
-
-        .nav-text-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            transition: grid-template-columns 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
-            opacity: 1;
-        }
-        .nav-text-inner {
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        
-        #main-top-nav.is-compact .nav-text-container {
-            grid-template-columns: 0fr;
-            opacity: 0;
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .nav-action-pill {
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        #main-top-nav.is-compact .nav-action-pill {
-            padding-left: 8px !important;
-            padding-right: 8px !important;
-            gap: 0 !important;
-        }
-
-        /* === ULTRA LIQUID GLASS ENGINE (FOR CARDS) === */
-        .glass-panel {
-            background: var(--glass-base);
-            backdrop-filter: blur(48px) saturate(200%);
-            -webkit-backdrop-filter: blur(48px) saturate(200%);
-            border-radius: 36px;
-            box-shadow: 
-                inset 0 1.5px 1px var(--glass-rim-top), 
-                inset 0 -2px 3px var(--glass-rim-bot), 
-                inset 0 0 0 1px var(--glass-border), 
-                0 4px 12px var(--glass-ambient-shadow),
-                0 24px 48px -12px var(--glass-drop-shadow);
-            position: relative;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
-            isolation: isolate;
-        }
-
-        .glass-panel::before, .liquid-tool-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: var(--noise-opacity);
-            mix-blend-mode: overlay;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .liquid-tool-card {
-            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.2);
-            -webkit-backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.2);
-            border-radius: 40px; 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-bottom-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                inset 0 6px 10px -4px rgba(255, 255, 255, 1),
-                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.1),
-                inset 0 0 30px rgba(255, 255, 255, 0.3),
-                0 24px 48px -12px rgba(0, 0, 0, 0.12);
-            position: relative;
-            isolation: isolate;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            will-change: transform, box-shadow;
-        }
-
-        [data-theme="dark"] .liquid-tool-card {
-            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
-            backdrop-filter: blur(8px) saturate(200%) contrast(160%) brightness(1.15);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom-color: rgba(255, 255, 255, 0.05);
-            box-shadow: 
-                inset 0 6px 10px -4px rgba(255, 255, 255, 0.4),
-                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.6),
-                inset 0 0 30px rgba(255, 255, 255, 0.05),
-                0 24px 48px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .liquid-tool-card.interactive-glass:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                inset 0 8px 12px -4px rgba(255, 255, 255, 1),
-                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.15),
-                inset 0 0 40px rgba(255, 255, 255, 0.4),
-                0 32px 64px -16px rgba(0, 0, 0, 0.2);
-        }
-        [data-theme="dark"] .liquid-tool-card.interactive-glass:hover {
-            box-shadow: 
-                inset 0 8px 12px -4px rgba(255, 255, 255, 0.6),
-                inset 0 -8px 16px -4px rgba(0, 0, 0, 0.8),
-                inset 0 0 40px rgba(255, 255, 255, 0.1),
-                0 32px 64px -16px rgba(0, 0, 0, 0.7);
-        }
-
-        /* Tối ưu SPECULAR HIGHLIGHT: Bỏ pointer-events và thêm hardware accell */
-        .interactive-glass::after,
-        .popup-item::after,
-        .dock-btn::after {
-            content: '';
-            position: absolute;
-            inset: 0; 
-            border-radius: inherit;
-            padding: 1.5px; 
-            background: radial-gradient(
-                250px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-                var(--specular-glow),
-                transparent 100%
-            );
-            -webkit-mask:
-                linear-gradient(#fff 0 0) content-box,
-                linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 20;
-            will-change: opacity, background;
-        }
-
-        .glow-group:hover .interactive-glass::after,
-        .glow-group:hover .popup-item::after,
-        .interactive-glass:hover::after,
-        .popup-item:hover::after,
-        .dock-btn:hover::after {
-            opacity: 1;
-        }
-
-        /* === LIQUID GLASS POPUPS & ITEMS === */
-        .glass-popup {
-            border-radius: 24px !important;
-            position: relative;
-            isolation: isolate;
-            will-change: transform, opacity;
-        }
-
-        .popup-item {
-            background: rgba(255, 255, 255, 0.15) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            box-shadow: 
-                inset 0 2px 4px rgba(255, 255, 255, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.05) !important;
-            border-radius: 16px !important;
-            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-            position: relative; 
-            will-change: transform;
-        }
-        .popup-item:hover {
-            background: rgba(255, 255, 255, 0.25) !important;
-            transform: translateY(-2px);
-            box-shadow: 
-                inset 0 2px 4px rgba(255, 255, 255, 0.5),
-                0 8px 24px rgba(0, 0, 0, 0.08) !important;
-            border-color: rgba(255, 255, 255, 0.6) !important;
-        }
-
-        [data-theme="dark"] .popup-item {
-            background: rgba(20, 20, 25, 0.2) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 
-                inset 0 2px 4px rgba(255, 255, 255, 0.05),
-                0 4px 12px rgba(0, 0, 0, 0.2) !important;
-        }
-        [data-theme="dark"] .popup-item:hover {
-            background: rgba(30, 30, 35, 0.3) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            box-shadow: 
-                inset 0 2px 4px rgba(255, 255, 255, 0.1),
-                0 8px 24px rgba(0, 0, 0, 0.4) !important;
-        }
-
-        .glass-pill {
-            border-radius: 9999px;
-        }
-
-        .interactive-glass {
-            position: relative; 
-        }
-
-        .category-scroll {
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; 
-        }
-        .category-scroll::-webkit-scrollbar { display: none; }
-        
-        .glass-tab {
-            background: transparent;
-            color: var(--text-sub);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            padding: 8px 20px;
-            border-radius: 9999px;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-        
-        .glass-tab:hover {
-            color: var(--text-main);
-        }
-
-        .glass-tab.active {
-            color: var(--text-main);
-            background: var(--glass-solid); 
-            box-shadow: 0 2px 8px var(--glass-ambient-shadow);
-            font-weight: 600;
-        }
-
-        .nav-search-wrapper {
-            background: var(--glass-base);
-            border: 1px solid var(--glass-border);
-            box-shadow: inset 0 2px 4px var(--glass-ambient-shadow);
-        }
-        .nav-search-wrapper:focus-within {
-            background: var(--glass-hover);
-            border-color: var(--accent);
-            box-shadow: 
-                inset 0 2px 4px var(--glass-ambient-shadow),
-                0 0 0 3px rgba(0, 102, 204, 0.2);
-        }
-        [data-theme="dark"] .nav-search-wrapper:focus-within {
-            box-shadow: 
-                inset 0 2px 4px var(--glass-ambient-shadow),
-                0 0 0 3px rgba(41, 151, 255, 0.2);
-        }
-
-        .glass-input {
-            background: var(--glass-base);
-            box-shadow: 
-                inset 0 2px 4px var(--glass-ambient-shadow),
-                inset 0 0 0 1px var(--glass-border),
-                inset 0 -1px 1px var(--glass-rim-top);
-            transition: all 0.4s ease;
-        }
-        .glass-input:focus-within {
-            box-shadow: 
-                inset 0 2px 4px var(--glass-ambient-shadow),
-                0 0 0 4px var(--accent-glow),
-                inset 0 0 0 1px var(--accent);
-            background: var(--glass-hover);
-        }
-
-        .pin-border-glow {
-            position: absolute;
-            inset: -2px;
-            border-radius: 42px; 
-            padding: 2.5px;
-            background: linear-gradient(135deg, var(--accent), #4fc3f7, var(--accent));
-            background-size: 200% auto;
-            animation: pinGradient 3s linear infinite;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        @keyframes pinGradient {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .pin-btn-active {
-            background: linear-gradient(135deg, var(--accent), #4fc3f7);
-            color: #ffffff !important;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-        [data-theme="dark"] .pin-btn-active {
-            box-shadow: 0 4px 15px rgba(41, 151, 255, 0.4);
-        }
-
-        .super-dock {
-            padding: 8px 12px;
-            display: flex;
-            gap: 8px;
-            border-radius: 40px;
-            transform-origin: bottom center;
-            will-change: transform;
-        }
-
-        .dock-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
-            position: relative;
-            background: transparent;
-            will-change: transform;
-        }
-
-        .dock-btn:hover {
-            transform: scale(1.2) translateY(-8px);
-            background: var(--glass-hover);
-            box-shadow: 
-                inset 0 1.5px 1px var(--glass-rim-top),
-                inset 0 0 0 1px var(--glass-border),
-                0 8px 16px var(--glass-ambient-shadow);
-            z-index: 10;
-        }
-        
-        .dock-btn:active { transform: scale(0.95); }
-
-        .dock-dot {
-            position: absolute;
-            bottom: -6px;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--text-sub);
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-        }
-        .dock-btn:hover .dock-dot { opacity: 1; transform: translateY(4px); }
-
-        .text-gradient {
-            background: linear-gradient(135deg, var(--text-main), var(--text-sub));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        #mobile-menu {
-            backdrop-filter: blur(60px) saturate(250%);
-            -webkit-backdrop-filter: blur(60px) saturate(250%);
-            background: var(--glass-base);
-            will-change: transform;
-        }
-
-        @keyframes floatUp { 
-            0% { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(15px); } 
-            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
-        }
-        .stagger-enter { 
-            animation: floatUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            will-change: transform, opacity, filter;
-        }
-
-        .icon-stroke {
-            stroke-width: 1.5;
-        }
-
-        .weather-pulse {
-            animation: weatherSoftPulse 3s ease-in-out infinite;
-        }
-        @keyframes weatherSoftPulse {
-            0% { transform: scale(1); opacity: 0.8;}
-            50% { transform: scale(1.1); opacity: 1;}
-            100% { transform: scale(1); opacity: 0.8;}
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio của Nông Đức Mạnh - Marketing Executive, Graphic Designer, Digital Marketing và E-commerce." />
+  <meta name="theme-color" content="#e8e8e5" />
+  <title>Nông Đức Mạnh | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
-
-    <div class="studio-lights"></div>
-    <div class="studio-bg"></div>
-
-    <div id="toast-container" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-3 pointer-events-none w-max max-w-[90vw]"></div>
-
-    <nav class="fixed top-6 left-0 right-0 z-50 px-4 md:px-8 flex justify-center pointer-events-none">
-        <div id="main-top-nav" class="ultra-clear-glass refract-element rounded-full p-2.5 px-3 flex items-center justify-between w-full max-w-[1400px] pointer-events-auto relative z-50">
-            
-            <div class="flex items-center gap-2 md:gap-3 cursor-pointer group pl-1 pr-2 md:pr-4 py-1.5 rounded-full hover:bg-[var(--glass-hover)] transition-colors shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <div class="nav-logo-bg shadow-lg group-hover:scale-110 transition-transform duration-300 shrink-0">
-                    <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
-                </div>
-                <div class="hidden lg:grid nav-text-container ml-1">
-                    <span class="nav-text-inner font-bold tracking-tight text-[1.1rem] nav-title">NDM TOOL</span>
-                </div>
-            </div>
-
-            <div class="flex-1 max-w-2xl mx-2 md:mx-6 group z-10">
-                <div class="nav-search-wrapper rounded-full flex items-center px-3 md:px-4 h-10 transition-all duration-300 w-full">
-                    <i data-lucide="search" class="w-4 h-4 md:w-5 md:h-5 text-[var(--text-sub)] group-focus-within:text-[var(--text-main)] transition-colors shrink-0"></i>
-                    <input type="text" 
-                           id="search-input" 
-                           placeholder="Tìm kiếm công cụ..." 
-                           class="bg-transparent border-none w-full px-2 md:px-3 text-[var(--text-main)] placeholder-[var(--text-sub)] focus:outline-none text-sm md:text-base font-medium">
-                    <button id="clear-search" class="hidden text-[var(--text-sub)] hover:text-[var(--text-main)] transition-colors shrink-0" onclick="AppController.clearSearch()">
-                        <i data-lucide="x-circle" class="w-4 h-4 md:w-5 md:h-5"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-1 sm:gap-2 shrink-0 pr-1 z-10">
-                <div class="hidden md:flex items-center gap-1">
-                    <button onclick="AppController.toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" title="Theme">
-                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block icon-stroke"></i>
-                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden icon-stroke"></i>
-                    </button>
-                    <button onclick="AppController.toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all font-bold text-xs uppercase tracking-wider" title="Language">
-                        <span id="lang-btn-text">VN</span>
-                    </button>
-                    
-                    <div class="w-px h-5 bg-[var(--glass-border)] mx-2 shrink-0"></div>
-                    
-                    <a href="https://ducmanh.io.vn/donate" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-pink-500 hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Donate">
-                        <i data-lucide="heart" class="w-5 h-5 fill-current group-hover:scale-110 transition-transform shrink-0"></i>
-                        <div class="hidden lg:grid nav-text-container">
-                            <span class="nav-text-inner text-sm font-bold tracking-wide">Donate</span>
-                        </div>
-                    </a>
-                    <a href="https://t.me/ducmanh" target="_blank" class="nav-action-pill px-3 py-2 rounded-full flex items-center gap-2 text-[var(--text-sub)] hover:text-[#229ED9] hover:bg-[var(--glass-base)] transition-all group shrink-0" title="Telegram">
-                        <i data-lucide="send" class="w-5 h-5 group-hover:-translate-y-1 transition-transform icon-stroke shrink-0"></i>
-                        <div class="hidden lg:grid nav-text-container">
-                            <span class="nav-text-inner text-sm font-bold tracking-wide">Telegram</span>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="hidden md:block w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_12px_var(--success)] animate-pulse ml-2 mr-1 shrink-0" title="System Online"></div>
-
-                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-[var(--text-main)] hover:bg-[var(--glass-base)] transition-all" onclick="AppController.toggleMobileMenu()">
-                    <i data-lucide="menu" class="w-6 h-6 icon-stroke"></i>
-                </button>
-            </div>
-        </div>
+<body>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="Điều hướng chính">
+      <a class="brand-mark" href="#top" aria-label="Về đầu trang">
+        <span class="mark-box">NDM</span>
+        <span class="brand-copy">
+          <span class="brand-name">Nông Đức Mạnh</span>
+          <span class="brand-signal">
+            <span class="signal-chip">Marketing</span>
+            <span class="date-chip">Design</span>
+            <span class="signal-detail">Web & Ads</span>
+          </span>
+        </span>
+      </a>
+      <div class="nav-links">
+        <a href="#about">Giới thiệu</a>
+        <a href="#expertise">Chuyên môn</a>
+        <a href="#experience">Kinh nghiệm</a>
+        <a href="#skills">Kỹ năng</a>
+        <a href="#contact">Liên hệ</a>
+      </div>
+      <div class="top-actions" aria-label="Thao tác nhanh">
+        <button class="icon-link" type="button" data-copy="Ndmanhh@gmail.com" aria-label="Sao chép email">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+        <a class="icon-link" href="tel:0397373696" aria-label="Gọi điện">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9z"/></svg>
+        </a>
+      </div>
     </nav>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] md:hidden flex flex-col p-6 overflow-y-auto glow-group">
-        <div class="flex justify-end mb-8 mt-2">
-            <button onclick="AppController.toggleMobileMenu()" class="w-12 h-12 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] active:scale-95 transition-transform">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-        </div>
-        <div class="mb-10 text-center">
-            <div class="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden shadow-2xl">
-                <img src="https://sf-static.upanhlaylink.com/img/image_20251205b95aad595e1190b2c0af585c6de54544.jpg" alt="NDM Logo" class="w-full h-full object-cover">
-            </div>
-            <h2 class="font-bold text-2xl text-[var(--text-main)] mb-1 tracking-tight">Commander Center</h2>
-            <p class="text-sm text-[var(--text-sub)] font-medium">Bộ công cụ toàn diện</p>
-        </div>
-        
-        <nav class="flex-1 flex flex-col gap-3">
-            <button onclick="AppController.toggleTheme(); AppController.toggleMobileMenu();" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
-                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
-                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block icon-stroke"></i>
-                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden icon-stroke"></i>
-                </div>
-                <span>Chế độ hiển thị</span>
-            </button>
-            
-            <button onclick="AppController.toggleLang(); AppController.toggleMobileMenu();" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
-                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
-                    <i data-lucide="globe" class="w-5 h-5 icon-stroke"></i>
-                </div>
-                <span id="lang-text-mobile">Tiếng Việt</span>
-            </button>
-
-            <a href="https://t.me/ducmanh" target="_blank" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
-                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
-                    <i data-lucide="send" class="w-5 h-5 icon-stroke"></i>
-                </div>
-                <span>Telegram</span>
-            </a>
-
-            <a href="https://ducmanh.io.vn/donate" target="_blank" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
-                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
-                    <i data-lucide="heart" class="w-5 h-5 icon-stroke"></i>
-                </div>
-                <span>Donate Ủng Hộ</span>
-            </a>
-            
-            <a href="https://ducmanh.io.vn" class="glass-panel interactive-glass p-4 rounded-2xl flex items-center gap-4 font-semibold text-[var(--text-main)] group">
-                <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform">
-                    <i data-lucide="home" class="w-5 h-5 icon-stroke"></i>
-                </div>
-                <span>Trang chủ</span>
-            </a>
-        </nav>
-
-        <footer class="mt-8 pt-8 border-t border-[var(--glass-border)] flex items-center justify-center gap-2 text-[var(--text-sub)] text-xs font-medium">
-            <div class="w-2.5 h-2.5 rounded-full bg-[var(--success)] animate-pulse"></div>
-            <span>System Online • V3.2 PRO</span>
-        </footer>
-    </div>
-
-    <main class="relative z-10 min-h-screen px-4 md:px-8 pt-28 md:pt-32 pb-16 max-w-[1400px] mx-auto">
-        
-        <header class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 mb-20 stagger-enter glow-group">
-            <div class="lg:col-span-5 flex flex-col justify-center gap-5 pr-0 md:pr-4">
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="inline-flex items-center gap-2 px-5 py-2 glass-panel glass-pill w-max">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_8px_var(--success)] animate-pulse"></span>
-                        <span class="text-xs font-bold text-[var(--text-main)] tracking-widest uppercase">System Online</span>
-                    </div>
-                </div>
-                
-                <h1 class="font-bold text-[var(--text-main)] text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] leading-[1] tracking-tighter">
-                    Duc <br> <span class="text-gradient">Tools</span>
-                </h1>
-                
-                <div class="flex flex-col sm:flex-row sm:items-center gap-5 mt-1">
-                    <p class="text-[var(--text-sub)] text-lg max-w-sm leading-relaxed font-medium" id="subtitle-text">Bộ công cụ toàn diện với trải nghiệm thị giác đỉnh cao.</p>
-                </div>
-            </div>
-
-            <div id="clock-panel" class="lg:col-span-7 ultra-clear-glass refract-element interactive-glass rounded-[36px] p-5 md:p-6 flex flex-col justify-between relative overflow-hidden min-h-[260px] w-full">
-                
-                <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-[var(--accent)] opacity-[0.06] rounded-full blur-[80px] translate-x-1/4 -translate-y-1/4 pointer-events-none"></div>
-
-                <div class="flex justify-between items-start z-10 w-full mb-2">
-                    <div class="flex flex-col gap-0.5">
-                        <p id="greeting-text" class="text-lg md:text-xl font-bold text-[var(--text-main)] tracking-tight">Chào buổi sáng,</p>
-                        <div class="flex items-center gap-1.5 text-[var(--text-sub)]">
-                            <i data-lucide="map-pin" class="w-3 h-3"></i>
-                            <span class="text-[10px] font-bold uppercase tracking-widest">Hà Nội, VN</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-1.5">
-                        <div class="glass-input rounded-full px-2.5 py-1 flex items-center gap-1.5 border border-[var(--glass-border)] shadow-sm">
-                            <i data-lucide="battery" id="battery-icon" class="w-3.5 h-3.5 text-[var(--text-sub)] shrink-0"></i>
-                            <span class="text-[10px] font-bold text-[var(--text-main)] w-[28px] text-right" id="battery-text">--%</span>
-                        </div>
-                        <div class="glass-input rounded-full px-2.5 py-1 flex items-center gap-1.5 border border-[var(--glass-border)] shadow-sm">
-                            <i data-lucide="wifi" id="network-icon" class="w-3.5 h-3.5 text-[var(--text-sub)] shrink-0"></i>
-                            <span class="text-[10px] font-bold text-[var(--text-main)] hidden sm:block" id="network-text">N/A</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-3 my-auto z-10 w-full mb-4 pt-4">
-                    <div class="flex justify-start">
-                        <div class="px-4 py-2.5 rounded-2xl bg-[var(--glass-hover)] border border-[var(--glass-border)] shadow-inner flex items-center gap-3 backdrop-blur-md w-max">
-                            <span class="text-[10px] text-[var(--text-sub)] font-bold uppercase tracking-widest flex items-center gap-1.5 border-r border-[var(--glass-border)]/50 pr-3">
-                                <i data-lucide="calendar-days" class="w-4 h-4"></i> Hôm nay
-                            </span>
-                            <span id="date-display" class="text-[13px] font-bold text-[var(--text-main)] uppercase tracking-wider">Thứ Năm, 26/02</span>
-                            <span class="text-[10px] text-[var(--accent)] font-bold uppercase tracking-widest bg-[var(--accent)]/10 px-1.5 py-0.5 rounded-md" id="week-display">Tuần --</span>
-                        </div>
-                    </div>
-
-                    <div class="text-[4rem] md:text-[5rem] font-extrabold text-[var(--text-main)] tracking-tighter leading-none flex items-baseline drop-shadow-sm tabular-nums">
-                        <span id="clock-hours">09</span>
-                        <span class="text-[var(--text-sub)] animate-pulse mx-1.5 transform -translate-y-2 md:-translate-y-3">:</span>
-                        <span id="clock-minutes">36</span>
-                        
-                        <div class="flex justify-start w-[65px] md:w-[85px]">
-                            <span class="text-[2rem] md:text-[2.5rem] font-bold text-[var(--text-sub)] ml-2 tracking-normal tabular-nums" id="clock-seconds">00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto z-10 w-full">
-                    
-                    <div class="glass-input rounded-xl p-2.5 md:p-3 flex items-center justify-between border border-[var(--glass-border)] hover:bg-[var(--glass-hover)] transition-colors">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 weather-pulse shadow-inner">
-                                <i data-lucide="cloud-sun" id="main-weather-icon" class="w-4 h-4 md:w-5 md:h-5 icon-stroke"></i>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[9px] font-bold text-[var(--text-sub)] uppercase tracking-widest mb-0.5" id="weather-desc">Đang tải</span>
-                                <span class="text-sm md:text-base font-bold text-[var(--text-main)]" id="weather-temp">--°C</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-0.5 text-[10px] font-semibold text-[var(--text-sub)] border-l border-[var(--glass-border)] pl-2.5 md:pl-3">
-                            <div class="flex items-center gap-1 justify-end" title="Cảm giác như">
-                                <span id="weather-feels">--°C</span><i data-lucide="thermometer-sun" class="w-3 h-3 text-orange-400"></i>
-                            </div>
-                            <div class="flex items-center gap-1 justify-end" title="Độ ẩm">
-                                <span id="weather-hum">--%</span><i data-lucide="droplets" class="w-3 h-3 text-blue-400"></i>
-                            </div>
-                            <div class="flex items-center gap-1 justify-end" title="Gió">
-                                <span id="weather-wind">--</span><i data-lucide="wind" class="w-3 h-3 text-teal-400"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-input rounded-xl p-2.5 md:p-3 flex items-center justify-between border border-[var(--glass-border)] hover:bg-[var(--glass-hover)] transition-colors">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 relative overflow-hidden shadow-inner">
-                                <i data-lucide="moon" class="w-4 h-4 md:w-5 md:h-5 fill-current opacity-80"></i>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[9px] font-bold text-[var(--text-sub)] uppercase tracking-widest mb-0.5">Lịch Âm</span>
-                                <span id="lunar-date" class="text-sm md:text-base font-bold text-[var(--text-main)]">--/--</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center border-l border-[var(--glass-border)] pl-2.5 md:pl-3">
-                            <div id="lunar-year" class="text-[9px] md:text-[10px] font-bold text-[var(--accent)] bg-[var(--accent)]/10 px-1.5 py-1 rounded-md uppercase tracking-wider border border-[var(--accent)]/20 text-center leading-tight">
-                                Năm Nay
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </header>
-
-        <section class="stagger-enter mb-10" style="animation-delay: 0.1s;">
-            <div class="category-scroll pb-4">
-                <div id="categories-container" class="flex gap-1 glass-panel glass-pill p-1.5 w-max mx-auto"></div>
-            </div>
-        </section>
-
-        <section class="stagger-enter" style="animation-delay: 0.2s;">
-            <div class="flex items-center gap-4 mb-10">
-                <div class="w-12 h-12 rounded-2xl glass-input flex items-center justify-center">
-                    <i data-lucide="layers" class="w-6 h-6 text-[var(--text-main)] icon-stroke"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-[var(--text-main)] tracking-tight" id="tools-title">Tất cả công cụ</h2>
-                <div class="h-px flex-1 bg-gradient-to-r from-[var(--glass-border)] to-transparent ml-4"></div>
-            </div>
-            
-            <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 glow-group justify-center"></div>
-        </section>
-
-        <div id="empty-state" class="hidden py-24 text-center glass-panel mt-10 stagger-enter">
-            <div class="w-24 h-24 mx-auto glass-panel glass-pill flex items-center justify-center mb-6">
-                <i data-lucide="search-x" class="w-10 h-10 text-[var(--text-sub)] icon-stroke"></i>
-            </div>
-            <p class="text-[var(--text-main)] font-bold text-3xl mb-3 tracking-tight" id="empty-title">Không tìm thấy</p>
-            <p class="text-[var(--text-sub)] text-lg mb-8" id="empty-text">Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
-            <button onclick="AppController.resetFilters()" class="px-10 py-4 glass-panel glass-pill interactive-glass font-bold text-[var(--text-main)] uppercase tracking-wider text-sm">
-                Đặt lại bộ lọc
-            </button>
+    <main id="top">
+      <header class="hero hero-cover section" aria-label="Portfolio hero">
+        <div class="hero-backdrop" aria-hidden="true">
+          <span class="hero-glow glow-one"></span>
+          <span class="hero-glow glow-two"></span>
+          <span class="hero-cutline line-one"></span>
+          <span class="hero-cutline line-two"></span>
         </div>
 
-        <section id="why-choose-us" class="mt-32 pt-16 border-t border-[var(--glass-border)] stagger-enter" style="animation-delay: 0.3s;">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-[var(--text-main)] mb-4 tracking-tight" id="why-choose-title">Vì sao chọn chúng tôi</h2>
-                <p class="text-lg text-[var(--text-sub)] max-w-2xl mx-auto font-medium" id="why-choose-desc">Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày</p>
+        <div class="hero-cover-inner">
+          <div class="hero-cover-copy reveal">
+            <div class="cover-kicker">
+              <span>Portfolio / 2026</span>
+              <span>Hà Nội</span>
             </div>
-            <div id="why-choose-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 glow-group"></div>
-        </section>
+            <h1 class="cover-title">
+              <span>Nông Đức</span>
+              <span>Mạnh</span>
+            </h1>
+            <p class="cover-lead">
+              Marketing Executive kiêm Graphic Designer, kết nối thiết kế, nội dung, website và quảng cáo thành một hệ thống truyền thông rõ mục tiêu.
+            </p>
 
-        <footer class="mt-16 py-6 text-center border-t border-[var(--glass-border)]">
-            <p class="text-sm text-[var(--text-sub)] font-medium tracking-wide" id="copyright"></p>
-        </footer>
+            <div class="spotlight-tabs" role="tablist" aria-label="Chọn điểm nhấn nổi bật">
+              <button class="spotlight-tab is-active" type="button" data-spotlight-mode="design">Design</button>
+              <button class="spotlight-tab" type="button" data-spotlight-mode="content">Content</button>
+              <button class="spotlight-tab" type="button" data-spotlight-mode="web">Web</button>
+              <button class="spotlight-tab" type="button" data-spotlight-mode="ads">Ads</button>
+            </div>
+            <p class="spotlight-copy" data-spotlight-copy>Thiết kế visual rõ thông điệp, đồng bộ từ social post đến landing page và ấn phẩm chiến dịch.</p>
 
+            <div class="cover-actions">
+              <a class="btn" href="mailto:Ndmanhh@gmail.com">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+                Gửi email
+              </a>
+              <button class="btn ghost-light" type="button" data-modal="profile">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>
+                Hồ sơ nhanh
+              </button>
+              <a class="btn line-light" href="#expertise">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                Xem chuyên môn
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-cover-visual reveal" aria-label="Tóm tắt năng lực">
+            <div class="signature-orbit" aria-hidden="true"></div>
+            <div class="signature-mark">
+              <span>NDM</span>
+              <small>Marketing / Design</small>
+            </div>
+            <div class="visual-badge badge-top">
+              <small>Kinh nghiệm</small>
+              <strong>5+ năm</strong>
+            </div>
+            <div class="visual-badge badge-mid">
+              <small>Tools</small>
+              <strong>Ps / Ai / Ads</strong>
+            </div>
+            <div class="visual-badge badge-bottom">
+              <small>Focus</small>
+              <strong>Brand - Web - Growth</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-proofbar reveal" aria-label="Thông tin nhanh">
+          <div>
+            <small>Vai trò</small>
+            <strong>Marketing Executive</strong>
+          </div>
+          <div>
+            <small>Thiết kế</small>
+            <strong>Graphic Designer</strong>
+          </div>
+          <div>
+            <small>Digital</small>
+            <strong>Website & E-commerce</strong>
+          </div>
+          <a href="tel:0397373696">
+            <small>Liên hệ</small>
+            <strong>0397 373 696</strong>
+          </a>
+        </div>
+      </header>
+
+      <section class="section section-grid" id="about">
+        <div class="section-side reveal">
+          <div class="section-kicker">About profile</div>
+          <h2 class="section-title">Giới<br />thiệu</h2>
+          <p class="section-note">Tư duy sáng tạo, thao tác thiết kế chắc tay và biết đọc dữ liệu để tối ưu hiệu quả truyền thông.</p>
+        </div>
+        <div class="section-content">
+          <div class="about-copy reveal">
+            <p>
+              Với khoảng <span class="highlight">5 năm kinh nghiệm thực chiến</span> trong lĩnh vực Marketing, Thiết kế đồ họa và Digital Marketing, tôi có khả năng triển khai toàn diện từ xây dựng hình ảnh thương hiệu, quản trị nội dung, vận hành website đến tối ưu quảng cáo trực tuyến.
+            </p>
+            <p>
+              Tôi yêu thích việc kết hợp giữa tư duy sáng tạo và khả năng phân tích dữ liệu để tạo ra những sản phẩm truyền thông có hiệu quả thực tế, đồng thời luôn chủ động cập nhật các xu hướng thiết kế, công nghệ và marketing mới.
+            </p>
+          </div>
+          <div class="goal-strip reveal">
+            <div class="goal-icon">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M21 12h-3"/><path d="M12 21v-3"/><path d="M3 12h3"/></svg>
+            </div>
+            <div class="goal-text">
+              <strong>Mục tiêu nghề nghiệp</strong>
+              <p>Làm việc trong môi trường chuyên nghiệp, nơi có thể tiếp tục phát triển năng lực chuyên môn và đóng góp vào sự tăng trưởng bền vững của doanh nghiệp.</p>
+            </div>
+          </div>
+          <div class="insight-lab reveal" data-insight>
+            <div class="insight-title">
+              <div class="micro-label">Smart fit</div>
+              <h3>Điểm mạnh khi vào dự án</h3>
+            </div>
+            <div class="insight-tabs" role="tablist" aria-label="Nhóm điểm mạnh">
+              <button class="insight-tab is-active" type="button" data-insight-key="campaign">Campaign <span>01</span></button>
+              <button class="insight-tab" type="button" data-insight-key="design">Design <span>02</span></button>
+              <button class="insight-tab" type="button" data-insight-key="growth">Growth <span>03</span></button>
+            </div>
+            <div class="insight-copy" aria-live="polite">
+              <strong data-insight-title>Triển khai chiến dịch gọn và rõ</strong>
+              <p data-insight-text>Nhận brief, tách mục tiêu, đề xuất hướng nội dung, dựng visual và theo dõi chỉ số để tối ưu qua từng vòng.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section carousel-section" id="expertise" aria-label="Chuyên môn">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Areas of focus</div>
+            <h2 class="section-title">Chuyên môn</h2>
+          </div>
+        </div>
+
+        <div class="card-rail" data-rail>
+          <article class="info-card reveal" data-modal="design" role="button" tabindex="0" aria-label="Mở chi tiết Graphic Design">
+            <div class="card-tag"><span>Design</span><span>01</span></div>
+            <div class="card-body">
+              <div class="card-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18"/><path d="m2 2 7.6 7.6"/><circle cx="11" cy="11" r="2"/></svg></div>
+              <h3>Graphic Design</h3>
+              <ul>
+                <li>Thiết kế banner, poster, standee</li>
+                <li>Social media design, thumbnail</li>
+                <li>Brochure, catalogue, ấn phẩm marketing</li>
+                <li>Thiết kế landing page và hình ảnh quảng cáo</li>
+                <li>Chỉnh sửa ảnh, video marketing ngắn</li>
+              </ul>
+            </div>
+            <div class="card-foot"><div><small>Công cụ chính</small>Photoshop, Illustrator</div><button class="card-open" type="button" data-modal="design" aria-label="Mở chi tiết Graphic Design">Chi tiết</button></div>
+          </article>
+
+          <article class="info-card reveal" data-modal="social" role="button" tabindex="0" aria-label="Mở chi tiết Social Media">
+            <div class="card-tag"><span>Social</span><span>02</span></div>
+            <div class="card-body">
+              <div class="card-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="m16 3-2 18"/></svg></div>
+              <h3>Social Media</h3>
+              <ul>
+                <li>Facebook, Instagram, TikTok, YouTube</li>
+                <li>Lên kế hoạch nội dung theo mục tiêu</li>
+                <li>Viết nội dung truyền thông</li>
+                <li>Phân tích insight và hành vi khách hàng</li>
+                <li>Nghiên cứu xu hướng, quản trị fanpage</li>
+              </ul>
+            </div>
+            <div class="card-foot"><div><small>Nền tảng</small>Meta, TikTok, YouTube</div><button class="card-open" type="button" data-modal="social" aria-label="Mở chi tiết Social Media">Chi tiết</button></div>
+          </article>
+
+          <article class="info-card reveal" data-modal="web" role="button" tabindex="0" aria-label="Mở chi tiết Website và E-commerce">
+            <div class="card-tag"><span>Web / E-com</span><span>03</span></div>
+            <div class="card-body">
+              <div class="card-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 0 20"/><path d="M12 2a15.3 15.3 0 0 0 0 20"/></svg></div>
+              <h3>Website & E-commerce</h3>
+              <ul>
+                <li>Thiết kế và quản trị website bán hàng</li>
+                <li>Tối ưu UI/UX và SEO cơ bản</li>
+                <li>Thiết kế landing page</li>
+                <li>Quản lý sản phẩm, đơn hàng, hỗ trợ khách hàng</li>
+                <li>HTML/CSS cơ bản và xử lý nội dung web</li>
+              </ul>
+            </div>
+            <div class="card-foot"><div><small>Kỹ năng</small>UI/UX, SEO, Landing Page</div><button class="card-open" type="button" data-modal="web" aria-label="Mở chi tiết Website và E-commerce">Chi tiết</button></div>
+          </article>
+
+          <article class="info-card reveal" data-modal="ads" role="button" tabindex="0" aria-label="Mở chi tiết Digital Advertising">
+            <div class="card-tag"><span>Performance</span><span>04</span></div>
+            <div class="card-body">
+              <div class="card-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-7"/></svg></div>
+              <h3>Digital Advertising</h3>
+              <ul>
+                <li>Thiết lập Facebook Ads và Google Ads</li>
+                <li>Theo dõi KPI, performance, chuyển đổi</li>
+                <li>Phân bổ và tối ưu ngân sách quảng cáo</li>
+                <li>Remarketing, báo cáo và cải thiện hiệu quả</li>
+                <li>Kết nối creative với dữ liệu vận hành</li>
+              </ul>
+            </div>
+            <div class="card-foot"><div><small>Công cụ</small>Ads Manager, Google Ads</div><button class="card-open" type="button" data-modal="ads" aria-label="Mở chi tiết Digital Advertising">Chi tiết</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section matrix" id="experience">
+        <aside class="matrix-aside reveal">
+          <div class="section-kicker">Work experience</div>
+          <h2 class="section-title">Kinh nghiệm<br />làm việc</h2>
+          <span class="year-badge">2021 - Hiện tại</span>
+          <p class="section-note">Tập trung vào các đầu việc trực tiếp tạo hình ảnh thương hiệu, tăng tương tác, vận hành web và tối ưu chuyển đổi.</p>
+        </aside>
+
+        <div class="experience-grid">
+          <article class="experience-item reveal">
+            <h3><span class="number-chip">01</span>Graphic Designer</h3>
+            <ul>
+              <li>Thiết kế banner quảng cáo và hình ảnh truyền thông.</li>
+              <li>Thiết kế social media và ấn phẩm marketing.</li>
+              <li>Thiết kế hình ảnh website.</li>
+              <li>Chỉnh sửa hình ảnh, thiết kế video ngắn phục vụ quảng cáo.</li>
+            </ul>
+          </article>
+          <article class="experience-item reveal">
+            <h3><span class="number-chip">02</span>Social Media Executive</h3>
+            <ul>
+              <li>Quản trị fanpage và lập kế hoạch nội dung.</li>
+              <li>Viết nội dung truyền thông theo từng chiến dịch.</li>
+              <li>Phân tích hành vi khách hàng và theo dõi xu hướng.</li>
+              <li>Tăng tương tác trên các nền tảng số.</li>
+            </ul>
+          </article>
+          <article class="experience-item reveal">
+            <h3><span class="number-chip">03</span>Web & E-com Admin</h3>
+            <ul>
+              <li>Xây dựng và quản trị website bán hàng.</li>
+              <li>Cập nhật sản phẩm, hỗ trợ khách hàng trực tuyến.</li>
+              <li>Tối ưu UI/UX và trải nghiệm mua hàng.</li>
+              <li>Theo dõi hiệu suất website.</li>
+            </ul>
+          </article>
+          <article class="experience-item reveal">
+            <h3><span class="number-chip">04</span>Digital Marketing</h3>
+            <ul>
+              <li>Thiết lập Facebook Ads và Google Ads.</li>
+              <li>Theo dõi KPI, báo cáo hiệu quả.</li>
+              <li>Tối ưu ngân sách quảng cáo.</li>
+              <li>Tăng hiệu quả chuyển đổi.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section showcase" aria-label="Dạng sản phẩm có thể triển khai">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Selected outputs</div>
+            <h2 class="section-title">Sản phẩm xử lý tốt</h2>
+          </div>
+        </div>
+        <div class="showcase-grid">
+          <article class="show-card corner-frame reveal" data-modal="brand-assets" role="button" tabindex="0" aria-label="Mở chi tiết bộ hình ảnh chiến dịch">
+            <span></span>
+            <div class="micro-label">Brand assets</div>
+            <h3>Bộ hình ảnh chiến dịch</h3>
+            <p>Key visual, banner, poster, standee và các ấn phẩm triển khai đồng bộ cho thương hiệu.</p>
+          </article>
+          <article class="show-card corner-frame reveal" data-modal="content-system" role="button" tabindex="0" aria-label="Mở chi tiết lịch nội dung mạng xã hội">
+            <span></span>
+            <div class="micro-label">Content system</div>
+            <h3>Lịch nội dung mạng xã hội</h3>
+            <p>Lên hướng nội dung, viết caption, thiết kế bài đăng và theo dõi tương tác theo tuần/tháng.</p>
+          </article>
+          <article class="show-card corner-frame reveal" data-modal="landing-page" role="button" tabindex="0" aria-label="Mở chi tiết landing page bán hàng">
+            <span></span>
+            <div class="micro-label">Web commerce</div>
+            <h3>Landing page bán hàng</h3>
+            <p>Tổ chức thông tin, hình ảnh sản phẩm, CTA và trải nghiệm mua hàng dễ hiểu hơn.</p>
+          </article>
+          <article class="show-card corner-frame reveal" data-modal="ad-creative" role="button" tabindex="0" aria-label="Mở chi tiết creative cho quảng cáo">
+            <span></span>
+            <div class="micro-label">Performance ads</div>
+            <h3>Creative cho quảng cáo</h3>
+            <p>Kết hợp thiết kế, thông điệp và dữ liệu performance để tối ưu chuyển đổi.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section skill-layout" id="skills">
+        <div class="skill-title reveal">
+          <div class="section-kicker">Tech stack</div>
+          <h2 class="section-title">Kỹ năng<br />& công cụ</h2>
+          <p class="section-note">Các nhóm kỹ năng hỗ trợ triển khai trọn vòng từ ý tưởng, thiết kế, nội dung đến vận hành và đo lường.</p>
+        </div>
+        <div class="skill-board">
+          <div class="skill-col reveal">
+            <h3>Marketing</h3>
+            <div class="tag-cloud">
+              <span class="tag">Digital Marketing</span>
+              <span class="tag">Social Media</span>
+              <span class="tag">Content Plan</span>
+              <span class="tag">Facebook Ads</span>
+              <span class="tag">Google Ads</span>
+              <span class="tag">Branding</span>
+              <span class="tag">Market Research</span>
+            </div>
+          </div>
+          <div class="skill-col reveal">
+            <h3>Thiết kế</h3>
+            <div class="bar-list">
+              <div class="bar-row">
+                <span>Adobe Photoshop</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 92%"></span></span>
+              </div>
+              <div class="bar-row">
+                <span>Adobe Illustrator</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 86%"></span></span>
+              </div>
+              <div class="tag-cloud">
+                <span class="tag">UI/UX cơ bản</span>
+                <span class="tag">Banner</span>
+                <span class="tag">Chỉnh sửa ảnh</span>
+              </div>
+            </div>
+          </div>
+          <div class="skill-col reveal">
+            <h3>Website & Tech</h3>
+            <div class="tag-cloud">
+              <span class="tag">HTML/CSS cơ bản</span>
+              <span class="tag">Quản trị Website</span>
+              <span class="tag">Landing Page</span>
+              <span class="tag">E-commerce</span>
+              <span class="tag">SEO cơ bản</span>
+              <span class="tag">Hỗ trợ IT Windows</span>
+            </div>
+          </div>
+          <div class="skill-col reveal">
+            <h3>Công cụ khác</h3>
+            <div class="tool-grid">
+              <span class="tool">MS Word</span>
+              <span class="tool">MS Excel</span>
+              <span class="tool">Google Docs</span>
+              <span class="tool">Google Sheets</span>
+              <span class="tool">Meta Suite</span>
+              <span class="tool">Analytics</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contact">
+        <div class="contact-copy reveal">
+          <div class="section-kicker">Contact</div>
+          <h2 class="section-title">Sẵn sàng<br />kết nối</h2>
+          <p>Nếu cần một người có thể vừa nhìn được phần hình ảnh, vừa theo sát nội dung, website và quảng cáo, đây là nơi bắt đầu nhanh nhất.</p>
+        </div>
+        <div class="contact-card reveal">
+          <a class="contact-choice" href="mailto:Ndmanhh@gmail.com">
+            <span class="choice-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></span>
+            <span><small>Email</small><strong>Ndmanhh@gmail.com</strong></span>
+            <span class="choice-arrow">→</span>
+          </a>
+          <a class="contact-choice" href="tel:0397373696">
+            <span class="choice-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9z"/></svg></span>
+            <span><small>Điện thoại</small><strong>0397 373 696</strong></span>
+            <span class="choice-arrow">→</span>
+          </a>
+          <div class="contact-choice" aria-label="Địa chỉ">
+            <span class="choice-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <span><small>Địa chỉ</small><strong>Hà Nội, Việt Nam</strong></span>
+            <span class="choice-arrow">•</span>
+          </div>
+          <div class="contact-choice" aria-label="Ngày sinh">
+            <span class="choice-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg></span>
+            <span><small>Ngày sinh</small><strong>01/05/2002</strong></span>
+            <span class="choice-arrow">•</span>
+          </div>
+          <div class="contact-tools">
+            <button class="mini-action" type="button" data-copy="Ndmanhh@gmail.com">Copy email</button>
+            <button class="mini-action" type="button" data-copy="0397373696">Copy số điện thoại</button>
+            <button class="mini-action wide" type="button" data-idea>Gợi ý ý tưởng</button>
+          </div>
+          <div class="idea-note" data-idea-note>Một ý tưởng nhỏ sẽ xuất hiện ở đây khi cần thêm cảm hứng.</div>
+        </div>
+      </section>
     </main>
 
-    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-transform duration-500" id="tactical-dock">
-        <div id="pinned-menu" class="absolute bottom-[calc(100%+20px)] left-1/2 -translate-x-1/2 w-[340px] md:w-[400px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-            <div class="flex items-center justify-between mb-6 px-2">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="bookmark" class="w-5 h-5 text-[var(--text-main)] icon-stroke"></i>
-                    <span class="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider" id="pinned-menu-title">Đã ghim</span>
-                </div>
-                <span class="w-8 h-8 rounded-full glass-input flex items-center justify-center text-sm font-bold text-[var(--text-main)]" id="pinned-badge-menu">0</span>
-            </div>
-            <div id="pinned-menu-content" class="flex flex-col gap-3 max-h-[50vh] overflow-y-auto category-scroll pr-2 glow-group"></div>
-        </div>
+    <footer class="footer">
+      <span>© <span id="year">2026</span> Nông Đức Mạnh. Portfolio tĩnh tối ưu cho mọi thiết bị.</span>
+      <a href="#top">Lên đầu trang ↑</a>
+    </footer>
+  </div>
 
-        <div id="contact-menu" class="absolute bottom-[calc(100%+20px)] right-0 md:left-1/2 md:-translate-x-1/2 md:translate-x-[60px] w-[300px] ultra-clear-glass refract-element glass-popup p-6 opacity-0 invisible translate-y-8 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-            <div class="flex items-center gap-2 mb-6 px-2">
-                <i data-lucide="mail" class="w-5 h-5 text-[var(--text-main)] icon-stroke"></i>
-                <span class="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Kết nối</span>
-            </div>
-            <div class="flex flex-col gap-3 glow-group">
-                <a href="https://www.facebook.com/ducmanh" target="_blank" class="popup-item p-3.5 flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="facebook" class="w-5 h-5 icon-stroke"></i>
-                    </div>
-                    <span class="font-bold text-[var(--text-main)]">Facebook</span>
-                </a>
-                <a href="https://t.me/ducmanh" target="_blank" class="popup-item p-3.5 flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="send" class="w-5 h-5 icon-stroke"></i>
-                    </div>
-                    <span class="font-bold text-[var(--text-main)]">Telegram</span>
-                </a>
-                <a href="mailto:contact@ducmanh.io.vn" class="popup-item p-3.5 flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-main)] group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="mail" class="w-5 h-5 icon-stroke"></i>
-                    </div>
-                    <span class="font-bold text-[var(--text-main)]">Email</span>
-                </a>
-            </div>
-        </div>
-
-        <nav class="super-dock ultra-clear-glass refract-element">
-            <a href="https://ducmanh.io.vn" class="dock-btn hidden sm:flex" title="Trang chủ">
-                <i data-lucide="home" class="w-6 h-6 icon-stroke"></i>
-                <span class="dock-dot"></span>
-            </a>
-            <div class="w-px h-8 bg-[var(--glass-border)] self-center mx-2 hidden sm:block"></div>
-            
-            <button onclick="AppController.togglePinnedMenu()" class="dock-btn" title="Đã ghim">
-                <i data-lucide="bookmark" class="w-6 h-6 icon-stroke"></i>
-                <span id="dock-pin-indicator" class="absolute top-[10px] right-[10px] w-2 h-2 bg-[var(--accent)] rounded-full hidden"></span>
-                <span class="dock-dot"></span>
-            </button>
-            
-            <button onclick="AppController.toggleContactMenu()" class="dock-btn" title="Liên hệ">
-                <i data-lucide="message-circle" class="w-6 h-6 icon-stroke"></i>
-                <span class="dock-dot"></span>
-            </button>
-            
-            <div class="w-px h-8 bg-[var(--glass-border)] self-center mx-2"></div>
-            <button class="dock-btn" onclick="AppController.scrollToTop()" title="Lên trên">
-                <i data-lucide="arrow-up" class="w-6 h-6 icon-stroke"></i>
-                <span class="dock-dot"></span>
-            </button>
-        </nav>
+  <nav class="float-nav" data-floating-menu aria-label="Menu nổi">
+    <button class="float-menu-toggle" type="button" data-floating-toggle aria-expanded="false" aria-label="Mở menu nhanh">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="float-menu-panel">
+      <a href="#top"><span>00</span>Đầu trang</a>
+      <a href="#about"><span>01</span>Giới thiệu</a>
+      <a href="#expertise"><span>02</span>Chuyên môn</a>
+      <a href="#experience"><span>03</span>Kinh nghiệm</a>
+      <a href="#skills"><span>04</span>Kỹ năng</a>
+      <a href="#contact"><span>05</span>Liên hệ</a>
     </div>
-
-    <script>
-        'use strict';
-
-        // =========================================================================
-        // LIQUID LENS ENGINE (TỐI ƯU HÓA)
-        // =========================================================================
-        const LiquidLensEngine = (() => {
-            function applyToElement(element) {
-                if (!element) return;
-
-                const rect = element.getBoundingClientRect();
-                if (rect.width === 0 || rect.height === 0) return;
-
-                const width = Math.round(rect.width);
-                const height = Math.round(rect.height);
-                
-                let activeFilterId = element.getAttribute('data-refract-id');
-                if (activeFilterId) {
-                    const oldSvg = document.getElementById(activeFilterId + '-container');
-                    if (oldSvg) oldSvg.remove();
-                } else {
-                    activeFilterId = 'liquid-lens-' + Math.random().toString(36).substr(2, 9);
-                    element.setAttribute('data-refract-id', activeFilterId);
-                }
-
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.id = activeFilterId + '-container';
-                svg.style.cssText = 'position: absolute; width: 0; height: 0; pointer-events: none; z-index: -9999;';
-
-                const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-                filter.setAttribute('id', activeFilterId);
-                filter.setAttribute('filterUnits', 'userSpaceOnUse');
-                filter.setAttribute('x', '0'); filter.setAttribute('y', '0');
-                filter.setAttribute('width', width.toString()); filter.setAttribute('height', height.toString());
-
-                const feImage = document.createElementNS('http://www.w3.org/2000/svg', 'feImage');
-                feImage.setAttribute('id', `${activeFilterId}_map`);
-                feImage.setAttribute('width', width.toString()); feImage.setAttribute('height', height.toString());
-
-                const feDisplacementMap = document.createElementNS('http://www.w3.org/2000/svg', 'feDisplacementMap');
-                feDisplacementMap.setAttribute('in', 'SourceGraphic');
-                feDisplacementMap.setAttribute('in2', `${activeFilterId}_map`);
-                feDisplacementMap.setAttribute('xChannelSelector', 'R');
-                feDisplacementMap.setAttribute('yChannelSelector', 'G');
-                
-                filter.appendChild(feImage); filter.appendChild(feDisplacementMap);
-                svg.appendChild(filter); document.body.appendChild(svg);
-
-                const canvas = document.createElement('canvas');
-                canvas.width = width; canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                const data = new Uint8ClampedArray(width * height * 4);
-                const rawValues = new Float32Array(width * height * 2);
-                
-                const R = Math.min(width, height) / 2; 
-                const cx = width / 2; 
-                const cy = height / 2;
-                let index = 0, maxAbs = 0;
-
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const spineX = Math.max(R, Math.min(width - R, x));
-                        const spineY = Math.max(R, Math.min(height - R, y));
-                        const distX = x - spineX; 
-                        const distY = y - spineY;
-                        const d = Math.sqrt(distX*distX + distY*distY);
-                        
-                        let dx = 0, dy = 0;
-
-                        if (d <= R) {
-                            const mag = 0.04; 
-                            const edgeDistortion = Math.pow(d/R, 3) * 35; 
-                            dx = -(x - cx) * mag + (distX/R) * edgeDistortion;
-                            dy = -(y - cy) * mag + (distY/R) * edgeDistortion;
-                        }
-
-                        rawValues[index++] = dx; rawValues[index++] = dy;
-                        if (Math.abs(dx) > maxAbs) maxAbs = Math.abs(dx);
-                        if (Math.abs(dy) > maxAbs) maxAbs = Math.abs(dy);
-                    }
-                }
-
-                if (maxAbs === 0) maxAbs = 1;
-                const scaleAttr = maxAbs * 2;
-
-                index = 0;
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = (rawValues[index++] / scaleAttr) + 0.5;
-                    const g = (rawValues[index++] / scaleAttr) + 0.5;
-                    data[i] = r * 255; data[i + 1] = g * 255; data[i + 2] = 0; data[i + 3] = 255;
-                }
-
-                ctx.putImageData(new ImageData(data, width, height), 0, 0);
-                feImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL());
-                feDisplacementMap.setAttribute('scale', scaleAttr.toString());
-
-                element.style.backdropFilter = `url(#${activeFilterId}) blur(2px) saturate(200%) brightness(1.15)`;
-                element.style.webkitBackdropFilter = `url(#${activeFilterId}) blur(2px) saturate(200%) brightness(1.15)`;
-            }
-
-            // Tối ưu debounce ResizeObserver
-            let resizeTimeout;
-            const resizeObserver = new ResizeObserver(entries => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    entries.forEach(entry => {
-                        window.requestAnimationFrame(() => applyToElement(entry.target));
-                    });
-                }, 150);
-            });
-
-            function init(selector) {
-                const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
-                    applyToElement(el);
-                    resizeObserver.observe(el);
-                });
-            }
-            return { init };
-        })();
-        // =========================================================================
-
-        const CONSTANTS = {
-            STORAGE_KEYS: { LANG: 'app_lang_ul_glass', THEME: 'app_theme_ul_glass', PINS: 'ndm_pins_ul_glass' },
-            DEFAULTS: { LANG: 'vi', THEME: 'dark' }
-        };
-
-        const Utils = {
-            $: selector => document.querySelector(selector),
-            $$: selector => document.querySelectorAll(selector),
-            setText: (selector, text) => {
-                const el = document.querySelector(selector);
-                if (el) el.textContent = text;
-            },
-            storage: {
-                get: (key, def) => { try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; } },
-                set: (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
-            }
-        };
-
-        const dictionary = {
-            vi: {
-                subtitle: "Bộ công cụ toàn diện với trải nghiệm thị giác đỉnh cao.",
-                searchPlaceholder: "Tìm kiếm công cụ...",
-                emptyTitle: "Không tìm thấy kết quả",
-                emptyText: "Thử điều chỉnh bộ lọc hoặc tìm kiếm khác.",
-                toolsTitle: "Tất cả công cụ",
-                whyChooseTitle: "Vì sao chọn chúng tôi",
-                whyChooseDesc: "Những ưu điểm vượt trội giúp tối ưu hóa công việc của bạn mỗi ngày",
-                langMobile: "Tiếng Việt",
-                morning: "Chào buổi sáng,",
-                afternoon: "Chào buổi chiều,",
-                evening: "Chào buổi tối,",
-                night: "Chúc ngủ ngon,",
-                cat_ALL: "Tất cả", cat_FINANCE: "Tài chính", cat_MATH: "Toán học", cat_UTILITY: "Tiện ích",
-                cat_TIME: "Thời gian", cat_HEALTH: "Sức khỏe", cat_DEV: "Lập trình", cat_DESIGN: "Thiết kế",
-                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Năng suất", cat_NETWORK: "Mạng", cat_TEXT: "Văn bản",
-                pinnedTitle: "Đã ghim",
-                noPinnedTools: "Chưa có công cụ nào được ghim",
-                copied: "Đã sao chép liên kết",
-                footerText: "DucManh © "
-            },
-            en: {
-                subtitle: "Comprehensive toolkit with the ultimate visual experience.",
-                searchPlaceholder: "Search tools...",
-                emptyTitle: "No results found",
-                emptyText: "Try adjusting your filters or search terms.",
-                toolsTitle: "All Tools",
-                whyChooseTitle: "Why Choose Us",
-                whyChooseDesc: "Outstanding advantages to optimize your daily work",
-                langMobile: "English",
-                morning: "Good Morning,",
-                afternoon: "Good Afternoon,",
-                evening: "Good Evening,",
-                night: "Good Night,",
-                cat_ALL: "All", cat_FINANCE: "Finance", cat_MATH: "Math", cat_UTILITY: "Utility",
-                cat_TIME: "Time", cat_HEALTH: "Health", cat_DEV: "Dev", cat_DESIGN: "Design",
-                cat_MKT: "Marketing", cat_PRODUCTIVITY: "Productivity", cat_NETWORK: "Network", cat_TEXT: "Text",
-                pinnedTitle: "Pinned",
-                noPinnedTools: "No pinned tools yet",
-                copied: "Link copied to clipboard",
-                footerText: "DucManh © "
-            }
-        };
-
-        const WHY_CHOOSE_US_DATA = {
-            vi: [
-                { icon: 'shield-check', title: 'Bảo mật tối đa', desc: 'Không lưu trữ dữ liệu cá nhân, mọi xử lý diễn ra ngay trên trình duyệt của bạn.' },
-                { icon: 'zap', title: 'Tốc độ vượt trội', desc: 'Công cụ được tối ưu để hoạt động nhanh chóng, tiết kiệm thời gian quý báu.' },
-                { icon: 'infinity', title: 'Miễn phí trọn đời', desc: 'Toàn bộ tính năng đều miễn phí, không có chi phí ẩn hay quảng cáo phiền phức.' }
-            ],
-            en: [
-                { icon: 'shield-check', title: 'Maximum Security', desc: 'No personal data storage, all processing happens right in your browser.' },
-                { icon: 'zap', title: 'Superior Speed', desc: 'Tools are optimized for fast performance, saving you valuable time.' },
-                { icon: 'infinity', title: 'Free Forever', desc: 'All features are completely free, with no hidden costs or annoying ads.' }
-            ]
-        };
-
-        const projectsData = [
-            { id: 1, name_vi: "Tiền Tệ", name_en: "Currency", code: "CURR", desc_vi: "Chuyển đổi tỷ giá ngoại tệ.", desc_en: "Convert currency rates.", url: "https://ducmanh.io.vn/currency-converter", category: "FINANCE", icon: 'dollar-sign' },
-            { id: 2, name_vi: "Phần Trăm", name_en: "Percent", code: "PERC", desc_vi: "Tính toán phần trăm nhanh.", desc_en: "Calculate percentages.", url: "https://ducmanh.io.vn/percentage-calculator/", category: "MATH", icon: 'percent' },
-            { id: 3, name_vi: "Tạo QR", name_en: "Gen QR", code: "QR_G", desc_vi: "Tạo mã QR code.", desc_en: "Generate QR codes.", url: "https://ducmanh.io.vn/qr-code-generator/", category: "UTILITY", icon: 'qr-code' },
-            { id: 4, name_vi: "Quét QR", name_en: "Scan QR", code: "QR_S", desc_vi: "Đọc mã QR code.", desc_en: "Scan QR codes.", url: "https://ducmanh.io.vn/qr-code-reader/", category: "UTILITY", icon: 'scan' },
-            { id: 5, name_vi: "Tính Ngày", name_en: "Date Calc", code: "DATE", desc_vi: "Tính toán ngày tháng.", desc_en: "Calculate dates.", url: "https://ducmanh.io.vn/date-calculator/", category: "TIME", icon: 'calendar' },
-            { id: 6, name_vi: "BMI", name_en: "BMI", code: "BMI", desc_vi: "Tính chỉ số BMI sức khỏe.", desc_en: "Calculate BMI index.", url: "https://ducmanh.io.vn/bmi-calculator/", category: "HEALTH", icon: 'activity' },
-            { id: 7, name_vi: "CSV Tool", name_en: "CSV Tool", code: "CSV", desc_vi: "Chuyển đổi dữ liệu CSV.", desc_en: "Convert CSV data.", url: "https://ducmanh.io.vn/csv-json-excel-converter/", category: "DEV", icon: 'file-json' },
-            { id: 8, name_vi: "Tỷ Lệ", name_en: "Ratio", code: "IMG", desc_vi: "Tính tỷ lệ khung hình.", desc_en: "Calculate aspect ratio.", url: "https://ducmanh.io.vn/aspect-ratio-calculator/", category: "DESIGN", icon: 'crop' },
-            { id: 9, name_vi: "UTM Builder", name_en: "UTM Builder", code: "UTM", desc_vi: "Tạo link UTM tracking.", desc_en: "Build UTM links.", url: "https://ducmanh.io.vn/campaign-url-builder/", category: "MKT", icon: 'link' },
-            { id: 10, name_vi: "Pomodoro", name_en: "Pomodoro", code: "POMO", desc_vi: "Hẹn giờ 25 phút làm việc.", desc_en: "25-minute work timer.", url: "https://ducmanh.io.vn/pomodoro-timer/", category: "PRODUCTIVITY", icon: 'timer' },
-            { id: 11, name_vi: "Bấm Giờ", name_en: "Chrono", code: "TIME", desc_vi: "Đồng hồ bấm giờ.", desc_en: "Stopwatch timer.", url: "https://ducmanh.io.vn/chronometer/", category: "TIME", icon: 'watch' },
-            { id: 12, name_vi: "IP Lookup", name_en: "IP Lookup", code: "NET", desc_vi: "Tra cứu thông tin IP.", desc_en: "Check IP information.", url: "https://ducmanh.io.vn/ip/", category: "NETWORK", icon: 'globe' },
-            { id: 13, name_vi: "Đổi Chữ", name_en: "Text Case", code: "TXT", desc_vi: "Chuyển đổi định dạng chữ.", desc_en: "Convert text case.", url: "https://ducmanh.io.vn/chuyen-doi-chu/", category: "TEXT", icon: 'type' },
-            { id: 14, name_vi: "Sửa Link", name_en: "Fix Link", code: "FIX", desc_vi: "Sửa lỗi link bị lỗi.", desc_en: "Fix broken links.", url: "https://ducmanh.io.vn/link-fixer/", category: "UTILITY", icon: 'wrench' }
-        ];
-
-        const AppController = (() => {
-            let state = {
-                categories: ["ALL", ...new Set(projectsData.map(p => p.category))],
-                activeCategory: "ALL",
-                searchTerm: "",
-                lang: Utils.storage.get(CONSTANTS.STORAGE_KEYS.LANG, CONSTANTS.DEFAULTS.LANG),
-                theme: Utils.storage.get(CONSTANTS.STORAGE_KEYS.THEME, CONSTANTS.DEFAULTS.THEME),
-                pins: Utils.storage.get(CONSTANTS.STORAGE_KEYS.PINS, [])
-            };
-
-            // Tối ưu DOM Caching cho các hiệu ứng ánh sáng
-            let cachedGlowItems = [];
-
-            function updateGlowCache() {
-                cachedGlowItems = document.querySelectorAll('.interactive-glass, .popup-item, .dock-btn');
-            }
-
-            function updateIcon(id, newIconName, newClass) {
-                const oldElement = Utils.$(`#${id}`);
-                if (!oldElement) return;
-                
-                const newElement = document.createElement('i');
-                newElement.id = id;
-                newElement.setAttribute('data-lucide', newIconName);
-                if (newClass) newElement.setAttribute('class', newClass);
-                
-                oldElement.replaceWith(newElement);
-            }
-
-            function init() {
-                document.documentElement.setAttribute('data-theme', state.theme);
-                setupEvents();
-                setInterval(updateTime, 1000);
-                updateTime();
-                updateLunarDate();
-                fetchWeather(); 
-                initSystemStatus(); 
-                renderAll();
-
-                // Trì hoãn script vẽ hiệu ứng Canvas (lỏng) để HTML/CSS render trước không bị khựng
-                setTimeout(() => {
-                    if (window.lucide) lucide.createIcons();
-                    LiquidLensEngine.init('.refract-element');
-                    updateGlowCache();
-                }, 500);
-            }
-
-            function setupEvents() {
-                Utils.$('#search-input')?.addEventListener('input', e => {
-                    state.searchTerm = e.target.value.toLowerCase();
-                    Utils.$('#clear-search').classList.toggle('hidden', !state.searchTerm);
-                    renderProjects();
-                });
-                
-                let lastScrollY = window.scrollY;
-                window.addEventListener('scroll', () => {
-                    const currentScrollY = window.scrollY;
-                    const dock = Utils.$('#tactical-dock');
-                    const mainNav = Utils.$('#main-top-nav');
-                    
-                    if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                        dock.style.transform = 'translate(-50%, 150%)';
-                        closeAllDockMenus();
-                        mainNav.classList.add('is-compact');
-                    } else {
-                        dock.style.transform = 'translate(-50%, 0)';
-                        mainNav.classList.remove('is-compact');
-                    }
-                    lastScrollY = currentScrollY;
-                }, { passive: true });
-
-                document.addEventListener('click', handleOutsideClick);
-
-                // Tối ưu hóa cực mạnh cho hiệu ứng ánh sáng chạy theo chuột
-                let glowTicking = false;
-                document.addEventListener('mousemove', (e) => {
-                    if (!glowTicking) {
-                        window.requestAnimationFrame(() => {
-                            cachedGlowItems.forEach(item => {
-                                const rect = item.getBoundingClientRect();
-                                const x = e.clientX - rect.left;
-                                const y = e.clientY - rect.top;
-                                item.style.setProperty('--mouse-x', `${x}px`);
-                                item.style.setProperty('--mouse-y', `${y}px`);
-                            });
-                            glowTicking = false;
-                        });
-                        glowTicking = true;
-                    }
-                }, { passive: true });
-            }
-
-            function handleOutsideClick(e) {
-                const contactMenu = Utils.$('#contact-menu');
-                const pinnedMenu = Utils.$('#pinned-menu');
-                const contactBtn = e.target.closest('button[onclick*="toggleContactMenu"]');
-                const pinnedBtn = e.target.closest('button[onclick*="togglePinnedMenu"]');
-                
-                if (contactMenu && !contactMenu.contains(e.target) && !contactBtn) {
-                    contactMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    contactMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-                if (pinnedMenu && !pinnedMenu.contains(e.target) && !pinnedBtn) {
-                    pinnedMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    pinnedMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-            }
-
-            function t(key) { return dictionary[state.lang]?.[key] || key; }
-
-            function toggleTheme() {
-                state.theme = state.theme === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', state.theme);
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.THEME, state.theme);
-                renderAll();
-            }
-
-            function toggleLang() {
-                state.lang = state.lang === 'vi' ? 'en' : 'vi';
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.LANG, state.lang);
-                renderAll();
-            }
-
-            function updateTime() {
-                const now = new Date();
-                Utils.setText('#clock-hours', String(now.getHours()).padStart(2, '0'));
-                Utils.setText('#clock-minutes', String(now.getMinutes()).padStart(2, '0'));
-                Utils.setText('#clock-seconds', String(now.getSeconds()).padStart(2, '0'));
-                
-                const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-                d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-                const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-                Utils.setText('#week-display', `Tuần ${weekNo}`);
-                
-                const options = { weekday: 'long', month: '2-digit', day: '2-digit' };
-                let dateStr = now.toLocaleDateString(state.lang === 'vi' ? 'vi-VN' : 'en-US', options);
-                Utils.setText('#date-display', dateStr);
-                
-                let h = now.getHours(), greet = 'morning';
-                if(h>=12 && h<18) greet = 'afternoon'; else if(h>=18 && h<22) greet = 'evening'; else if(h>=22 || h<5) greet = 'night';
-                Utils.setText('#greeting-text', t(greet));
-            }
-
-            function updateLunarDate() {
-                try {
-                    const now = new Date();
-                    const formatterDM = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { month: 'numeric', day: 'numeric' });
-                    const parts = formatterDM.format(now).split('/');
-                    if (parts.length === 2) {
-                        Utils.setText('#lunar-date', `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}`);
-                    }
-                    
-                    const formatterY = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { year: 'numeric' });
-                    const yearStr = formatterY.format(now); 
-                    
-                    const yearNode = Utils.$('#lunar-year');
-                    if (yearNode) {
-                        let textOnly = yearStr.replace(/[0-9,]/g, '').trim();
-                        if (!textOnly) textOnly = "Năm Nay";
-                        yearNode.innerHTML = textOnly.replace('Năm', 'Năm<br>');
-                    }
-                } catch(e) {
-                    Utils.setText('#lunar-date', "Lỗi");
-                }
-            }
-
-            function initSystemStatus() {
-                if ('getBattery' in navigator) {
-                    navigator.getBattery().then(battery => {
-                        const updateBattery = () => {
-                            const level = Math.round(battery.level * 100);
-                            Utils.setText('#battery-text', `${level}%`);
-                            
-                            if (battery.charging) {
-                                updateIcon('battery-icon', 'battery-charging', 'w-3.5 h-3.5 text-emerald-500 shrink-0');
-                            } else {
-                                if(level > 20) {
-                                    updateIcon('battery-icon', 'battery-full', 'w-3.5 h-3.5 text-emerald-500 shrink-0');
-                                } else {
-                                    updateIcon('battery-icon', 'battery-warning', 'w-3.5 h-3.5 text-rose-500 shrink-0');
-                                }
-                            }
-                            if (window.lucide) lucide.createIcons();
-                        };
-                        updateBattery();
-                        battery.addEventListener('levelchange', updateBattery);
-                        battery.addEventListener('chargingchange', updateBattery);
-                    });
-                } else {
-                    Utils.setText('#battery-text', "N/A");
-                }
-
-                const updateNetwork = () => {
-                    const isOnline = navigator.onLine;
-                    if (isOnline) {
-                        updateIcon('network-icon', 'wifi', 'w-3.5 h-3.5 text-blue-500 shrink-0');
-                        Utils.setText('#network-text', 'Online');
-                    } else {
-                        updateIcon('network-icon', 'wifi-off', 'w-3.5 h-3.5 text-rose-500 shrink-0');
-                        Utils.setText('#network-text', 'Offline');
-                    }
-                    if (window.lucide) lucide.createIcons();
-                };
-                window.addEventListener('online', updateNetwork);
-                window.addEventListener('offline', updateNetwork);
-                updateNetwork();
-            }
-
-            async function fetchWeather() {
-                try {
-                    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.0285&longitude=105.8542&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m');
-                    const data = await res.json();
-                    
-                    const temp = Math.round(data.current.temperature_2m);
-                    const feels = Math.round(data.current.apparent_temperature);
-                    const hum = data.current.relative_humidity_2m;
-                    const wind = Math.round(data.current.wind_speed_10m);
-                    const code = data.current.weather_code;
-                    
-                    let icon = 'cloud-sun';
-                    let text = 'Nhiều mây';
-
-                    if(code === 0) { icon = 'sun'; text = 'Trời quang'; }
-                    else if(code === 1 || code === 2) { icon = 'cloud-sun'; text = 'Ít mây'; }
-                    else if(code === 3) { icon = 'cloud'; text = 'Nhiều mây'; }
-                    else if(code >= 51 && code <= 67) { icon = 'cloud-rain'; text = 'Có mưa'; }
-                    else if(code >= 71 && code <= 77) { icon = 'snowflake'; text = 'Trời lạnh'; }
-                    else if(code >= 95) { icon = 'cloud-lightning'; text = 'Mưa dông'; }
-
-                    Utils.setText('#weather-temp', `${temp}°C`);
-                    Utils.setText('#weather-feels', `${feels}°C`);
-                    Utils.setText('#weather-desc', text);
-                    Utils.setText('#weather-hum', `${hum}%`);
-                    Utils.setText('#weather-wind', `${wind}km/h`);
-                    
-                    updateIcon('main-weather-icon', icon, 'w-4 h-4 md:w-5 md:h-5 icon-stroke');
-                    if (window.lucide) lucide.createIcons();
-                } catch (error) {
-                    Utils.setText('#weather-temp', '--°C');
-                    Utils.setText('#weather-feels', '--°C');
-                    Utils.setText('#weather-desc', 'Mất kết nối');
-                    Utils.setText('#weather-hum', '--%');
-                    Utils.setText('#weather-wind', '--');
-                }
-            }
-
-            function getCardHTML(p, isPinned) {
-                const name = state.lang === 'vi' ? p.name_vi : p.name_en;
-                const desc = state.lang === 'vi' ? p.desc_vi : p.desc_en;
-                const pinBtnClass = isPinned ? 'pin-btn-active' : 'text-[var(--text-sub)] hover:bg-[var(--glass-base)] hover:text-[var(--text-main)]';
-                const pinnedGlow = isPinned ? `<div class="pin-border-glow"></div>` : '';
-
-                return `
-                <div class="liquid-tool-card interactive-glass p-6 flex flex-col justify-between min-h-[200px] cursor-pointer" onclick="window.open('${p.url}', '_blank')">
-                    ${pinnedGlow}
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="w-14 h-14 rounded-[24px] glass-input flex items-center justify-center text-[var(--text-main)] transition-transform duration-300 group-hover:scale-110">
-                            <i data-lucide="${p.icon}" class="w-7 h-7 icon-stroke"></i>
-                        </div>
-                        <div class="flex gap-2 relative z-10" onclick="event.stopPropagation()">
-                            <button onclick="AppController.copyLink('${p.url}')" class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-sub)] hover:bg-[var(--glass-base)] hover:text-[var(--text-main)] transition-colors active:scale-90">
-                                <i data-lucide="copy" class="w-4 h-4 icon-stroke"></i>
-                            </button>
-                            <button onclick="AppController.togglePin(${p.id})" class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 ${pinBtnClass}">
-                                <i data-lucide="bookmark" class="w-4 h-4 icon-stroke ${isPinned?'fill-current':''}"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="mb-3">
-                            <span class="text-[10px] text-[var(--text-main)] font-bold tracking-widest bg-[var(--text-main)]/5 px-2.5 py-1 rounded-md uppercase border border-[var(--glass-border)]">${p.code}</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-[var(--text-main)] mb-2 tracking-tight">${name}</h3>
-                        <p class="text-sm text-[var(--text-sub)] font-medium leading-relaxed">${desc}</p>
-                    </div>
-                </div>
-                `;
-            }
-
-            function renderAll() {
-                Utils.setText('#subtitle-text', t('subtitle'));
-                const searchInput = Utils.$('#search-input');
-                if (searchInput) searchInput.placeholder = t('searchPlaceholder');
-                Utils.setText('#lang-btn-text', state.lang === 'vi' ? 'VN' : 'EN');
-                Utils.setText('#lang-text-mobile', t('langMobile'));
-                
-                Utils.setText('#pinned-menu-title', t('pinnedTitle'));
-                Utils.setText('#empty-title', t('emptyTitle'));
-                Utils.setText('#empty-text', t('emptyText'));
-                Utils.setText('#tools-title', t('toolsTitle'));
-                
-                Utils.setText('#why-choose-title', t('whyChooseTitle'));
-                Utils.setText('#why-choose-desc', t('whyChooseDesc'));
-                
-                Utils.setText('#copyright', t('footerText') + new Date().getFullYear());
-                
-                renderCategories();
-                renderProjects();
-                renderWhyChooseUs();
-                renderPins();
-                
-                if (window.lucide) lucide.createIcons();
-                updateGlowCache();
-            }
-
-            function renderCategories() {
-                const html = state.categories.map(cat => {
-                    const activeClass = state.activeCategory === cat ? 'active' : '';
-                    return `<button onclick="AppController.setCategory('${cat}')" class="glass-tab text-sm tracking-wider ${activeClass}">${t('cat_'+cat)}</button>`;
-                }).join('');
-                const el = Utils.$('#categories-container');
-                if (el) el.innerHTML = html;
-            }
-
-            function renderProjects() {
-                const filtered = projectsData.filter(p => {
-                    const name = (state.lang === 'vi' ? p.name_vi : p.name_en).toLowerCase();
-                    const matchSearch = name.includes(state.searchTerm) || p.code.toLowerCase().includes(state.searchTerm);
-                    const matchCat = state.activeCategory === 'ALL' || p.category === state.activeCategory;
-                    return matchSearch && matchCat;
-                });
-
-                const el = Utils.$('#projects-grid');
-                if (el) el.innerHTML = filtered.map(p => getCardHTML(p, state.pins.includes(p.id))).join('');
-                
-                const emptyEl = Utils.$('#empty-state');
-                if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);
-                
-                if (window.lucide) lucide.createIcons();
-                updateGlowCache();
-            }
-
-            function renderWhyChooseUs() {
-                const container = Utils.$('#why-choose-grid');
-                if (!container) return;
-                
-                container.innerHTML = WHY_CHOOSE_US_DATA[state.lang].map(item => `
-                    <div class="liquid-tool-card interactive-glass p-8 md:p-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 rounded-[24px] glass-input flex items-center justify-center text-[var(--text-main)] mb-6">
-                            <i data-lucide="${item.icon}" class="w-8 h-8 icon-stroke"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-[var(--text-main)] mb-3 tracking-tight">${item.title}</h3>
-                        <p class="text-base text-[var(--text-sub)] font-medium leading-relaxed">${item.desc}</p>
-                    </div>
-                `).join('');
-            }
-
-            function renderPins() {
-                const badge = Utils.$('#dock-pin-indicator');
-                const menuBadge = Utils.$('#pinned-badge-menu');
-                
-                if (badge) badge.classList.toggle('hidden', state.pins.length === 0);
-                if (menuBadge) menuBadge.textContent = state.pins.length;
-
-                const container = Utils.$('#pinned-menu-content');
-                if (!container) return;
-
-                if (state.pins.length === 0) {
-                    container.innerHTML = `<div class="p-8 text-center text-[var(--text-sub)] font-medium">${t('noPinnedTools')}</div>`;
-                    return;
-                }
-
-                container.innerHTML = projectsData.filter(p => state.pins.includes(p.id)).map(p => `
-                    <div class="popup-item p-4 flex items-center gap-4 cursor-pointer rounded-2xl group" onclick="window.open('${p.url}', '_blank')">
-                        <div class="w-12 h-12 rounded-xl glass-input flex items-center justify-center text-[var(--text-main)] border border-[var(--glass-border)] shadow-inner group-hover:scale-105 transition-transform">
-                            <i data-lucide="${p.icon}" class="w-6 h-6 icon-stroke"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="font-bold text-lg text-[var(--text-main)] tracking-tight">${state.lang==='vi'?p.name_vi:p.name_en}</div>
-                        </div>
-                        <button onclick="event.stopPropagation(); AppController.togglePin(${p.id})" class="w-10 h-10 rounded-full glass-input flex items-center justify-center text-[var(--text-sub)] hover:text-rose-500 hover:bg-rose-500/10 transition-colors">
-                            <i data-lucide="x" class="w-5 h-5 icon-stroke"></i>
-                        </button>
-                    </div>
-                `).join('');
-                
-                if (window.lucide) lucide.createIcons();
-                updateGlowCache();
-            }
-
-            function togglePin(id) {
-                if (state.pins.includes(id)) state.pins = state.pins.filter(pid => pid !== id);
-                else state.pins.push(id);
-                
-                Utils.storage.set(CONSTANTS.STORAGE_KEYS.PINS, state.pins);
-                renderProjects();
-                renderPins();
-            }
-
-            function setCategory(cat) {
-                state.activeCategory = cat;
-                renderCategories();
-                renderProjects();
-            }
-
-            function closeAllDockMenus() {
-                const pinnedMenu = Utils.$('#pinned-menu');
-                const contactMenu = Utils.$('#contact-menu');
-                if (pinnedMenu) {
-                    pinnedMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    pinnedMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-                if (contactMenu) {
-                    contactMenu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    contactMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-            }
-
-            function togglePinnedMenu() {
-                const menu = Utils.$('#pinned-menu');
-                if (menu.classList.contains('opacity-0')) {
-                    closeAllDockMenus();
-                    menu.classList.remove('opacity-0', 'invisible', 'translate-y-8');
-                    menu.classList.add('opacity-100', 'visible', 'translate-y-0');
-                } else {
-                    menu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-            }
-
-            function toggleContactMenu() {
-                const menu = Utils.$('#contact-menu');
-                if (menu.classList.contains('opacity-0')) {
-                    closeAllDockMenus();
-                    menu.classList.remove('opacity-0', 'invisible', 'translate-y-8');
-                    menu.classList.add('opacity-100', 'visible', 'translate-y-0');
-                } else {
-                    menu.classList.add('opacity-0', 'invisible', 'translate-y-8');
-                    menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                }
-            }
-
-            function toggleMobileMenu() {
-                const menu = Utils.$('#mobile-menu');
-                if (menu) menu.classList.toggle('translate-x-full');
-            }
-
-            function copyLink(url) {
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(url).then(() => showToast(t('copied')))
-                    .catch(err => fallbackCopy(url));
-                } else {
-                    fallbackCopy(url);
-                }
-            }
-
-            function fallbackCopy(url) {
-                const textarea = document.createElement('textarea');
-                textarea.value = url;
-                textarea.style.position = 'absolute';
-                textarea.style.left = '-9999px';
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast(t('copied'));
-                } catch (err) {}
-                document.body.removeChild(textarea);
-            }
-
-            function scrollToTop() {
-                window.scrollTo({top: 0, behavior: 'smooth'});
-                closeAllDockMenus();
-            }
-
-            function showToast(msg) {
-                const tst = document.createElement('div');
-                tst.className = 'glass-panel glass-pill px-8 py-4 flex items-center justify-center gap-3 font-bold text-[var(--text-main)] shadow-2xl animate-enter w-full max-w-[90vw] md:max-w-none mx-auto';
-                tst.style.animation = 'floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-                tst.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-[var(--text-main)] icon-stroke"></i> <span>${msg}</span>`;
-                Utils.$('#toast-container').appendChild(tst);
-                if (window.lucide) lucide.createIcons();
-                setTimeout(() => {
-                    tst.style.opacity = '0';
-                    tst.style.transform = 'translateY(-20px)';
-                    tst.style.transition = 'all 0.4s ease';
-                    setTimeout(() => tst.remove(), 400);
-                }, 2500);
-            }
-
-            return { 
-                init, toggleTheme, toggleLang, setCategory, togglePin, 
-                togglePinnedMenu, toggleContactMenu, toggleMobileMenu,
-                copyLink, scrollToTop,
-                clearSearch: () => { 
-                    const el = Utils.$('#search-input');
-                    if(el) el.value=''; 
-                    state.searchTerm=''; 
-                    renderProjects(); 
-                    const clearBtn = Utils.$('#clear-search');
-                    if(clearBtn) clearBtn.classList.add('hidden'); 
-                }, 
-                resetFilters: () => { 
-                    state.activeCategory = 'ALL'; 
-                    const el = Utils.$('#search-input');
-                    if(el) el.value=''; 
-                    state.searchTerm=''; 
-                    const clearBtn = Utils.$('#clear-search');
-                    if(clearBtn) clearBtn.classList.add('hidden'); 
-                    renderCategories(); renderProjects(); 
-                } 
-            };
-        })();
-
-        document.addEventListener('DOMContentLoaded', AppController.init);
-    </script>
+  </nav>
+
+  <div class="modal-layer" data-modal-layer aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head">
+        <div>
+          <span class="modal-tag" data-modal-tag>Portfolio</span>
+          <h2 class="modal-title" id="modal-title" data-modal-title>Chi tiết</h2>
+        </div>
+        <button class="modal-close" type="button" data-modal-close aria-label="Đóng popup">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc" data-modal-desc></p>
+        <ul class="modal-list" data-modal-list></ul>
+        <div class="modal-chips" data-modal-chips></div>
+        <div class="modal-actions">
+          <a class="btn" href="mailto:Ndmanhh@gmail.com">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+            Trao đổi ngay
+          </a>
+          <button class="btn secondary" type="button" data-modal-close>Đóng</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
 </body>
 </html>

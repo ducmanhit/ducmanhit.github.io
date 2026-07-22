@@ -1,1108 +1,256 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Lost in Space</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <title>404 - Không tìm thấy trang</title>
+    <!-- Sử dụng Tailwind CSS qua CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Import font chữ tương tự phong cách trong ảnh (Sử dụng Google Fonts) -->
+    <!-- 'Chakra Petch' mang lại cảm giác công nghệ, hơi vuông vức tương tự typography trong hình -->
+    <!-- 'Inter' dùng cho text body cho dễ đọc -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Cấu hình Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ndm-dark': '#111111',       // Đen nhám như nền phần hero
+                        'ndm-gray-dark': '#1a1a1a',  // Xám đậm cho các mảng
+                        'ndm-border': '#333333',     // Viền xám mờ trên nền đen
+                        'ndm-yellow': '#FFC107',     // Vàng nổi bật (như chữ MẠNH)
+                        'ndm-light': '#F4F4F4',      // Trắng ngà cho phần nội dung bên dưới
+                        'ndm-text-gray': '#888888',  // Text phụ
+                    },
+                    fontFamily: {
+                        'display': ['"Chakra Petch"', 'sans-serif'], // Font tiêu đề
+                        'body': ['"Inter"', 'sans-serif'],          // Font văn bản
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #222 1px, transparent 1px), linear-gradient(to bottom, #222 1px, transparent 1px)",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Style bổ sung cho các hiệu ứng đặc biệt -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #6366f1;
-            --secondary: #a855f7;
-            --accent: #ec4899;
-            --bg-dark: #030014;
-            --text: #e2e8f0;
-            --text-muted: #64748b;
-        }
-
         body {
-            min-height: 100vh;
-            background: var(--bg-dark);
-            font-family: 'Outfit', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
+            background-color: #111111;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            /* Tạo background lưới mờ giống phong cách thiết kế kỹ thuật */
+            background-image: linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px);
+            background-size: 50px 50px;
+            overflow-x: hidden;
         }
 
-        /* Animated gradient background */
-        .bg-gradient {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .font-display {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Hiệu ứng mờ cho text nền "404" khổng lồ */
+        .text-huge-bg {
+            font-size: 25vw;
+            line-height: 0.8;
+            color: rgba(255, 255, 255, 0.03);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 0;
-            background:
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-                radial-gradient(ellipse 60% 40% at 90% 100%, rgba(168, 85, 247, 0.1), transparent),
-                radial-gradient(ellipse 50% 30% at 10% 80%, rgba(236, 72, 153, 0.08), transparent);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            animation: pulse-slow 4s infinite alternate;
         }
 
-        /* Star layers */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        @keyframes pulse-slow {
+            0% { opacity: 0.02; transform: translate(-50%, -50%) scale(0.98); }
+            100% { opacity: 0.05; transform: translate(-50%, -50%) scale(1.02); }
         }
 
-        .stars-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-repeat: repeat;
+        /* Cấu trúc viền đặc trưng giống portfolio */
+        .ndm-box {
+            border: 1px solid #333;
+            background-color: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(5px);
         }
 
-        /* Canvas for interactive stars */
-        #cosmos {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 2;
+        /* Hiệu ứng hover cho nút */
+        .btn-hover-effect {
+            transition: all 0.3s ease;
+        }
+        .btn-hover-effect:hover {
+            background-color: #FFC107;
+            color: #111;
+            border-color: #FFC107;
         }
 
-        /* Floating orbs */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.5;
-            z-index: 1;
-            animation: orb-float 20s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--primary);
-            top: -100px;
-            right: -100px;
-            animation-delay: 0s;
-        }
-
-        .orb-2 {
-            width: 300px;
-            height: 300px;
-            background: var(--secondary);
-            bottom: -50px;
-            left: -50px;
-            animation-delay: -7s;
-        }
-
-        .orb-3 {
-            width: 200px;
-            height: 200px;
-            background: var(--accent);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -14s;
-        }
-
-        @keyframes orb-float {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            25% {
-                transform: translate(50px, -50px) scale(1.1);
-            }
-
-            50% {
-                transform: translate(-30px, 30px) scale(0.9);
-            }
-
-            75% {
-                transform: translate(30px, 50px) scale(1.05);
-            }
-        }
-
-        /* Main container */
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 40px 20px;
-            max-width: 600px;
-        }
-
-        /* Astronaut illustration */
-        .astronaut-scene {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto 40px;
-        }
-
-        .astronaut-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: astronaut-drift 8s ease-in-out infinite;
-        }
-
-        @keyframes astronaut-drift {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) rotate(-8deg);
-            }
-
-            50% {
-                transform: translate(-50%, calc(-50% - 20px)) rotate(8deg);
-            }
-        }
-
-        .astronaut-svg {
-            width: 160px;
-            height: 180px;
-            filter: drop-shadow(0 0 40px rgba(99, 102, 241, 0.4));
-        }
-
-        /* Planet */
-        .planet {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 80px;
-            height: 80px;
-            animation: planet-float 12s ease-in-out infinite;
-        }
-
-        @keyframes planet-float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-15px) rotate(10deg);
-            }
-        }
-
-        /* Moon */
-        .moon {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            width: 40px;
-            height: 40px;
-            animation: moon-orbit 15s linear infinite;
-        }
-
-        @keyframes moon-orbit {
-            from {
-                transform: rotate(0deg) translateX(20px) rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg) translateX(20px) rotate(-360deg);
-            }
-        }
-
-        /* Stars decoration */
-        .deco-stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .deco-star {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-
-            0%,
-            100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.5);
-            }
-        }
-
-        /* Error code */
-        .error-section {
-            margin-bottom: 32px;
-        }
-
-        .error-code {
-            font-size: clamp(100px, 22vw, 160px);
-            font-weight: 800;
-            line-height: 1;
+        .glitch-text {
             position: relative;
             display: inline-block;
         }
-
-        .error-code .digit {
-            display: inline-block;
-            background: linear-gradient(180deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: digit-float 3s ease-in-out infinite;
-            position: relative;
-        }
-
-        .error-code .digit:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .error-code .digit:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .error-code .digit:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes digit-float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
-        }
-
-        .error-code::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 40px;
-            background: linear-gradient(180deg, rgba(99, 102, 241, 0.3), transparent);
-            filter: blur(20px);
-            border-radius: 50%;
-        }
-
-        /* Glitch effect */
-        .glitch-wrapper {
-            position: relative;
-        }
-
-        .glitch-wrapper::before,
-        .glitch-wrapper::after {
-            content: '404';
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            font-size: clamp(100px, 22vw, 160px);
-            font-weight: 800;
+            width: 100%;
+            height: 100%;
             opacity: 0.8;
         }
-
-        .glitch-wrapper::before {
-            color: #ff006e;
-            animation: glitch-1 4s infinite;
-            clip-path: inset(0 0 70% 0);
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
         }
-
-        .glitch-wrapper::after {
-            color: #00f5ff;
-            animation: glitch-2 4s infinite;
-            clip-path: inset(70% 0 0 0);
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
         }
-
-        @keyframes glitch-1 {
-
-            0%,
-            89%,
-            100% {
-                transform: translateX(0);
-                opacity: 0;
-            }
-
-            90% {
-                transform: translateX(-10px) skewX(-2deg);
-                opacity: 0.6;
-            }
-
-            92% {
-                transform: translateX(8px) skewX(2deg);
-                opacity: 0.6;
-            }
-
-            94% {
-                transform: translateX(-5px);
-                opacity: 0;
-            }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
         }
-
-        @keyframes glitch-2 {
-
-            0%,
-            93%,
-            100% {
-                transform: translateX(0);
-                opacity: 0;
-            }
-
-            94% {
-                transform: translateX(10px) skewX(3deg);
-                opacity: 0.6;
-            }
-
-            96% {
-                transform: translateX(-8px) skewX(-3deg);
-                opacity: 0.6;
-            }
-
-            98% {
-                transform: translateX(5px);
-                opacity: 0;
-            }
-        }
-
-        /* Message */
-        .message {
-            margin-bottom: 40px;
-        }
-
-        .title {
-            font-size: clamp(20px, 4vw, 26px);
-            font-weight: 600;
-            margin-bottom: 12px;
-            min-height: 32px;
-        }
-
-        .title .typed-text {
-            background: linear-gradient(90deg, var(--accent), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1em;
-            background: var(--accent);
-            margin-left: 2px;
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom;
-        }
-
-        @keyframes blink {
-
-            0%,
-            50% {
-                opacity: 1;
-            }
-
-            51%,
-            100% {
-                opacity: 0;
-            }
-        }
-
-        .subtitle {
-            font-size: clamp(14px, 2.5vw, 16px);
-            color: var(--text-muted);
-            font-weight: 400;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fade-up 0.6s ease forwards;
-            animation-delay: 3s;
-        }
-
-        @keyframes fade-up {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Countdown */
-        .countdown-section {
-            margin-bottom: 32px;
-            opacity: 0;
-            animation: fade-up 0.6s ease forwards;
-            animation-delay: 3.5s;
-        }
-
-        .countdown-container {
-            display: inline-flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px 28px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 100px;
-            backdrop-filter: blur(10px);
-        }
-
-        .countdown-icon {
-            width: 20px;
-            height: 20px;
-            opacity: 0.6;
-        }
-
-        .countdown-text {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .countdown-number {
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--text);
-            min-width: 24px;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Progress bar */
-        .progress-bar {
-            width: 60px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 10px;
-            transition: width 1s linear;
-        }
-
-        /* Button */
-        .btn-container {
-            opacity: 0;
-            animation: fade-up 0.6s ease forwards;
-            animation-delay: 4s;
-        }
-
-        .return-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            border-radius: 100px;
-            cursor: pointer;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .return-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .return-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-        }
-
-        .return-btn:hover::before {
-            opacity: 1;
-        }
-
-        .btn-text {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-icon {
-            position: relative;
-            z-index: 1;
-            width: 20px;
-            height: 20px;
-            transition: transform 0.4s ease;
-        }
-
-        .return-btn:hover .btn-icon {
-            transform: translateX(4px);
-        }
-
-        /* Floating elements */
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .floating-rocket {
-            position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 50px;
-            height: 50px;
-            animation: rocket-float 10s ease-in-out infinite;
-            opacity: 0.8;
-        }
-
-        @keyframes rocket-float {
-
-            0%,
-            100% {
-                transform: translate(0, 0) rotate(-45deg);
-            }
-
-            25% {
-                transform: translate(-20px, -30px) rotate(-40deg);
-            }
-
-            50% {
-                transform: translate(10px, -50px) rotate(-50deg);
-            }
-
-            75% {
-                transform: translate(-15px, -20px) rotate(-42deg);
-            }
-        }
-
-        .floating-satellite {
-            position: absolute;
-            bottom: 20%;
-            left: 8%;
-            width: 40px;
-            height: 40px;
-            animation: satellite-orbit 25s linear infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes satellite-orbit {
-            from {
-                transform: rotate(0deg) translateX(30px) rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg) translateX(30px) rotate(-360deg);
-            }
-        }
-
-        /* Signal waves */
-        .signal-waves {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 4px;
-            opacity: 0;
-            animation: fade-up 0.6s ease forwards;
-            animation-delay: 4.5s;
-            z-index: 10;
-        }
-
-        .signal-bar {
-            width: 3px;
-            background: linear-gradient(to top, var(--primary), var(--secondary));
-            border-radius: 2px;
-            animation: signal 1s ease-in-out infinite;
-        }
-
-        .signal-bar:nth-child(1) {
-            height: 8px;
-            animation-delay: 0s;
-        }
-
-        .signal-bar:nth-child(2) {
-            height: 14px;
-            animation-delay: 0.1s;
-        }
-
-        .signal-bar:nth-child(3) {
-            height: 20px;
-            animation-delay: 0.2s;
-        }
-
-        .signal-bar:nth-child(4) {
-            height: 14px;
-            animation-delay: 0.3s;
-        }
-
-        .signal-bar:nth-child(5) {
-            height: 8px;
-            animation-delay: 0.4s;
-        }
-
-        @keyframes signal {
-
-            0%,
-            100% {
-                opacity: 0.4;
-                transform: scaleY(0.8);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scaleY(1);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 640px) {
-            .astronaut-scene {
-                width: 220px;
-                height: 220px;
-            }
-
-            .astronaut-svg {
-                width: 120px;
-                height: 140px;
-            }
-
-            .planet {
-                width: 60px;
-                height: 60px;
-                right: 10px;
-            }
-
-            .moon {
-                width: 30px;
-                height: 30px;
-            }
-
-            .floating-rocket,
-            .floating-satellite {
-                display: none;
-            }
-
-            .orb {
-                filter: blur(40px);
-                opacity: 0.3;
-            }
-        }
-
-        /* Noise texture overlay */
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.03;
-            z-index: 100;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(90% 0 5% 0); }
+            100% { clip-path: inset(40% 0 30% 0); }
         }
     </style>
 </head>
 
-<body>
-    <!-- Background gradient -->
-    <div class="bg-gradient"></div>
+<body class="min-h-screen flex items-center justify-center relative px-4 md:px-8 py-12">
 
-    <!-- Floating orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <!-- Interactive canvas -->
-    <canvas id="cosmos"></canvas>
-
-    <!-- Floating elements -->
-    <div class="floating-elements">
-        <!-- Rocket -->
-        <svg class="floating-rocket" viewBox="0 0 64 64" fill="none">
-            <path d="M32 4L40 20L56 28L40 36L32 60L24 36L8 28L24 20L32 4Z" fill="url(#rocket-grad)" opacity="0.9" />
-            <defs>
-                <linearGradient id="rocket-grad" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#fff" />
-                    <stop offset="1" stop-color="#a855f7" />
-                </linearGradient>
-            </defs>
-        </svg>
-
-        <!-- Satellite -->
-        <svg class="floating-satellite" viewBox="0 0 48 48" fill="none">
-            <rect x="18" y="18" width="12" height="12" rx="2" fill="#6366f1" />
-            <rect x="4" y="21" width="14" height="6" rx="1" fill="#a855f7" />
-            <rect x="30" y="21" width="14" height="6" rx="1" fill="#a855f7" />
-            <circle cx="24" cy="24" r="3" fill="#fff" />
-        </svg>
+    <!-- Chữ 404 khổng lồ làm background mờ (giống chữ PORTFOLIO mờ trong ảnh gốc) -->
+    <div class="text-huge-bg font-display font-bold tracking-tighter w-full text-center mix-blend-screen">
+        ERROR
     </div>
 
-    <!-- Noise texture -->
-    <div class="noise"></div>
-
-    <!-- Main content -->
-    <div class="container">
-        <!-- Astronaut scene -->
-        <div class="astronaut-scene">
-            <!-- Decorative stars -->
-            <div class="deco-stars">
-                <div class="deco-star" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
-                <div class="deco-star" style="top: 25%; right: 15%; animation-delay: 0.5s;"></div>
-                <div class="deco-star" style="bottom: 30%; left: 10%; animation-delay: 1s;"></div>
-                <div class="deco-star" style="top: 50%; right: 25%; animation-delay: 1.5s;"></div>
-                <div class="deco-star" style="bottom: 15%; right: 35%; animation-delay: 0.7s;"></div>
-            </div>
-
-            <!-- Moon -->
-            <svg class="moon" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="20" fill="url(#moon-grad)" />
-                <circle cx="18" cy="20" r="4" fill="rgba(0,0,0,0.1)" />
-                <circle cx="28" cy="28" r="3" fill="rgba(0,0,0,0.08)" />
-                <circle cx="22" cy="30" r="2" fill="rgba(0,0,0,0.06)" />
-                <defs>
-                    <radialGradient id="moon-grad" cx="0.3" cy="0.3">
-                        <stop stop-color="#f1f5f9" />
-                        <stop offset="1" stop-color="#94a3b8" />
-                    </radialGradient>
-                </defs>
-            </svg>
-
-            <!-- Planet -->
-            <svg class="planet" viewBox="0 0 80 80" fill="none">
-                <circle cx="40" cy="40" r="30" fill="url(#planet-grad)" />
-                <ellipse cx="40" cy="40" rx="45" ry="8" stroke="url(#ring-grad)" stroke-width="3" fill="none"
-                    opacity="0.6" />
-                <defs>
-                    <linearGradient id="planet-grad" x1="10" y1="10" x2="70" y2="70">
-                        <stop stop-color="#6366f1" />
-                        <stop offset="0.5" stop-color="#a855f7" />
-                        <stop offset="1" stop-color="#ec4899" />
-                    </linearGradient>
-                    <linearGradient id="ring-grad" x1="0" y1="40" x2="80" y2="40">
-                        <stop stop-color="transparent" />
-                        <stop offset="0.3" stop-color="#a855f7" />
-                        <stop offset="0.7" stop-color="#6366f1" />
-                        <stop offset="1" stop-color="transparent" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <!-- Astronaut -->
-            <div class="astronaut-wrapper">
-                <svg class="astronaut-svg" viewBox="0 0 120 140" fill="none">
-                    <!-- Backpack -->
-                    <rect x="35" y="55" width="50" height="45" rx="8" fill="#1e293b" />
-                    <rect x="40" y="60" width="10" height="6" rx="2" fill="#6366f1" />
-                    <rect x="52" y="60" width="10" height="6" rx="2" fill="#a855f7" />
-                    <rect x="64" y="60" width="10" height="6" rx="2" fill="#ec4899" />
-
-                    <!-- Body -->
-                    <ellipse cx="60" cy="85" rx="30" ry="35" fill="url(#suit-grad)" />
-
-                    <!-- Helmet -->
-                    <circle cx="60" cy="40" r="32" fill="url(#helmet-grad)" />
-                    <circle cx="60" cy="40" r="28" fill="#1e293b" />
-
-                    <!-- Visor -->
-                    <ellipse cx="60" cy="40" rx="22" ry="20" fill="url(#visor-grad)">
-                        <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite" />
-                    </ellipse>
-
-                    <!-- Visor reflection -->
-                    <ellipse cx="52" cy="33" rx="6" ry="4" fill="rgba(255,255,255,0.25)" />
-
-                    <!-- Arms -->
-                    <ellipse cx="28" cy="80" rx="10" ry="22" fill="url(#suit-grad)" transform="rotate(-15 28 80)" />
-                    <ellipse cx="92" cy="80" rx="10" ry="22" fill="url(#suit-grad)" transform="rotate(15 92 80)" />
-
-                    <!-- Gloves -->
-                    <circle cx="22" cy="98" r="8" fill="#e2e8f0" />
-                    <circle cx="98" cy="98" r="8" fill="#e2e8f0" />
-
-                    <!-- Legs -->
-                    <ellipse cx="45" cy="115" rx="12" ry="18" fill="url(#suit-grad)" />
-                    <ellipse cx="75" cy="115" rx="12" ry="18" fill="url(#suit-grad)" />
-
-                    <!-- Boots -->
-                    <ellipse cx="44" cy="132" rx="10" ry="6" fill="#334155" />
-                    <ellipse cx="76" cy="132" rx="10" ry="6" fill="#334155" />
-
-                    <!-- Chest display -->
-                    <rect x="48" y="75" width="24" height="18" rx="4" fill="#0f172a" />
-                    <circle cx="54" cy="81" r="2" fill="#22c55e">
-                        <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
-                    </circle>
-                    <circle cx="60" cy="81" r="2" fill="#eab308">
-                        <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
-                    </circle>
-                    <circle cx="66" cy="81" r="2" fill="#ef4444">
-                        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
-                    </circle>
-                    <rect x="51" y="86" width="18" height="4" rx="1" fill="#1e293b" />
-
-                    <defs>
-                        <linearGradient id="suit-grad" x1="30" y1="50" x2="90" y2="130">
-                            <stop stop-color="#f8fafc" />
-                            <stop offset="1" stop-color="#cbd5e1" />
-                        </linearGradient>
-                        <linearGradient id="helmet-grad" x1="28" y1="8" x2="92" y2="72">
-                            <stop stop-color="#f1f5f9" />
-                            <stop offset="1" stop-color="#94a3b8" />
-                        </linearGradient>
-                        <linearGradient id="visor-grad" x1="38" y1="20" x2="82" y2="60">
-                            <stop stop-color="#6366f1" />
-                            <stop offset="0.5" stop-color="#a855f7" />
-                            <stop offset="1" stop-color="#0ea5e9" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+    <!-- Container chính -->
+    <div class="max-w-5xl w-full mx-auto relative z-10 flex flex-col items-center">
+        
+        <!-- Phần Header nhỏ góc trái trên (giống thẻ PORTFOLIO / 2026) -->
+        <div class="w-full flex justify-start mb-8 md:mb-16">
+            <div class="flex border border-ndm-border text-[10px] md:text-xs font-display tracking-widest text-ndm-text-gray">
+                <div class="px-3 py-1 border-r border-ndm-border uppercase">System Error</div>
+                <div class="px-3 py-1 text-white uppercase bg-ndm-gray-dark">Page Not Found</div>
             </div>
         </div>
 
-        <!-- 404 Error -->
-        <div class="error-section">
-            <div class="glitch-wrapper">
-                <h1 class="error-code">
-                    <span class="digit">4</span>
-                    <span class="digit">0</span>
-                    <span class="digit">4</span>
+        <!-- Khối nội dung chính (Grid layout mô phỏng cấu trúc hộp của website gốc) -->
+        <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-ndm-border bg-[#111] relative shadow-2xl">
+            
+            <div class="md:col-span-7 lg:col-span-8 p-8 md:p-12 border-b md:border-b-0 md:border-r border-ndm-border flex flex-col justify-center relative overflow-hidden">
+                <!-- Điểm nhấn hình tròn xanh/đỏ (giống góc trên bên phải của khung đen trong hình) -->
+                <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-ndm-border opacity-50 m-4 pointer-events-none"></div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-ndm-border opacity-50 m-4 pointer-events-none"></div>
+                
+                <div class="absolute top-6 right-6 w-3 h-3 rounded-full bg-[#ff3333] shadow-[0_0_15px_rgba(255,51,51,0.8)] animate-pulse"></div>
+
+                <h1 class="font-display font-bold text-[80px] sm:text-[120px] md:text-[140px] leading-none mb-4 text-white uppercase tracking-tight">
+                    <span class="block text-ndm-text-gray text-2xl sm:text-4xl md:text-5xl mb-2 font-normal tracking-widest">HỆ THỐNG</span>
+                    <span class="glitch-text" data-text="LỖI">LỖI</span> <br>
+                    <span class="text-ndm-yellow inline-block transform hover:scale-105 transition-transform cursor-default">404</span>
                 </h1>
+                
+                <p class="font-body text-ndm-text-gray md:text-lg max-w-md mt-6 leading-relaxed relative z-10 bg-ndm-dark/50 backdrop-blur-sm p-4 border-l-2 border-ndm-yellow">
+                    Tọa độ dữ liệu bạn yêu cầu không tồn tại trong vùng không gian này. Có thể trang đã bị dỡ bỏ hoặc liên kết bị đứt gãy.
+                </p>
+
+                <!-- Thẻ tags phong cách portfolio -->
+                <div class="flex flex-wrap gap-4 mt-10">
+                    <span class="px-5 py-2 bg-ndm-yellow text-black font-display text-sm font-bold uppercase tracking-widest hover:bg-white transition-colors cursor-default">Mất Kết Nối</span>
+                    <span class="px-5 py-2 border border-ndm-border text-white font-display text-sm uppercase tracking-widest hover:border-ndm-yellow transition-colors cursor-default">Dữ Liệu Trống</span>
+                </div>
             </div>
-        </div>
 
-        <!-- Message -->
-        <div class="message">
-            <p class="title" id="title"></p>
-            <p class="subtitle">Trang bạn tìm kiếm đã trôi dạt vào không gian sâu thẳm</p>
-        </div>
+            <div class="md:col-span-5 lg:col-span-4 flex flex-col">
+                <!-- Khối trên (Mô phỏng khối NDM vuông) -->
+                <div class="flex-grow p-8 md:p-10 border-b border-ndm-border bg-ndm-dark relative flex items-center justify-center min-h-[300px] overflow-hidden">
+                    <!-- Hiệu ứng lưới động trong hộp -->
+                    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:10px_10px]"></div>
+                    
+                    <!-- Khung trang trí giả 3D lệch -->
+                    <div class="absolute inset-0 m-10 border-[3px] border-[#006644] translate-x-3 translate-y-3 opacity-80 pointer-events-none transition-transform duration-500 hover:translate-x-4 hover:translate-y-4"></div>
+                    <div class="absolute inset-0 m-10 border-[3px] border-ndm-yellow -translate-x-3 -translate-y-3 pointer-events-none z-10 transition-transform duration-500 hover:-translate-x-4 hover:-translate-y-4"></div>
+                    
+                    <div class="text-center z-20 bg-[#0a0a0a] border border-[#222] px-8 py-10 shadow-2xl relative group cursor-pointer">
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-5 transition-opacity"></div>
+                        <div class="font-display text-6xl font-black text-white mb-3 tracking-tighter">404</div>
+                        <div class="font-display text-[10px] tracking-[0.3em] text-ndm-yellow uppercase border-t border-[#333] pt-3">
+                            TÌM KIẾM / THẤT BẠI
+                        </div>
+                    </div>
 
-        <!-- Countdown -->
-        <div class="countdown-section">
-            <div class="countdown-container">
-                <svg class="countdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12,6 12,12 16,14" />
-                </svg>
-                <span class="countdown-text">Quay về trong</span>
-                <span class="countdown-number" id="countdown">10</span>
-                <span class="countdown-text">giây</span>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress"></div>
+                    <!-- Thẻ nhỏ ghim lên viền -->
+                    <div class="absolute -left-2 top-1/4 bg-white text-black px-2 py-1 font-display text-[9px] font-bold z-30 uppercase shadow-md rotate-90 origin-left">
+                        MODULE
+                    </div>
+                    <div class="absolute right-4 bottom-4 bg-[#111] border border-ndm-border text-white px-3 py-1 font-display text-[10px] font-bold z-30 uppercase">
+                        ERR_NOT_FOUND
+                    </div>
+                </div>
+
+                <!-- Khối dưới (Mô phỏng nút chức năng) -->
+                <div class="p-6 md:p-8 bg-[#151515] flex flex-col justify-center items-center gap-4">
+                    <p class="font-body text-sm text-ndm-text-gray text-center mb-2">
+                        Quay lại trạm điều khiển chính để tiếp tục hành trình.
+                    </p>
+                    
+                    <!-- Nhóm nút -->
+                    <div class="flex flex-col sm:flex-row w-full gap-0 border border-ndm-border bg-[#111] relative overflow-hidden group/btn-container">
+                        <!-- Nút Home -->
+                        <a href="https://ducmanh.io.vn/" class="relative z-10 flex-1 px-6 py-5 bg-white text-black font-display font-bold text-sm uppercase tracking-widest text-center flex items-center justify-center gap-3 hover:bg-[#e0e0e0] transition-all duration-300">
+                            <span class="w-2 h-2 bg-black rounded-full"></span>
+                            Trang Chủ
+                        </a>
+                        
+                        <!-- Nút Contact (Phong cách "Xem chuyên môn" trong hình) -->
+                        <a href="javascript:history.back()" class="relative z-10 flex-1 px-6 py-5 bg-transparent text-white font-display text-sm font-bold uppercase tracking-widest text-center border-t sm:border-t-0 sm:border-l border-ndm-border flex items-center justify-center gap-3 btn-hover-effect overflow-hidden">
+                            <span class="w-4 h-[2px] bg-white group-hover/btn-container:bg-black transition-colors"></span>
+                            Quay Lại
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Button -->
-        <div class="btn-container">
-            <a href="https://ducmanh.io.vn/" class="return-btn" id="returnBtn">
-                <span class="btn-text">Quay về Trái Đất</span>
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </a>
+        <!-- Thanh trạng thái dưới cùng (Mô phỏng dòng metrics dưới header trong ảnh) -->
+        <div class="w-full flex flex-wrap border border-t-0 border-ndm-border bg-[#111] text-[10px] md:text-xs font-display tracking-widest text-ndm-text-gray">
+            <div class="flex-1 px-4 py-3 border-r border-ndm-border">
+                <span class="block text-[8px] uppercase mb-1 opacity-60">Status Code</span>
+                <span class="text-white font-bold">404 NOT FOUND</span>
+            </div>
+            <div class="flex-1 px-4 py-3 border-r border-ndm-border hidden sm:block">
+                <span class="block text-[8px] uppercase mb-1 opacity-60">System Message</span>
+                <span class="text-white">INVALID_URL_REQUEST</span>
+            </div>
+            <div class="flex-1 px-4 py-3 text-right">
+                <span class="block text-[8px] uppercase mb-1 opacity-60">Action</span>
+                <span class="text-white font-bold">RETURN TO HOME</span>
+            </div>
         </div>
+
     </div>
 
-    <!-- Signal waves -->
-    <div class="signal-waves">
-        <div class="signal-bar"></div>
-        <div class="signal-bar"></div>
-        <div class="signal-bar"></div>
-        <div class="signal-bar"></div>
-        <div class="signal-bar"></div>
-    </div>
-
-    <script>
-        // Canvas setup for stars
-        const canvas = document.getElementById('cosmos');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        let shootingStars = [];
-        let mouse = { x: null, y: null };
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            createStars();
-        }
-
-        function createStars() {
-            stars = [];
-            const count = Math.min(Math.floor((canvas.width * canvas.height) / 5000), 300);
-
-            for (let i = 0; i < count; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 1.5 + 0.5,
-                    opacity: Math.random() * 0.6 + 0.2,
-                    speed: Math.random() * 0.02 + 0.01,
-                    angle: Math.random() * Math.PI * 2
-                });
-            }
-        }
-
-        function createShootingStar() {
-            if (shootingStars.length < 2 && Math.random() < 0.01) {
-                shootingStars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height * 0.5,
-                    length: Math.random() * 80 + 40,
-                    speed: Math.random() * 8 + 6,
-                    angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
-                    opacity: 1
-                });
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw stars
-            stars.forEach(star => {
-                star.angle += star.speed;
-                const twinkle = Math.sin(star.angle) * 0.3 + 0.7;
-
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size * twinkle, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`;
-                ctx.fill();
-            });
-
-            // Draw shooting stars
-            createShootingStar();
-            shootingStars = shootingStars.filter(star => {
-                star.x += Math.cos(star.angle) * star.speed;
-                star.y += Math.sin(star.angle) * star.speed;
-                star.opacity -= 0.015;
-
-                if (star.opacity <= 0) return false;
-
-                const gradient = ctx.createLinearGradient(
-                    star.x, star.y,
-                    star.x - Math.cos(star.angle) * star.length,
-                    star.y - Math.sin(star.angle) * star.length
-                );
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
-                gradient.addColorStop(1, 'transparent');
-
-                ctx.beginPath();
-                ctx.moveTo(star.x, star.y);
-                ctx.lineTo(
-                    star.x - Math.cos(star.angle) * star.length,
-                    star.y - Math.sin(star.angle) * star.length
-                );
-                ctx.strokeStyle = gradient;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Head glow
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                ctx.fill();
-
-                return true;
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        // Typing effect
-        async function typeText(element, text) {
-            const cursorSpan = '<span class="cursor"></span>';
-            element.innerHTML = cursorSpan;
-
-            for (let i = 0; i < text.length; i++) {
-                await new Promise(r => setTimeout(r, 60));
-                element.innerHTML = `<span class="typed-text">${text.slice(0, i + 1)}</span>${cursorSpan}`;
-            }
-
-            await new Promise(r => setTimeout(r, 800));
-            element.innerHTML = `<span class="typed-text">${text}</span>`;
-        }
-
-        // Countdown
-        function startCountdown() {
-            let count = 10;
-            const countdownEl = document.getElementById('countdown');
-            const progressEl = document.getElementById('progress');
-
-            progressEl.style.width = '100%';
-
-            const interval = setInterval(() => {
-                count--;
-                countdownEl.textContent = count;
-                progressEl.style.width = `${count * 10}%`;
-
-                if (count <= 0) {
-                    clearInterval(interval);
-                    window.location.href = 'https://ducmanh.io.vn/';
-                }
-            }, 1000);
-        }
-
-        // Initialize
-        window.addEventListener('resize', resize);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            resize();
-            animate();
-
-            setTimeout(() => {
-                typeText(document.getElementById('title'), 'Houston, chúng ta gặp sự cố...')
-                    .then(() => setTimeout(startCountdown, 500));
-            }, 800);
-        });
-
-        // Button click
-        document.getElementById('returnBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.6s ease';
-            setTimeout(() => {
-                window.location.href = 'https://ducmanh.io.vn/';
-            }, 600);
-        });
-    </script>
 </body>
-
 </html>

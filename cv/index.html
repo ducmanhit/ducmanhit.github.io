@@ -3,341 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình Tải Video - Premium</title>
+    <title>Journey to 01.08.2026</title>
+    <!-- Nhúng Tailwind CSS qua CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400&display=swap');
         
-        :root {
-            --fg: #0a0a0a;
-            --bg: #fafafa;
-            --border-color: #E5E7EB;
+        body, html {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Jost', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--fg);
-            -webkit-font-smoothing: antialiased;
+        /* ?n scrollbar d? gi? giao di?n siêu s?ch */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
         }
 
-        .loader {
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top: 2px solid #ffffff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
+        .thin-text { font-weight: 200; }
+        .ultra-thin { font-weight: 100; }
+        .tracking-mega { letter-spacing: 0.2em; }
+        .tracking-ultra { letter-spacing: 0.5em; }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 200;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        ::selection {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Class d? làm to form ch? d?m ngu?c mà gi? nguyên t? l?, c? d?nh chi?u r?ng ch?ng nh?y s? */
+        .giant-number {
+            font-size: 8rem; 
+            line-height: 1;
+            text-shadow: 0 0 40px rgba(255,255,255,0.1);
+            font-variant-numeric: tabular-nums;
+            display: inline-block;
+            min-width: 1.4em;
+            text-align: center;
+            animation: subtle-number-glow 5s ease-in-out infinite;
+        }
         
-        /* Menu trượt mượt */
-        #navContainer {
-            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease, box-shadow 0.4s ease;
+        @media (min-width: 768px) {
+            .giant-number {
+                font-size: 13rem; 
+            }
+        }
+
+        /* Side panel tru?t t? bên ph?i ch?a nh?t ký */
+        #journal-panel {
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #journal-panel.open {
+            transform: translateX(0);
+        }
+
+        #journal-panel::-webkit-scrollbar {
+            width: 2px;
+        }
+        #journal-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #journal-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ðu?ng k? du?i input mu?t mà */
+        .input-line {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #note-input:focus ~ .input-line,
+        #note-input:not(:placeholder-shown) ~ .input-line {
+            width: 100%;
+        }
+
+        /* Hào quang th? (Breathing Ambient Glow) */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            height: 90vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0) 60%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse-glow 6s ease-in-out infinite alternate;
+        }
+        @keyframes pulse-glow {
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Hi?u ?ng xu?t hi?n mu?t mà */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.5s; }
+
+        /* L?p lánh ma thu?t */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+            50% { opacity: 0.9; transform: scale(1.3) rotate(15deg); }
+        }
+        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+        .animate-twinkle-delayed { animation: twinkle 3s ease-in-out 1.5s infinite; }
+        
+        /* Hi?u ?ng tru?t khi có th? nh?t ký m?i */
+        @keyframes slideInSoft {
+            from { opacity: 0; transform: translateX(40px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .entry-animate {
+            animation: slideInSoft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* --- UPGRADED EFFECTS --- */
+        
+        /* Ánh sáng th? c?a s? d?m ngu?c */
+        @keyframes subtle-number-glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.05); }
+            50% { text-shadow: 0 0 60px rgba(255,255,255,0.25); }
+        }
+
+        /* V?ng sáng theo con tr? chu?t */
+        #pointer-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0; 
+            background: radial-gradient(800px circle at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(255,255,255,0.04), transparent 40%);
+            will-change: background;
+        }
+
+        /* Hi?u ?ng quét sáng (Shimmer) cho nút Save */
+        .btn-shimmer {
+            position: relative;
             overflow: hidden;
-            will-change: height;
         }
-        #menuBody { transition: opacity 0.3s ease-in-out; }
+        .btn-shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.7s ease;
+        }
+        .btn-shimmer:hover::before {
+            left: 100%;
+        }
+
+        /* Hi?u ?ng trôi n?i cho Icon th?i ti?t du?c ch?n */
+        @keyframes floatSelected {
+            0%, 100% { transform: translateY(0) scale(1.1); }
+            50% { transform: translateY(-6px) scale(1.1); }
+        }
+        .weather-selected-anim {
+            animation: floatSelected 3s ease-in-out infinite;
+        }
+
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-black selection:text-white bg-[#fafafa]">
+<body class="min-h-screen bg-black flex flex-col items-center py-10 md:py-20 px-4 md:px-10 relative">
 
-    <!-- NAVBAR TRONG SUỐT -->
-    <div class="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center w-full pointer-events-none">
-        <nav id="navContainer" class="w-full max-w-2xl bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] pointer-events-auto" style="height: 60px; border-radius: 30px;">
-            <div class="h-[60px] px-6 flex justify-between items-center relative z-20">
-                <div class="font-black text-2xl tracking-tighter leading-none flex items-center cursor-pointer">
-                    <svg width="28" height="18" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 20L4 0H10L14 12L18 0H24L28 20H22L20 8L16 20H12L8 8L6 20H0Z" fill="#0a0a0a"/>
-                    </svg>
-                </div>
-                <button id="menuToggleBtn" class="text-black hover:bg-black/5 rounded-full w-10 h-10 flex items-center justify-center transition-colors">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
-            </div>
+    <!-- Glow theo con tr? chu?t -->
+    <div id="pointer-glow"></div>
 
-            <div id="menuBody" class="px-6 pb-6 pt-3 opacity-0 pointer-events-none relative z-10">
-                <div class="flex flex-col space-y-5 text-[17px] font-semibold tracking-tight text-[#0a0a0a]">
-                    <a href="#" class="hover:text-gray-500 transition-colors">Changelog</a>
-                    <a href="#" class="hover:text-gray-500 transition-colors">Pricing</a>
-                    <a href="#" class="hover:text-gray-500 transition-colors">Awards</a>
-                    <a href="#" class="hover:text-gray-500 transition-colors">Careers</a>
-                </div>
-                <div class="mt-8 flex gap-3">
-                    <button class="flex-1 bg-[#0a0a0a] text-white rounded-[12px] py-3 text-[15px] font-semibold hover:bg-gray-800 transition-colors">Join for free</button>
-                    <button class="flex-1 bg-white/50 text-[#0a0a0a] border border-[#E5E7EB] rounded-[12px] py-3 text-[15px] font-semibold hover:bg-white transition-colors flex items-center justify-center">
-                        See plans <i data-lucide="arrow-right" class="w-4 h-4 ml-1.5"></i>
-                    </button>
-                </div>
+    <!-- Hào quang n?n phía sau -->
+    <div class="ambient-glow"></div>
+
+    <!-- NÚT M? NH?T KÝ (Góc ph?i trên) -->
+    <button onclick="toggleJournal()" class="absolute top-6 right-6 md:top-10 md:right-10 flex items-center gap-2 text-white/30 hover:text-white transition-all duration-500 thin-text uppercase tracking-widest text-xs group z-40">
+        <span class="group-hover:-translate-x-1 transition-transform duration-500">Journal</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50 group-hover:opacity-100 transition-opacity duration-500"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
+
+    <!-- SECTION 1: COUNTDOWN -->
+    <div class="fade-in-up delay-1 flex flex-col items-center justify-center w-full min-h-[60vh] text-center mb-16 md:mb-24">
+        <p class="uppercase text-white/40 tracking-mega text-xs md:text-sm mb-12 md:mb-20 thin-text flex items-center gap-3">
+            <span id="icon-sparkle-1" class="animate-twinkle opacity-50"></span>
+            Journey to 01.08.2026
+            <span id="icon-sparkle-2" class="animate-twinkle-delayed opacity-50"></span>
+        </p>
+
+        <div class="flex flex-wrap justify-center items-center gap-4 md:gap-12">
+            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
+                <span id="cd-days" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
+                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Days</span>
             </div>
-        </nav>
+            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse">:</span>
+            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
+                <span id="cd-hours" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
+                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Hours</span>
+            </div>
+            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse" style="animation-delay: 0.2s;">:</span>
+            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
+                <span id="cd-minutes" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
+                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Minutes</span>
+            </div>
+            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse" style="animation-delay: 0.4s;">:</span>
+            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
+                <span id="cd-seconds" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
+                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Seconds</span>
+            </div>
+        </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow flex flex-col items-center px-4 w-full pt-36 pb-16">
-        <div class="max-w-2xl w-full space-y-10">
+    <!-- ÐU?NG K? M?NH PHÂN CÁCH -->
+    <div class="fade-in-up delay-2 w-full max-w-xl h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-20 md:mb-32"></div>
+
+    <!-- SECTION 2: GHI CHÚ & TH?I TI?T HÔM NAY (ÐÃ ÐU?C PH?C H?I) -->
+    <div class="fade-in-up delay-3 w-full max-w-2xl flex flex-col items-center mb-20">
+        <h2 class="uppercase text-white/50 tracking-mega text-[10px] md:text-xs mb-4 thin-text">Today</h2>
+        <p id="current-date-display" class="text-xl md:text-2xl tracking-widest thin-text mb-12 uppercase"></p>
+
+        <form id="note-form" class="w-full flex flex-col items-center gap-12">
             
-            <!-- Hero -->
-            <div class="text-center space-y-6">
-                <div class="inline-flex items-center bg-gray-200/50 rounded-full px-3 py-1 mb-2">
-                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                    <span class="text-xs font-semibold text-gray-600 tracking-wide uppercase">Hệ thống đang hoạt động</span>
+            <!-- Ch?n th?i ti?t -->
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex gap-4 md:gap-8" id="weather-buttons-container">
+                    <!-- Nút th?i ti?t s? du?c chèn qua JS -->
                 </div>
-                <h1 class="text-[40px] sm:text-[56px] leading-[1.05] font-black tracking-tight text-[#0a0a0a]">
-                    Tải video sắc nét.<br>Mọi nền tảng.
-                </h1>
+                <div class="h-4">
+                    <span id="weather-label-display" class="uppercase text-white/60 tracking-widest text-[9px] md:text-[10px] thin-text transition-all duration-500 opacity-0 translate-y-2 inline-block"></span>
+                </div>
             </div>
 
-            <!-- FORM TÌM KIẾM MỚI - DẠNG HỘP (AI STYLE) -->
-            <form id="downloadForm" class="relative w-full">
-                <div class="flex flex-col bg-white border border-[#E5E7EB] rounded-[24px] p-3 transition-all duration-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:shadow-[0_8px_30px_rgba(0,0,0,0.06)] focus-within:border-gray-300">
-                    
-                    <!-- Input Area rộng rãi -->
-                    <input type="url" name="videoUrl" id="videoUrl" class="w-full bg-transparent border-none text-[#0a0a0a] placeholder-gray-400 text-[17px] font-medium px-3 pt-3 pb-8 outline-none focus:ring-0" placeholder="Dán liên kết tải video (TikTok, Youtube, IG...)" required autocomplete="off">
-                    
-                    <!-- Control Panel (Bottom) -->
-                    <div class="flex items-center justify-between mt-2 pl-1 pr-1">
-                        <!-- Left Group: Nút Dán & Selector -->
-                        <div class="flex items-center space-x-2.5">
-                            <button type="button" id="pasteBtn" class="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-[#0a0a0a] hover:bg-gray-100 rounded-full transition-colors tooltip" title="Dán liên kết">
-                                <i data-lucide="clipboard" class="w-5 h-5"></i>
-                            </button>
-                            <button type="button" class="flex items-center space-x-2 bg-white border border-[#E5E7EB] hover:bg-gray-50 rounded-full px-4 py-2 text-[14px] font-semibold text-[#0a0a0a] transition-colors shadow-sm cursor-pointer">
-                                <i data-lucide="infinity" class="w-4 h-4 text-red-500"></i>
-                                <span>Tự động nhận diện</span>
-                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
-                            </button>
+            <!-- Input -->
+            <div class="w-full relative group">
+                <input
+                    type="text"
+                    id="note-input"
+                    autocomplete="off"
+                    placeholder="WRITE A NOTE FOR TODAY..."
+                    class="w-full bg-transparent border-none pb-4 text-center text-base md:text-xl thin-text tracking-widest outline-none transition-all duration-500 peer relative z-10"
+                />
+                <div class="input-line"></div>
+                <div class="absolute bottom-0 left-0 w-full h-[1px] bg-white/10"></div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="relative flex flex-col items-center">
+                <button
+                    type="submit"
+                    id="save-btn"
+                    class="btn-shimmer px-12 py-4 rounded-full border border-white/10 uppercase tracking-mega text-[10px] thin-text hover:bg-white/5 hover:border-white/30 transition-all duration-500 text-white/80"
+                >
+                    Save Note
+                </button>
+                <span id="save-status" class="absolute -bottom-8 text-[9px] uppercase tracking-widest text-white/50 thin-text opacity-0 translate-y-1 transition-all duration-500"></span>
+            </div>
+        </form>
+    </div>
+
+    <!-- B?NG ÐI?U KHI?N TRU?T (SIDE PANEL) CH?A NH?T KÝ -->
+    <div id="journal-panel" class="fixed top-0 right-0 w-full md:w-[450px] h-full bg-black/60 backdrop-blur-xl border-l border-white/5 z-50 flex flex-col shadow-2xl">
+        <div class="p-8 flex justify-between items-center border-b border-white/5">
+            <h2 class="uppercase text-white/60 tracking-mega text-xs thin-text">Journey Logs</h2>
+            <button type="button" onclick="toggleJournal()" class="text-white/40 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        <div id="journal-list" class="flex-1 overflow-y-auto p-8 flex flex-col gap-10">
+            <p id="empty-journal-msg" class="text-white/30 thin-text text-sm text-center uppercase tracking-widest mt-10">No entries yet</p>
+        </div>
+    </div>
+
+    <!-- TOÀN B? MÃ JAVASCRIPT GOM VÀO ÐÂY -->
+    <script>
+        const icons = {
+            sparkles: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>`,
+            sun: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
+            cloud: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`,
+            rain: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>`,
+            wind: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>`
+        };
+
+        const weatherOptions = [
+            { id: 'sun', icon: icons.sun, label: 'Sunny' },
+            { id: 'cloud', icon: icons.cloud, label: 'Cloudy' },
+            { id: 'rain', icon: icons.rain, label: 'Rainy' },
+            { id: 'wind', icon: icons.wind, label: 'Windy' }
+        ];
+
+        const TARGET_DATE = new Date('2026-08-01T00:00:00').getTime();
+        let currentWeather = null;
+        let journal = [];
+        let isPanelOpen = false;
+
+        const today = new Date();
+        const dateString = today.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        const dateKeyId = today.toISOString().split('T')[0]; 
+
+        document.getElementById('icon-sparkle-1').innerHTML = icons.sparkles;
+        document.getElementById('icon-sparkle-2').innerHTML = icons.sparkles;
+        document.getElementById('current-date-display').innerText = dateString;
+
+        const weatherContainer = document.getElementById('weather-buttons-container');
+        weatherOptions.forEach(w => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'weather-btn p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white/30 hover:text-white/60 hover:scale-105';
+            btn.innerHTML = w.icon;
+            btn.onclick = () => selectWeather(w.id);
+            weatherContainer.appendChild(btn);
+        });
+
+        function toggleJournal() {
+            const panel = document.getElementById('journal-panel');
+            isPanelOpen = !isPanelOpen;
+            if (isPanelOpen) {
+                panel.classList.add('open');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                panel.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function selectWeather(id) {
+            currentWeather = id;
+            const buttons = document.querySelectorAll('.weather-btn');
+            const labelDisplay = document.getElementById('weather-label-display');
+
+            buttons.forEach((btn, index) => {
+                if (weatherOptions[index].id === id) {
+                    btn.className = 'weather-btn weather-selected-anim p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white scale-110 shadow-[0_0_20px_rgba(255,255,255,0.05)] bg-white/5';
+                    labelDisplay.innerText = weatherOptions[index].label;
+                    labelDisplay.style.opacity = 1;
+                    labelDisplay.classList.remove('translate-y-2');
+                    labelDisplay.classList.add('translate-y-0');
+                } else {
+                    btn.className = 'weather-btn p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white/20 hover:text-white/50 hover:scale-105';
+                }
+            });
+
+            if (!id) {
+                labelDisplay.style.opacity = 0;
+                labelDisplay.classList.add('translate-y-2');
+                labelDisplay.classList.remove('translate-y-0');
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = TARGET_DATE - now;
+
+            let d = 0, h = 0, m = 0, s = 0;
+
+            if (difference > 0) {
+                d = Math.floor(difference / (1000 * 60 * 60 * 24));
+                h = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                m = Math.floor((difference / 1000 / 60) % 60);
+                s = Math.floor((difference / 1000) % 60);
+            }
+
+            const format = (num) => num.toString().padStart(2, '0');
+
+            document.getElementById('cd-days').innerText = format(d);
+            document.getElementById('cd-hours').innerText = format(h);
+            document.getElementById('cd-minutes').innerText = format(m);
+            document.getElementById('cd-seconds').innerText = format(s);
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); 
+
+        const noteForm = document.getElementById('note-form');
+        const noteInput = document.getElementById('note-input');
+        const journalList = document.getElementById('journal-list');
+        const emptyMsg = document.getElementById('empty-journal-msg');
+        const saveStatus = document.getElementById('save-status');
+        const saveBtn = document.getElementById('save-btn');
+
+        noteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const noteText = noteInput.value;
+
+            if (!noteText.trim() && !currentWeather) return;
+
+            const timeString = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const newRecord = {
+                dateKey: dateKeyId, 
+                date: dateString,
+                time: timeString,
+                note: noteText,
+                weather: currentWeather
+            };
+
+            const existingIndex = journal.findIndex(record => record.dateKey === dateKeyId);
+
+            if (existingIndex !== -1) {
+                journal[existingIndex] = newRecord;
+                saveStatus.innerText = "Updated";
+            } else {
+                journal.unshift(newRecord);
+                saveStatus.innerText = "Saved";
+            }
+            
+            saveStatus.style.opacity = 1;
+            saveStatus.classList.remove('translate-y-1');
+            saveStatus.classList.add('translate-y-0');
+            
+            setTimeout(() => { 
+                saveStatus.style.opacity = 0; 
+                saveStatus.classList.add('translate-y-1');
+                saveStatus.classList.remove('translate-y-0');
+            }, 3000);
+
+            saveBtn.innerText = "Update Note";
+
+            renderJournal();
+        });
+
+        function renderJournal() {
+            if (journal.length > 0) {
+                emptyMsg.style.display = 'none';
+            } else {
+                emptyMsg.style.display = 'block';
+            }
+
+            const children = Array.from(journalList.children);
+            children.forEach(child => {
+                if (child.id !== 'empty-journal-msg') {
+                    journalList.removeChild(child);
+                }
+            });
+
+            journal.forEach(record => {
+                const weatherObj = weatherOptions.find(w => w.id === record.weather);
+                const weatherIcon = weatherObj ? weatherObj.icon : '';
+                const weatherLabel = weatherObj ? weatherObj.label : '';
+                
+                const isWeatherOnly = !record.note.trim() && record.weather;
+
+                let weatherHtml = '';
+                if (weatherIcon) {
+                    weatherHtml = `
+                        <span class="w-[2px] h-[2px] rounded-full bg-white/20"></span>
+                        <span class="text-white/60 flex items-center gap-2">
+                            ${weatherIcon.replace('width="24"', 'width="14"').replace('height="24"', 'height="14"')} 
+                        </span>
+                    `;
+                }
+
+                let contentHtml = '';
+                
+                if (isWeatherOnly) {
+                    contentHtml = `
+                        <div class="mt-3 py-3 px-5 inline-flex items-center gap-3 bg-gradient-to-r from-white/[0.03] to-transparent rounded-xl border border-white/5 backdrop-blur-sm group-hover:border-white/10 transition-all duration-500">
+                           <div class="opacity-60 text-white">${weatherIcon.replace('width="24"', 'width="18"').replace('height="24"', 'height="18"')}</div>
+                           <p class="uppercase tracking-widest text-[9px] thin-text text-white/50 pt-0.5">${weatherLabel}</p>
+                       </div>
+                    `;
+                } else {
+                    contentHtml = `
+                        <p class="text-sm md:text-base thin-text tracking-wide leading-loose text-left w-full text-white/80 mt-2">
+                            ${record.note}
+                        </p>
+                    `;
+                }
+
+                const recordHtml = `
+                    <div class="flex flex-col relative pl-6 group entry-animate">
+                        <div class="absolute left-0 top-1.5 bottom-[-3rem] w-px bg-gradient-to-b from-white/20 to-transparent"></div>
+                        <div class="absolute left-[-2.5px] top-1.5 w-[6px] h-[6px] rounded-full bg-black border border-white/40 group-hover:border-white transition-colors duration-500"></div>
+                        
+                        <div class="flex items-center gap-3 text-white/40 tracking-widest text-[9px] uppercase mb-2 thin-text">
+                            <span>${record.date}</span>
+                            <span class="w-[2px] h-[2px] rounded-full bg-white/20"></span>
+                            <span>${record.time}</span>
+                            ${!isWeatherOnly ? weatherHtml : ''} 
                         </div>
                         
-                        <!-- Right Group: Nút Submit mũi tên -->
-                        <button type="submit" id="submitBtn" class="flex items-center justify-center w-10 h-10 bg-[#f4f4f5] text-gray-400 rounded-full transition-all duration-300 shrink-0">
-                            <div id="btnIcon"><i data-lucide="arrow-up" class="w-5 h-5"></i></div>
-                            <div id="btnLoader" class="loader hidden"></div>
-                        </button>
+                        ${contentHtml}
                     </div>
-                </div>
-            </form>
+                `;
+                journalList.insertAdjacentHTML('beforeend', recordHtml);
+            });
+        }
 
-            <div id="errorMessage" class="hidden">
-                <div class="bg-white border border-[#E5E7EB] rounded-[14px] p-4 flex items-center justify-center text-[#0a0a0a] shadow-sm">
-                    <i data-lucide="alert-circle" class="mr-2 w-5 h-5"></i>
-                    <p class="text-sm font-medium" id="errorText">Có lỗi xảy ra. Vui lòng thử lại.</p>
-                </div>
-            </div>
-
-            <!-- Result -->
-            <div id="resultSection" class="hidden opacity-0 transition-opacity duration-500">
-                <div class="bg-white border border-[#E5E7EB] rounded-[20px] p-6 shadow-sm">
-                    <div class="flex items-center space-x-5 mb-6">
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-[12px] overflow-hidden bg-gray-100 border border-[#E5E7EB]">
-                            <img id="videoThumb" src="" alt="Thumbnail" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex flex-col justify-center overflow-hidden">
-                            <h3 id="videoTitle" class="text-lg font-bold text-[#0a0a0a] tracking-tight line-clamp-2 leading-snug mb-1">Tiêu đề</h3>
-                            <p id="videoAuthor" class="text-sm font-medium text-gray-500">@tác_giả</p>
-                        </div>
-                    </div>
-                    <div class="w-full h-px bg-[#E5E7EB] mb-6"></div>
-                    <div class="space-y-3 max-h-80 overflow-y-auto no-scrollbar" id="downloadLinks"></div>
-                </div>
-            </div>
-
-            <!-- Features -->
-            <div class="pt-12">
-                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6">
-                    <div>
-                        <h2 class="text-[24px] font-black tracking-tight text-[#0a0a0a]">Vì sao chọn GenDownload?</h2>
-                        <p class="text-[15px] font-medium text-gray-500 mt-1">Công cụ trích xuất và tải video ổn định nhất hiện nay.</p>
-                    </div>
-                    <span class="inline-flex items-center px-3 py-1.5 mt-4 sm:mt-0 bg-white border border-[#E5E7EB] rounded-full text-[13px] font-bold text-[#0a0a0a] shadow-sm">
-                        <i data-lucide="trending-up" class="w-4 h-4 mr-1.5"></i> 100M+ Lượt tải
-                    </span>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="flex items-start p-5 bg-white border border-[#E5E7EB] rounded-[16px]">
-                        <div class="w-12 h-12 rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex items-center justify-center mr-5 shrink-0 mt-0.5">
-                            <i data-lucide="zap" class="w-5 h-5 text-[#0a0a0a]" stroke-width="2.2"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-[16px] text-[#0a0a0a] tracking-tight mb-1">100% Miễn phí & Không giới hạn</span>
-                            <span class="text-[14px] text-gray-500 font-medium leading-relaxed">Tải xuống bao nhiêu tuỳ thích. Không yêu cầu đăng ký tài khoản hay trả bất kỳ khoản phí nào để sử dụng.</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-start p-5 bg-white border border-[#E5E7EB] rounded-[16px]">
-                        <div class="w-12 h-12 rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex items-center justify-center mr-5 shrink-0 mt-0.5">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-[#0a0a0a]" stroke-width="2.2"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-[16px] text-[#0a0a0a] tracking-tight mb-1">Không chèn Watermark</span>
-                            <span class="text-[14px] text-gray-500 font-medium leading-relaxed">Video tải về giữ nguyên chất lượng gốc, hoàn toàn sạch sẽ và không bị dính bất kỳ logo mờ nào của nền tảng.</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start p-5 bg-white border border-[#E5E7EB] rounded-[16px]">
-                        <div class="w-12 h-12 rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex items-center justify-center mr-5 shrink-0 mt-0.5">
-                            <i data-lucide="sparkles" class="w-5 h-5 text-[#0a0a0a]" stroke-width="2.2"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-[16px] text-[#0a0a0a] tracking-tight mb-1">Chất lượng 4K & Full HD</span>
-                            <span class="text-[14px] text-gray-500 font-medium leading-relaxed">Thuật toán thông minh tự động phân tích và trích xuất các định dạng video có độ phân giải cao nhất.</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start p-5 bg-white border border-[#E5E7EB] rounded-[16px]">
-                        <div class="w-12 h-12 rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex items-center justify-center mr-5 shrink-0 mt-0.5">
-                            <i data-lucide="music-4" class="w-5 h-5 text-[#0a0a0a]" stroke-width="2.2"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-[16px] text-[#0a0a0a] tracking-tight mb-1">Tách âm thanh MP3 siêu tốc</span>
-                            <span class="text-[14px] text-gray-500 font-medium leading-relaxed">Hỗ trợ trích xuất nhạc nền, âm thanh trực tiếp từ video sang định dạng MP3 với chất lượng cao.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-    </main>
-
-    <script>
-        lucide.createIcons();
-
-        // Mở/Đóng Menu
-        const menuToggleBtn = document.getElementById('menuToggleBtn');
-        const navContainer = document.getElementById('navContainer');
-        const menuBody = document.getElementById('menuBody');
-        let isMenuOpen = false;
-        
-        menuToggleBtn.addEventListener('click', () => {
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                menuToggleBtn.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
-                navContainer.style.height = `${navContainer.scrollHeight}px`;
-                navContainer.classList.add('bg-white/95'); 
-                navContainer.classList.remove('bg-white/60');
-                menuBody.classList.remove('opacity-0', 'pointer-events-none');
-                menuBody.classList.add('opacity-100', 'pointer-events-auto');
-            } else {
-                menuToggleBtn.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
-                navContainer.style.height = '60px';
-                navContainer.classList.remove('bg-white/95');
-                navContainer.classList.add('bg-white/60');
-                menuBody.classList.remove('opacity-100', 'pointer-events-auto');
-                menuBody.classList.add('opacity-0', 'pointer-events-none');
-            }
-            lucide.createIcons(); 
-        });
-
-        window.addEventListener('resize', () => {
-            if (isMenuOpen) {
-                navContainer.style.height = 'auto'; 
-                navContainer.style.height = `${navContainer.scrollHeight}px`;
-            }
-        });
-
-        // --- TÍNH NĂNG MỚI: Tương tác Box nhập liệu ---
-        const videoUrlInput = document.getElementById('videoUrl');
-        const submitBtn = document.getElementById('submitBtn');
-        const pasteBtn = document.getElementById('pasteBtn');
-
-        // Nút Submit đổi màu khi có text (giống ảnh mẫu)
-        videoUrlInput.addEventListener('input', () => {
-            if (videoUrlInput.value.trim().length > 0) {
-                submitBtn.classList.remove('bg-[#f4f4f5]', 'text-gray-400');
-                submitBtn.classList.add('bg-[#0a0a0a]', 'text-white', 'hover:bg-gray-800');
-            } else {
-                submitBtn.classList.add('bg-[#f4f4f5]', 'text-gray-400');
-                submitBtn.classList.remove('bg-[#0a0a0a]', 'text-white', 'hover:bg-gray-800');
-            }
-        });
-
-        // Chức năng nút Paste (Dán clipboard)
-        pasteBtn.addEventListener('click', async () => {
-            try {
-                const text = await navigator.clipboard.readText();
-                videoUrlInput.value = text;
-                // Kích hoạt event input để đổi màu nút
-                videoUrlInput.dispatchEvent(new Event('input'));
-                videoUrlInput.focus();
-            } catch (err) {
-                console.error('Không thể đọc clipboard: ', err);
-            }
-        });
-
-        // Xử lý Form Gọi API
-        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const urlInput = document.getElementById('videoUrl').value.trim();
-            if(!urlInput) return;
-
-            const btnIcon = document.getElementById('btnIcon'), btnLoader = document.getElementById('btnLoader');
-            const resultSection = document.getElementById('resultSection');
-            const errorMessage = document.getElementById('errorMessage');
-
-            // Cập nhật state UI loading
-            submitBtn.disabled = true; 
-            btnIcon.classList.add('hidden'); 
-            btnLoader.classList.remove('hidden');
-            
-            // Giữ cho nút luôn đen trong lúc load
-            submitBtn.classList.remove('bg-[#f4f4f5]');
-            submitBtn.classList.add('bg-[#0a0a0a]', 'text-white');
-
-            errorMessage.classList.add('hidden'); 
-            resultSection.classList.add('hidden'); 
-            resultSection.classList.remove('opacity-100');
-
-            try {
-                const response = await fetch('https://gendownload.com/api/extract', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: urlInput })
-                });
-                if (!response.ok) throw new Error('Lỗi kết nối từ server.');
-                const data = await response.json();
-                if (!data.formats?.length) throw new Error('Không tìm thấy định dạng tải xuống nào.');
-                
-                document.getElementById('videoTitle').textContent = data.title || 'Video không xác định';
-                document.getElementById('videoAuthor').textContent = data.author || data.source || 'Nguồn ẩn';
-                document.getElementById('videoThumb').src = data.thumbnail || 'https://via.placeholder.com/400x400.png';
-
-                const container = document.getElementById('downloadLinks'); container.innerHTML = ''; 
-                data.formats.forEach(f => {
-                    let sizeText = f.filesize ? `<span class="text-[12px] font-semibold text-gray-500 bg-white px-2 py-0.5 rounded-[6px] ml-2 border border-[#E5E7EB]">${(f.filesize / (1024 * 1024)).toFixed(1)} MB</span>` : '';
-                    let iconName = (f.type === 'audio' || (f.ext||'').toLowerCase().includes('mp3')) ? 'music' : 'video';
-                    
-                    const btn = document.createElement('a');
-                    btn.href = f.url; btn.target = '_blank'; btn.setAttribute('download', '');
-                    btn.className = 'w-full flex items-center justify-between px-3 py-3 bg-[#fafafa] hover:bg-white border border-[#E5E7EB] hover:border-black rounded-[12px] transition-colors group text-decoration-none shadow-sm';
-                    btn.innerHTML = `
-                        <div class="flex items-center min-w-0 flex-1">
-                            <div class="w-10 h-10 rounded-[10px] bg-white border border-[#E5E7EB] group-hover:border-black/20 flex items-center justify-center mr-3 flex-shrink-0 text-[#0a0a0a] transition-colors">
-                                <i data-lucide="${iconName}" class="w-4 h-4"></i>
-                            </div>
-                            <div class="flex items-center truncate">
-                                <span class="text-[14px] font-bold text-[#0a0a0a]">${(f.ext || 'FILE').toUpperCase()}</span>
-                                <span class="text-[14px] font-medium text-gray-400 mx-2">•</span>
-                                <span class="text-[13px] font-semibold text-gray-600">${f.label || 'Tự động'}</span>
-                                ${sizeText}
-                            </div>
-                        </div>
-                        <div class="px-5 py-2.5 text-[13px] font-bold rounded-[8px] text-white bg-[#0a0a0a] border border-[#0a0a0a] shadow-sm hover:bg-gray-800 transition-all flex-shrink-0 ml-2">
-                            Tải về
-                        </div>
-                    `;
-                    container.appendChild(btn);
-                });
-                resultSection.classList.remove('hidden');
-                setTimeout(() => { resultSection.classList.add('opacity-100'); lucide.createIcons(); }, 50);
-            } catch (error) {
-                document.getElementById('errorText').textContent = error.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
-                errorMessage.classList.remove('hidden');
-            } finally {
-                submitBtn.disabled = false; 
-                btnIcon.classList.remove('hidden'); 
-                btnLoader.classList.add('hidden');
+        // Trình theo dõi chu?t (Mouse Tracking Glow)
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('pointer-glow');
+            if(glow) {
+                glow.style.setProperty('--mouse-x', `${e.clientX}px`);
+                glow.style.setProperty('--mouse-y', `${e.clientY}px`);
             }
         });
     </script>

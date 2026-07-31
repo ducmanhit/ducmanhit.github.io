@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -408,6 +409,390 @@
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
         }
+
+
+        /* --- STATIC BLACK-FRAME UI: NO BOUNCE / NO ZOOM --- */
+        *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+            scroll-behavior: auto !important;
+        }
+
+        a, button, input, textarea, label, .type-card, .section-card, .preview-card,
+        .primary-btn, .secondary-btn, .icon-btn, .glass-dropdown-menu,
+        .dropdown-option, .home-link {
+            transform: none !important;
+        }
+
+        .section-card,
+        .preview-card {
+            border-color: var(--black) !important;
+            box-shadow: none !important;
+        }
+        .section-card:hover,
+        .preview-card:hover {
+            border-color: var(--black) !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .home-link:hover {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .mode-switch,
+        .type-card,
+        .crystal-input,
+        .color-input-container,
+        .upload-display,
+        .primary-btn,
+        .secondary-btn,
+        .icon-btn,
+        .canvas-stage,
+        input[type="checkbox"] {
+            border-color: var(--black) !important;
+            box-shadow: none !important;
+        }
+
+        .mode-btn:hover,
+        .primary-btn:hover,
+        .secondary-btn:hover,
+        .icon-btn:hover,
+        .dropdown-option:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .mode-btn.active {
+            color: var(--black) !important;
+            background: var(--white) !important;
+            box-shadow: inset 0 0 0 2px var(--black) !important;
+        }
+
+        .type-card:hover {
+            color: var(--black) !important;
+            background: var(--white) !important;
+            border-color: var(--black) !important;
+            transform: none !important;
+        }
+        .type-card.active {
+            color: var(--black) !important;
+            background: var(--white) !important;
+            border: 2px solid var(--black) !important;
+            box-shadow: none !important;
+        }
+
+        .crystal-input:hover,
+        .crystal-input:focus,
+        .crystal-input:active,
+        .crystal-input.open {
+            background: var(--white) !important;
+            border-color: var(--black) !important;
+            box-shadow: inset 0 0 0 1px var(--black) !important;
+            transform: none !important;
+        }
+
+        .glass-dropdown-menu {
+            border-color: var(--black) !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .glass-dropdown-menu.open { transform: none !important; }
+        .dropdown-arrow,
+        .dropdown-arrow.rotate { transform: none !important; }
+        .dropdown-option.active {
+            color: var(--black) !important;
+            background: var(--white) !important;
+            box-shadow: inset 0 0 0 1px var(--black) !important;
+        }
+
+        .toast,
+        .toast.show {
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .animate-fade-in { animation: none !important; }
+
+        /* iOS Safari: form controls at 16px prevent automatic page zoom on focus. */
+        input:not([type="checkbox"]):not([type="range"]):not([type="color"]):not([type="file"]),
+        textarea,
+        select,
+        .crystal-input:not([type="checkbox"]) {
+            font-size: 16px !important;
+        }
+
+        @media (max-width: 760px) {
+            input:not([type="checkbox"]):not([type="range"]):not([type="color"]):not([type="file"]),
+            textarea,
+            select,
+            .crystal-input:not([type="checkbox"]) {
+                font-size: 16px !important;
+            }
+        }
+
+
+        /* --- FINAL MONOCHROME UI: 100% BLACK, WHITE & NEUTRAL GRAY --- */
+        :root {
+            --black: #000000;
+            --text: #111111;
+            --muted: #666666;
+            --line: #dedede;
+            --line-strong: #9a9a9a;
+            --soft: #f6f6f6;
+            --white: #ffffff;
+            --inner-line: #d6d6d6;
+            --inner-line-dark: #8f8f8f;
+        }
+
+        html,
+        body,
+        button,
+        input,
+        textarea,
+        select {
+            font-family: "Inter", sans-serif !important;
+        }
+
+        body { background: #ffffff !important; color: #111111 !important; }
+
+        /* Large functional sections: clear black outer frame. */
+        .section-card,
+        .preview-card {
+            background: #ffffff !important;
+            border: 1.5px solid #000000 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .section-card:hover,
+        .preview-card:hover {
+            border-color: #000000 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .section-head { border-bottom-color: #dedede !important; }
+        .section-code {
+            color: #000000 !important;
+            background: #f3f3f3 !important;
+            border-color: #bdbdbd !important;
+        }
+
+        /* Neutral inner controls. */
+        .mode-switch,
+        .type-card,
+        .crystal-input,
+        .color-input-container,
+        .upload-display,
+        .secondary-btn,
+        .icon-btn,
+        .canvas-stage,
+        input[type="checkbox"] {
+            box-shadow: none !important;
+        }
+
+        .mode-switch {
+            background: #f5f5f5 !important;
+            border-color: #bdbdbd !important;
+        }
+        .mode-btn {
+            color: #555555 !important;
+            background: transparent !important;
+        }
+        .mode-btn + .mode-btn { border-left-color: #bdbdbd !important; }
+        .mode-btn:hover {
+            color: #000000 !important;
+            background: #eeeeee !important;
+            transform: none !important;
+        }
+        .mode-btn.active {
+            color: #ffffff !important;
+            background: #000000 !important;
+            box-shadow: none !important;
+        }
+
+        .type-card {
+            color: #5f5f5f !important;
+            background: #ffffff !important;
+            border: 1px solid #d2d2d2 !important;
+        }
+        .type-card svg { color: #666666 !important; }
+        .type-card:hover {
+            color: #000000 !important;
+            background: #f3f3f3 !important;
+            border-color: #000000 !important;
+            transform: none !important;
+        }
+        .type-card:hover svg { color: #000000 !important; }
+        .type-card.active {
+            color: #ffffff !important;
+            background: #000000 !important;
+            border: 1.5px solid #000000 !important;
+            box-shadow: none !important;
+        }
+        .type-card.active svg { color: #ffffff !important; stroke-width: 2; }
+
+        .crystal-input {
+            color: #111111 !important;
+            background: #ffffff !important;
+            border: 1px solid #cfcfcf !important;
+            box-shadow: none !important;
+        }
+        .crystal-input::placeholder { color: #999999 !important; }
+        .crystal-input:hover {
+            border-color: #8f8f8f !important;
+            background: #ffffff !important;
+        }
+        .crystal-input:focus,
+        .crystal-input:active,
+        .crystal-input.open {
+            border-color: #000000 !important;
+            box-shadow: inset 0 0 0 1px #000000 !important;
+            background: #ffffff !important;
+            transform: none !important;
+        }
+
+        input[type="checkbox"] {
+            background: #ffffff !important;
+            border-color: #8f8f8f !important;
+        }
+        input[type="checkbox"]::after { background: #000000 !important; }
+        input[type="checkbox"]:checked { border-color: #000000 !important; }
+
+        .glass-dropdown-menu {
+            color: #111111 !important;
+            background: #ffffff !important;
+            border: 1px solid #000000 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .glass-dropdown-menu.open { transform: none !important; }
+        .dropdown-option:hover {
+            color: #ffffff !important;
+            background: #000000 !important;
+            transform: none !important;
+        }
+        .dropdown-option.active {
+            color: #ffffff !important;
+            background: #000000 !important;
+            box-shadow: none !important;
+        }
+
+        .primary-btn {
+            color: #ffffff !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
+            box-shadow: none !important;
+        }
+        .primary-btn:hover,
+        .primary-btn:focus-visible {
+            color: #000000 !important;
+            background: #ffffff !important;
+            border-color: #000000 !important;
+            transform: none !important;
+        }
+
+        .secondary-btn,
+        .icon-btn {
+            color: #111111 !important;
+            background: #ffffff !important;
+            border-color: #a9a9a9 !important;
+        }
+        .secondary-btn:hover,
+        .secondary-btn:focus-visible,
+        .icon-btn:hover,
+        .icon-btn:focus-visible {
+            color: #ffffff !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
+            transform: none !important;
+        }
+
+        .upload-display {
+            color: #666666 !important;
+            background: #ffffff !important;
+            border-color: #a9a9a9 !important;
+        }
+        .upload-display:hover {
+            color: #000000 !important;
+            border-color: #000000 !important;
+            background: #f4f4f4 !important;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track { background: #bdbdbd !important; }
+        input[type="range"]::-webkit-slider-thumb {
+            background: #000000 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0 1px #000000 !important;
+        }
+        input[type="range"]::-moz-range-track { background: #bdbdbd !important; }
+        input[type="range"]::-moz-range-thumb {
+            background: #000000 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0 1px #000000 !important;
+        }
+
+        .canvas-stage {
+            background: #f7f7f7 !important;
+            border-color: #d8d8d8 !important;
+        }
+
+        .toast,
+        .toast.show {
+            color: #ffffff !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
+            box-shadow: none !important;
+        }
+        .toast-icon {
+            color: #000000 !important;
+            background: #ffffff !important;
+        }
+        .toast-icon svg,
+        .toast-icon .text-green-600,
+        .toast-icon .text-red-600 {
+            color: #000000 !important;
+            stroke: #000000 !important;
+        }
+
+        /* Keep every interaction static: no bounce, lift, zoom or scale. */
+        *,
+        *::before,
+        *::after {
+            --tw-translate-x: 0 !important;
+            --tw-translate-y: 0 !important;
+            --tw-rotate: 0 !important;
+            --tw-skew-x: 0 !important;
+            --tw-skew-y: 0 !important;
+            --tw-scale-x: 1 !important;
+            --tw-scale-y: 1 !important;
+        }
+        button,
+        a,
+        .type-card,
+        .section-card,
+        .preview-card,
+        .primary-btn,
+        .secondary-btn,
+        .icon-btn,
+        button:active,
+        a:active,
+        .type-card:active,
+        .primary-btn:active,
+        .secondary-btn:active,
+        .icon-btn:active {
+            transform: none !important;
+        }
+
+        /* iOS Safari: 16px form text prevents focus zoom. */
+        input:not([type="checkbox"]):not([type="range"]):not([type="color"]):not([type="file"]),
+        textarea,
+        select,
+        .crystal-input:not([type="checkbox"]) {
+            font-size: 16px !important;
+        }
+
     </style>
 </head>
 <body>

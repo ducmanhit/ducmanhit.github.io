@@ -1,2240 +1,494 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">My IP Address?</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="icon" href="favicon.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Smart Premium Diary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* ============================================
-           RESET & BASE STYLES
-           ============================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200&display=swap');
 
         :root {
-            /* Dark Mode Colors */
-            --bg-color: #0a0a0a;
-            --bg-secondary: #111111;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-tertiary: rgba(255, 255, 255, 0.4);
-            --card-bg-hover: rgba(255, 255, 255, 0.06);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --card-border-hover: rgba(255, 255, 255, 0.2);
-            --icon-bg: rgba(255, 255, 255, 0.06);
-            --icon-border: rgba(255, 255, 255, 0.12);
-            --icon-color: rgba(255, 255, 255, 0.7);
-            --icon-color-hover: #ffffff;
-            --grid-line: rgba(255, 255, 255, 0.03);
-            --loader-bg: rgba(255, 255, 255, 0.1);
-            --loader-accent: #3b82f6;
-            --shine-color: rgba(255, 255, 255, 0.06);
-            --ip-card-gradient: linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(168,85,247,0.05) 100%);
-            --copy-btn-bg: rgba(59, 130, 246, 0.15);
-            --copy-btn-border: rgba(59, 130, 246, 0.3);
-            --copy-btn-color: #60a5fa;
-            --modal-bg: rgba(10, 10, 10, 0.8);
-            --modal-card-bg: rgba(20, 20, 20, 0.98);
-            --pulse-color: rgba(59, 130, 246, 0.4);
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --info-color: #3b82f6;
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --divider-color: rgba(255, 255, 255, 0.1);
+            --bg-pure: #020202;
+            --bg-surface: #0a0a0a;
+            --text-main: #ffffff;
+            --text-muted: #666666;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --accent: #ffffff;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            cursor: none;
+            background-color: var(--bg-pure); color: var(--text-main);
+            font-family: 'Futura', 'Jost', sans-serif;
+            margin: 0; height: 100dvh; /* Dùng dvh tối ưu cho Safari Mobile */
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* Light Mode Override */
-        body.light-mode {
-            --bg-color: #fafafa;
-            --bg-secondary: #f5f5f5;
-            --text-primary: #0a0a0a;
-            --text-secondary: #525252;
-            --text-tertiary: #737373;
-            --card-bg: #ffffff;
-            --card-bg-hover: #f9fafb;
-            --card-border: #e5e7eb;
-            --card-border-hover: #d1d5db;
-            --icon-bg: #ffffff;
-            --icon-border: #e5e7eb;
-            --icon-color: #525252;
-            --icon-color-hover: #0a0a0a;
-            --grid-line: rgba(0, 0, 0, 0.04);
-            --loader-bg: rgba(0, 0, 0, 0.08);
-            --loader-accent: #3b82f6; 
-            --shine-color: rgba(0, 0, 0, 0.03);
-            --ip-card-gradient: linear-gradient(135deg, rgba(59,130,246,0.04) 0%, rgba(168,85,247,0.04) 100%);
-            --copy-btn-bg: rgba(59, 130, 246, 0.1);
-            --copy-btn-border: rgba(59, 130, 246, 0.2);
-            --copy-btn-color: #2563eb;
-            --modal-bg: rgba(250, 250, 250, 0.8);
-            --modal-card-bg: rgba(255, 255, 255, 0.98);
-            --pulse-color: rgba(59, 130, 246, 0.3);
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --divider-color: rgba(0, 0, 0, 0.1);
+        /* Lớp hạt Noise - Sang trọng */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 1; opacity: 0.035; 
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* ============================================
-           CUSTOM CURSOR
-           ============================================ */
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background: #3b82f6;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            transition: transform 0.1s ease, background 0.2s ease;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+        /* --- Nút Menu --- */
+        .top-nav {
+            display: flex; justify-content: flex-end; align-items: center;
+            padding: env(safe-area-inset-top, 1rem) 1.5rem 0.5rem 1.5rem; 
+            position: relative; z-index: 10;
+        }
+        .menu-btn {
+            background: none; border: none; display: flex; flex-direction: column; gap: 6px;
+            cursor: pointer; padding: 10px 0 10px 20px;
+        }
+        .menu-btn span {
+            display: block; width: 30px; height: 1px; background-color: var(--text-main);
+            transition: width 0.4s var(--ease-out-expo);
+        }
+        .menu-btn span:nth-child(2) { width: 18px; align-self: flex-end; }
+        .menu-btn:active span:nth-child(2) { width: 30px; }
+
+        /* --- Bộ Đếm Ngược --- */
+        #countdown-section {
+            display: flex; flex-direction: column; justify-content: center;
+            flex: 0 0 42%; padding: 0 1.5rem; position: relative; z-index: 5;
+            animation: fadeUp 1.5s var(--ease-out-expo) forwards;
+        }
+        .time-row { display: flex; justify-content: space-between; width: 100%; margin-bottom: 1.5rem; position: relative; }
+        .time-row::after {
+            content: ''; position: absolute; bottom: -0.75rem; left: 5%; right: 5%; height: 1px;
+            background: var(--border-light);
+        }
+        .time-row:last-child::after { display: none; }
+        .time-box { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .time-val { font-size: clamp(4rem, 16vw, 7rem); line-height: 0.9; font-weight: 100; letter-spacing: -0.02em; }
+        .time-label { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.4em; color: var(--text-muted); margin-top: 0.5rem; }
+
+        /* --- Khu vực Nhập liệu --- */
+        #input-section {
+            flex: 1; display: flex; flex-direction: column; padding: 1.5rem;
+            background: linear-gradient(to top, rgba(8,8,8,1) 0%, transparent 100%);
+            border-top: 1px solid var(--border-light); position: relative; z-index: 5;
+            animation: fadeUp 1.5s var(--ease-out-expo) 0.2s forwards; opacity: 0;
         }
 
-        .cursor-outline {
-            width: 32px;
-            height: 32px;
-            border: 2px solid rgba(59, 130, 246, 0.4);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: all 0.08s ease-out;
-            transform: translate(-50%, -50%);
+        .weather-tags { display: flex; gap: 0.8rem; justify-content: center; margin-bottom: 1.5rem; }
+        .weather-tag {
+            display: flex; align-items: center; gap: 0.4rem;
+            font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em;
+            color: var(--text-muted); padding: 0.6rem 1rem;
+            border: 1px solid transparent; border-radius: 99px;
+            transition: all 0.4s var(--ease-out-expo); cursor: pointer;
+        }
+        .weather-tag svg { width: 14px; height: 14px; opacity: 0.4; transition: 0.4s; }
+        .weather-tag.active { color: var(--bg-pure); background: var(--text-main); transform: translateY(-2px); }
+        .weather-tag.active svg { opacity: 1; stroke: var(--bg-pure); }
+
+        .note-area { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        textarea {
+            width: 100%; flex: 1; background: transparent; border: none;
+            color: var(--text-main); font-family: 'Futura', 'Jost', sans-serif;
+            font-size: 1.1rem; font-weight: 200; line-height: 1.7;
+            outline: none; resize: none; text-align: center; padding: 0.5rem 0;
+        }
+        textarea::placeholder { color: #3a3a3a; font-weight: 200; font-style: italic; transition: color 0.3s; }
+        textarea:focus::placeholder { color: transparent; }
+
+        .action-row { display: flex; justify-content: center; padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .save-btn {
+            display: inline-flex; align-items: center; gap: 8px; background: none; border: none;
+            color: var(--text-main); font-family: 'Futura', 'Jost', sans-serif;
+            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em;
+            cursor: pointer; padding: 15px; opacity: 0.7; transition: all 0.3s ease;
+        }
+        .save-btn svg { width: 15px; height: 15px; transition: transform 0.4s var(--ease-spring); }
+        .save-btn:active { opacity: 1; }
+        .save-btn:active svg { transform: translateX(6px); }
+
+        /* --- SIDEBAR LỊCH SỬ --- */
+        #sidebar-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        #sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
+        #sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 88%; max-width: 400px;
+            background: rgba(12, 12, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-light); z-index: 50;
+            transform: translateX(100%); transition: transform 0.6s var(--ease-out-expo);
+            display: flex; flex-direction: column;
+        }
+        #sidebar.open { transform: translateX(0); }
+
+        .sidebar-header {
+            padding: env(safe-area-inset-top, 2rem) 1.5rem 1.5rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light);
+        }
+        .close-btn {
+            background: none; border: none; color: var(--text-muted); font-size: 0.55rem;
+            text-transform: uppercase; letter-spacing: 0.25em; cursor: pointer; padding: 10px;
         }
 
-        .cursor-dot.hover {
-            transform: translate(-50%, -50%) scale(1.5);
-            background: #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+        .history-list { flex: 1; overflow-y: auto; padding: 0 1.5rem calc(env(safe-area-inset-bottom, 0px) + 2rem) 1.5rem; }
+        .history-list::-webkit-scrollbar { display: none; }
+
+        .history-item {
+            padding: 2rem 0; border-bottom: 1px solid var(--border-light);
+            opacity: 0; transform: translateY(15px); transition: all 0.5s var(--ease-out-expo);
+        }
+        #sidebar.open .history-item { opacity: 1; transform: translateY(0); }
+
+        .history-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .history-date { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+        .history-tag-display {
+            display: flex; align-items: center; gap: 6px; font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text-muted); border: 1px solid var(--border-light); padding: 0.2rem 0.6rem; border-radius: 99px;
+        }
+        .history-tag-display svg { width: 10px; height: 10px; }
+
+        /* Rút gọn chữ thông minh */
+        .text-content { font-size: 1rem; font-weight: 200; line-height: 1.7; color: rgba(255, 255, 255, 0.9); white-space: pre-wrap; }
+        .text-content.clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .toggle-more-btn {
+            background: none; border: none; padding: 0; margin-top: 8px; color: var(--text-muted);
+            font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; text-decoration: underline; text-underline-offset: 4px;
         }
 
-        .cursor-outline.hover {
-            width: 50px;
-            height: 50px;
-            border-color: rgba(168, 85, 247, 0.6);
-        }
+        .empty-history { text-align: center; margin-top: 5rem; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--text-muted); font-style: italic; }
 
-        .cursor-dot.click {
-            transform: translate(-50%, -50%) scale(0.5);
+        /* --- CUSTOM CONFIRM MODAL (Ghi đè) --- */
+        #confirm-modal-wrapper {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
-
-        .cursor-outline.click {
-            transform: translate(-50%, -50%) scale(0.7);
-        }
-
-        @media (hover: none) and (pointer: coarse) {
-            body { cursor: auto; }
-            .cursor-dot, .cursor-outline { display: none; }
-        }
-
-        /* ============================================
-           BACKGROUND EFFECTS
-           ============================================ */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(var(--grid-line) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, var(--grid-line) 1.5px, transparent 1.5px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-        }
-
-        .glow-orb {
-            position: fixed;
-            filter: blur(120px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.6;
-            mix-blend-mode: screen;
-        }
-
-        .glow-1 {
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%);
-            top: -350px;
-            right: 5%;
-            animation: float1 25s ease-in-out infinite;
-        }
-
-        .glow-2 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%);
-            bottom: -300px;
-            left: 10%;
-            animation: float2 22s ease-in-out infinite;
-        }
-
-        .glow-3 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: float3 28s ease-in-out infinite;
-        }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
-        @keyframes float1 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            33% { transform: translate(120px, 80px) rotate(120deg) scale(1.1); }
-            66% { transform: translate(-80px, 120px) rotate(240deg) scale(0.9); }
-        }
-
-        @keyframes float2 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            33% { transform: translate(-100px, -80px) rotate(-120deg) scale(1.15); }
-            66% { transform: translate(80px, -100px) rotate(-240deg) scale(0.95); }
-        }
-
-        @keyframes float3 {
-            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            50% { transform: translate(-50%, -50%) scale(1.3) rotate(180deg); }
-        }
+        #confirm-modal-wrapper.show { opacity: 1; pointer-events: auto; }
         
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .confirm-box {
+            background: var(--bg-surface); border: 1px solid var(--border-light);
+            padding: 2.5rem 2rem; width: 85%; max-width: 340px; text-align: center;
+            transform: scale(0.95) translateY(10px); transition: transform 0.4s var(--ease-spring);
         }
-
-        @keyframes cardFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes iconPopIn {
-            0% {
-                transform: scale(0) rotate(-180deg);
-                opacity: 0;
-            }
-            60% {
-                transform: scale(1.15) rotate(10deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.7;
-                transform: scale(0.98);
-            }
-        }
-
-        @keyframes slideInFromLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInFromRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes backdropBlur {
-            from {
-                backdrop-filter: blur(0px);
-                -webkit-backdrop-filter: blur(0px);
-            }
-            to {
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-            }
-        }
-
-        @keyframes dotBounce {
-            0%, 80%, 100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.6;
-            }
-            40% {
-                transform: translateY(-8px) scale(1.1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes textFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes wifiWave {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes speedPulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 currentColor;
-            }
-            50% {
-                box-shadow: 0 0 20px 5px currentColor;
-            }
-        }
-
-        /* ============================================
-           SPEED TEST LOADING ANIMATIONS - NEW
-           ============================================ */
-        @keyframes speedRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes speedGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 8px currentColor);
-                opacity: 0.8;
-            }
-            50% {
-                filter: drop-shadow(0 0 16px currentColor);
-                opacity: 1;
-            }
-        }
-
-        @keyframes speedBarGrow {
-            0%, 100% {
-                transform: scaleY(0.3);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scaleY(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes speedDotFloat {
-            0%, 100% {
-                transform: translateY(0px);
-                opacity: 0.4;
-            }
-            50% {
-                transform: translateY(-6px);
-                opacity: 1;
-            }
-        }
-
-        @keyframes speedRipple {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
-        }
-
-        /* ============================================
-           LAYOUT STRUCTURE
-           ============================================ */
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ============================================
-           HEADER SECTION
-           ============================================ */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-            padding: 0 8px;
-            animation: slideInFromLeft 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--text-primary);
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            padding: 12px 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            backdrop-filter: blur(20px);
-        }
+        #confirm-modal-wrapper.show .confirm-box { transform: scale(1) translateY(0); }
         
-        .logo svg {
-            width: 28px;
-            height: 28px;
-            stroke: var(--text-primary);
-            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        .logo-badge {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--info-color);
-            background: rgba(59, 130, 246, 0.15);
-            padding: 4px 8px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            animation: slideInFromRight 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .datetime {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-            text-align: right;
-            line-height: 1.6;
-            min-width: 180px;
-            padding: 12px 18px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-        }
-
-        .datetime:hover {
-            background: var(--card-bg-hover);
-            border-color: var(--card-border-hover);
-            transform: translateY(-2px);
-        }
-
-        /* ============================================
-           ICON BUTTONS
-           ============================================ */
-        .icon-button {
-            width: 48px;
-            height: 48px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--icon-color);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-        }
-
-        .icon-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: var(--pulse-color);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .icon-button:hover::before {
-            width: 120px;
-            height: 120px;
-        }
+        .confirm-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .confirm-desc { font-size: 1.05rem; font-weight: 200; line-height: 1.6; margin-bottom: 2rem; color: #ddd; }
         
-        .icon-button:hover {
-            background: var(--card-bg-hover);
-            color: var(--icon-color-hover);
-            transform: translateY(-3px);
-            border-color: var(--card-border-hover);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-        }
-
-        .icon-button:active {
-            transform: translateY(-1px) scale(0.96);
-        }
-        
-        .theme-toggle svg,
-        .refresh-icon svg,
-        .lang-toggle span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .theme-toggle svg { 
-            display: none; 
-        }
-        
-        body[data-theme-mode="dark"] .icon-moon { display: block; }
-        body[data-theme-mode="light"] .icon-sun { display: block; }
-        body[data-theme-mode="auto"] .icon-auto { display: block; }
-
-        .lang-toggle {
-            width: 52px;
-            font-size: 14px;
-            font-weight: 800;
-        }
-
-        /* ============================================
-           STATUS BADGES
-           ============================================ */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--success-color);
-            backdrop-filter: blur(20px);
-            animation: fadeIn 0.5s ease 0.8s backwards;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success-color);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 0 12px var(--success-color);
-        }
-
-        /* ============================================
-           SPEED TEST BADGE - IMPROVED
-           ============================================ */
-        .speed-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 18px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            backdrop-filter: blur(20px);
-            animation: fadeIn 0.5s ease 0.9s backwards;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .speed-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .speed-badge:hover::before {
-            left: 100%;
-        }
-
-        .speed-badge:hover {
-            background: var(--card-bg-hover);
-            border-color: var(--card-border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-
-        .speed-badge.testing {
-            pointer-events: none;
-        }
-
-        /* Speed Icon Container */
-        .speed-icon {
-            width: 24px;
-            height: 24px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Loading State - Circular Progress */
-        .speed-icon.testing .speed-loader {
-            display: block;
-        }
-
-        .speed-icon.testing .wifi-signal {
-            display: none;
-        }
-
-        .speed-loader {
-            display: none;
-            width: 24px;
-            height: 24px;
-            position: relative;
-        }
-
-        .speed-loader-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2.5px solid transparent;
-            border-top-color: currentColor;
-            border-radius: 50%;
-            animation: speedRotate 1s linear infinite;
-        }
-
-        .speed-loader-ring:nth-child(2) {
-            width: 18px;
-            height: 18px;
-            top: 3px;
-            left: 3px;
-            border-top-color: transparent;
-            border-right-color: currentColor;
-            animation-duration: 0.8s;
-            animation-direction: reverse;
-            opacity: 0.6;
-        }
-
-        .speed-loader-dot {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: currentColor;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: speedGlow 1.5s ease-in-out infinite;
-        }
-
-        /* WiFi Signal - Normal State */
-        .wifi-signal {
-            position: relative;
-            width: 20px;
-            height: 16px;
-        }
-
-        .wifi-signal .wave {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background: currentColor;
-            border-radius: 50%;
-        }
-
-        .wifi-signal .wave:nth-child(2) {
-            width: 8px;
-            height: 8px;
-            bottom: 4px;
-            opacity: 0.7;
-            animation: wifiWave 1.5s ease-in-out infinite;
-        }
-
-        .wifi-signal .wave:nth-child(3) {
-            width: 12px;
-            height: 12px;
-            bottom: 8px;
-            opacity: 0.5;
-            animation: wifiWave 1.5s ease-in-out 0.3s infinite;
-        }
-
-        .wifi-signal .wave:nth-child(4) {
-            width: 16px;
-            height: 16px;
-            bottom: 12px;
-            opacity: 0.3;
-            animation: wifiWave 1.5s ease-in-out 0.6s infinite;
-        }
-
-        .speed-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            line-height: 1.3;
-        }
-
-        .speed-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.7;
-        }
-
-        .speed-value {
-            font-size: 13px;
-            font-weight: 800;
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* Testing State Text Animation */
-        .speed-value.testing-text {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .speed-value.testing-text::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, currentColor, transparent);
-            animation: speedBarGrow 1.5s ease-in-out infinite;
-        }
-
-        /* Speed Quality Colors */
-        .speed-badge.excellent {
-            color: var(--success-color);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .speed-badge.excellent .speed-icon {
-            color: var(--success-color);
-            filter: drop-shadow(0 0 8px var(--success-color));
-        }
-
-        .speed-badge.good {
-            color: var(--warning-color);
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-
-        .speed-badge.good .speed-icon {
-            color: var(--warning-color);
-            filter: drop-shadow(0 0 8px var(--warning-color));
-        }
-
-        .speed-badge.poor {
-            color: var(--error-color);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .speed-badge.poor .speed-icon {
-            color: var(--error-color);
-            filter: drop-shadow(0 0 8px var(--error-color));
-        }
-
-        .speed-badge.testing {
-            color: var(--info-color);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .speed-badge.testing .speed-icon {
-            color: var(--info-color);
-            filter: drop-shadow(0 0 8px var(--info-color));
-        }
-
-        /* ============================================
-           MAIN GRID LAYOUT
-           ============================================ */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.6fr; 
-            gap: 28px;
-            align-items: stretch;
-        }
-
-        /* ============================================
-           CARD COMPONENTS
-           ============================================ */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 32px;
-            padding: 40px; 
-            backdrop-filter: blur(30px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            animation: cardFadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            border-color: var(--card-border-hover);
-            box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-        }
-
-        .ip-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            animation: cardFadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
-            text-align: center;
-            background: var(--ip-card-gradient);
-            background-size: 200% 200%;
-            animation: cardFadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards,
-                       gradientShift 15s ease-in-out infinite;
-        }
-
-        .ip-label {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            margin-bottom: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .ip-display-wrapper {
-            width: 100%;
-            margin-bottom: 28px;
-        }
-
-        .ip-number {
-            font-size: 52px;
-            font-weight: 900;
-            color: var(--text-primary);
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -1px;
-            line-height: 1.2;
-            word-break: break-all;
-            position: relative;
-            padding-bottom: 20px;
-        }
-
-        .ip-number::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--divider-color), 
-                transparent
-            );
-        }
-
-        .ip-number::selection {
-            background: rgba(59, 130, 246, 0.3);
-        }
-
-        .ip-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            width: 100%;
-            margin-top: 24px;
-        }
-
-        .ip-stat-item {
-            padding: 16px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ip-stat-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.08), transparent);
-            transition: left 0.5s;
-        }
-
-        .ip-stat-item:hover::before {
-            left: 100%;
-        }
-
-        .ip-stat-item:hover {
-            background: var(--card-bg-hover);
-            transform: translateY(-2px);
-            border-color: var(--card-border-hover);
-        }
-
-        .ip-stat-label {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .ip-stat-value {
-            font-size: 14px;
-            color: var(--text-primary);
-            font-weight: 800;
-        }
-
-        .ip-location {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 20px;
-            color: var(--text-secondary);
-            font-size: 17px;
-            font-weight: 700;
-            padding: 16px 28px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-        }
-
-        .ip-location:hover {
-            background: var(--card-bg-hover);
-            transform: translateY(-2px);
-            border-color: var(--card-border-hover);
-        }
-
-        .ip-location .country-flag {
-            width: 32px;
-            height: auto;
-            border-radius: 8px;
-            border: 2px solid var(--card-border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .ip-location:hover .country-flag {
-            transform: scale(1.1);
-        }
-        
-        .ip-copy {
-            margin-top: 28px;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 32px;
-            background: var(--copy-btn-bg);
-            border: 2px solid var(--copy-btn-border);
-            border-radius: 18px;
-            color: var(--copy-btn-color);
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ip-copy::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transition: left 0.6s;
-        }
-
-        .ip-copy:hover::before {
-            left: 100%;
-        }
-
-        .ip-copy:hover {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
-        }
-
-        .ip-copy:active {
-            transform: translateY(-1px);
-        }
-
-        body.light-mode .ip-copy:hover {
-            background: rgba(59, 130, 246, 0.2);
-        }
-
-        .country-flag {
-            width: 40px;
-            height: auto;
-            border-radius: 8px;
-            border: 2px solid var(--card-border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        /* ============================================
-           DETAILS GRID
-           ============================================ */
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 20px;
-            height: 100%; 
-            opacity: 0;
-            transform: translateY(30px);
-            animation: cardFadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
-        }
-
-        .detail-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 26px;
-            padding: 26px 20px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            backdrop-filter: blur(20px);
-        }
-
-        .detail-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, transparent 0%, var(--shine-color) 50%, transparent 100%);
-            transform: translateX(-100%) rotate(45deg);
-            transition: transform 0.8s;
-        }
-
-        .detail-box:hover::before {
-            transform: translateX(100%) rotate(45deg);
-        }
-
-        .detail-box::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: var(--pulse-color);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-            z-index: 0;
-        }
-
-        .detail-box:hover::after {
-            width: 250px;
-            height: 250px;
-        }
-
-        .detail-box:hover {
-            background: var(--card-bg-hover);
-            border-color: var(--card-border-hover);
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.25);
-        }
-
-        .detail-box:active {
-            transform: translateY(-4px) scale(1);
-        }
-
-        .detail-box:nth-child(1) { animation-delay: 0.4s; }
-        .detail-box:nth-child(2) { animation-delay: 0.45s; }
-        .detail-box:nth-child(3) { animation-delay: 0.5s; }
-        .detail-box:nth-child(4) { animation-delay: 0.55s; }
-        .detail-box:nth-child(5) { animation-delay: 0.6s; }
-        .detail-box:nth-child(6) { animation-delay: 0.65s; }
-        .detail-box:nth-child(7) { animation-delay: 0.7s; }
-        .detail-box:nth-child(8) { animation-delay: 0.75s; }
-        .detail-box:nth-child(9) { animation-delay: 0.8s; }
-
-        .detail-icon {
-            width: 52px;
-            height: 52px;
-            margin: 0 auto 18px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(0);
-            opacity: 0;
-            animation: iconPopIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            position: relative;
-            z-index: 1;
-        }
-
-        .detail-box:hover .detail-icon {
-            transform: scale(1.2) rotate(8deg);
-        }
-        
-        .detail-box:nth-child(1) .detail-icon { animation-delay: 0.6s; }
-        .detail-box:nth-child(2) .detail-icon { animation-delay: 0.65s; }
-        .detail-box:nth-child(3) .detail-icon { animation-delay: 0.7s; }
-        .detail-box:nth-child(4) .detail-icon { animation-delay: 0.75s; }
-        .detail-box:nth-child(5) .detail-icon { animation-delay: 0.8s; }
-        .detail-box:nth-child(6) .detail-icon { animation-delay: 0.85s; }
-        .detail-box:nth-child(7) .detail-icon { animation-delay: 0.9s; }
-        .detail-box:nth-child(8) .detail-icon { animation-delay: 0.95s; }
-        .detail-box:nth-child(9) .detail-icon { animation-delay: 1s; }
-
-        .detail-icon svg {
-            width: 24px;
-            height: 24px;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
-        }
-
-        .box-1 .detail-icon { 
-            background: rgba(59, 130, 246, 0.12); 
-            color: #60a5fa;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-        }
-        .box-2 .detail-icon { 
-            background: rgba(16, 185, 129, 0.12); 
-            color: #34d399;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-        }
-        .box-3 .detail-icon { 
-            background: rgba(249, 115, 22, 0.12); 
-            color: #fb923c;
-            box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
-        }
-        .box-4 .detail-icon { 
-            background: rgba(168, 85, 247, 0.12); 
-            color: #c084fc;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
-        }
-        .box-5 .detail-icon { 
-            background: rgba(239, 68, 68, 0.12); 
-            color: #f87171;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
-        }
-        .box-6 .detail-icon { 
-            background: rgba(20, 184, 166, 0.12); 
-            color: #2dd4bf;
-            box-shadow: 0 0 20px rgba(20, 184, 166, 0.2);
-        }
-        .box-7 .detail-icon { 
-            background: rgba(234, 179, 8, 0.12); 
-            color: #facc15;
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
-        }
-        .box-8 .detail-icon { 
-            background: rgba(217, 70, 239, 0.12); 
-            color: #e879f9;
-            box-shadow: 0 0 20px rgba(217, 70, 239, 0.2);
-        }
-        .box-9 .detail-icon { 
-            background: rgba(99, 102, 241, 0.12); 
-            color: #818cf8;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-        }
-
-        .detail-label {
-            font-size: 11px;
-            color: var(--text-tertiary);
-            margin-bottom: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 1;
-        }
-
-        .detail-value {
-            font-size: 16px;
-            color: var(--text-primary);
-            font-weight: 800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            position: relative;
-            z-index: 1;
-        }
-
-        .detail-value.country-detail {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .country-flag-small {
-            width: 22px;
-            height: auto;
-            border-radius: 5px;
-            border: 1.5px solid var(--card-border);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-        }
-
-        /* ============================================
-           REFINED SUBTLE DOTS LOADING
-           ============================================ */
-        .loading {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-            padding: 60px 20px;
-        }
-
-        .loader {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 32px;
-        }
-
-        .loader-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            animation: dotBounce 1s ease-in-out infinite;
-        }
-
-        .loader-dot:nth-child(1) {
-            background: linear-gradient(135deg, #5B8DEF, #4A7FE8);
-            animation-delay: 0s;
-            box-shadow: 0 2px 8px rgba(91, 141, 239, 0.4);
-        }
-
-        .loader-dot:nth-child(2) {
-            background: linear-gradient(135deg, #7EC8E3, #6DB9D9);
-            animation-delay: 0.15s;
-            box-shadow: 0 2px 8px rgba(126, 200, 227, 0.4);
-        }
-
-        .loader-dot:nth-child(3) {
-            background: linear-gradient(135deg, #9B7EBD, #8A6FB0);
-            animation-delay: 0.3s;
-            box-shadow: 0 2px 8px rgba(155, 126, 189, 0.4);
-        }
-
-        .loader-dot:nth-child(4) {
-            background: linear-gradient(135deg, #D291BC, #C682AE);
-            animation-delay: 0.45s;
-            box-shadow: 0 2px 8px rgba(210, 145, 188, 0.4);
-        }
-
-        .loader-dot:nth-child(5) {
-            background: linear-gradient(135deg, #EE9CA7, #E58D98);
-            animation-delay: 0.6s;
-            box-shadow: 0 2px 8px rgba(238, 156, 167, 0.4);
-        }
-
-        #loadingText {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-            animation: textFadeIn 0.6s ease;
-            letter-spacing: 0.5px;
-        }
-
-        .loading-status {
-            font-size: 13px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-            animation: textFadeIn 0.6s ease 0.2s backwards;
-        }
-
-        /* ============================================
-           MODAL WITH BACKDROP BLUR
-           ============================================ */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--modal-bg);
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-            animation: backdropBlur 0.4s ease forwards;
-        }
-
-        .modal-content {
-            background: var(--modal-card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 36px;
-            min-width: 320px;
-            max-width: 90vw;
-            width: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            transform: scale(0.9) translateY(30px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            backdrop-filter: blur(20px);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        #modalIconContainer {
-            margin-bottom: 20px;
-            transform: scale(1.3);
-            opacity: 0;
-            animation: iconPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s forwards;
-        }
-
-        #modalTitle {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        #modalValue {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-primary);
-            word-wrap: break-word;
-            line-height: 1.4;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 16px 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            min-width: 240px;
-            backdrop-filter: blur(10px);
-        }
-
-        #modalCloseButton {
-            margin-top: 24px;
-            padding: 12px 28px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: auto;
-            backdrop-filter: blur(10px);
-        }
-
-        #modalCloseButton:hover {
-            background: var(--card-bg-hover);
-            border-color: var(--card-border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        #modalCloseButton:active {
-            transform: translateY(0);
-        }
-
-        /* ============================================
-           FOOTER
-           ============================================ */
-        .footer {
-            margin-top: 35px;
-            text-align: center;
-            padding: 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            animation: fadeIn 0.5s ease 1s backwards;
-        }
-
-        .footer-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-text {
-            font-size: 13px;
-            color: var(--text-tertiary);
-            font-weight: 600;
-        }
-
-        .footer-link {
-            color: var(--info-color);
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--text-primary);
-            text-decoration: underline;
-        }
-
-        /* ============================================
-           RESPONSIVE DESIGN
-           ============================================ */
-        @media (max-width: 1200px) {
-            .main-grid {
-                grid-template-columns: 1fr 1.4fr;
-            }
-        }
-
-        @media (max-width: 1024px) { 
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .details-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .ip-card {
-                height: auto;
-                min-height: 360px;
-            }
-            
-            .ip-number {
-                font-size: 42px;
-            }
-
-            .card {
-                padding: 32px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 20px;
-                align-items: stretch;
-            }
-
-            .logo-section {
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-
-            .header-right {
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-
-            .datetime {
-                min-width: 0;
-                flex: 1;
-            }
-
-            .loader-dot {
-                width: 10px;
-                height: 10px;
-            }
-
-            #loadingText {
-                font-size: 15px;
-            }
-
-            .speed-badge {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 580px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .card {
-                padding: 28px 24px;
-                border-radius: 26px;
-            }
-            
-            .ip-number {
-                font-size: 36px;
-            }
-
-            .ip-label {
-                font-size: 9px;
-                letter-spacing: 2px;
-            }
-
-            .logo {
-                font-size: 18px;
-                padding: 10px 16px;
-            }
-
-            .logo svg {
-                width: 24px;
-                height: 24px;
-            }
-
-            .ip-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .icon-button {
-                width: 44px;
-                height: 44px;
-            }
-
-            .footer {
-                margin-top: 25px;
-            }
-
-            .loader-dot {
-                width: 9px;
-                height: 9px;
-            }
-
-            .loader {
-                gap: 8px;
-            }
-
-            #loadingText {
-                font-size: 14px;
-            }
-
-            .loading {
-                min-height: 350px;
-                padding: 50px 20px;
-            }
-        }
-
-        /* ============================================
-           SCROLLBAR STYLING
-           ============================================ */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--card-bg);
-            border-radius: 6px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--card-border);
-            border-radius: 6px;
-            border: 2px solid var(--card-bg);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--card-border-hover);
-        }
-
-        /* ============================================
-           SELECTION STYLING
-           ============================================ */
-        ::selection {
-            background: rgba(59, 130, 246, 0.3);
-            color: var(--text-primary);
-        }
-
-        ::-moz-selection {
-            background: rgba(59, 130, 246, 0.3);
-            color: var(--text-primary);
+        .confirm-actions { display: flex; gap: 1rem; }
+        .confirm-btn {
+            flex: 1; padding: 0.8rem; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em;
+            background: transparent; border: 1px solid var(--border-light); color: var(--text-main); cursor: pointer; transition: 0.3s;
+        }
+        .confirm-btn.primary { background: var(--text-main); color: var(--bg-pure); border-color: var(--text-main); }
+        .confirm-btn:active { transform: scale(0.95); }
+
+        /* --- TOAST --- */
+        #toast {
+            position: fixed; bottom: calc(env(safe-area-inset-bottom, 2rem) + 4rem); left: 50%;
+            transform: translate(-50%, 20px) scale(0.9);
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2); color: var(--text-main);
+            padding: 0.6rem 1.5rem; border-radius: 99px; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em;
+            display: flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: all 0.5s var(--ease-spring); z-index: 100;
+        }
+        #toast.show { transform: translate(-50%, 0) scale(1); opacity: 1; }
+        #toast svg { width: 12px; height: 12px; stroke: #fff; }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
     </style>
 </head>
+<body>
 
-<body data-theme-mode="dark">
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
+    <div class="noise-overlay"></div>
 
-    <div class="bg-grid"></div>
-    <div class="glow-orb glow-1"></div>
-    <div class="glow-orb glow-2"></div>
-    <div class="glow-orb glow-3"></div>
+    <div class="top-nav">
+        <button class="menu-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+        </button>
+    </div>
 
-    <div class="container">
-        <div class="header">
-            <div class="logo-section">
-                <div class="logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
-                    </svg>
-                    <span data-i18n="logo">NETWORK</span>
-                    <span class="logo-badge">PRO</span>
-                </div>
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    <span data-i18n="status_online">TRỰC TUYẾN</span>
-                </div>
-                <div class="speed-badge" id="speedBadge" title="Click để đo lại tốc độ">
-                    <div class="speed-icon" id="speedIcon">
-                        <div class="speed-loader">
-                            <div class="speed-loader-ring"></div>
-                            <div class="speed-loader-ring"></div>
-                            <div class="speed-loader-dot"></div>
-                        </div>
-                        <div class="wifi-signal">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                    </div>
-                    <div class="speed-info">
-                        <div class="speed-label" data-i18n="speed_label">TỐC ĐỘ</div>
-                        <div class="speed-value" id="speedValue">
-                            <span data-i18n="speed_testing">Đang đo...</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Countdown -->
+    <div id="countdown-section">
+        <div class="time-row">
+            <div class="time-box"><span id="days" class="time-val">00</span><span class="time-label">Ngày</span></div>
+            <div class="time-box"><span id="hours" class="time-val">00</span><span class="time-label">Giờ</span></div>
+        </div>
+        <div class="time-row">
+            <div class="time-box"><span id="mins" class="time-val">00</span><span class="time-label">Phút</span></div>
+            <div class="time-box"><span id="secs" class="time-val">00</span><span class="time-label">Giây</span></div>
+        </div>
+    </div>
+
+    <!-- Input Section -->
+    <div id="input-section">
+        <div class="weather-tags">
+            <div class="weather-tag active" onclick="selectWeather('Nắng', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                Nắng
             </div>
+            <div class="weather-tag" onclick="selectWeather('Mưa', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>
+                Mưa
+            </div>
+            <div class="weather-tag" onclick="selectWeather('Mây', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                Mây
+            </div>
+        </div>
+
+        <div class="note-area">
+            <textarea id="note-input" placeholder="Lưu lại cảm xúc lúc này..."></textarea>
             
-            <div class="header-right">
-                <div class="datetime" id="datetime"></div>
-                
-                <div class="icon-button theme-toggle" id="themeToggle" title="Đổi giao diện">
-                    <svg class="icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg class="icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                    <svg class="icon-auto" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                </div>
-                
-                <div class="icon-button lang-toggle" id="langToggle" title="Đổi ngôn ngữ">
-                    <span id="langIndicator">VI</span>
-                </div>
-                
-                <div class="icon-button refresh-icon" id="refreshIcon" onclick="location.reload()" title="Tải lại dữ liệu">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div id="content" class="main-grid">
-            <div class="loading">
-                <div class="loader">
-                    <div class="loader-dot"></div>
-                    <div class="loader-dot"></div>
-                    <div class="loader-dot"></div>
-                    <div class="loader-dot"></div>
-                    <div class="loader-dot"></div>
-                </div>
-                <div id="loadingText" data-i18n="loading_text">
-                    Đang tải thông tin mạng
-                </div>
-                <div class="loading-status">
-                    <span data-i18n="loading_status">Đang kết nối đến máy chủ...</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-content">
-                <span class="footer-text" data-i18n="footer_text">Design by DucManh</span>
-                <span class="footer-text">•</span>
-                <span class="footer-text" data-i18n="footer_version">Version 2.0</span>
+            <div class="action-row">
+                <button class="save-btn" onclick="requestSave()">
+                    <span>Lưu Ký Ức</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <div id="modalIconContainer"></div>
-            <h3 id="modalTitle"></h3>
-            <div id="modalValue"></div>
-            <button id="modalCloseButton">
-                <span id="modalCloseText" data-i18n="modal_close">Đóng</span>
-            </button>
+    <!-- Sidebar Lịch sử -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span class="text-[0.55rem] tracking-widest uppercase text-muted">Lịch sử</span>
+            <button class="close-btn" onclick="toggleSidebar()">Đóng</button>
         </div>
+        <div id="history-list" class="history-list"></div>
+    </div>
+
+    <!-- Custom Confirm Modal (Cảnh báo ghi đè) -->
+    <div id="confirm-modal-wrapper">
+        <div class="confirm-box">
+            <div class="confirm-title">Cập nhật Ký ức</div>
+            <div class="confirm-desc">Sếp đã lưu lại một khoảnh khắc trong ngày hôm nay rồi.<br><br>Sếp có muốn ghi đè lên bản cũ không?</div>
+            <div class="confirm-actions">
+                <button class="confirm-btn" onclick="closeConfirmModal()">Hủy bỏ</button>
+                <button class="confirm-btn primary" onclick="executeSave(true)">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Thông báo -->
+    <div id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toast-text">Đã lưu</span>
     </div>
 
     <script>
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-        let mouseX = 0, mouseY = 0, outlineX = 0, outlineY = 0;
+        const icons = {
+            'Nắng': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+            'Mưa': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>',
+            'Mây': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>'
+        };
 
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            cursorDot.style.left = mouseX + 'px';
-            cursorDot.style.top = mouseY + 'px';
-        });
+        const STORAGE_KEY = 'lv_smart_diary';
+        let appData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        const TARGET_DATE = new Date(2026, 10, 10, 0, 0, 0).getTime(); 
 
-        function animateOutline() {
-            outlineX += (mouseX - outlineX) * 0.25;
-            outlineY += (mouseY - outlineY) * 0.25;
-            cursorOutline.style.left = outlineX + 'px';
-            cursorOutline.style.top = outlineY + 'px';
-            requestAnimationFrame(animateOutline);
-        }
-        animateOutline();
+        if (!appData) { appData = { history: [] }; saveData(); }
 
-        function addCursorEffects() {
-            document.querySelectorAll('a, button, .icon-button, .detail-box, .ip-copy, .ip-stat-item, .card, .datetime, .logo, .status-badge, .speed-badge').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursorDot.classList.add('hover');
-                    cursorOutline.classList.add('hover');
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursorDot.classList.remove('hover');
-                    cursorOutline.classList.remove('hover');
-                });
-            });
+        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
+
+        // Logic check ngày (Tránh 1 ngày lưu nhiều lần)
+        function isSameDay(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
         }
 
-        document.addEventListener('mousedown', () => {
-            cursorDot.classList.add('click');
-            cursorOutline.classList.add('click');
-        });
+        // --- KHỞI TẠO (Check xem hôm nay đã viết chưa) ---
+        function checkTodayStatus() {
+            const now = new Date().getTime();
+            const todayIndex = appData.history.findIndex(item => isSameDay(item.timestamp, now));
+            
+            const textarea = document.getElementById('note-input');
+            if (todayIndex !== -1) {
+                // Đã có bản ghi -> đổi câu chào
+                textarea.placeholder = "Sếp đã ghi chép hôm nay. Viết để cập nhật lại...";
+            } else {
+                textarea.placeholder = "Lưu lại cảm xúc lúc này...";
+            }
+        }
+        checkTodayStatus(); // Gọi lúc mở app
 
-        document.addEventListener('mouseup', () => {
-            cursorDot.classList.remove('click');
-            cursorOutline.classList.remove('click');
-        });
+        // --- ĐẾM NGƯỢC ---
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = TARGET_DATE - now;
 
-        let currentLang = 'vi';
-        let currentTheme = 'dark';
-        let apiData = null;
-        let clientInfo = null;
-        let networkSpeed = { download: 0, upload: 0, quality: 'testing' };
+            if (diff <= 0) {
+                document.getElementById('days').innerText = "00"; document.getElementById('hours').innerText = "00";
+                document.getElementById('mins').innerText = "00"; document.getElementById('secs').innerText = "00";
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
-        const translations = {
-            'en': {
-                'title': 'IP Dashboard Pro', 'logo': 'NETWORK', 'status_online': 'ONLINE',
-                'time_amlich': 'Lunar:', 'time_weekdays': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                'refresh_title': 'Refresh Data', 'theme_title_auto': 'Theme: Auto', 'theme_title_light': 'Theme: Light',
-                'theme_title_dark': 'Theme: Dark', 'lang_title': 'Change Language (VI/EN)',
-                'loading_text': 'Loading network information', 'loading_status': 'Connecting to server...',
-                'load_error': 'Failed to load data. Please try refreshing.', 'ip_label': 'YOUR IP ADDRESS',
-                'ip_copy_btn': 'Copy Address', 'ip_copied_btn': 'Copied!', 'ip_stat_type': 'Type', 'ip_stat_version': 'Version',
-                'detail_country': 'Country', 'detail_timezone': 'Timezone', 'detail_coords': 'Coordinates',
-                'detail_postal': 'Postal', 'detail_os': 'Operating System', 'detail_browser': 'Browser',
-                'detail_hostname': 'Hostname', 'detail_provider': 'Provider', 'detail_region': 'Region',
-                'na': 'N/A', 'modal_close': 'Close', 'footer_text': 'Design by Duc Manh', 'footer_version': 'Version 2.0',
-                'speed_label': 'SPEED', 'speed_testing': 'Testing...', 'speed_excellent': 'Excellent', 
-                'speed_good': 'Stable', 'speed_poor': 'Unstable'
-            },
-            'vi': {
-                'title': 'Địa chỉ IP', 'logo': 'NETWORK', 'status_online': 'TRỰC TUYẾN',
-                'time_amlich': 'Âm lịch:', 'time_weekdays': ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"],
-                'refresh_title': 'Tải lại dữ liệu', 'theme_title_auto': 'Giao diện: Tự động', 'theme_title_light': 'Giao diện: Sáng',
-                'theme_title_dark': 'Giao diện: Tối', 'lang_title': 'Đổi ngôn ngữ (VI/EN)',
-                'loading_text': 'Đang tải thông tin mạng', 'loading_status': 'Đang kết nối đến máy chủ...',
-                'load_error': 'Không thể tải dữ liệu. Vui lòng thử lại.', 'ip_label': 'ĐỊA CHỈ IP CỦA BẠN',
-                'ip_copy_btn': 'Sao chép địa chỉ', 'ip_copied_btn': 'Đã sao chép!', 'ip_stat_type': 'Loại', 'ip_stat_version': 'Phiên bản',
-                'detail_country': 'Quốc gia', 'detail_timezone': 'Múi giờ', 'detail_coords': 'Tọa độ',
-                'detail_postal': 'Mã bưu chính', 'detail_os': 'Hệ điều hành', 'detail_browser': 'Trình duyệt',
-                'detail_hostname': 'Tên máy chủ', 'detail_provider': 'Nhà cung cấp', 'detail_region': 'Khu vực',
-                'na': 'Không có', 'modal_close': 'Đóng', 'footer_text': 'Thiết kế bởi Đức Mạnh', 'footer_version': 'Phiên bản 2.0',
-                'speed_label': 'TỐC ĐỘ', 'speed_testing': 'Đang đo...', 'speed_excellent': 'Tốt', 
-                'speed_good': 'Ổn định', 'speed_poor': 'Không ổn định'
+            document.getElementById('days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('mins').innerText = mins.toString().padStart(2, '0');
+            document.getElementById('secs').innerText = secs.toString().padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000); updateCountdown();
+
+        // --- THỜI TIẾT ---
+        let currentWeather = 'Nắng'; 
+        function selectWeather(weather, element) {
+            currentWeather = weather;
+            document.querySelectorAll('.weather-tag').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // --- LOGIC LƯU THÔNG MINH (OVERWRITE) ---
+        let pendingSaveIndex = -1;
+        let pendingSaveData = null;
+
+        function requestSave() {
+            const input = document.getElementById('note-input');
+            const text = input.value.trim();
+            const now = new Date().getTime();
+
+            // Tìm xem trong lịch sử có bài nào của "Hôm nay" không
+            pendingSaveIndex = appData.history.findIndex(item => isSameDay(item.timestamp, now));
+
+            pendingSaveData = { timestamp: now, text: text, weather: currentWeather };
+
+            if (pendingSaveIndex !== -1) {
+                // Nếu CÓ bản ghi hôm nay -> Bật Modal hỏi
+                document.getElementById('confirm-modal-wrapper').classList.add('show');
+            } else {
+                // Nếu CHƯA CÓ -> Lưu luôn (Thêm mới)
+                executeSave(false);
+            }
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal-wrapper').classList.remove('show');
+            pendingSaveIndex = -1;
+            pendingSaveData = null;
+        }
+
+        function executeSave(isOverwrite) {
+            if (isOverwrite && pendingSaveIndex !== -1) {
+                // Ghi đè lên bản cũ (cập nhật text, thời tiết, lấy giờ mới nhất)
+                appData.history[pendingSaveIndex] = pendingSaveData;
+                showToast("Đã cập nhật bản ghi");
+            } else {
+                // Thêm mới vào đầu mảng
+                appData.history.unshift(pendingSaveData);
+                showToast("Đã lưu Ký ức mới");
+            }
+            
+            saveData();
+            renderHistory();
+            checkTodayStatus(); // Cập nhật lại placeholder
+            
+            document.getElementById('note-input').value = '';
+            
+            // Nếu có mở modal thì đóng lại
+            closeConfirmModal();
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = message;
+            
+            clearTimeout(toastTimeout);
+            toast.classList.remove('show');
+            void toast.offsetWidth; 
+            toast.classList.add('show');
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // --- SIDEBAR LỊCH SỬ ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const historyList = document.getElementById('history-list');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function formatDate(timestamp) {
+            const d = new Date(timestamp);
+            const day = d.getDate().toString().padStart(2, '0');
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        window.toggleText = function(index, btnElement) {
+            const textElement = document.getElementById(`text-content-${index}`);
+            if (textElement.classList.contains('clamped')) {
+                textElement.classList.remove('clamped');
+                btnElement.innerText = "Ẩn bớt";
+            } else {
+                textElement.classList.add('clamped');
+                btnElement.innerText = "Hiện thêm";
             }
         };
 
-        const body = document.body;
-        const themeToggle = document.getElementById('themeToggle');
-        const langToggle = document.getElementById('langToggle');
-        const langIndicator = document.getElementById('langIndicator');
-        const refreshIcon = document.getElementById('refreshIcon');
-        const datetimeEl = document.getElementById('datetime');
-        const contentEl = document.getElementById('content');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalIconContainer = document.getElementById('modalIconContainer');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalValue = document.getElementById('modalValue');
-        const modalCloseButton = document.getElementById('modalCloseButton');
-        const speedBadge = document.getElementById('speedBadge');
-        const speedIcon = document.getElementById('speedIcon');
-        const speedValue = document.getElementById('speedValue');
-
-        function setVisualTheme(theme) {
-            body.classList.toggle('light-mode', theme === 'light');
-        }
-
-        function applyThemeSetting(setting) {
-            currentTheme = setting;
-            localStorage.setItem('theme', setting);
-            body.setAttribute('data-theme-mode', setting);
-            updateThemeTitle();
-            if (setting === 'auto') {
-                const hour = new Date().getHours();
-                setVisualTheme(hour >= 6 && hour < 18 ? 'light' : 'dark');
-            } else {
-                setVisualTheme(setting);
+        function renderHistory() {
+            historyList.innerHTML = '';
+            if (!appData.history || appData.history.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">Chưa có bản ghi nào.</div>';
+                return;
             }
-        }
-        
-        function updateThemeTitle() {
-            const tr = translations[currentLang];
-            themeToggle.title = tr[`theme_title_${currentTheme}`];
-        }
 
-        function updateLanguage() {
-            const tr = translations[currentLang];
-            document.documentElement.lang = currentLang;
-            document.title = tr.title;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (tr[key]) el.innerText = tr[key];
-            });
-            updateThemeTitle();
-            langToggle.title = tr.lang_title;
-            refreshIcon.title = tr.refresh_title;
-            updateTime();
-            renderData();
-            updateSpeedDisplay();
-        }
-
-        function showModal(title, valueHtml, iconHtml) {
-            modalTitle.innerText = title;
-            modalValue.innerHTML = valueHtml;
-            modalIconContainer.innerHTML = iconHtml;
-            modalOverlay.classList.add('active');
-        }
-
-        function closeModal() {
-            modalOverlay.classList.remove('active');
-        }
-
-        function updateTime() {
-            if (currentTheme === 'auto') {
-                const hour = new Date().getHours();
-                setVisualTheme(hour >= 6 && hour < 18 ? 'light' : 'dark');
-            }
-            const now = new Date();
-            const tr = translations[currentLang];
-            const weekdays = tr.time_weekdays;
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `${h}:${m}:${s}`;
-            const day = weekdays[now.getDay()];
-            const date = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            const solarDateString = `${day}, ${date}/${month}/${year}`;
-            try {
-                const lunarFormatter = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { day: '2-digit', month: '2-digit' });
-                const lunarDateParts = lunarFormatter.formatToParts(now);
-                let lunarDay = String(lunarDateParts.find(part => part.type === 'day')?.value).padStart(2, '0');
-                let lunarMonth = String(lunarDateParts.find(part => part.type === 'month')?.value).padStart(2, '0');
-                const lunarDateString = `${tr.time_amlich} ${lunarDay}/${lunarMonth}`;
-                if (datetimeEl) datetimeEl.innerHTML = `${timeString}<br>${solarDateString}<br>${lunarDateString}`;
-            } catch (e) {
-                if (datetimeEl) datetimeEl.innerHTML = `${timeString}<br>${solarDateString}`;
-            }
-        }
-
-        function getClientInfo() {
-            let os = 'N/A', browser = 'N/A';
-            try {
-                if (navigator.userAgentData?.platform) {
-                    os = navigator.userAgentData.platform;
-                } else {
-                    const ua = navigator.userAgent;
-                    if (ua.includes("Win")) os = "Windows";
-                    else if (ua.includes("Mac")) os = "macOS";
-                    else if (ua.includes("Linux")) os = "Linux";
-                    else if (ua.includes("Android")) os = "Android";
-                    else if (ua.includes("like Mac")) os = "iOS";
-                    else os = navigator.platform || 'N/A';
+            appData.history.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.style.transitionDelay = `${index * 0.05}s`; 
+                
+                let textHTML = '';
+                if (item.text) {
+                    const isLong = item.text.length > 100 || item.text.split('\n').length > 3;
+                    if (isLong) {
+                        textHTML = `
+                            <div id="text-content-${index}" class="text-content clamped">${item.text}</div>
+                            <button class="toggle-more-btn" onclick="toggleText(${index}, this)">Đọc thêm</button>
+                        `;
+                    } else {
+                        textHTML = `<div class="text-content">${item.text}</div>`;
+                    }
                 }
-                if (navigator.userAgentData?.brands) {
-                    const brands = navigator.userAgentData.brands;
-                    const mainBrand = brands.find(b => b.brand !== "Not A;Brand" && b.brand !== "Chromium");
-                    browser = mainBrand ? `${mainBrand.brand} ${mainBrand.version}` : `${brands[0].brand} ${brands[0].version}`;
-                } else {
-                    const ua = navigator.userAgent;
-                    let match;
-                    if ((match = ua.match(/(Firefox)\/([\d\.]+)/))) browser = `${match[1]} ${match[2]}`;
-                    else if ((match = ua.match(/(Edg)\/([\d\.]+)/))) browser = `Edge ${match[2]}`;
-                    else if ((match = ua.match(/(Chrome)\/([\d\.]+) Safari/))) browser = `Chrome ${match[2]}`;
-                    else if ((match = ua.match(/(Safari)\/([\d\.]+) (?!Chrome)/))) browser = `Safari ${match[2]}`;
-                }
-            } catch (e) {
-                console.error("Error getting client info:", e);
-            }
-            if (os !== 'N/A') os = os.charAt(0).toUpperCase() + os.slice(1);
-            return { os, browser };
-        }
 
-        function detectIPType(ip) {
-            if (ip.includes(':')) return 'IPv6';
-            if (ip.includes('.')) return 'IPv4';
-            return 'Unknown';
-        }
-
-        function getIPVersion(ip) {
-            if (ip.includes(':')) return 'v6';
-            if (ip.includes('.')) return 'v4';
-            return 'N/A';
-        }
-
-        async function measureNetworkSpeed() {
-            const tr = translations[currentLang];
-            speedBadge.classList.add('testing');
-            speedBadge.classList.remove('excellent', 'good', 'poor');
-            speedIcon.classList.add('testing');
-            speedValue.classList.add('testing-text');
-            speedValue.innerHTML = `<span data-i18n="speed_testing">${tr.speed_testing}</span>`;
-            
-            try {
-                const fileSize = 5 * 1024 * 1024;
-                const testUrl = 'https://speed.cloudflare.com/__down?bytes=' + fileSize;
-                
-                const startTime = performance.now();
-                const response = await fetch(testUrl, { cache: 'no-store' });
-                await response.blob();
-                const endTime = performance.now();
-                
-                const duration = (endTime - startTime) / 1000;
-                const speedMbps = ((fileSize * 8) / (duration * 1000000)).toFixed(2);
-                
-                networkSpeed.download = parseFloat(speedMbps);
-                networkSpeed.upload = (networkSpeed.download * 0.7).toFixed(2);
-                
-                if (networkSpeed.download >= 100) {
-                    networkSpeed.quality = 'excellent';
-                } else if (networkSpeed.download >= 50) {
-                    networkSpeed.quality = 'good';
-                } else {
-                    networkSpeed.quality = 'poor';
-                }
-                
-            } catch (error) {
-                console.error('Speed test error:', error);
-                networkSpeed.download = 0;
-                networkSpeed.upload = 0;
-                networkSpeed.quality = 'poor';
-            }
-            
-            speedBadge.classList.remove('testing');
-            speedIcon.classList.remove('testing');
-            speedValue.classList.remove('testing-text');
-            updateSpeedDisplay();
-        }
-
-        function updateSpeedDisplay() {
-            const tr = translations[currentLang];
-            
-            speedBadge.classList.remove('excellent', 'good', 'poor');
-            speedBadge.classList.add(networkSpeed.quality);
-            
-            if (networkSpeed.download > 0) {
-                const qualityText = tr[`speed_${networkSpeed.quality}`];
-                speedValue.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.2;">
-                        <div style="font-size: 13px; font-weight: 800;">${networkSpeed.download} Mbps</div>
-                        <div style="font-size: 9px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px;">${qualityText}</div>
+                div.innerHTML = `
+                    <div class="history-meta">
+                        <span class="history-date">${formatDate(item.timestamp)}</span>
+                        <div class="history-tag-display">
+                            ${icons[item.weather]}
+                            <span>${item.weather}</span>
+                        </div>
                     </div>
+                    ${textHTML}
                 `;
-            } else {
-                speedValue.innerHTML = `<span data-i18n="speed_testing">${tr.speed_testing}</span>`;
-            }
-            
-            const statusMap = {
-                excellent: tr.speed_excellent,
-                good: tr.speed_good,
-                poor: tr.speed_poor
-            };
-            
-            speedBadge.title = `${tr.speed_label}: ${networkSpeed.download} Mbps (${statusMap[networkSpeed.quality]}) - Click để đo lại`;
-        }
-
-        function renderData() {
-            if (!apiData) return;
-            const tr = translations[currentLang];
-            const data = apiData;
-            const { os, browser } = clientInfo;
-            const na = tr.na;
-            const [lat, lon] = data.loc ? data.loc.split(',') : [na, na];
-            const hostname = data.hostname || na;
-            const countryCode = data.country ? data.country.toLowerCase() : '';
-            const ipType = detectIPType(data.ip);
-            const ipVersion = getIPVersion(data.ip);
-            let fullCountryName = na;
-            if (data.country) {
-                try {
-                    const regionNames = new Intl.DisplayNames([currentLang], { type: 'region' });
-                    fullCountryName = regionNames.of(data.country);
-                } catch (e) {
-                    fullCountryName = data.country;
-                }
-            }
-            const flagImgHtml = countryCode ? `<img src="https://flagcdn.com/w40/${countryCode}.png" alt="${fullCountryName} flag" class="country-flag" onerror="this.style.display='none'">` : '';
-            const flagImgSmallHtml = countryCode ? `<img src="https://flagcdn.com/w20/${countryCode}.png" alt="${fullCountryName} flag" class="country-flag-small" onerror="this.style.display='none'">` : '';
-
-            contentEl.innerHTML = `
-                <div class="card ip-card">
-                    <div class="ip-label" data-i18n="ip_label">${tr.ip_label}</div>
-                    <div class="ip-display-wrapper"><div class="ip-number">${data.ip}</div></div>
-                    <div class="ip-location">${flagImgHtml}<span>${data.city || na}, ${fullCountryName}</span></div>
-                    <div class="ip-stats">
-                        <div class="ip-stat-item">
-                            <div class="ip-stat-label" data-i18n="ip_stat_type">${tr.ip_stat_type}</div>
-                            <div class="ip-stat-value">${ipType}</div>
-                        </div>
-                        <div class="ip-stat-item">
-                            <div class="ip-stat-label" data-i18n="ip_stat_version">${tr.ip_stat_version}</div>
-                            <div class="ip-stat-value">${ipVersion}</div>
-                        </div>
-                    </div>
-                    <div class="ip-copy" onclick="copyIP('${data.ip}', this, '${tr.ip_copy_btn}', '${tr.ip_copied_btn}')">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        <span data-i18n="ip_copy_btn">${tr.ip_copy_btn}</span>
-                    </div>
-                </div>
-                <div class="details-grid">
-                    ${[
-                        { icon: '<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>', label: 'detail_country', value: `${flagImgSmallHtml}<span>${fullCountryName}</span>`, fullValue: fullCountryName, isCountry: true },
-                        { icon: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>', label: 'detail_timezone', value: data.timezone || na, fullValue: data.timezone || na },
-                        { icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>', label: 'detail_coords', value: `${lat}, ${lon}`, fullValue: `${lat}, ${lon}` },
-                        { icon: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>', label: 'detail_postal', value: data.postal || na, fullValue: data.postal || na },
-                        { icon: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>', label: 'detail_os', value: os, fullValue: os },
-                        { icon: '<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" y1="8" x2="12" y2="8"></line><line x1="3.95" y1="6.06" x2="8.54" y2="14"></line><line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>', label: 'detail_browser', value: browser, fullValue: browser },
-                        { icon: '<rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line>', label: 'detail_hostname', value: hostname, fullValue: hostname },
-                        { icon: '<path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path><path d="M9 21v-8h6v8M9 9h6v3H9zM9 5h6v3H9z"></path>', label: 'detail_provider', value: data.org || na, fullValue: data.org || na },
-                        { icon: '<path d="M21.5 10c0 7-9.5 13-9.5 13S2.5 17 2.5 10a9.5 9.5 0 0 1 19 0z"></path><circle cx="12" cy="10" r="3"></circle>', label: 'detail_region', value: data.region || na, fullValue: data.region || na }
-                    ].map((item, idx) => `
-                        <div class="detail-box box-${idx + 1}" data-full-value="${item.fullValue}" data-i18n-label="${item.label}">
-                            <div class="detail-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.icon}</svg>
-                            </div>
-                            <div class="detail-label" data-i18n="${item.label}">${tr[item.label]}</div>
-                            <div class="detail-value ${item.isCountry ? 'country-detail' : ''}" title="${item.fullValue}">${item.value}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            addCursorEffects();
-            contentEl.querySelectorAll('.detail-box').forEach(box => {
-                box.addEventListener('click', () => {
-                    const title = box.querySelector('.detail-label').innerText;
-                    const iconHtml = box.querySelector('.detail-icon').outerHTML;
-                    const valueHtml = box.getAttribute('data-i18n-label') === 'detail_country' ? box.querySelector('.detail-value').innerHTML : box.getAttribute('data-full-value');
-                    showModal(title, valueHtml, iconHtml);
-                });
+                historyList.appendChild(div);
             });
         }
-
-        async function loadData() {
-            try {
-                const res = await fetch('https://api.ipify.org?format=json');
-                if (!res.ok) throw new Error('Failed to fetch IP');
-                const ipData = await res.json();
-                const detailRes = await fetch(`https://ipinfo.io/${ipData.ip}/json`);
-                if (!detailRes.ok) throw new Error('Failed to fetch IP details');
-                apiData = await detailRes.json();
-                if (apiData?.ip) {
-                    renderData();
-                    await measureNetworkSpeed();
-                } else {
-                    throw new Error('Failed to fetch IP details');
-                }
-            } catch (error) {
-                console.error("Error loading data:", error);
-                contentEl.innerHTML = `<div class="loading"><div class="loader">${Array(5).fill('<div class="loader-dot"></div>').join('')}</div><div style="color: var(--error-color); font-weight: 700;">${translations[currentLang].load_error}</div></div>`;
-            }
-        }
-
-        function copyIP(ip, btnElement, copyText, copiedText) {
-            navigator.clipboard.writeText(ip).then(() => {
-                const originalText = copyText;
-                const originalIcon = btnElement.querySelector('svg').outerHTML;
-                btnElement.querySelector('span').textContent = copiedText;
-                btnElement.querySelector('svg').outerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                setTimeout(() => {
-                    btnElement.querySelector('span').textContent = originalText;
-                    btnElement.querySelector('svg').outerHTML = originalIcon;
-                }, 2500);
-            }).catch(err => console.error('Failed to copy: ', err));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            clientInfo = getClientInfo();
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            applyThemeSetting(savedTheme);
-            themeToggle.addEventListener('click', () => {
-                const themes = ['auto', 'light', 'dark'];
-                const currentIndex = themes.indexOf(currentTheme);
-                applyThemeSetting(themes[(currentIndex + 1) % 3]);
-            });
-            const savedLang = localStorage.getItem('lang') || 'vi';
-            currentLang = savedLang;
-            langIndicator.innerText = currentLang.toUpperCase();
-            updateLanguage();
-            langToggle.addEventListener('click', () => {
-                currentLang = currentLang === 'vi' ? 'en' : 'vi';
-                localStorage.setItem('lang', currentLang);
-                langIndicator.innerText = currentLang.toUpperCase();
-                updateLanguage();
-            });
-            
-            speedBadge.addEventListener('click', () => {
-                if (!speedBadge.classList.contains('testing')) {
-                    measureNetworkSpeed();
-                }
-            });
-            
-            updateTime();
-            setInterval(updateTime, 1000);
-            loadData();
-            addCursorEffects();
-            modalCloseButton.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) closeModal();
-            });
-        });
+        renderHistory();
     </script>
 </body>
 </html>
+
+```

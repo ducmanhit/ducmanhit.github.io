@@ -2,528 +2,1828 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journey to 01.08.2026</title>
-    <!-- Nhúng Tailwind CSS qua CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tuyển Tập Thơ Giao Duyên | Đầy đủ 225 Bài</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Font Lora cho phần thơ (đọc rất sang), Inter cho giao diện -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400&display=swap');
-        
-        body, html {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Jost', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* ?n scrollbar d? gi? giao di?n siêu s?ch */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
-
-        .thin-text { font-weight: 200; }
-        .ultra-thin { font-weight: 100; }
-        .tracking-mega { letter-spacing: 0.2em; }
-        .tracking-ultra { letter-spacing: 0.5em; }
-
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 200;
-        }
-
-        ::selection {
-            background-color: #fff;
-            color: #000;
-        }
-
-        /* Class d? làm to form ch? d?m ngu?c mà gi? nguyên t? l?, c? d?nh chi?u r?ng ch?ng nh?y s? */
-        .giant-number {
-            font-size: 8rem; 
-            line-height: 1;
-            text-shadow: 0 0 40px rgba(255,255,255,0.1);
-            font-variant-numeric: tabular-nums;
-            display: inline-block;
-            min-width: 1.4em;
-            text-align: center;
-            animation: subtle-number-glow 5s ease-in-out infinite;
-        }
-        
-        @media (min-width: 768px) {
-            .giant-number {
-                font-size: 13rem; 
+    <script>
+        tailwind.config = {
+            darkMode: 'class', 
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        // Tông màu Zen, đọc sách (không dùng xanh/tím)
+                        l_bg: '#F7F6F2', 
+                        l_surface: '#FFFFFF',
+                        l_text: '#1C1C1C',
+                        l_subtext: '#6B6B6B',
+                        l_accent: '#8C3A3A', // Đỏ đất/Terracotta sang trọng
+                        l_border: '#E5E3DB',
+                        
+                        d_bg: '#121212',
+                        d_surface: '#1E1E1E',
+                        d_text: '#E0E0E0',
+                        d_subtext: '#9E9E9E',
+                        d_accent: '#C0A062', // Vàng đồng/Champagne
+                        d_border: '#2C2C2C',
+                    }
+                }
             }
         }
+    </script>
 
-        /* Side panel tru?t t? bên ph?i ch?a nh?t ký */
-        #journal-panel {
-            transform: translateX(100%);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #journal-panel.open {
-            transform: translateX(0);
-        }
-
-        #journal-panel::-webkit-scrollbar {
-            width: 2px;
-        }
-        #journal-panel::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #journal-panel::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Ðu?ng k? du?i input mu?t mà */
-        .input-line {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
         
-        #note-input:focus ~ .input-line,
-        #note-input:not(:placeholder-shown) ~ .input-line {
-            width: 100%;
+        body {
+            transition: background-color 0.2s ease, color 0.2s ease;
+            overflow-x: hidden;
         }
 
-        /* Hào quang th? (Breathing Ambient Glow) */
-        .ambient-glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90vw;
-            height: 90vw;
-            background: radial-gradient(circle, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0) 60%);
-            z-index: -1;
-            pointer-events: none;
-            animation: pulse-glow 6s ease-in-out infinite alternate;
-        }
-        @keyframes pulse-glow {
-            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        /* Hoạt ảnh siêu mượt bằng cách ép GPU xử lý */
+        .poem-transition {
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
         }
 
-        /* Hi?u ?ng xu?t hi?n mu?t mà */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); filter: blur(4px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .fade-in-up {
-            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .poem-hidden {
             opacity: 0;
-        }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.3s; }
-        .delay-3 { animation-delay: 0.5s; }
-
-        /* L?p lánh ma thu?t */
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
-            50% { opacity: 0.9; transform: scale(1.3) rotate(15deg); }
-        }
-        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
-        .animate-twinkle-delayed { animation: twinkle 3s ease-in-out 1.5s infinite; }
-        
-        /* Hi?u ?ng tru?t khi có th? nh?t ký m?i */
-        @keyframes slideInSoft {
-            from { opacity: 0; transform: translateX(40px) scale(0.95); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        .entry-animate {
-            animation: slideInSoft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        /* --- UPGRADED EFFECTS --- */
-        
-        /* Ánh sáng th? c?a s? d?m ngu?c */
-        @keyframes subtle-number-glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.05); }
-            50% { text-shadow: 0 0 60px rgba(255,255,255,0.25); }
-        }
-
-        /* V?ng sáng theo con tr? chu?t */
-        #pointer-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            transform: translateY(15px);
             pointer-events: none;
-            z-index: 0; 
-            background: radial-gradient(800px circle at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(255,255,255,0.04), transparent 40%);
-            will-change: background;
         }
 
-        /* Hi?u ?ng quét sáng (Shimmer) cho nút Save */
-        .btn-shimmer {
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-shimmer::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.7s ease;
-        }
-        .btn-shimmer:hover::before {
-            left: 100%;
+        .poem-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Hi?u ?ng trôi n?i cho Icon th?i ti?t du?c ch?n */
-        @keyframes floatSelected {
-            0%, 100% { transform: translateY(0) scale(1.1); }
-            50% { transform: translateY(-6px) scale(1.1); }
+        /* Thanh cuộn tối giản */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D1D1D1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #424242; }
+
+        /* Nút tương tác mượt mà */
+        .btn-interact {
+            transition: all 0.15s ease;
         }
-        .weather-selected-anim {
-            animation: floatSelected 3s ease-in-out infinite;
+        .btn-interact:active {
+            transform: scale(0.92);
         }
 
+        /* Toast thông báo */
+        #toast {
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        .toast-show {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-black flex flex-col items-center py-10 md:py-20 px-4 md:px-10 relative">
+<body class="antialiased min-h-screen flex flex-col font-sans bg-l_bg text-l_text dark:bg-d_bg dark:text-d_text selection:bg-l_accent selection:text-white dark:selection:bg-d_accent dark:selection:text-black">
 
-    <!-- Glow theo con tr? chu?t -->
-    <div id="pointer-glow"></div>
-
-    <!-- Hào quang n?n phía sau -->
-    <div class="ambient-glow"></div>
-
-    <!-- NÚT M? NH?T KÝ (Góc ph?i trên) -->
-    <button onclick="toggleJournal()" class="absolute top-6 right-6 md:top-10 md:right-10 flex items-center gap-2 text-white/30 hover:text-white transition-all duration-500 thin-text uppercase tracking-widest text-xs group z-40">
-        <span class="group-hover:-translate-x-1 transition-transform duration-500">Journal</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50 group-hover:opacity-100 transition-opacity duration-500"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </button>
-
-    <!-- SECTION 1: COUNTDOWN -->
-    <div class="fade-in-up delay-1 flex flex-col items-center justify-center w-full min-h-[60vh] text-center mb-16 md:mb-24">
-        <p class="uppercase text-white/40 tracking-mega text-xs md:text-sm mb-12 md:mb-20 thin-text flex items-center gap-3">
-            <span id="icon-sparkle-1" class="animate-twinkle opacity-50"></span>
-            Journey to 01.08.2026
-            <span id="icon-sparkle-2" class="animate-twinkle-delayed opacity-50"></span>
-        </p>
-
-        <div class="flex flex-wrap justify-center items-center gap-4 md:gap-12">
-            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
-                <span id="cd-days" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
-                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Days</span>
+    <header class="w-full py-4 px-4 sm:px-6 flex justify-between items-center max-w-4xl mx-auto z-10 sticky top-0 bg-l_bg/95 dark:bg-d_bg/95 backdrop-blur border-b border-l_border dark:border-d_border">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg flex items-center justify-center font-bold font-serif">
+                <i class="fa-solid fa-leaf text-sm"></i>
             </div>
-            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse">:</span>
-            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
-                <span id="cd-hours" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
-                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Hours</span>
-            </div>
-            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse" style="animation-delay: 0.2s;">:</span>
-            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
-                <span id="cd-minutes" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
-                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Minutes</span>
-            </div>
-            <span class="text-5xl md:text-8xl ultra-thin text-white/20 mb-8 md:mb-12 animate-pulse" style="animation-delay: 0.4s;">:</span>
-            <div class="flex flex-col items-center gap-4 md:gap-8 cursor-default">
-                <span id="cd-seconds" class="giant-number ultra-thin tracking-tight text-white/90">00</span>
-                <span class="uppercase text-white/40 tracking-ultra text-[10px] md:text-xs thin-text">Seconds</span>
-            </div>
+            <h1 class="font-serif font-semibold text-lg hidden sm:block tracking-wide">Tuyển Tập Thơ</h1>
         </div>
-    </div>
 
-    <!-- ÐU?NG K? M?NH PHÂN CÁCH -->
-    <div class="fade-in-up delay-2 w-full max-w-xl h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-20 md:mb-32"></div>
-
-    <!-- SECTION 2: GHI CHÚ & TH?I TI?T HÔM NAY (ÐÃ ÐU?C PH?C H?I) -->
-    <div class="fade-in-up delay-3 w-full max-w-2xl flex flex-col items-center mb-20">
-        <h2 class="uppercase text-white/50 tracking-mega text-[10px] md:text-xs mb-4 thin-text">Today</h2>
-        <p id="current-date-display" class="text-xl md:text-2xl tracking-widest thin-text mb-12 uppercase"></p>
-
-        <form id="note-form" class="w-full flex flex-col items-center gap-12">
+        <div class="flex items-center gap-1 sm:gap-2">
+            <span id="poem-counter" class="text-xs font-medium text-l_subtext dark:text-d_subtext mr-2">0/0</span>
             
-            <!-- Ch?n th?i ti?t -->
-            <div class="flex flex-col items-center gap-4">
-                <div class="flex gap-4 md:gap-8" id="weather-buttons-container">
-                    <!-- Nút th?i ti?t s? du?c chèn qua JS -->
-                </div>
-                <div class="h-4">
-                    <span id="weather-label-display" class="uppercase text-white/60 tracking-widest text-[9px] md:text-[10px] thin-text transition-all duration-500 opacity-0 translate-y-2 inline-block"></span>
-                </div>
-            </div>
+            <button onclick="toggleFontSize()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 btn-interact text-l_subtext dark:text-d_subtext" title="Đổi cỡ chữ">
+                <i class="fa-solid fa-text-height text-sm"></i>
+            </button>
+            
+            <button onclick="toggleTheme()" id="theme-btn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 btn-interact text-l_subtext dark:text-d_subtext" title="Giao diện Sáng/Tối">
+                <i class="fa-solid fa-moon"></i>
+            </button>
 
-            <!-- Input -->
-            <div class="w-full relative group">
-                <input
-                    type="text"
-                    id="note-input"
-                    autocomplete="off"
-                    placeholder="WRITE A NOTE FOR TODAY..."
-                    class="w-full bg-transparent border-none pb-4 text-center text-base md:text-xl thin-text tracking-widest outline-none transition-all duration-500 peer relative z-10"
-                />
-                <div class="input-line"></div>
-                <div class="absolute bottom-0 left-0 w-full h-[1px] bg-white/10"></div>
-            </div>
-
-            <!-- Save Button -->
-            <div class="relative flex flex-col items-center">
-                <button
-                    type="submit"
-                    id="save-btn"
-                    class="btn-shimmer px-12 py-4 rounded-full border border-white/10 uppercase tracking-mega text-[10px] thin-text hover:bg-white/5 hover:border-white/30 transition-all duration-500 text-white/80"
-                >
-                    Save Note
-                </button>
-                <span id="save-status" class="absolute -bottom-8 text-[9px] uppercase tracking-widest text-white/50 thin-text opacity-0 translate-y-1 transition-all duration-500"></span>
-            </div>
-        </form>
-    </div>
-
-    <!-- B?NG ÐI?U KHI?N TRU?T (SIDE PANEL) CH?A NH?T KÝ -->
-    <div id="journal-panel" class="fixed top-0 right-0 w-full md:w-[450px] h-full bg-black/60 backdrop-blur-xl border-l border-white/5 z-50 flex flex-col shadow-2xl">
-        <div class="p-8 flex justify-between items-center border-b border-white/5">
-            <h2 class="uppercase text-white/60 tracking-mega text-xs thin-text">Journey Logs</h2>
-            <button type="button" onclick="toggleJournal()" class="text-white/40 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 btn-interact text-l_text dark:text-d_text ml-1" title="Mục lục">
+                <i class="fa-solid fa-list-ul"></i>
             </button>
         </div>
-        <div id="journal-list" class="flex-1 overflow-y-auto p-8 flex flex-col gap-10">
-            <p id="empty-journal-msg" class="text-white/30 thin-text text-sm text-center uppercase tracking-widest mt-10">No entries yet</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center px-4 sm:px-6 py-6 w-full max-w-3xl mx-auto relative justify-center">
+        
+        <div id="autoplay-indicator" class="hidden items-center gap-2 text-xs font-semibold text-l_accent dark:text-d_accent mb-4 animate-pulse">
+            <i class="fa-solid fa-play-circle"></i> Đang tự động chuyển bài...
         </div>
+
+        <!-- Khung hiển thị thơ tối giản -->
+        <div id="poem-container" class="w-full bg-l_surface dark:bg-d_surface rounded-xl shadow-sm border border-l_border dark:border-d_border p-8 sm:p-12 min-h-[55vh] flex flex-col justify-center poem-transition poem-visible">
+            
+            <div class="flex flex-col items-center justify-center gap-1 mb-8">
+                <span id="p-id" class="text-xs font-bold text-l_subtext dark:text-d_subtext opacity-50 tracking-widest"></span>
+                <span id="p-category" class="text-[0.65rem] sm:text-xs font-medium text-l_accent dark:text-d_accent uppercase tracking-widest border border-l_accent/20 dark:border-d_accent/20 px-3 py-1 rounded-full mt-2"></span>
+            </div>
+
+            <h2 id="p-title" class="text-2xl sm:text-3xl font-serif font-bold text-center mb-8 text-l_text dark:text-d_text tracking-tight">
+                <!-- Title -->
+            </h2>
+
+            <div id="p-content" class="font-serif text-center text-lg sm:text-xl leading-loose sm:leading-[2.2] text-l_text/90 dark:text-d_text/90 transition-all duration-300">
+                <!-- Content -->
+            </div>
+            
+            <div class="mt-12 flex justify-center text-l_border dark:text-d_border opacity-50">
+                <i class="fa-solid fa-spa text-lg"></i>
+            </div>
+        </div>
+
+        <!-- Bảng điều khiển (Control Panel) -->
+        <div class="w-full mt-6 grid grid-cols-5 gap-2 max-w-md mx-auto">
+            <button onclick="prevPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+            </button>
+            
+            <button onclick="toggleAutoPlay()" id="btn-autoplay" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
+                <i id="icon-autoplay" class="fa-solid fa-clock text-lg"></i>
+            </button>
+
+            <button onclick="randomPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
+                <i class="fa-solid fa-dice text-lg"></i>
+            </button>
+
+            <button onclick="copyPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
+                <i class="fa-regular fa-clone text-lg"></i>
+            </button>
+
+            <button onclick="nextPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent">
+                <i class="fa-solid fa-arrow-right text-lg"></i>
+            </button>
+        </div>
+    </main>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/40 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    
+    <aside id="sidebar" class="fixed top-0 right-0 h-full w-full sm:w-[350px] bg-l_surface dark:bg-d_surface border-l border-l_border dark:border-d_border shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-4 border-b border-l_border dark:border-d_border flex justify-between items-center bg-l_bg dark:bg-d_bg">
+            <h3 class="font-sans font-bold text-lg">Danh sách bài thơ</h3>
+            <button onclick="toggleSidebar()" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 btn-interact flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="p-3 bg-l_surface dark:bg-d_surface border-b border-l_border dark:border-d_border">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-l_subtext text-xs"></i>
+                <input type="text" id="searchInput" oninput="filterPoems()" placeholder="Tìm số bài, tựa đề..." 
+                    class="w-full bg-l_bg dark:bg-d_bg border border-transparent rounded-md py-2 pl-8 pr-3 text-sm focus:outline-none focus:border-l_accent dark:focus:border-d_accent transition-colors text-l_text dark:text-d_text">
+            </div>
+        </div>
+
+        <div class="flex-grow overflow-y-auto p-2" id="poem-list-container">
+            <!-- Danh sách render bằng JS -->
+        </div>
+    </aside>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg px-5 py-2.5 rounded-lg shadow-xl text-sm font-medium opacity-0 translate-y-4 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Thành công!</span>
     </div>
 
-    <!-- TOÀN B? MÃ JAVASCRIPT GOM VÀO ÐÂY -->
+    <!-- DỮ LIỆU GỐC TỪ FILE TXT (KHÔNG CẦN CHỈNH SỬA BẰNG TAY) -->
+    <script type="text/template" id="raw-data">
+=================================================================
+TẬP CŨ: 25 CÂU ĐÃ GỬI TRƯỚC ĐÂY
+=================================================================
+
+25 CÂU THƠ, CA DAO GIAO DUYÊN NGÀY XƯA
+Sưu tầm để đăng ảnh, làm video và dùng dần 🌸
+
+Lưu ý: Đây là tuyển tập ca dao, dị bản truyền miệng và một số câu mang phong cách dân gian.
+Không phải tất cả đều đã được xác minh là nguyên văn ca dao cổ.
+
+========================================
+I. THẢ THÍNH KHÉO LÉO, ĐẦY Ý TỨ
+========================================
+
+01. MẬN HỎI ĐÀO
+Bây giờ mận mới hỏi đào,
+Vườn hồng đã có ai vào hay chưa?
+Mận hỏi thì đào xin thưa,
+Vườn hồng có lối nhưng chưa ai vào.
+
+02. CẮT CỎ LÀM QUEN
+Cô kia cắt cỏ một mình,
+Cho anh cắt với chung tình làm đôi.
+Cô còn cắt nữa hay thôi?
+Cho anh cắt với làm đôi vợ chồng.
+
+03. MƯỢN MÌNH LÀM MỐI
+Đường xa thì thật là xa,
+Mượn mình làm mối cho ta một người.
+Một người mười tám đôi mươi,
+Một người vừa đẹp vừa tươi như mình.
+
+04. ĐÊM TRĂNG HỎI NÀNG
+Đêm trăng thanh anh mới hỏi nàng,
+Tre non đủ lá đan sàng nên chăng?
+Đan sàng thiếp cũng xin vâng,
+Tre vừa đủ lá, non chăng hỡi chàng?
+
+05. CHO NÀNG BÉN ANH
+Đôi ta ăn một quả cau,
+Cùng mặc áo vá nhuộm nâu một hàng.
+Bao giờ cho gạo bén sàng,
+Cho trăng bén gió, cho nàng bén anh.
+
+06. CẦU DẢI YẾM
+Ước gì sông rộng một gang,
+Bắc cầu dải yếm để chàng sang chơi.
+
+07. QUA ĐÌNH TRÔNG ĐÌNH
+Qua đình ngả nón trông đình,
+Đình bao nhiêu ngói, thương mình bấy nhiêu.
+
+08. KHÁT KHAO DUYÊN NÀNG
+Anh qua bờ giếng, anh lượn bờ ao,
+Nước thì không khát, khát khao duyên nàng.
+
+09. LÀM QUEN ÍT NGÀY
+Chiều chiều vịt lội bàu sen,
+Để anh lên xuống làm quen ít ngày.
+
+10. THEN KHÔNG CÀI
+Chửa quen đi lại cho quen,
+Tuy rằng đóng cửa nhưng then không cài.
+
+========================================
+II. THẢ THÍNH NGỌT NGÀO, TÁO BẠO
+========================================
+
+11. ĐÃ ĂN TRẦU AI CHƯA?
+Trăng lên có chiếc sao chầu,
+Hỏi thăm đào liễu đã ăn trầu ai chưa?
+
+12. NGẢ CÀNH HỒNG
+Cô kia đứng ở bên sông,
+Muốn sang anh ngả cành hồng cho sang.
+
+13. ÁO BỎ QUÊN
+Hôm qua tát nước đầu đình,
+Bỏ quên chiếc áo trên cành hoa sen.
+Em được thì cho anh xin,
+Hay là em để làm tin trong nhà?
+
+14. HỎI LÀM RỂ
+Anh về hỏi mẹ cùng thầy,
+Có cho làm rể bên này hay không?
+
+15. BẾ BỒNG TRÊN TAY
+Lấy ai thì cũng một chồng,
+Lấy ta, ta bế ta bồng trên tay.
+
+16. LÁ ĐA ĐẦY ĐÌNH
+Cây đa rụng lá đầy đình,
+Bao nhiêu lá rụng thương mình bấy nhiêu.
+
+17. GẶP TIÊN
+Vì em nên anh mới say,
+Khi xưa ai biết cõi này có tiên.
+
+18. DẪU CHẲNG BÉN DUYÊN
+Dẫu rằng chẳng đặng bén duyên,
+Cũng hun má lúm đồng tiền của em.
+
+19. NÓN QUAI THAO
+Ai làm chiếc nón quai thao,
+Để anh thương nhớ ra vào khôn nguôi.
+
+20. CAU XANH TRẦU VÀNG
+Đêm khuya thiếp mới hỏi chàng,
+Cau xanh ăn với trầu vàng xứng chăng?
+
+========================================
+III. TƯƠNG TƯ, TIẾC NUỐI VÀ LỠ DUYÊN
+========================================
+
+21. TRẦU CAY – CHẬM MỘT BƯỚC
+Ba đồng một mớ trầu cay,
+Sao anh không hỏi những ngày còn không?
+
+22. NGÀY ĐI, NGÀY VỀ
+Ngày đi em chửa có chồng,
+Ngày về em đã tay bồng tay mang.
+
+23. ĐÊM QUA CHỚP BỂ
+Đêm qua chớp bể mưa nguồn,
+Hỏi người tri kỷ có buồn hay chăng?
+Cá buồn cá lội tung tăng,
+Em buồn em biết đãi đằng cùng ai?
+
+24. GỬI VÀI ĐIỀU THƯƠNG
+Ai về đường ấy hôm mai,
+Gửi dăm điều nhớ, gửi vài điều thương.
+Gửi cho đến chiếu đến giường,
+Gửi cho đến chốn buồng hương em nằm.
+
+25. GẶP NHAU GIỮA ĐÔNG NGƯỜI
+Đi qua nghiêng nón cúi lưng,
+Anh không chào, em không hỏi vì chưng đông người.
+
+========================================
+TẶNG THÊM: ĐOẠN CA DAO TRONG ẢNH MẪU
+========================================
+
+TRÈO LÊN CÂY BƯỞI HÁI HOA
+Trèo lên cây bưởi hái hoa,
+Bước xuống vườn cà hái nụ tầm xuân.
+Nụ tầm xuân nở ra xanh biếc,
+Em lấy chồng rồi, anh tiếc lắm thay.
+
+--- HẾT ---
+
+=================================================================
+TẬP MỞ RỘNG: 200 BÀI MỚI
+=================================================================
+
+[001] THẤY HOA MUỐN NÂNG NIU
+Hoa thơm ai chả muốn chiều,
+Thấy hoa ai chẳng nâng niu vịn cành.
+Hoa sao hoa khéo mần thinh,
+Người yêu hoa chẳng đoái tình với ta.
+
+[002] THƯƠNG MÀ MUỐN LÀM QUEN
+Hỡi cô cắt cỏ bên đê,
+Có nghe anh hò đứng dậy mà nghe.
+Nghe xong thì nói quê nhà,
+Có nhiều anh chị hay là mình em.
+
+[003] BÓNG NGƯỜI BÊN GIẾNG
+Thấy em thấp bé mà xinh,
+Anh thuận nhân tình, anh nắm cổ tay.
+Nắm rồi anh hỏi cổ tay,
+Ai nặn nên trắng, ai xây nên tròn.
+
+[004] HOA XANH HOA TRẮNG
+Bông xanh, bông trắng, bông vàng,
+Bông lê, bông lựu, đố nàng mấy bông?
+
+[005] SAY NGƯỜI QUÊ
+Muốn ăn cơm trắng chả giò,
+Thì về Bến Cốc đẩy xe bò với anh.
+
+[006] GẶP TRÊN ĐƯỜNG ĐÊ
+Trời mưa xăn ống cao quần,
+Hỡi cô bán thuốc nhà gần hay xa?
+
+[007] NÉT DUYÊN NGƯỜI QUA
+Nhác trông thấy bóng một người,
+Răng đen nhưng nhức, miệng cười như hoa.
+Hai bên còn cả mẹ cha,
+Có ai gánh đỡ hay là còn không?
+
+[008] GIẾNG MỚI ĐÀO
+Nghe đây có giếng mới đào,
+Có chợ mới họp, anh tạt vào bán mua.
+Còn không ta đợi ta chờ,
+Hay là như ruộng có bờ thì thôi.
+
+[009] NHƯ THẤY MẶT TRỜI
+Thấy anh như thấy mặt trời,
+Chói chang khó ngó, trao lời khó trao.
+
+[010] XỨNG ĐÔI
+Con cò trắng tợ như vôi,
+Tình tôi với bậu xứng đôi quá chừng.
+
+[011] NGỎ LỜI LÀM RỂ
+Anh đây là con nhà tử tế,
+Muốn ra vào làm rể, nên chăng?
+Số em vất vả long đong,
+Để anh thu xếp vào trong gia đình.
+
+[012] RĂNG ĐEN MÌNH CƯỜI
+Mình về mình nhớ ta chăng,
+Ta về ta nhớ hàm răng mình cười.
+Trăm quan mua lấy miệng cười,
+Mười quan chẳng tiếc, tiếc người răng đen.
+
+[013] HỎI CHUYỆN XUÂN THU
+- Tới đây trước hỏi sau han,
+Xuân thu anh đáng mấy,
+Bạn hồng nhan anh thế nào?
+- Tuổi hai mươi chẵn, chốn phòng đào còn lẻ đôi.
+
+[014] ĐỢI ANH VỀ CƯỚI
+Em về thưa mẹ cùng thầy,
+Có cho anh cưới, tháng này anh ra.
+Anh về thưa mẹ cùng cha,
+Bắt lợn sang cưới bắt gà sang sêu.
+
+[015] HỎI MAI
+Trúc xa mai thì hoài lứa trúc,
+Anh hỏi mai rằng đã có nơi mô nương tựa hay chưa?
+Có nơi mô nương tựa khi nắng khi mưa,
+Hay còn ôm duyên đi sớm về trưa một mình?
+
+[016] GẶP EM HỚN HỞ
+Gặp em hớn hở miệng cười,
+Cũng bằng ăn chín uống mười lạng sâm.
+
+[017] SANG SÔNG CÙNG ANH
+Tay mang khăn gói sang sông,
+Có sang anh đợi, ta cùng sang luôn.
+
+[018] THƯƠNG CÔ CHĂN BÒ
+- Trời mưa cá sặc lên gò,
+Thấy em chăn bò anh để ý anh thương.
+- Trời mưa ướt cọng rau mương,
+Bò em em giữ anh thương giống gì?
+
+[019] GIÃ GẠO GẦY DUYÊN
+Tới đây cối gạo đã đầy,
+Trước là giã gạo, sau gầy lương duyên.
+
+[020] GÁNH NẶNG ĐƯỜNG VÒNG
+Gánh nặng mà đi đường vòng,
+Tuy rằng không gánh nhưng lòng cũng thương.
+
+[021] HỎI THIỆT CÓ CHỒNG CHƯA
+Ngó lên mây bạc trời hồng,
+Thương em, hỏi thiệt có chồng hay chưa?
+
+[022] DUYÊN EM BÁN MẤY
+Trèo lên cây bưởi ngắt quả thanh yên,
+Duyên em bán mấy, anh kiếm tiền anh mua.
+- Duyên em bán thiệt ba trăm,
+Anh mua chi nổi mà hỏi thăm rộn ràng.
+
+[023] NÓN LÁ ÁO NÂU
+Ớ này cô mặc áo nâu,
+Đầu đội nón lá, đi đâu vội vàng?
+
+[024] MỘT CHUYẾN ĐÒ CHUNG
+Hai ta sang một chuyến đò,
+Trông cho rảnh khách trao cho miếng trầu.
+
+[025] TUỔI NÀNG HỢP ANH
+Tay cầm quyển sách bìa xanh,
+Xem trong số mệnh, tuổi anh hợp nàng.
+Tay cầm quyển sách bìa vàng,
+Xem trong số mệnh, tuổi nàng hợp anh.
+
+[026] HỎI GẦY NHÂN DUYÊN
+Tay bưng hộp thiếc cau đầy,
+Hỏi em mấy tuổi anh gầy nhân duyên.
+
+[027] KHĂN ĐÀO BÉN TÚI
+Bao giờ cho hương bén hoa,
+Khăn đào bén túi, cho ta bén mình.
+Thuyền không đậu bến Giang Đình,
+Ta không, ta quyết lấy mình làm đôi.
+
+[028] NGƯỜI TA CÂU SÔNG
+Người ta câu bể câu sông,
+Tôi đây câu lấy con ông cháu bà.
+Có chồng thì nhả mồi ra,
+Không chồng, em cắn, em tha lấy mồi.
+
+[029] VƯỜN EM TRỒNG CHANH
+Vườn em có đất trồng chanh,
+Cho anh bứng gốc cam sành trồng bên.
+
+[030] THƯƠNG NHAU NÊN HỎI
+Hỡi chàng da trắng tóc dài,
+Em đã chờ đợi một hai năm trời.
+Cho nên mặt ủ chẳng tươi,
+Sợ chúng bạn cười chẳng dám nói ra.
+
+[031] THEO ANH CHO ẤM
+Theo anh cho ấm tấm thân,
+Khỏi qua non nọ, khỏi lần núi kia.
+
+[032] CÁ THÁC LÁC
+Bần che bóng mát, cá thác lác quẫy đục ngầu,
+Anh hỏi em đã có nơi nào hay chưa?
+
+[033] CÓ LẤY NHAU CHĂNG
+Mình chả lấy ta rồi ra mình thiệt,
+Ta chả lấy mình ta biết lấy ai.
+Răng đen còn có khi phai,
+Má hồng khi nhạt, tóc dài khi thưa.
+
+[034] HỌA BA CÁI HÌNH
+Mình ơi mình có thương ta,
+Ta ra kẻ chợ họa ba cái hình.
+Phòng khi ta nhớ tới mình,
+Thì ta lại giở cái hình ra xem.
+
+[035] NGHE TIN EM HAY HÒ
+Nghe tin em hay hát hay hò,
+Qua mấy sông anh cũng lội, qua mấy đò anh cũng sang.
+
+[036] THƯƠNG TRỘM NHỚ THẦM
+Hỡi người bạn cũ tri âm,
+Đôi ta thương trộm nhớ thầm đã lâu.
+
+[037] NGƯỜI BẠN CŨ
+Hỡi người bạn cũ quen ta,
+Có ai như bạn giúp cho ta một người.
+Một người mười tám cho xinh,
+Lời ăn tiếng nói như mình mình ơi.
+
+[038] GÁNH CỎ MỘT VAI
+Hỡi cô gánh cỏ đường vòng,
+Cho anh gánh hộ làm chồng một vai.
+Hỡi cô gánh cỏ đường dài,
+Cho anh gánh hộ một vai nên chồng.
+
+[039] VAI ANH KHÔNG GÁNH
+Hỡi cô gánh cỏ đường vòng,
+Vai anh không gánh nhưng lòng anh thương.
+
+[040] MIẾNG TRẦU XANH
+Gặp nhau đây ăn miếng trầu xanh,
+Chả ăn cầm lấy cho anh bằng lòng.
+
+[041] HỎI LÀNG HỎI TỔNG
+Gặp anh đây bụng mừng phơi phới,
+Cẳng bước tới miệng nọ liền chào.
+Anh ở tổng chi, làng chi, nói cho em hiểu,
+Đặng em vào làm quen.
+
+[042] THUYỀN GÃY MỘT NAN
+- Thuyền em có gãy một nan,
+Không tin anh đội về làng mà xem.
+- Vườn anh có gốc tre già,
+Thuyền em có gãy, anh chẻ nan gài lại cho.
+
+[043] QUẠ KÊU BA TIẾNG
+Quạ kêu ba tiếng quạ sà,
+Khi nào qua rảnh qua nhà bậu chơi.
+
+[044] CẦM CHÈO ĐỢI NÀNG
+Gió đập cành tre, gió đánh cành tre,
+Chiếc thuyền anh vẫn le te đợi nàng.
+Gió đập cành bàng, gió đánh cành bàng,
+Dừng chèo anh hát, cô nàng hãy nghe.
+
+[045] MỘT MÌNH ĐI VỀ
+Người ta con trước con sau,
+Thân anh không vợ như cau không buồng.
+Người ta đi đón về đôi,
+Thân anh đi lẻ về loi một mình.
+
+[046] GỬI GIẤY GỬI VIẾT
+Sáng mai xách dĩa mua tương,
+Gặp anh trong trường cầm viết ngó ra.
+Em về mua lụa mười ba,
+Cắt áo cổ giữa mà tra nút vào.
+
+[047] THƯƠNG CHẲNG BIẾT ĐỂ ĐÂU
+Thương em chẳng biết để đâu,
+Để quán quán đổ, để cầu cầu xiêu.
+
+[048] NHẠN MANG THƯ
+Thư trên anh thảo mấy lời,
+Nhạn ơi xin gởi tới người tri âm.
+Xa xôi anh có lời thăm,
+Thăm em đôi chữ Châu Trần định chưa.
+
+[049] GẶP NƯỜNG NHƯ GẶP VÀNG
+Vừa ra khỏi ngõ gặp nường,
+Cũng thể ra đường gặp được vàng thoi.
+
+[050] THƯƠNG EM CŨNG MUỐN
+Thương em cũng muốn thương đời,
+Sợ cha sợ mẹ chẳng rời em ra.
+
+--- CA DAO NHỚ NHUNG, HẸN HÒ, TƯƠNG TƯ ---
+
+[051] NHƯ TRĂNG NHỚ TRỜI
+Bạn ơi có nhớ ta chăng,
+Ta thì nhớ bạn như trăng nhớ trời.
+
+[052] NGÀY NÀO GẦN MÌNH
+Ngày nào mà đặng gần mình,
+Mới là hết bệnh tư tình cùng em.
+
+[053] BẤY LÂU MƠ MÀNG
+Bấy lâu thức nhắp mơ màng,
+Bên rèm tiếng gió, đầu giường bóng trăng.
+
+[054] CƠM ĂN CHẲNG ĐẶNG
+Rắn đứt đầu, rắn hãy còn bò,
+Chim đứt cánh, chim hãy còn bay.
+Từ ngày xa bạn tới nay,
+Cơm ăn chẳng đặng, nằm hoài tương tư.
+
+[055] CHIỀU NAY TỰA CỬA
+Dòng sông mặt nước lờ đờ,
+Chiều nay tựa cửa em chờ đợi anh.
+Ngó ra đồng cỏ xanh xanh,
+Ai đương cấy ruộng giống anh quá chừng.
+
+[056] ĐÊM NĂM CANH
+Đêm năm canh trông nam nhớ bắc,
+Ngày sáu khắc trông quế nhớ trầm.
+Nào ai nhắc tới tri âm,
+Ruột em đau từng chặng, gan em bầm từng khi.
+
+[057] ÁO BÀ BA ĐEN
+Em mặc áo bà ba đen,
+Nước da em trắng, đôi má ngấn đồng tiền.
+Đêm nằm anh thao thức,
+Năm canh liền nhớ em.
+
+[058] TƯƠNG TƯ CHẲNG ỐM
+Tương tư chẳng ốm cũng sầu,
+Con ruồi đậu mép, chẳng đau cũng buồn.
+
+[059] BÓNG QUANH NHÀ NÀNG
+Tuy rằng anh ở nhà anh,
+Hồn hoa vất vưởng xung quanh nhà nàng.
+
+[060] ĐÊM QUA VUI THÚ
+Đêm qua vui thú nơi đâu,
+Đấy vui có nhớ chốn sầu này chăng?
+Một tháng có đôi tuần trăng,
+Sao đấy chẳng ở cho bằng lòng đây?
+
+[061] ĐÊM KHÔNG NGỦ
+Thiếp xa chàng quên ăn quên ngủ,
+Chàng xa thiếp thức đủ năm canh.
+
+[062] KHĂN XÉO LAU LỆ
+Bạn về dưới nớ lâu lên,
+Để em úp mặt vô phên khóc thầm.
+Bạn ở dưới nớ về luôn,
+Để khăn xéo lại, lụy tuôn em chùi.
+
+[063] CHẲNG DÁM CHÀO NHAU
+Ra đường chẳng dám chào nhau,
+Con mắt liếc thấy dạ đau quằn quằn.
+Về nhà cơm chẳng muốn ăn,
+Chân chẳng muốn bước vì chưng nhớ người.
+
+[064] NHỚ NƠI HẸN HÒ
+Trăng thanh vằng vặc giữa trời,
+Nhớ tình nhớ nghĩa nhớ nơi hẹn hò.
+
+[065] NGÀY NGÀY BỜ SÔNG
+Ngày ngày ra đứng bờ sông,
+Sông xa xa tít cho lòng em đau.
+Nhớ ai đứng tủi, ngồi sầu,
+Mình ve sương tuyết bao lâu mà mòn.
+
+[066] RA VỀ BẺ LÁ
+Ra về bẻ lá cắm đây,
+Hôm sau ta cứ chốn này ta lên.
+
+[067] ĐỢI CHA MẸ NGỦ
+Gió đưa cành mận, gió lận cành đào,
+Vì em anh phải ra vào tối tăm.
+Tối tăm thì mặc tối tăm,
+Chờ cho bác mẹ đi nằm sẽ hay.
+
+[068] MƯA SA CŨNG ĐI
+Đã say lời hẹn khi chiều,
+Mưa sa gió thổi cũng liều mà đi.
+
+[069] NGUỒN ÂN BỂ ÁI
+Nguồn ân bể ái hẹn hò,
+Mấy sông cũng lội, mấy đò cũng đi.
+Gặp em tên họ là chi?
+Ngược thuyền mấy buổi sao nỡ ngoảnh đi chẳng nhìn?
+
+[070] MIẾNG TRẦU ĐỢI CHỜ
+Trông cho trời sáng trăng rằm,
+Mẹ ngồi kéo vải, cha nằm đọc thơ.
+Còn em ra đứng đầu bờ,
+Miếng trầu gói sẵn đợi chờ anh sang.
+
+[071] KẾT ĐÔI CHỐN VẮNG
+Bờ sông khúc lở khúc bồi,
+Kiếm nơi quạnh vắng trao lời với anh.
+
+[072] THƯƠNG NHỚ ĐẦU CẦU
+Em thương nhớ ai ngơ ngẩn bên đầu cầu,
+Lược thưa biếng chải, gương tàu biếng soi.
+Em thương nhớ ai ra ngẩn vào ngơ,
+Đêm quên giấc ngủ ngày mơ trận cười.
+
+[073] THƯƠNG MỘT MÌNH MÌNH
+Thiếu chi người đẹp bốn phương,
+Tôi không có nhớ mà chỉ nhớ thương một mình mình.
+
+[074] NHỚ NHAU LỤY ỨA
+Nhớ nhau lụy ứa hai hàng,
+Thương nhau luống những đoạn tràng thiết tha.
+
+[075] CHÍN NHỚ MƯỜI THƯƠNG
+Ra về chín nhớ mười thương,
+Bước chân lên ngựa cầm cương dùng dằng.
+
+[076] KIỂNG XA BỒN
+Kiểng xa bồn, kiểng không xanh,
+Anh rầu người nghĩa, cơm canh bỏ liều.
+
+[077] GAN VÀNG CHẲNG CẮT
+Gan vàng chẳng cắt mà đau,
+Cách em một chút một rầu như dưa.
+
+[078] NƯỚC MẮT THAY CANH
+Anh xa em anh ăn cơm với cá,
+Em xa anh, em chan nước mắt thay canh.
+
+[079] KHĂN ĐÀO CÀNH MƠ
+Khăn đào vắt ngọn cành mơ,
+Mình xuôi đằng ấy, bao giờ mình lên?
+- Em xuôi, em lại ngược ngay,
+Sầu riêng em để trên này cho anh.
+
+[080] ANH ĐI PHƯƠNG XA
+Anh đi biệt tích phương xa,
+Để em ôm bóng trăng tà năm canh.
+Hai vai một gánh chung tình,
+Nhớ ai, ai có nhớ mình hay không?
+
+--- CA DAO LỠ DUYÊN, CHUNG TÌNH ---
+
+[081] CHẬM BƯỚC CÓ CHỒNG
+Khăn rằn nhúng nước ướt mem,
+Tại anh chậm bước nên em có chồng.
+
+[082] ĐẾN TÌM HOA MUỘN
+- Anh đến tìm hoa thì hoa đã nở,
+Anh đến tìm đò, đò đã sang sông.
+Anh đến tìm em, em đã lấy chồng,
+Em yêu anh như rứa có mặn nồng chi mô?
+
+[083] TRAO LỜI CHẲNG TRAO DUYÊN
+Đêm nằm lưng chẳng bén giường,
+Cũng vì một nỗi người thương trao lời.
+Trao lời mà chẳng trao duyên,
+Để thương để thảm, để phiền cho nhau.
+
+[084] LỠ DUYÊN ĐỢI ANH
+Ngó lên trời thấy mây trong lại trắng,
+Ngó xuống nước thấy nước trắng lại trong.
+Nhỏ nhỏ như em chắc dạ bền lòng,
+Lỡ duyên chịu lỡ, đóng cửa loan phòng đợi anh.
+
+[085] NỬA VƯỜN NỬA CHỪNG
+Chè non em hái nửa vườn,
+Cau non nửa chục, người thương nửa chừng.
+Đắng cay như bát nước gừng,
+Biết ra dang dở thì đừng quen nhau.
+
+[086] THƯƠNG MÀ LỠ BƯỚC
+Ao hồ cá lội trông sao,
+Em có chồng rồi, anh biết liệu sao bây giờ.
+
+[087] TRÁCH ÔNG MAI
+Đón ngăn đường tắt, tui hỏi gắt bạn chung tình,
+Điểu xa mai, mai xa điểu, tui xa mình tại ai?
+Cây oằn vì bởi trái sai,
+Tui xa mình bởi ông mai ít lời.
+
+[088] GIỮ MỘT DẠ MỘT LÒNG
+Từ khi gặp mặt giữa đàng,
+Thiếp quyết thương chàng cha mẹ nào hay!
+Có hay nhất đánh nhì đày,
+Thủy chung em giữ trọn mấy lời.
+
+[089] CẦU CAO VÁN YẾU
+Cầu cao ván yếu gập ghình,
+Chân lần tay dắt bạn chung tình đi qua.
+
+[090] THƯƠNG CHO TRÓT
+Anh thương em phải thương cho trót,
+Anh đừng bỏ sót cái nghĩa chung tình.
+
+[091] TRÁCH GÀ GÁY TAN
+Trách gà sao vội gáy tan,
+Chung tình chưa mãn chuông vàng vội rung.
+
+[092] ĂN CƠM QUÁN NGỦ ĐÌNH
+Ngó lên trời, trời cao lồng lộng,
+Ngó dưới đất, đất rộng mênh mông.
+Anh với em gá nghĩa chung tình,
+Dù ăn cơm quán, ngủ đình cũng ưng.
+
+[093] TRĂM NĂM CHỈ MÀNH
+Giữa trời cây cả bóng cao,
+Nhân duyên đã định xe vào cho anh.
+Trăm năm kết sợi chỉ mành,
+Ái ân gắn bó chung tình keo sơn.
+
+[094] YÊU NHAU CHẲNG LỌ
+Yêu nhau chẳng lọ chiếu giường,
+Dẫu rằng tàu lá che sương cũng tình.
+
+[095] THƯƠNG EM VÌ TÌNH
+Cây oằn nhờ bởi tại hoa,
+Qua thương nhớ bậu chẳng qua vì tình.
+Thương em thương dạng, thương hình,
+Thương bàn tay em rẽ mạ cắm xuống sình, anh cũng thương.
+
+[096] ĐẾN NGÀY HOA NỞ
+Lúa xanh lúa trổ bông nhanh,
+Em xanh em cũng muốn anh hẹn hò.
+
+[097] ĐÊM NẰM THỨC GIẤC
+Gió mùa đông trăng lồng lạnh lẽo,
+Năm canh chầy thắt thẻo ruột gan.
+
+[098] CHIM XA LIỄU
+Liễu xa đào, đào khô liễu héo,
+Lựu xa đào, lựu ngã đèo nghiêng.
+Xa cách ai đêm thảm ngày phiền,
+Chim trên rừng sầu rũ cá dưới miền khóc than.
+
+[099] MƯỜI HAI CỬA BIỂN
+Mười hai cửa biển chàng ơi,
+Chàng ở trong ấy thiếp tôi ngoài này.
+Nhạn ơi trăm sự nhờ mày,
+Ngậm thư đưa tới lầu tây cho chàng.
+
+[100] ĐÂU CÓ MÀNG CUỘC CHƠI
+Sài Gòn thiên hạ rộn ràng,
+Qua đây nhớ bậu không màng cuộc chơi.
+
+--- THƠ MỚI — THẢ THÍNH DUYÊN DÁNG ---
+
+[101] NGÕ NHỎ CHIỀU XƯA
+Chiều nghiêng qua ngõ nhà ai,
+Anh đi mấy lượt, bóng dài theo chân.
+Gặp em chỉ dám hỏi gần,
+Rằng cây cau ấy đã lần trổ buồng?
+
+[102] MỘT NHÀ HAI HIÊN
+Nhà em có bụi hoa ngâu,
+Nhà anh có chiếc sân sau đợi người.
+Ước gì chung một tiếng cười,
+Sáng nghe em gọi, tối người gọi anh.
+
+[103] CHỢ SỚM
+Chợ đông người bán người mua,
+Riêng anh chỉ hỏi trầu vừa têm chưa.
+Em cười như nắng ban trưa,
+Thế là anh bỏ cả mùa chợ đông.
+
+[104] NẮNG TRÊN VAI
+Nắng lên hong chiếc áo nâu,
+Làm sao hong hết nỗi sầu chưa thưa.
+Anh mong một sớm trời mưa,
+Được đem chiếc nón đón đưa em về.
+
+[105] DÒNG SÔNG HỎI THẦM
+Sông kia nước chảy đôi bờ,
+Anh đây một dạ vẫn chờ tiếng em.
+Thuyền ai thắp ngọn đèn đêm,
+Cho anh sang hỏi có thêm một người?
+
+[106] VƯỜN CAU CHỜ NỤ
+Cau nhà vừa mới ra hoa,
+Mẹ anh đã hỏi người ta nơi nào.
+Anh thưa chẳng ở đâu cao,
+Chỉ bên hàng giậu có đào nhà bên.
+
+[107] ĐẦU XÓM CUỐI LÀNG
+Đầu làng em gánh rau xanh,
+Cuối làng anh đợi để dành lời thương.
+Một câu chưa kịp hỏi đường,
+Em đi mất hút, vấn vương cả chiều.
+
+[108] HỎI NÀNG MỘT CÂU
+Trăng treo đầu ngọn trúc già,
+Cho anh hỏi nhỏ nhà ta mấy người?
+Nếu còn một chỗ bên đời,
+Anh xin gửi trọn một lời chân tâm.
+
+[109] CHIẾC KHĂN TAY
+Khăn điều em buộc bên vai,
+Anh nhìn một thoáng nhớ hoài màu khăn.
+Mong sao qua mấy mùa trăng,
+Được em tự buộc khăn rằng có đôi.
+
+[110] VẾT CHÂN TRÊN CÁT
+Bên sông in dấu chân người,
+Anh qua còn thấy một trời hương cau.
+Hỏi em mai có qua cầu,
+Cho anh theo với, trước sau một đường.
+
+[111] GIỌT SƯƠNG ĐẦU NGÕ
+Sương mai còn đọng lá dâu,
+Thương em anh đứng qua cầu ngóng trông.
+Nếu em chưa hẹn với ai,
+Cho anh gửi lại một vài mùa xuân.
+
+[112] MIẾNG TRẦU CHƯA TÊM
+Trầu xanh còn đợi tay têm,
+Lòng anh còn đợi một đêm em cười.
+Người ta lựa chọn khắp nơi,
+Anh xin lựa lấy một người là em.
+
+[113] MƯA NGOÀI HIÊN
+Mưa rơi ướt mái tranh nghèo,
+Anh nghe tiếng guốc em theo lối về.
+Giá mà được dắt em đi,
+Đường xa cũng hóa lối về gần thôi.
+
+[114] GIỮ LẠI MÙA XUÂN
+Mận vừa đỏ má trên cành,
+Anh vừa thấy mặt đã thành tương tư.
+Em ơi, nếu chẳng chối từ,
+Cho anh xin giữ một mùa xuân chung.
+
+[115] BÊN LŨY TRE
+Tre làng gió thổi lao xao,
+Anh thương em tự thuở nào chẳng hay.
+Ngày mai em có qua đây,
+Cho anh được hỏi bàn tay còn không?
+
+[116] LỬA BẾP
+Bếp nhà em khói lên cao,
+Nhà anh đun nước mà sao nhớ người.
+Mong một ngày ấm tiếng cười,
+Hai căn bếp nhỏ thành nơi chung nhà.
+
+[117] ĐÒ CHƯA QUA BẾN
+Con đò còn đợi nước lên,
+Anh còn đợi một cái tên gọi mình.
+Em mà có chút hữu tình,
+Xin đừng để bến một mình đợi trăng.
+
+[118] HOA BÊN HÀNG RÀO
+Hoa rơi trước cửa nhà nàng,
+Anh đem nhặt lấy, dịu dàng cất đi.
+Chờ ngày em hỏi làm chi,
+Anh thưa nhặt hộ xuân thì của em.
+
+[119] MỘT CÂU CHÀO
+Gặp em dưới bóng cây đa,
+Anh chào một tiếng, hóa ra nhớ đời.
+Từ hôm nghe giọng em cười,
+Đường xa cũng muốn ngược xuôi ghé về.
+
+[120] THƯA MẸ
+Mẹ ơi con chẳng cần vàng,
+Chỉ mong được đón một nàng về thưa.
+Rằng người qua ngõ hôm mưa,
+Là người con đã đợi chờ bấy lâu.
+
+--- THƯƠNG THẦM CHƯA NÓI ---
+
+[121] NGHE GIÓ GỌI TÊN
+Gió qua chiếc lá sân đình,
+Anh nghe như có ai rình gọi tên.
+Ngỡ em đứng tựa bên thềm,
+Hóa ra chỉ gió đưa đêm ngang nhà.
+
+[122] MƯỢN ÁNH TRĂNG
+Đêm nay trăng sáng đầu sông,
+Anh mượn vầng sáng gửi lòng sang em.
+Sáng mai trăng khuất qua rèm,
+Liệu em còn nhớ người xem trăng cùng?
+
+[123] BỜ VAI BỎ TRỐNG
+Áo nâu phơi giữa sân nhà,
+Bờ vai anh vẫn chừa ra một phần.
+Chẳng mong gấm vóc xa gần,
+Chỉ mong ai đó một lần tựa vai.
+
+[124] NGƯỜI CHƯA HẸN
+Nắng chiều vàng cả triền đê,
+Anh về bên ấy chẳng nghe tiếng chào.
+Có người chưa hẹn lần nào,
+Mà sao nỗi nhớ cứ vào trong tim.
+
+[125] GIẤU TRONG ÁO
+Một câu thương giấu trong tay,
+Một câu nhớ cất những ngày không mưa.
+Sợ em nghe được lại thưa,
+Rằng tình anh đến chẳng vừa lòng em.
+
+[126] BƯỚC CHÂN QUA ĐỒNG
+Đồng xa lúa đã lên xanh,
+Em đi phía trước, còn anh phía sau.
+Đường làng chẳng rộng bao lâu,
+Mà câu muốn nói ngập ngừng chưa xong.
+
+[127] CỬA SỔ NHÀ NÀNG
+Đèn nhà em sáng canh ba,
+Anh ngồi đếm gió qua nhà hồi lâu.
+Thương người chẳng dám hỏi câu,
+Sợ lời vừa nói hóa sầu đôi bên.
+
+[128] MÀU ÁO QUEN
+Mỗi lần áo biếc qua sân,
+Anh như cây lúa vừa gần cơn mưa.
+Màu áo ấy chẳng mới xưa,
+Sao đi một chuyến cũng vừa nhớ thương.
+
+[129] VẾT MỰC
+Viết tên lên mảnh giấy nâu,
+Anh đem xóa vội vì sầu ai hay.
+Mực tan còn một nét gầy,
+Như điều anh muốn nói ngày gặp em.
+
+[130] CHUYỆN KHÓ NÓI
+Người ta hỏi đã thương chưa,
+Anh cười bảo gió mới vừa sang sông.
+Nào ai biết được trong lòng,
+Một lời em nói nhớ mong mấy ngày.
+
+[131] THIẾU MỘT NGƯỜI
+Chợ tan còn bóng hàng cau,
+Đường làng còn dấu chân sau gót người.
+Năm canh nghe thiếu tiếng cười,
+Mới hay thương nhớ chẳng mời cũng sang.
+
+[132] LỜI GIỮA MÙA THU
+Thu về lá rụng sân sau,
+Lá rơi thì dễ, quên nhau khó lòng.
+Một lần ánh mắt chia ly,
+Đem theo cả buổi xuân thì trong anh.
+
+[133] TƯƠNG TƯ NHẸ
+Nhớ người đâu phải vì xa,
+Ở chung một xóm cũng là nhớ nhung.
+Ngày nào chẳng gặp cuối cùng,
+Đêm về vẫn thấy thiếu cùng một ai.
+
+[134] CƠM CHƯA NGUỘI
+Bữa cơm mẹ gọi ba lần,
+Anh còn ngồi ngó ngoài sân đợi người.
+Mẹ cười: 'Lòng đã có đôi?'
+Anh cười chẳng đáp, chỉ ngồi nhìn trăng.
+
+[135] PHIÊN CHỢ KHÔNG EM
+Chợ phiên hôm ấy mưa dầm,
+Không nghe giọng nói quen thầm bên tai.
+Hoa cau vẫn trắng trên vai,
+Thiếu người mua trầu nên dài buổi trưa.
+
+[136] MÙA HOA GẠO
+Hoa gạo đỏ rực ven sông,
+Anh ngồi chờ một tiếng cười xa xôi.
+Tưởng gần chỉ một quãng trời,
+Hóa ra xa tự lòng người chưa thương.
+
+[137] NGƯỜI TRONG MẮT
+Sông sâu còn có đáy sông,
+Mắt em nhìn thoáng, lòng không thấy bờ.
+Anh về giữ một câu thơ,
+Đến nay chưa dám đưa nhờ gió sang.
+
+[138] CHIẾC NÓN ÚP NGHIÊNG
+Nón em úp cạnh bờ ao,
+Anh đi qua ngõ, nao nao trong lòng.
+Nón kia che nắng che dông,
+Có che giùm được nỗi mong trong anh?
+
+[139] SAU MÙA GẶT
+Gặt xong ruộng vẫn thơm rơm,
+Anh về thấy thiếu mùi thơm tóc người.
+Vườn cau còn đón nắng tươi,
+Sao căn nhà nhỏ thiếu cười như xưa.
+
+[140] CÂU HÁT QUA SÔNG
+Ai hò một khúc qua sông,
+Cho anh nghe sóng thành lòng nhớ ai.
+Hò xong tiếng đã nhạt phai,
+Riêng câu cuối ấy theo hoài bước chân.
+
+--- LỠ DUYÊN, CHẬM MỘT BƯỚC ---
+
+[141] BẾN NƯỚC MỚI
+Ngày xưa chung một bến đò,
+Bây giờ em bước sang bờ khác xa.
+Anh không trách một lời qua,
+Chỉ thương con nước còn ra ngóng vào.
+
+[142] HOA ĐÃ CÓ NGƯỜI
+Anh về qua ngõ đào phai,
+Nghe tin em cưới vào ngày cuối đông.
+Ngày xưa một khúc sông chung,
+Bây giờ đôi bến, một dòng chia đôi.
+
+[143] TRỄ MỘT MÙA
+Cau vừa kết trái sân sau,
+Anh vừa dám hỏi, người ta sang nhà.
+Trầu em đã gửi người ta,
+Đành đem lời hẹn thả ra cuối vườn.
+
+[144] BÔNG LÚA CUỐI ĐỒNG
+Lúa vàng ai gặt trước anh,
+Cánh đồng vẫn đẹp mà thành quạnh hiu.
+Câu thương đến muộn buổi chiều,
+Gió mang đi mất bao điều chưa thưa.
+
+[145] CẦU ĐÃ CÓ ĐÒ
+Bờ sông em đứng chiều nao,
+Anh đi chậm bước để bao người chờ.
+Ngày về chiếc bến còn trơ,
+Con đò em chọn đã đưa sang bờ.
+
+[146] NGÀY CƯỚI NGƯỜI
+Pháo hồng không đốt ngoài sân,
+Mà nghe trong dạ bao lần vỡ tan.
+Em đi một chuyến sang ngang,
+Anh về nhặt lại mùa vàng đã rơi.
+
+[147] MỘT TIẾNG CHÚC MỪNG
+Gặp em trong áo vu quy,
+Anh chào thật khẽ, lòng thì rất đau.
+Chúc em yên ấm về sau,
+Còn anh tập sống những ngày không em.
+
+[148] NỤ TẦM XUÂN KHÁC
+Hoa xuân vừa nở trước nhà,
+Chưa kịp đưa hái, người ta hái rồi.
+Anh đành giữ một tiếng 'thôi',
+Để mùa xuân ấy xa xôi với mình.
+
+[149] TRẦU CAU ĐÃ ĐỊNH
+Trầu xanh đã có người têm,
+Cau non đã hẹn bên thềm nhà ai.
+Anh về đếm bóng chiều dài,
+Đếm sao cho hết những ngày nhớ em.
+
+[150] ĐỨNG BÊN BỜ CŨ
+Một bờ sông, một bờ xa,
+Một người đã cưới, một ta đứng nhìn.
+Nước trôi chẳng giữ được hình,
+Lòng còn giữ mãi cuộc tình chưa nên.
+
+[151] CHIẾC KHĂN EM TẶNG
+Khăn tay ngày ấy trao rồi,
+Người trao đã bước sang đời khác xa.
+Khăn còn thơm chút hương hoa,
+Anh đem cất kín như là cất xuân.
+
+[152] LỜI CHƯA KỊP NÓI
+Trăng tàn qua ngọn cau cao,
+Câu thương chưa nói biết trao ai giờ.
+Em đi để lại câu thơ,
+Vần đầu là nhớ, vần chờ là đau.
+
+[153] NGƯỜI QUA BẾN CŨ
+Đò sang còn tiếng chèo khua,
+Anh về lặng lẽ giữa mùa mưa rơi.
+Bến xưa không thiếu bóng người,
+Chỉ không còn một nụ cười đợi anh.
+
+[154] CHẬM MỘT CÂU HỎI
+Giá ngày ấy hỏi sớm hơn,
+Có khi chẳng phải cô đơn thế này.
+Một lời nén giữa bàn tay,
+Đến khi mở được, người nay xa rồi.
+
+[155] TIỄN EM
+Em về làm dâu xứ xa,
+Đường quê vẫn nở ngàn hoa đón người.
+Anh xin giữ lại nụ cười,
+Không xin giữ bước chân người nữa đâu.
+
+[156] CÂY BƯỞI SAU NHÀ
+Cây bưởi đã mấy mùa hoa,
+Mà người năm cũ vẫn là người xa.
+Quả sai kín cả vườn nhà,
+Riêng anh vẫn thiếu một mùa có em.
+
+[157] SỢ GẶP LẠI
+Nếu mai đi giữa chợ đông,
+Vô tình trông thấy má hồng năm nao,
+Anh xin nghiêng nón cúi chào,
+Kẻo câu chuyện cũ nghẹn vào lòng nhau.
+
+[158] MÙA CƯỚI CUỐI THU
+Ngoài sân xao xác lá vàng,
+Ngày em xuất giá là ngày thu sang.
+Ai cười trong tiếng chuông vang,
+Anh nghe lá rụng ngổn ngang lối về.
+
+[159] ĐỢI QUÁ MỘT NGƯỜI
+Hẹn nhau khi lúa còn xanh,
+Lúa vàng chưa gặt, em thành người ta.
+Anh về đứng giữa sân nhà,
+Chỉ nghe ngọn gió đi qua tiếng mình.
+
+[160] KHÔNG TRÁCH
+Em đi đâu phải lỗi em,
+Duyên không buộc được thì đành thả thôi.
+Trách chi chiếc lá xa cành,
+Khi mùa đã đổi, khi mình lỡ nhau.
+
+--- XA CÁCH, NHỚ MONG ---
+
+[161] THƯ TỪ BẾN XA
+Viết thư theo cánh chim trời,
+Chim bay qua núi, chẳng lời hồi âm.
+Anh đem gửi cả trăng rằm,
+Mong bên cửa sổ em thầm nhớ quê.
+
+[162] CON ĐÒ MÙA CẠN
+Sông cạn còn lối qua ngang,
+Lòng xa muôn dặm chẳng sang được gần.
+Anh đong nỗi nhớ từng lần,
+Đong rồi mới biết chẳng cân nổi tình.
+
+[163] NGÀY MƯA XA BẠN
+Mưa chiều rả rích mái tranh,
+Bếp than đỏ lửa mà anh lạnh lòng.
+Bên kia em có nhớ không,
+Một người còn thức đợi dòng thư sang.
+
+[164] SAU NGÀY CHIA TAY
+Cửa nhà còn chiếc đèn dầu,
+Chờ ai thắp sáng qua cầu đêm sương.
+Đèn soi một nửa con đường,
+Nửa kia là nỗi nhớ thương chẳng cùng.
+
+[165] TRĂNG HAI MIỀN
+Trăng non bên ấy có tròn,
+Hay như bên nọ khuyết mòn vì ai?
+Đôi nơi chung một đêm dài,
+Mà sao hai kẻ chẳng hoài gặp nhau.
+
+[166] ĐỢI GIỮA MÙA ĐÔNG
+Gió mùa về lạnh bàn tay,
+Anh đan lời nhớ gửi ngày phương xa.
+Áo dày có ấm được da,
+Làm sao ấm nổi mái nhà thiếu em.
+
+[167] CÁNH NHẠN KHÔNG THƯ
+Nhạn về lướt giữa trời thu,
+Anh nhìn theo mãi lời ru cuối mùa.
+Nhạn không mang mảnh thư xưa,
+Chỉ mang một thoáng gió lùa bờ vai.
+
+[168] TIẾNG SÁO NGOÀI ĐỒNG
+Sáo diều ai thả chiều nay,
+Nghe như tiếng nhớ theo mây đi tìm.
+Bóng em qua núi lặng im,
+Anh còn gửi gió một niềm chưa nguôi.
+
+[169] MỘT MÙA VẮNG
+Sáng nay hoa nở sân đình,
+Không ai ngắt hộ nên mình ngẩn ngơ.
+Trời xanh vẫn giống ngày xưa,
+Chỉ người bên cạnh chưa vừa trở về.
+
+[170] NHỚ NGƯỜI KHÔNG HẸN
+Em đi chẳng hẹn ngày về,
+Anh không dám hỏi khi nào gặp nhau.
+Ngày qua hoa trắng vườn cau,
+Đêm qua trăng đọng nỗi sầu trên hiên.
+
+[171] THUYỀN KHÔNG BẾN
+Thuyền kia neo giữa sông sâu,
+Chẳng ai cầm lái, chẳng đâu là nhà.
+Lòng anh sau buổi tiễn xa,
+Như con thuyền nhỏ chưa qua được buồn.
+
+[172] CHIỀU THÁNG GIÊNG
+Tháng giêng còn mỏng sương bay,
+Anh đi qua bến nhớ ngày chung đôi.
+Tiếng chào gửi lại xa xôi,
+Cả năm chẳng hết một lời chưa quên.
+
+[173] ĐƯỜNG VỀ THIẾU BẠN
+Con đường ngày trước chung chân,
+Bây giờ cây cỏ như gần như xa.
+Quen đường mà lạ bước qua,
+Vì người đi cạnh hóa ra chẳng còn.
+
+[174] CÂY CẦU MÙA GIÓ
+Cầu tre lắc lẻo đôi bờ,
+Em đi đầu ấy, anh chờ đầu đây.
+Gió qua cây lá hao gầy,
+Bao giờ đôi ngả trở về một phương?
+
+[175] CANH KHUYA
+Canh khuya ngọn nến chập chờn,
+Đèn còn có bạn, anh còn có ai?
+Ngoài sân gió trở heo may,
+Ngỡ nghe tiếng bước, hóa ngày xưa thôi.
+
+[176] NẾU CÒN NHỚ
+Nếu người còn nhớ câu xưa,
+Xin đừng gửi hết vào mưa cuối trời.
+Một câu đủ ấm lòng người,
+Một lời đủ để nụ cười nở ra.
+
+--- HẸN ƯỚC, NÊN ĐÔI ---
+
+[177] HẸN ĐẦU XUÂN
+Đào vừa hé một cánh hồng,
+Anh đem câu hát đặt trong lá mềm.
+Hẹn em phiên chợ ngày thêm,
+Cùng mua chút nắng mang về chung sân.
+
+[178] SẮC HỒNG TRÊN MÁ
+Hoa đào đỏ một khoảng trời,
+Mà anh chỉ thấy nụ cười của em.
+Nếu em thuận một tiếng 'ừ',
+Anh xin đợi đến xuân sau cũng đành.
+
+[179] CÙNG NGẮM TRĂNG
+Trăng tròn qua mái đình cao,
+Em ngồi bên ấy, anh vào bên đây.
+Chẳng cần hẹn ước thật đầy,
+Chỉ cần trăng sáng có ngày chung đôi.
+
+[180] NHÀ CÓ HAI NGƯỜI
+Nhà anh chẳng có vàng son,
+Có sân phơi lúa, có con mèo nằm.
+Nếu em cùng đón trăng rằm,
+Chắc hiên nhà nhỏ ấm dần từ đây.
+
+[181] HÁI HOA ĐẦU NGÕ
+Hái hoa anh chẳng hái nhiều,
+Chừa cho ong bướm những chiều tìm hương.
+Chỉ xin em một chữ thương,
+Để anh ghi nhớ dặm đường về sau.
+
+[182] HẸN NGÀY XUỐNG CHỢ
+Mùng năm em xuống chợ phiên,
+Cho anh theo gánh muối miền bên sông.
+Mua gì chẳng phải mua bông,
+Anh mua một nụ cười hồng của em.
+
+[183] NẮNG MỚI
+Nắng mai lách qua vườn cà,
+Anh nghe chim hót như là gọi xuân.
+Nếu em có bước qua sân,
+Cho anh xin hỏi một lần có thương?
+
+[184] MÀU TRẦU CÁNH PHƯỢNG
+Trầu têm cánh phượng vừa xong,
+Anh mang sang hỏi trong lòng em sao.
+Nếu duyên hai ngả gặp nhau,
+Xin đem chung một giàn cau trước nhà.
+
+[185] NÉT CHỮ ĐẦU XUÂN
+Viết tên em cạnh tên mình,
+Mực chưa ráo giấy, lòng thành đã sâu.
+Trăm năm xin hẹn cùng nhau,
+Chỉ mong một buổi bạc đầu bên nhau.
+
+[186] QUA MÙA GIÓ NỔI
+Gió sang em có lạnh không,
+Anh đem lời hát gửi trong mây chiều.
+Ngày mai nếu thấy gió nhiều,
+Thì nghe trong gió có điều anh thương.
+
+[187] BÔNG SEN SÂN ĐÌNH
+Sen trong hồ mới nở hoa,
+Người đi qua ngõ khiến ta mải nhìn.
+Thấy em đứng dưới sân đình,
+Tự nhiên câu hát vô tình hóa duyên.
+
+[188] CHIẾC CHIẾU HOA
+Mẹ anh dệt chiếc chiếu hoa,
+Bảo rằng để sẵn ngày ta đón nàng.
+Anh cười giấu một mơ màng,
+Đợi em gật nhẹ, trải rồi chiếu đôi.
+
+[189] CHƯA MUỘN ĐÂU EM
+Trời chiều mà nắng còn tươi,
+Tình chưa ngỏ hết, sao người vội xa.
+Nếu em chưa hẹn người ta,
+Thì anh xin nói thật thà: thương em.
+
+[190] NHỜ ÔNG TƠ
+Ông Tơ se sợi chỉ hồng,
+Sao không se giúp đôi lòng gần nhau.
+Em bên giàn mướp, anh cau,
+Một hàng rào nhỏ cách nhau mấy mùa.
+
+[191] GÓI TÌNH TRONG LÁ
+Lá trầu xanh mướt đầu giàn,
+Anh xin một lá đem sang hỏi nàng.
+Lá còn xanh, nghĩa còn vàng,
+Có thương xin chớ để chàng đợi lâu.
+
+[192] MÙA CHIM VỀ
+Chim về đậu ngọn cau cao,
+Báo mùa ấm áp tràn vào làng quê.
+Em mà hẹn một đường về,
+Anh xin dựng sẵn mái che trước thềm.
+
+[193] ĐỢI MỘT TIẾNG VÂNG
+Anh không xin bạc xin vàng,
+Chỉ xin em một dịu dàng gật đầu.
+Sông sâu rồi cũng có cầu,
+Lòng thương gặp nghĩa, trước sau vẹn tròn.
+
+[194] CÂU HÁT MÙA GẶT
+Vụ mùa lúa chín đầy sân,
+Anh đem câu hát ra gần bờ đê.
+Em nghe xin chớ vội về,
+Để anh còn hát một lời nên duyên.
+
+[195] BẾN ĐỖ BÌNH YÊN
+Thuyền dong muôn dặm xa khơi,
+Cuối cùng vẫn muốn một nơi quay về.
+Anh qua hết mấy mùa quê,
+Vẫn mong bến đỗ có em đứng chờ.
+
+[196] GẠO TRẮNG MUỐI TRẮNG
+Gạo trắng nấu bữa cơm chiều,
+Muối thêm chút mặn, thương nhiều thêm vui.
+Nhà nghèo chẳng có ngọt bùi,
+Nhưng anh có cả một đời vì em.
+
+[197] LỜI HỨA BÊN HIÊN
+Em ơi, mái rạ đơn sơ,
+Có anh che nắng, có chờ cùng em.
+Dẫu mai giông nổi trong đêm,
+Hai người chung một mái thềm vẫn vui.
+
+[198] SỚM MAI
+Sớm mai giếng nước trong veo,
+Anh ra gánh nước, em theo lối nhà.
+Ước gì năm tháng trôi qua,
+Vẫn cùng gánh nước, cùng pha ấm trà.
+
+[199] MỘT CHỮ DUYÊN
+Duyên đâu chẳng ở xa xôi,
+Có khi là buổi chung ngồi trú mưa.
+Có khi là một câu thưa,
+Thành câu hẹn đến sau mùa tóc phai.
+
+[200] TRĂM NĂM
+Trăm năm là mấy mùa trăng,
+Mà anh chỉ ước được bằng lòng em.
+Một đời qua những nổi chìm,
+Vẫn mong cuối bến con thuyền có đôi.
+    </script>
+
     <script>
-        const icons = {
-            sparkles: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>`,
-            sun: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
-            cloud: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`,
-            rain: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>`,
-            wind: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>`
-        };
+        let poems = [];
+        let currentIndex = 0;
+        let isDarkMode = false;
+        let fontSizes = ['text-base sm:text-lg', 'text-lg sm:text-xl', 'text-xl sm:text-2xl'];
+        let currentFontSizeIndex = 1; // Default to middle size
+        let autoPlayInterval = null;
+        let isAutoPlaying = false;
 
-        const weatherOptions = [
-            { id: 'sun', icon: icons.sun, label: 'Sunny' },
-            { id: 'cloud', icon: icons.cloud, label: 'Cloudy' },
-            { id: 'rain', icon: icons.rain, label: 'Rainy' },
-            { id: 'wind', icon: icons.wind, label: 'Windy' }
-        ];
+        // Trình phân tích văn bản tự động (Extract 226 poems from Raw Text)
+        function extractData() {
+            const rawText = document.getElementById('raw-data').textContent;
+            const lines = rawText.split('\n');
+            let currentCategory = "Thơ Giao Duyên";
+            let currentPoem = null;
 
-        const TARGET_DATE = new Date('2026-08-01T00:00:00').getTime();
-        let currentWeather = null;
-        let journal = [];
-        let isPanelOpen = false;
-
-        const today = new Date();
-        const dateString = today.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        const dateKeyId = today.toISOString().split('T')[0]; 
-
-        document.getElementById('icon-sparkle-1').innerHTML = icons.sparkles;
-        document.getElementById('icon-sparkle-2').innerHTML = icons.sparkles;
-        document.getElementById('current-date-display').innerText = dateString;
-
-        const weatherContainer = document.getElementById('weather-buttons-container');
-        weatherOptions.forEach(w => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'weather-btn p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white/30 hover:text-white/60 hover:scale-105';
-            btn.innerHTML = w.icon;
-            btn.onclick = () => selectWeather(w.id);
-            weatherContainer.appendChild(btn);
-        });
-
-        function toggleJournal() {
-            const panel = document.getElementById('journal-panel');
-            isPanelOpen = !isPanelOpen;
-            if (isPanelOpen) {
-                panel.classList.add('open');
-                document.body.style.overflow = 'hidden'; 
-            } else {
-                panel.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-
-        function selectWeather(id) {
-            currentWeather = id;
-            const buttons = document.querySelectorAll('.weather-btn');
-            const labelDisplay = document.getElementById('weather-label-display');
-
-            buttons.forEach((btn, index) => {
-                if (weatherOptions[index].id === id) {
-                    btn.className = 'weather-btn weather-selected-anim p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white scale-110 shadow-[0_0_20px_rgba(255,255,255,0.05)] bg-white/5';
-                    labelDisplay.innerText = weatherOptions[index].label;
-                    labelDisplay.style.opacity = 1;
-                    labelDisplay.classList.remove('translate-y-2');
-                    labelDisplay.classList.add('translate-y-0');
-                } else {
-                    btn.className = 'weather-btn p-3 md:p-4 rounded-full transition-all duration-500 flex flex-col items-center justify-center text-white/20 hover:text-white/50 hover:scale-105';
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                
+                // Giữ lại các khoảng ngắt đoạn (stanza breaks)
+                if (line === '') {
+                    if (currentPoem && currentPoem.content !== '' && !currentPoem.content.endsWith('\n\n')) {
+                        currentPoem.content += '\n\n';
+                    }
+                    continue;
                 }
-            });
 
-            if (!id) {
-                labelDisplay.style.opacity = 0;
-                labelDisplay.classList.add('translate-y-2');
-                labelDisplay.classList.remove('translate-y-0');
+                // Bỏ qua các dòng không liên quan
+                if (line.startsWith('===') || line.match(/^[0-9]{2}–[0-9]{3}:/) || 
+                    line.includes('MỤC LỤC') || line.includes('Biên soạn') || line.startsWith('LƯU Ý') || 
+                    line.startsWith('PHẦN I') || line.startsWith('PHẦN II') || line.includes('Tổng hợp') || 
+                    line.includes('- Tuyển tập') || line.includes('QUAN TRỌNG') || line.includes('TUYỂN TẬP') || 
+                    line.includes('HẾT TUYỂN TẬP') || line.includes('--- HẾT ---') || 
+                    line.includes('CÂU THƠ, CA DAO') || line.includes('Sưu tầm để đăng')) {
+                    continue;
+                }
+
+                // Nhận dạng Category (Thư mục)
+                let romanMatch = line.match(/^[IVX]+\.\s+(.+)$/);
+                if (romanMatch) {
+                    currentCategory = romanMatch[1]; continue;
+                }
+                let dashMatch = line.match(/^---\s*(.+?)\s*---$/);
+                if (dashMatch) {
+                    let cat = dashMatch[1].replace(/\s*\(\d+–\d+\)/g, '').replace(/\s*\(\d+-\d+\)/g, '').trim();
+                    if (!cat.includes('HẾT')) currentCategory = cat;
+                    continue;
+                }
+                if (line.startsWith('TẶNG THÊM:')) {
+                    currentCategory = "TẶNG THÊM"; continue;
+                }
+
+                // Nhận dạng tiêu đề bài thơ (VD: "01. MẬN HỎI ĐÀO" hoặc "[001] THẤY HOA...")
+                let oldMatch = line.match(/^(\d{2})\.\s*(.+)$/);
+                let newMatch = line.match(/^\[(\d{3})\]\s*(.+)$/);
+                let bonusMatch = (line === "TRÈO LÊN CÂY BƯỞI HÁI HOA" && currentCategory === "TẶNG THÊM") ? {1: "Bonus", 2: line} : null;
+                
+                let titleMatch = oldMatch || newMatch || (bonusMatch ? [null, bonusMatch[1], bonusMatch[2]] : null);
+
+                if (titleMatch) {
+                    // Lưu bài cũ trước khi mở bài mới
+                    if (currentPoem) {
+                        currentPoem.content = currentPoem.content.trim();
+                        poems.push({...currentPoem});
+                    }
+                    currentPoem = {
+                        id: titleMatch[1],
+                        title: titleMatch[2],
+                        category: currentCategory,
+                        content: ""
+                    };
+                } else if (currentPoem) {
+                    // Thêm dòng thơ
+                    currentPoem.content += line + '\n';
+                }
+            }
+            
+            // Lưu bài cuối cùng
+            if (currentPoem) {
+                currentPoem.content = currentPoem.content.trim();
+                poems.push({...currentPoem});
             }
         }
 
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const difference = TARGET_DATE - now;
+        // Khởi tạo
+        function init() {
+            // Chạy phân tích văn bản
+            extractData();
+            document.getElementById('poem-counter').textContent = `1/${poems.length}`;
 
-            let d = 0, h = 0, m = 0, s = 0;
-
-            if (difference > 0) {
-                d = Math.floor(difference / (1000 * 60 * 60 * 24));
-                h = Math.floor((difference / (1000 * 60 * 60)) % 24);
-                m = Math.floor((difference / 1000 / 60) % 60);
-                s = Math.floor((difference / 1000) % 60);
+            // Cấu hình Theme
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                isDarkMode = true;
+                updateThemeIcon();
             }
-
-            const format = (num) => num.toString().padStart(2, '0');
-
-            document.getElementById('cd-days').innerText = format(d);
-            document.getElementById('cd-hours').innerText = format(h);
-            document.getElementById('cd-minutes').innerText = format(m);
-            document.getElementById('cd-seconds').innerText = format(s);
+            
+            buildSidebar();
+            renderPoem(currentIndex, true);
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); 
-
-        const noteForm = document.getElementById('note-form');
-        const noteInput = document.getElementById('note-input');
-        const journalList = document.getElementById('journal-list');
-        const emptyMsg = document.getElementById('empty-journal-msg');
-        const saveStatus = document.getElementById('save-status');
-        const saveBtn = document.getElementById('save-btn');
-
-        noteForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const noteText = noteInput.value;
-
-            if (!noteText.trim() && !currentWeather) return;
-
-            const timeString = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-            const newRecord = {
-                dateKey: dateKeyId, 
-                date: dateString,
-                time: timeString,
-                note: noteText,
-                weather: currentWeather
+        // Render bài thơ có animation mượt
+        function renderPoem(index, skipAnim = false) {
+            const container = document.getElementById('poem-container');
+            const poem = poems[index];
+            
+            const updateContent = () => {
+                document.getElementById('p-category').textContent = poem.category;
+                
+                // Tiền tố "Bài" chỉ áp dụng cho ID có số
+                let idText = isNaN(poem.id) ? poem.id : `Bài ${poem.id}`;
+                document.getElementById('p-id').textContent = idText;
+                
+                document.getElementById('p-title').textContent = poem.title;
+                document.getElementById('poem-counter').textContent = `${index + 1}/${poems.length}`;
+                
+                // Xử lý xuống dòng: Giữ nguyên khoảng trống giữa các khổ
+                const formatted = poem.content.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+                document.getElementById('p-content').innerHTML = formatted;
+                
+                updateSidebarActive();
+                
+                requestAnimationFrame(() => {
+                    container.classList.remove('poem-hidden');
+                    container.classList.add('poem-visible');
+                });
             };
 
-            const existingIndex = journal.findIndex(record => record.dateKey === dateKeyId);
-
-            if (existingIndex !== -1) {
-                journal[existingIndex] = newRecord;
-                saveStatus.innerText = "Updated";
+            if (skipAnim) {
+                updateContent();
             } else {
-                journal.unshift(newRecord);
-                saveStatus.innerText = "Saved";
+                container.classList.remove('poem-visible');
+                container.classList.add('poem-hidden');
+                // Chờ CSS chuyển cảnh (0.3s)
+                setTimeout(updateContent, 300);
             }
-            
-            saveStatus.style.opacity = 1;
-            saveStatus.classList.remove('translate-y-1');
-            saveStatus.classList.add('translate-y-0');
-            
-            setTimeout(() => { 
-                saveStatus.style.opacity = 0; 
-                saveStatus.classList.add('translate-y-1');
-                saveStatus.classList.remove('translate-y-0');
-            }, 3000);
+        }
 
-            saveBtn.innerText = "Update Note";
+        function nextPoem() {
+            currentIndex = (currentIndex + 1) % poems.length;
+            renderPoem(currentIndex);
+            resetAutoPlayIfNeeded();
+        }
 
-            renderJournal();
-        });
+        function prevPoem() {
+            currentIndex = (currentIndex - 1 + poems.length) % poems.length;
+            renderPoem(currentIndex);
+            resetAutoPlayIfNeeded();
+        }
 
-        function renderJournal() {
-            if (journal.length > 0) {
-                emptyMsg.style.display = 'none';
+        function randomPoem() {
+            let newIndex;
+            do { newIndex = Math.floor(Math.random() * poems.length); } 
+            while (newIndex === currentIndex && poems.length > 1);
+            currentIndex = newIndex;
+            renderPoem(currentIndex);
+            resetAutoPlayIfNeeded();
+        }
+
+        function goToPoem(index) {
+            if(currentIndex === index) return;
+            currentIndex = index;
+            renderPoem(currentIndex);
+            if(window.innerWidth < 640) toggleSidebar(); // Chỉ đóng ở mobile
+            resetAutoPlayIfNeeded();
+        }
+
+        function toggleAutoPlay() {
+            isAutoPlaying = !isAutoPlaying;
+            const btn = document.getElementById('btn-autoplay');
+            const icon = document.getElementById('icon-autoplay');
+            const indicator = document.getElementById('autoplay-indicator');
+
+            if (isAutoPlaying) {
+                btn.classList.add('text-l_accent', 'dark:text-d_accent', 'bg-black/5', 'dark:bg-white/10');
+                icon.classList.remove('fa-clock');
+                icon.classList.add('fa-pause');
+                indicator.classList.remove('hidden');
+                indicator.classList.add('flex');
+                
+                // Đổi bài mỗi 8 giây
+                autoPlayInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % poems.length;
+                    renderPoem(currentIndex);
+                }, 8000);
+                showToast("Tự động: BẬT");
             } else {
-                emptyMsg.style.display = 'block';
+                btn.classList.remove('text-l_accent', 'dark:text-d_accent', 'bg-black/5', 'dark:bg-white/10');
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-clock');
+                indicator.classList.add('hidden');
+                indicator.classList.remove('flex');
+                
+                clearInterval(autoPlayInterval);
+                showToast("Tự động: TẮT");
             }
+        }
 
-            const children = Array.from(journalList.children);
-            children.forEach(child => {
-                if (child.id !== 'empty-journal-msg') {
-                    journalList.removeChild(child);
-                }
-            });
+        function resetAutoPlayIfNeeded() {
+            if (isAutoPlaying) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % poems.length;
+                    renderPoem(currentIndex);
+                }, 8000);
+            }
+        }
 
-            journal.forEach(record => {
-                const weatherObj = weatherOptions.find(w => w.id === record.weather);
-                const weatherIcon = weatherObj ? weatherObj.icon : '';
-                const weatherLabel = weatherObj ? weatherObj.label : '';
+        function copyPoem() {
+            const poem = poems[currentIndex];
+            const textToCopy = `${poem.title}\n\n${poem.content}\n\n---\nNguồn: ${poem.category} - ${isNaN(poem.id) ? '' : 'Bài '}${poem.id}`;
+            
+            const el = document.createElement('textarea');
+            el.value = textToCopy;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            showToast("Đã chép vào khay nhớ tạm!");
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            }
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const btn = document.getElementById('theme-btn');
+            if (isDarkMode) {
+                btn.innerHTML = '<i class="fa-solid fa-sun text-sm"></i>';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-moon text-sm"></i>';
+            }
+        }
+
+        function toggleFontSize() {
+            const pContent = document.getElementById('p-content');
+            const currentClasses = fontSizes[currentFontSizeIndex].split(' ');
+            pContent.classList.remove(...currentClasses);
+            
+            currentFontSizeIndex = (currentFontSizeIndex + 1) % fontSizes.length;
+            
+            const newClasses = fontSizes[currentFontSizeIndex].split(' ');
+            pContent.classList.add(...newClasses);
+            
+            let sizeName = currentFontSizeIndex === 0 ? 'Nhỏ' : (currentFontSizeIndex === 1 ? 'Vừa' : 'Lớn');
+            showToast(`Cỡ chữ: ${sizeName}`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.add('toast-show');
+            setTimeout(() => {
+                toast.classList.remove('toast-show');
+            }, 2000);
+        }
+
+        // Tạo mục lục DOM một lần để chống giật
+        function buildSidebar() {
+            const container = document.getElementById('poem-list-container');
+            const frag = document.createDocumentFragment();
+            
+            poems.forEach((poem, index) => {
+                const btn = document.createElement('button');
+                btn.id = `sb-item-${index}`;
+                btn.className = `w-full text-left p-3 mb-1.5 rounded-lg transition-colors flex items-start gap-3 
+                                hover:bg-black/5 dark:hover:bg-white/5 border border-transparent`;
+                btn.onclick = () => goToPoem(index);
+                btn.setAttribute('data-search', `${poem.title.toLowerCase()} ${poem.id} ${poem.category.toLowerCase()}`);
                 
-                const isWeatherOnly = !record.note.trim() && record.weather;
+                let idText = isNaN(poem.id) ? '*' : `#${poem.id}`;
 
-                let weatherHtml = '';
-                if (weatherIcon) {
-                    weatherHtml = `
-                        <span class="w-[2px] h-[2px] rounded-full bg-white/20"></span>
-                        <span class="text-white/60 flex items-center gap-2">
-                            ${weatherIcon.replace('width="24"', 'width="14"').replace('height="24"', 'height="14"')} 
-                        </span>
-                    `;
-                }
-
-                let contentHtml = '';
-                
-                if (isWeatherOnly) {
-                    contentHtml = `
-                        <div class="mt-3 py-3 px-5 inline-flex items-center gap-3 bg-gradient-to-r from-white/[0.03] to-transparent rounded-xl border border-white/5 backdrop-blur-sm group-hover:border-white/10 transition-all duration-500">
-                           <div class="opacity-60 text-white">${weatherIcon.replace('width="24"', 'width="18"').replace('height="24"', 'height="18"')}</div>
-                           <p class="uppercase tracking-widest text-[9px] thin-text text-white/50 pt-0.5">${weatherLabel}</p>
-                       </div>
-                    `;
-                } else {
-                    contentHtml = `
-                        <p class="text-sm md:text-base thin-text tracking-wide leading-loose text-left w-full text-white/80 mt-2">
-                            ${record.note}
-                        </p>
-                    `;
-                }
-
-                const recordHtml = `
-                    <div class="flex flex-col relative pl-6 group entry-animate">
-                        <div class="absolute left-0 top-1.5 bottom-[-3rem] w-px bg-gradient-to-b from-white/20 to-transparent"></div>
-                        <div class="absolute left-[-2.5px] top-1.5 w-[6px] h-[6px] rounded-full bg-black border border-white/40 group-hover:border-white transition-colors duration-500"></div>
-                        
-                        <div class="flex items-center gap-3 text-white/40 tracking-widest text-[9px] uppercase mb-2 thin-text">
-                            <span>${record.date}</span>
-                            <span class="w-[2px] h-[2px] rounded-full bg-white/20"></span>
-                            <span>${record.time}</span>
-                            ${!isWeatherOnly ? weatherHtml : ''} 
-                        </div>
-                        
-                        ${contentHtml}
+                btn.innerHTML = `
+                    <div class="text-xs font-bold text-l_subtext dark:text-d_subtext mt-1 opacity-60 w-8 text-center">${idText}</div>
+                    <div class="flex-1">
+                        <div class="font-sans font-medium text-l_text dark:text-d_text sb-title leading-snug">${poem.title}</div>
+                        <div class="text-[0.65rem] text-l_subtext dark:text-d_subtext uppercase tracking-wider mt-1 opacity-80">${poem.category}</div>
                     </div>
                 `;
-                journalList.insertAdjacentHTML('beforeend', recordHtml);
+                frag.appendChild(btn);
+            });
+            container.appendChild(frag);
+        }
+
+        function updateSidebarActive() {
+            poems.forEach((_, index) => {
+                const item = document.getElementById(`sb-item-${index}`);
+                if(!item) return;
+                
+                const title = item.querySelector('.sb-title');
+                
+                if (index === currentIndex) {
+                    item.classList.add('bg-black/5', 'dark:bg-white/10');
+                    title.classList.add('text-l_accent', 'dark:text-d_accent', 'font-bold');
+                    
+                    // Cuộn nhẹ nhàng đến item active trong sidebar
+                    if(item.scrollIntoViewIfNeeded) {
+                         item.scrollIntoViewIfNeeded();
+                    } else {
+                         item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                } else {
+                    item.classList.remove('bg-black/5', 'dark:bg-white/10');
+                    title.classList.remove('text-l_accent', 'dark:text-d_accent', 'font-bold');
+                }
             });
         }
 
-        // Trình theo dõi chu?t (Mouse Tracking Glow)
-        document.addEventListener('mousemove', (e) => {
-            const glow = document.getElementById('pointer-glow');
-            if(glow) {
-                glow.style.setProperty('--mouse-x', `${e.clientX}px`);
-                glow.style.setProperty('--mouse-y', `${e.clientY}px`);
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (sidebar.classList.contains('translate-x-full')) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function filterPoems() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            poems.forEach((_, index) => {
+                const item = document.getElementById(`sb-item-${index}`);
+                if(!item) return;
+                const searchData = item.getAttribute('data-search');
+                item.style.display = searchData.includes(term) ? 'flex' : 'none';
+            });
+        }
+
+        // Hỗ trợ dùng bàn phím máy tính để sang bài
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPoem();
+            if (e.key === 'ArrowLeft') prevPoem();
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('translate-x-full')) toggleSidebar();
             }
         });
+
+        // Bắt đầu
+        window.onload = init;
+
     </script>
 </body>
 </html>

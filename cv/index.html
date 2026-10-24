@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tuyển Tập Thơ Giao Duyên | Đầy đủ 225 Bài</title>
+    <title>Tuyển Tập Thơ Giao Duyên | Đầy đủ 226 Bài</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Font Lora cho phần thơ (đọc rất sang), Inter cho giao diện -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <!-- Font Lora cho phần thơ sang trọng, Plus Jakarta Sans cho giao diện hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -18,24 +18,29 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
                         serif: ['Lora', 'serif'],
                     },
                     colors: {
-                        // Tông màu Zen, đọc sách (không dùng xanh/tím)
-                        l_bg: '#F7F6F2', 
-                        l_surface: '#FFFFFF',
-                        l_text: '#1C1C1C',
-                        l_subtext: '#6B6B6B',
-                        l_accent: '#8C3A3A', // Đỏ đất/Terracotta sang trọng
-                        l_border: '#E5E3DB',
+                        // Tông màu Giấy Dó & Son Đỏ cổ điển cao cấp (Không dùng tím/xanh)
+                        l_bg: '#F4F1EA', 
+                        l_surface: '#FCFBF9',
+                        l_subtle: '#EAE5D9',
+                        l_text: '#1E1B18',
+                        l_subtext: '#6E665E',
+                        l_accent: '#8C2D19', // Đỏ son trầm (Cinnabar)
+                        l_gold: '#B89146',   // Vàng mộc
+                        l_border: '#E2DDD2',
                         
-                        d_bg: '#121212',
-                        d_surface: '#1E1E1E',
-                        d_text: '#E0E0E0',
-                        d_subtext: '#9E9E9E',
-                        d_accent: '#C0A062', // Vàng đồng/Champagne
-                        d_border: '#2C2C2C',
+                        // Tông màu Đêm Trà Đạo (Dark Mode)
+                        d_bg: '#121110',
+                        d_surface: '#1B1917',
+                        d_subtle: '#262320',
+                        d_text: '#EDE8E1',
+                        d_subtext: '#9C948B',
+                        d_accent: '#D4A359', // Vàng Champagne
+                        d_seal: '#A63A26',   // Đỏ triện
+                        d_border: '#2D2A26',
                     }
                 }
             }
@@ -48,153 +53,357 @@
         body {
             transition: background-color 0.2s ease, color 0.2s ease;
             overflow-x: hidden;
+            background-image: radial-gradient(rgba(140, 45, 25, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .dark body {
+            background-image: radial-gradient(rgba(212, 163, 89, 0.03) 1px, transparent 0);
         }
 
-        /* Hoạt ảnh siêu mượt bằng cách ép GPU xử lý */
+        /* Hoạt ảnh siêu mượt bằng GPU 3D Transform (60 FPS, không gây lag) */
         .poem-transition {
-            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: opacity, transform;
         }
 
         .poem-hidden {
             opacity: 0;
-            transform: translateY(15px);
+            transform: translate3d(0, 10px, 0) scale(0.99);
             pointer-events: none;
         }
 
         .poem-visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0) scale(1);
         }
 
-        /* Thanh cuộn tối giản */
-        ::-webkit-scrollbar { width: 4px; }
+        /* Hiệu ứng nảy nhẹ khi bấm nút Lưu tim/bookmark */
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.3); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: heartPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Thanh cuộn tinh tế */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #D1D1D1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #424242; }
+        ::-webkit-scrollbar-thumb { background: #CFC8BC; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #3A3530; }
 
         /* Nút tương tác mượt mà */
         .btn-interact {
-            transition: all 0.15s ease;
+            transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
         .btn-interact:active {
-            transform: scale(0.92);
+            transform: scale(0.93);
+        }
+
+        /* Con dấu triện cổ điển */
+        .seal-stamp {
+            border: 1.5px solid #8C2D19;
+            color: #8C2D19;
+            box-shadow: inset 0 0 0 1px rgba(140, 45, 25, 0.15);
+        }
+        .dark .seal-stamp {
+            border-color: #A63A26;
+            color: #D47A68;
+            box-shadow: inset 0 0 0 1px rgba(166, 58, 38, 0.25);
         }
 
         /* Toast thông báo */
         #toast {
-            transition: opacity 0.3s, transform 0.3s;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
             pointer-events: none;
         }
         .toast-show {
             opacity: 1 !important;
-            transform: translateY(0) !important;
+            transform: translate(-50%, 0) !important;
         }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col font-sans bg-l_bg text-l_text dark:bg-d_bg dark:text-d_text selection:bg-l_accent selection:text-white dark:selection:bg-d_accent dark:selection:text-black">
 
-    <header class="w-full py-4 px-4 sm:px-6 flex justify-between items-center max-w-4xl mx-auto z-10 sticky top-0 bg-l_bg/95 dark:bg-d_bg/95 backdrop-blur border-b border-l_border dark:border-d_border">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg flex items-center justify-center font-bold font-serif">
-                <i class="fa-solid fa-leaf text-sm"></i>
+    <!-- HEADER CAO CẤP -->
+    <header class="w-full py-3.5 px-4 sm:px-6 border-b border-l_border dark:border-d_border bg-l_bg/95 dark:bg-d_bg/95 sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <!-- Logo & Tên -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToPoem(0)">
+                <div class="w-9 h-9 rounded-lg bg-l_accent dark:bg-d_accent text-white dark:text-d_bg flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-feather-pointed text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-serif font-bold text-base sm:text-lg leading-tight tracking-wide">Thi Ca Giao Duyên</h1>
+                    <p class="text-[0.68rem] text-l_subtext dark:text-d_subtext hidden sm:block">Tuyển tập Ca dao & Thơ tình cổ phong</p>
+                </div>
             </div>
-            <h1 class="font-serif font-semibold text-lg hidden sm:block tracking-wide">Tuyển Tập Thơ</h1>
-        </div>
 
-        <div class="flex items-center gap-1 sm:gap-2">
-            <span id="poem-counter" class="text-xs font-medium text-l_subtext dark:text-d_subtext mr-2">0/0</span>
-            
-            <button onclick="toggleFontSize()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 btn-interact text-l_subtext dark:text-d_subtext" title="Đổi cỡ chữ">
-                <i class="fa-solid fa-text-height text-sm"></i>
-            </button>
-            
-            <button onclick="toggleTheme()" id="theme-btn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 btn-interact text-l_subtext dark:text-d_subtext" title="Giao diện Sáng/Tối">
-                <i class="fa-solid fa-moon"></i>
-            </button>
+            <!-- Cụm công cụ trên Header -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- Nút mở nhanh Danh sách Đã Lưu -->
+                <button onclick="openSavedPoems()" class="h-9 px-3 rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact flex items-center gap-1.5 text-xs font-medium text-l_text dark:text-d_text shadow-2xs" title="Xem bài thơ đã lưu">
+                    <i class="fa-solid fa-bookmark text-l_accent dark:text-d_accent"></i>
+                    <span class="hidden md:inline">Đã lưu</span>
+                    <span id="header-saved-count" class="px-1.5 py-0.5 text-[0.65rem] rounded-full bg-l_subtle dark:bg-d_subtle font-bold text-l_accent dark:text-d_accent">0</span>
+                </button>
 
-            <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 btn-interact text-l_text dark:text-d_text ml-1" title="Mục lục">
-                <i class="fa-solid fa-list-ul"></i>
-            </button>
+                <!-- Nút thêm bài thơ mới -->
+                <button onclick="openAddModal()" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Thêm bài thơ mới">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+
+                <!-- Đổi cỡ chữ -->
+                <button onclick="toggleFontSize()" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Đổi cỡ chữ">
+                    <i class="fa-solid fa-text-height text-xs"></i>
+                </button>
+                
+                <!-- Đổi giao diện Sáng/Tối -->
+                <button onclick="toggleTheme()" id="theme-btn" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Giao diện Sáng/Tối">
+                    <i class="fa-solid fa-moon text-xs"></i>
+                </button>
+
+                <!-- Nút mở Mục lục -->
+                <button onclick="openAllPoems()" class="h-9 px-3.5 rounded-full bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg hover:opacity-90 btn-interact flex items-center gap-2 text-xs font-semibold ml-0.5 shadow-2xs" title="Mục lục bài thơ">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                    <span id="poem-counter">1/226</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="flex-grow flex flex-col items-center px-4 sm:px-6 py-6 w-full max-w-3xl mx-auto relative justify-center">
+    <!-- KHU VỰC ĐỌC THƠ CHÍNH -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 py-5 sm:py-8 w-full max-w-4xl mx-auto relative">
         
-        <div id="autoplay-indicator" class="hidden items-center gap-2 text-xs font-semibold text-l_accent dark:text-d_accent mb-4 animate-pulse">
-            <i class="fa-solid fa-play-circle"></i> Đang tự động chuyển bài...
-        </div>
-
-        <!-- Khung hiển thị thơ tối giản -->
-        <div id="poem-container" class="w-full bg-l_surface dark:bg-d_surface rounded-xl shadow-sm border border-l_border dark:border-d_border p-8 sm:p-12 min-h-[55vh] flex flex-col justify-center poem-transition poem-visible">
-            
-            <div class="flex flex-col items-center justify-center gap-1 mb-8">
-                <span id="p-id" class="text-xs font-bold text-l_subtext dark:text-d_subtext opacity-50 tracking-widest"></span>
-                <span id="p-category" class="text-[0.65rem] sm:text-xs font-medium text-l_accent dark:text-d_accent uppercase tracking-widest border border-l_accent/20 dark:border-d_accent/20 px-3 py-1 rounded-full mt-2"></span>
+        <!-- Trạng thái đang xem danh sách Đã lưu hoặc Tự động phát -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-3 min-h-[24px]">
+            <div id="saved-mode-banner" class="hidden items-center gap-2 text-xs font-medium bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent px-3 py-1 rounded-full border border-l_accent/20 dark:border-d_accent/20">
+                <i class="fa-solid fa-bookmark text-[0.65rem]"></i>
+                <span>Chế độ đọc: <strong>Bài thơ đã lưu</strong></span>
+                <button onclick="setReadingMode('all')" class="ml-1 underline hover:opacity-80 font-semibold">Xem tất cả</button>
             </div>
 
-            <h2 id="p-title" class="text-2xl sm:text-3xl font-serif font-bold text-center mb-8 text-l_text dark:text-d_text tracking-tight">
-                <!-- Title -->
-            </h2>
-
-            <div id="p-content" class="font-serif text-center text-lg sm:text-xl leading-loose sm:leading-[2.2] text-l_text/90 dark:text-d_text/90 transition-all duration-300">
-                <!-- Content -->
-            </div>
-            
-            <div class="mt-12 flex justify-center text-l_border dark:text-d_border opacity-50">
-                <i class="fa-solid fa-spa text-lg"></i>
+            <div id="autoplay-indicator" class="hidden items-center gap-1.5 text-xs font-semibold text-l_accent dark:text-d_accent bg-l_surface dark:bg-d_surface px-3 py-1 rounded-full border border-l_border dark:border-d_border">
+                <span class="w-2 h-2 rounded-full bg-l_accent dark:bg-d_accent animate-ping"></span>
+                <span>Tự động chuyển bài (8s)</span>
             </div>
         </div>
 
-        <!-- Bảng điều khiển (Control Panel) -->
-        <div class="w-full mt-6 grid grid-cols-5 gap-2 max-w-md mx-auto">
-            <button onclick="prevPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
+        <!-- Khung trang sách cùng nút chuyển nhanh trên màn hình lớn -->
+        <div class="w-full flex items-center justify-center gap-4 relative">
+            
+            <!-- Nút Lùi (Desktop) -->
+            <button onclick="prevPoem()" class="hidden md:flex w-11 h-11 rounded-full bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border items-center justify-center text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent hover:border-l_accent dark:hover:border-d_accent btn-interact shadow-2xs shrink-0" title="Bài trước (Phím mũi tên trái)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- TRANG THƠ CHÍNH (BOOK PAGE CARD) -->
+            <div id="poem-container" class="w-full max-w-2xl bg-l_surface dark:bg-d_surface rounded-2xl shadow-sm border border-l_border dark:border-d_border p-3 sm:p-4 poem-transition poem-visible relative">
+                
+                <!-- Khung viền kẻ chỉ bên trong tạo nét sang trọng như sách in -->
+                <div class="w-full h-full border border-l_border/80 dark:border-d_border/80 rounded-xl px-5 py-8 sm:px-12 sm:py-12 min-h-[50vh] sm:min-h-[54vh] flex flex-col justify-between relative">
+                    
+                    <!-- 4 Góc trang trí cổ điển siêu nhẹ bằng SVG -->
+                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2.5 left-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V2h10M6 6h6v6"/></svg>
+                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2.5 right-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12V2H12M18 6h-6v6"/></svg>
+                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2.5 left-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12v10h10M6 18h6v-6"/></svg>
+                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2.5 right-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12v10H12M18 18h-6v-6"/></svg>
+
+                    <!-- Thanh đầu trang thơ: Số bài & Nút Lưu yêu thích -->
+                    <div class="flex items-center justify-between gap-2 z-10">
+                        <span id="p-id" class="text-xs font-semibold text-l_subtext dark:text-d_subtext tracking-widest uppercase px-2.5 py-1 rounded bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border">
+                            Bài 01
+                        </span>
+
+                        <button onclick="toggleSaveCurrentPoem()" id="card-save-btn" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext" title="Lưu bài thơ này">
+                            <i id="card-save-icon" class="fa-regular fa-heart text-sm"></i>
+                            <span id="card-save-text">Lưu bài</span>
+                        </button>
+                    </div>
+
+                    <!-- Nội dung trung tâm bài thơ -->
+                    <div class="my-auto py-8 flex flex-col items-center">
+                        <!-- Nhãn Chủ đề -->
+                        <div class="mb-3">
+                            <span id="p-category" class="text-[0.68rem] sm:text-xs font-semibold text-l_accent dark:text-d_accent uppercase tracking-widest">
+                                Chủ đề
+                            </span>
+                        </div>
+
+                        <!-- Tựa đề bài thơ -->
+                        <h2 id="p-title" class="text-2xl sm:text-3xl font-serif font-bold text-center text-l_text dark:text-d_text tracking-tight mb-3">
+                            <!-- Title -->
+                        </h2>
+
+                        <!-- Đường kẻ hoa văn nhỏ dưới tiêu đề -->
+                        <div class="flex items-center gap-2 mb-7 opacity-60">
+                            <span class="w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
+                            <span class="text-l_gold dark:text-d_accent text-[0.6rem]">✦</span>
+                            <span class="w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
+                        </div>
+
+                        <!-- Lời thơ -->
+                        <div id="p-content" class="font-serif text-center text-lg sm:text-xl leading-[2] sm:leading-[2.25] text-l_text/95 dark:text-d_text/95 max-w-lg mx-auto">
+                            <!-- Content -->
+                        </div>
+                    </div>
+                    
+                    <!-- Chân trang thơ: Con dấu triện truyền thống -->
+                    <div class="flex items-center justify-between pt-4 border-t border-l_border/50 dark:border-d_border/50 text-xs text-l_subtext dark:text-d_subtext">
+                        <span id="p-collection-tag" class="text-[0.7rem] italic font-serif opacity-75">Tuyển tập Giao Duyên</span>
+                        
+                        <div class="seal-stamp px-2 py-0.5 rounded-xs font-serif text-[0.65rem] font-bold tracking-widest uppercase select-none">
+                            Ấn Tuyển
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút Tiếp (Desktop) -->
+            <button onclick="nextPoem()" class="hidden md:flex w-11 h-11 rounded-full bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border items-center justify-center text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent hover:border-l_accent dark:hover:border-d_accent btn-interact shadow-2xs shrink-0" title="Bài tiếp theo (Phím mũi tên phải)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG (DOCK CAO CẤP) -->
+        <div class="w-full max-w-lg mt-5 bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl p-1.5 shadow-xs grid grid-cols-6 gap-1">
+            <button onclick="prevPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-solid fa-arrow-left text-base mb-1"></i>
+                <span class="text-[0.65rem] font-medium">Trước</span>
             </button>
             
-            <button onclick="toggleAutoPlay()" id="btn-autoplay" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
-                <i id="icon-autoplay" class="fa-solid fa-clock text-lg"></i>
+            <button onclick="toggleSaveCurrentPoem()" id="dock-save-btn" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
+                <i id="dock-save-icon" class="fa-regular fa-bookmark text-base mb-1"></i>
+                <span id="dock-save-text" class="text-[0.65rem] font-medium">Lưu bài</span>
             </button>
 
-            <button onclick="randomPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
-                <i class="fa-solid fa-dice text-lg"></i>
+            <button onclick="randomPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-solid fa-shuffle text-base mb-1"></i>
+                <span class="text-[0.65rem] font-medium">Ngẫu nhiên</span>
             </button>
 
-            <button onclick="copyPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext">
-                <i class="fa-regular fa-clone text-lg"></i>
+            <button onclick="toggleAutoPlay()" id="btn-autoplay" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
+                <i id="icon-autoplay" class="fa-solid fa-play text-base mb-1"></i>
+                <span class="text-[0.65rem] font-medium">Tự chạy</span>
             </button>
 
-            <button onclick="nextPoem()" class="col-span-1 flex flex-col items-center justify-center p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 btn-interact text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent">
-                <i class="fa-solid fa-arrow-right text-lg"></i>
+            <button onclick="copyPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-regular fa-copy text-base mb-1"></i>
+                <span class="text-[0.65rem] font-medium">Sao chép</span>
+            </button>
+
+            <button onclick="nextPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent hover:bg-l_accent hover:text-white dark:hover:bg-d_accent dark:hover:text-black btn-interact">
+                <i class="fa-solid fa-arrow-right text-base mb-1"></i>
+                <span class="text-[0.65rem] font-semibold">Tiếp theo</span>
             </button>
         </div>
     </main>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/40 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <!-- MỤC LỤC & DANH SÁCH BÀI THƠ ĐÃ LƯU (SIDEBAR) -->
+    <div id="sidebar-overlay" onclick="closeSidebar()" class="fixed inset-0 bg-black/30 dark:bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-200"></div>
     
-    <aside id="sidebar" class="fixed top-0 right-0 h-full w-full sm:w-[350px] bg-l_surface dark:bg-d_surface border-l border-l_border dark:border-d_border shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <aside id="sidebar" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-l_surface dark:bg-d_surface border-l border-l_border dark:border-d_border shadow-2xl z-50 transform translate-x-full transition-transform duration-250 ease-out flex flex-col">
+        <!-- Đầu Sidebar -->
         <div class="p-4 border-b border-l_border dark:border-d_border flex justify-between items-center bg-l_bg dark:bg-d_bg">
-            <h3 class="font-sans font-bold text-lg">Danh sách bài thơ</h3>
-            <button onclick="toggleSidebar()" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 btn-interact flex items-center justify-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-book-open text-l_accent dark:text-d_accent"></i>
+                <h3 class="font-serif font-bold text-lg">Mục Lục & Tủ Thơ</h3>
+            </div>
+            <button onclick="closeSidebar()" class="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 btn-interact flex items-center justify-center">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        
-        <div class="p-3 bg-l_surface dark:bg-d_surface border-b border-l_border dark:border-d_border">
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-l_subtext text-xs"></i>
-                <input type="text" id="searchInput" oninput="filterPoems()" placeholder="Tìm số bài, tựa đề..." 
-                    class="w-full bg-l_bg dark:bg-d_bg border border-transparent rounded-md py-2 pl-8 pr-3 text-sm focus:outline-none focus:border-l_accent dark:focus:border-d_accent transition-colors text-l_text dark:text-d_text">
+
+        <!-- Chuyển Tab: Tất cả bài thơ / Đã lưu -->
+        <div class="p-3 bg-l_surface dark:bg-d_surface border-b border-l_border dark:border-d_border space-y-2.5">
+            <div class="grid grid-cols-2 gap-1.5 p-1 bg-l_bg dark:bg-d_bg rounded-xl border border-l_border dark:border-d_border">
+                <button id="tab-all-btn" onclick="switchSidebarTab('all')" class="py-2 px-3 rounded-lg text-xs font-semibold transition-all bg-l_surface dark:bg-d_surface text-l_text dark:text-d_text shadow-2xs flex items-center justify-center gap-1.5">
+                    <span>Tất cả</span>
+                    <span id="tab-all-count" class="px-1.5 py-0.2 rounded-full bg-l_subtle dark:bg-d_subtle text-[0.65rem]">226</span>
+                </button>
+                <button id="tab-saved-btn" onclick="switchSidebarTab('saved')" class="py-2 px-3 rounded-lg text-xs font-semibold transition-all text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-bookmark text-l_accent dark:text-d_accent text-[0.68rem]"></i>
+                    <span>Đã lưu</span>
+                    <span id="tab-saved-count" class="px-1.5 py-0.2 rounded-full bg-l_subtle dark:bg-d_subtle text-[0.65rem]">0</span>
+                </button>
+            </div>
+
+            <!-- Thanh tìm kiếm & lọc chủ đề -->
+            <div class="flex gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-l_subtext text-xs"></i>
+                    <input type="text" id="searchInput" oninput="filterPoems()" placeholder="Tìm số bài, tên, câu thơ..." 
+                        class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg py-2 pl-8 pr-3 text-xs focus:outline-none focus:border-l_accent dark:focus:border-d_accent transition-colors text-l_text dark:text-d_text">
+                </div>
+                <select id="categoryFilter" onchange="filterPoems()" class="bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-2.5 py-2 text-xs text-l_text dark:text-d_text focus:outline-none focus:border-l_accent dark:focus:border-d_accent max-w-[135px] truncate">
+                    <option value="all">Mọi chủ đề</option>
+                </select>
+            </div>
+
+            <!-- Thanh công cụ phụ khi ở Tab Đã lưu -->
+            <div id="saved-tab-actions" class="hidden items-center justify-between pt-1 text-xs">
+                <span class="text-l_subtext dark:text-d_subtext text-[0.7rem]">Bấm vào bài để đọc hoặc chỉ duyệt bài đã lưu:</span>
+                <button onclick="toggleSavedReadingMode()" id="btn-read-saved-only" class="text-l_accent dark:text-d_accent font-semibold hover:underline text-[0.72rem] flex items-center gap-1">
+                    <i class="fa-solid fa-play text-[0.6rem]"></i> Chỉ đọc bài đã lưu
+                </button>
             </div>
         </div>
 
-        <div class="flex-grow overflow-y-auto p-2" id="poem-list-container">
+        <!-- Danh sách bài thơ -->
+        <div class="flex-grow overflow-y-auto p-2.5" id="poem-list-container">
             <!-- Danh sách render bằng JS -->
+        </div>
+
+        <!-- Trạng thái trống khi chưa lưu bài thơ nào -->
+        <div id="empty-saved-state" class="hidden flex-grow flex-col items-center justify-center p-8 text-center">
+            <div class="w-14 h-14 rounded-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border flex items-center justify-center text-l_subtext dark:text-d_subtext mb-3">
+                <i class="fa-regular fa-bookmark text-xl"></i>
+            </div>
+            <p class="font-serif font-semibold text-base mb-1">Chưa có bài thơ nào được lưu</p>
+            <p class="text-xs text-l_subtext dark:text-d_subtext max-w-xs leading-relaxed mb-4">
+                Khi đọc một bài thơ tâm đắc, hãy bấm nút <strong>"Lưu bài"</strong> (biểu tượng trái tim) để cất vào tủ thơ riêng của bạn.
+            </p>
+            <button onclick="switchSidebarTab('all')" class="px-4 py-2 rounded-lg bg-l_accent dark:bg-d_accent text-white dark:text-black text-xs font-semibold btn-interact">
+                Khám phá 226 bài thơ
+            </button>
         </div>
     </aside>
 
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg px-5 py-2.5 rounded-lg shadow-xl text-sm font-medium opacity-0 translate-y-4 z-50 flex items-center gap-2">
-        <i class="fa-solid fa-circle-check"></i>
+    <!-- MODAL THÊM BÀI THƠ MỚI (CHO PHÉP UPDATE TRỰC TIẾP) -->
+    <div id="add-modal" class="fixed inset-0 bg-black/40 dark:bg-black/60 z-50 hidden items-center justify-center p-4">
+        <div class="bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl max-w-md w-full p-5 shadow-xl">
+            <div class="flex justify-between items-center pb-3 border-b border-l_border dark:border-d_border mb-4">
+                <h3 class="font-serif font-bold text-lg">Thêm Bài Thơ Mới</h3>
+                <button onclick="closeAddModal()" class="w-8 h-8 rounded-full hover:bg-black/5 dark:hover:bg-white/10 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1 text-l_subtext dark:text-d_subtext">Tựa đề bài thơ *</label>
+                    <input id="new-poem-title" type="text" placeholder="VD: ĐÊM TRĂNG NHỚ NÀNG" class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-l_accent dark:focus:border-d_accent">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1 text-l_subtext dark:text-d_subtext">Chủ đề</label>
+                    <input id="new-poem-category" type="text" placeholder="VD: THƠ MỚI TỰ SÁNG TÁC" value="THƠ BỔ SUNG" class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-l_accent dark:focus:border-d_accent">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1 text-l_subtext dark:text-d_subtext">Nội dung bài thơ *</label>
+                    <textarea id="new-poem-content" rows="4" placeholder="Nhập các câu thơ, xuống dòng cho mỗi câu..." class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-3 py-2 text-sm font-serif focus:outline-none focus:border-l_accent dark:focus:border-d_accent"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="closeAddModal()" class="px-4 py-2 rounded-lg border border-l_border dark:border-d_border hover:bg-l_bg dark:hover:bg-d_bg font-medium">Hủy</button>
+                    <button onclick="submitNewPoem()" class="px-4 py-2 rounded-lg bg-l_accent dark:bg-d_accent text-white dark:text-black font-semibold btn-interact">Lưu & Đọc ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST THÔNG BÁO -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-4 bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg px-4 py-2.5 rounded-full shadow-lg text-xs font-semibold opacity-0 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-l_gold dark:text-d_accent"></i>
         <span id="toast-msg">Thành công!</span>
     </div>
 
@@ -1471,26 +1680,136 @@ Một đời qua những nổi chìm,
 Vẫn mong cuối bến con thuyền có đôi.
     </script>
 
+    <!-- KẾT NỐI LƯU TRỮ ĐÁM MÂY (FIRESTORE) ĐỂ ĐỒNG BỘ BÀI THƠ ĐÃ LƯU -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-poetry-app';
+
+        async function initCloudStorage() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (!currentUser) return;
+
+                    // Lắng nghe danh sách bài thơ đã lưu
+                    const savedRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'saved_poems');
+                    onSnapshot(savedRef, (snapshot) => {
+                        const cloudKeys = new Set();
+                        snapshot.forEach((docSnap) => {
+                            const data = docSnap.data();
+                            if (data && data.key) cloudKeys.add(data.key);
+                        });
+                        window.syncSavedFromCloud(cloudKeys);
+                    }, (error) => {
+                        console.error("Lỗi đồng bộ tủ thơ:", error);
+                    });
+
+                    // Lắng nghe các bài thơ người dùng tự thêm mới
+                    const customRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'custom_poems');
+                    onSnapshot(customRef, (snapshot) => {
+                        const customList = [];
+                        snapshot.forEach((docSnap) => {
+                            const data = docSnap.data();
+                            if (data && data.title && data.content) {
+                                customList.push(data);
+                            }
+                        });
+                        window.syncCustomPoemsFromCloud(customList);
+                    }, (error) => {
+                        console.error("Lỗi đồng bộ bài thơ mới:", error);
+                    });
+                });
+            } catch (e) {
+                console.warn("Chế độ lưu trên phiên hiện tại:", e);
+            }
+        }
+
+        // Gắn hàm lưu/xóa lên window để giao diện gọi tức thì
+        window.saveBookmarkToCloud = async (poemKey, isSaved) => {
+            if (!db || !currentUser) return;
+            try {
+                const docId = encodeURIComponent(poemKey);
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'saved_poems', docId);
+                if (isSaved) {
+                    await setDoc(docRef, { key: poemKey, savedAt: Date.now() });
+                } else {
+                    await deleteDoc(docRef);
+                }
+            } catch (e) {
+                console.error("Không thể lưu trạng thái:", e);
+            }
+        };
+
+        window.saveCustomPoemToCloud = async (poemObj) => {
+            if (!db || !currentUser) return;
+            try {
+                const docId = encodeURIComponent(poemObj.key);
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'custom_poems', docId);
+                await setDoc(docRef, poemObj);
+            } catch (e) {
+                console.error("Không thể lưu bài thơ mới:", e);
+            }
+        };
+
+        initCloudStorage();
+    </script>
+
+    <!-- LOGIC ỨNG DỤNG CHÍNH -->
     <script>
+        let basePoems = [];
+        let customPoems = [];
         let poems = [];
         let currentIndex = 0;
         let isDarkMode = false;
-        let fontSizes = ['text-base sm:text-lg', 'text-lg sm:text-xl', 'text-xl sm:text-2xl'];
-        let currentFontSizeIndex = 1; // Default to middle size
+        let fontSizes = [
+            'text-base sm:text-lg leading-[2]',
+            'text-lg sm:text-xl leading-[2] sm:leading-[2.25]',
+            'text-xl sm:text-2xl leading-[2.1] sm:leading-[2.35]'
+        ];
+        let currentFontSizeIndex = 1;
         let autoPlayInterval = null;
         let isAutoPlaying = false;
 
-        // Trình phân tích văn bản tự động (Extract 226 poems from Raw Text)
+        // Quản lý Lưu bài thơ & Tab mục lục
+        let savedPoemKeys = new Set();
+        let currentSidebarTab = 'all'; // 'all' | 'saved'
+        let readingMode = 'all';       // 'all' | 'saved'
+
+        // Tạo khóa định danh duy nhất cho mỗi bài thơ
+        function makePoemKey(id, title) {
+            return `${id}_${title}`;
+        }
+
+        // Trình phân tích văn bản tự động (Trích xuất đủ 226 bài thơ từ Raw Text)
         function extractData() {
             const rawText = document.getElementById('raw-data').textContent;
             const lines = rawText.split('\n');
             let currentCategory = "Thơ Giao Duyên";
             let currentPoem = null;
+            basePoems = [];
 
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
                 
-                // Giữ lại các khoảng ngắt đoạn (stanza breaks)
+                // Giữ lại các khoảng ngắt đoạn
                 if (line === '') {
                     if (currentPoem && currentPoem.content !== '' && !currentPoem.content.endsWith('\n\n')) {
                         currentPoem.content += '\n\n';
@@ -1498,8 +1817,8 @@ Vẫn mong cuối bến con thuyền có đôi.
                     continue;
                 }
 
-                // Bỏ qua các dòng không liên quan
-                if (line.startsWith('===') || line.match(/^[0-9]{2}–[0-9]{3}:/) || 
+                // Bỏ qua các dòng tiêu đề phụ hoặc chú thích
+                if (line.startsWith('===') || line.startsWith('<!--') || line.match(/^[0-9]{2}–[0-9]{3}:/) || 
                     line.includes('MỤC LỤC') || line.includes('Biên soạn') || line.startsWith('LƯU Ý') || 
                     line.startsWith('PHẦN I') || line.startsWith('PHẦN II') || line.includes('Tổng hợp') || 
                     line.includes('- Tuyển tập') || line.includes('QUAN TRỌNG') || line.includes('TUYỂN TẬP') || 
@@ -1508,7 +1827,7 @@ Vẫn mong cuối bến con thuyền có đôi.
                     continue;
                 }
 
-                // Nhận dạng Category (Thư mục)
+                // Nhận dạng Chủ đề (Category)
                 let romanMatch = line.match(/^[IVX]+\.\s+(.+)$/);
                 if (romanMatch) {
                     currentCategory = romanMatch[1]; continue;
@@ -1526,71 +1845,120 @@ Vẫn mong cuối bến con thuyền có đôi.
                 // Nhận dạng tiêu đề bài thơ (VD: "01. MẬN HỎI ĐÀO" hoặc "[001] THẤY HOA...")
                 let oldMatch = line.match(/^(\d{2})\.\s*(.+)$/);
                 let newMatch = line.match(/^\[(\d{3})\]\s*(.+)$/);
-                let bonusMatch = (line === "TRÈO LÊN CÂY BƯỞI HÁI HOA" && currentCategory === "TẶNG THÊM") ? {1: "Bonus", 2: line} : null;
+                let bonusMatch = (line === "TRÈO LÊN CÂY BƯỞI HÁI HOA" && currentCategory === "TẶNG THÊM") ? {1: "Đặc biệt", 2: line} : null;
                 
                 let titleMatch = oldMatch || newMatch || (bonusMatch ? [null, bonusMatch[1], bonusMatch[2]] : null);
 
                 if (titleMatch) {
-                    // Lưu bài cũ trước khi mở bài mới
                     if (currentPoem) {
                         currentPoem.content = currentPoem.content.trim();
-                        poems.push({...currentPoem});
+                        basePoems.push({...currentPoem});
                     }
+                    const idStr = titleMatch[1];
+                    const titleStr = titleMatch[2];
                     currentPoem = {
-                        id: titleMatch[1],
-                        title: titleMatch[2],
+                        id: idStr,
+                        title: titleStr,
                         category: currentCategory,
-                        content: ""
+                        content: "",
+                        key: makePoemKey(idStr, titleStr),
+                        isOldSet: Boolean(oldMatch || bonusMatch)
                     };
                 } else if (currentPoem) {
-                    // Thêm dòng thơ
                     currentPoem.content += line + '\n';
                 }
             }
             
-            // Lưu bài cuối cùng
             if (currentPoem) {
                 currentPoem.content = currentPoem.content.trim();
-                poems.push({...currentPoem});
+                basePoems.push({...currentPoem});
             }
+
+            poems = [...basePoems, ...customPoems];
         }
 
-        // Khởi tạo
+        // Khởi tạo ứng dụng
         function init() {
-            // Chạy phân tích văn bản
             extractData();
-            document.getElementById('poem-counter').textContent = `1/${poems.length}`;
+            populateCategoryFilter();
 
-            // Cấu hình Theme
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add('dark');
                 isDarkMode = true;
                 updateThemeIcon();
             }
             
             buildSidebar();
+            updateSavedCounters();
             renderPoem(currentIndex, true);
         }
 
-        // Render bài thơ có animation mượt
+        // Đồng bộ danh sách đã lưu từ Cloud
+        window.syncSavedFromCloud = function(cloudKeys) {
+            savedPoemKeys = cloudKeys;
+            updateSavedCounters();
+            updateCurrentPoemSaveUI();
+            refreshSidebarVisibility();
+        };
+
+        // Đồng bộ bài thơ tự thêm từ Cloud
+        window.syncCustomPoemsFromCloud = function(cloudCustomPoems) {
+            cloudCustomPoems.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+            customPoems = cloudCustomPoems;
+            poems = [...basePoems, ...customPoems];
+            populateCategoryFilter();
+            buildSidebar();
+            updateSavedCounters();
+            renderPoem(currentIndex, true);
+        };
+
+        // Xây dựng bộ lọc chủ đề trong Sidebar
+        function populateCategoryFilter() {
+            const select = document.getElementById('categoryFilter');
+            const currentVal = select.value;
+            const categories = [...new Set(poems.map(p => p.category))];
+            
+            select.innerHTML = '<option value="all">Mọi chủ đề</option>';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
+            if (categories.includes(currentVal)) select.value = currentVal;
+        }
+
+        // Hiển thị bài thơ với chuyển cảnh 60fps
         function renderPoem(index, skipAnim = false) {
+            if (!poems.length) return;
             const container = document.getElementById('poem-container');
             const poem = poems[index];
             
             const updateContent = () => {
                 document.getElementById('p-category').textContent = poem.category;
                 
-                // Tiền tố "Bài" chỉ áp dụng cho ID có số
                 let idText = isNaN(poem.id) ? poem.id : `Bài ${poem.id}`;
                 document.getElementById('p-id').textContent = idText;
                 
                 document.getElementById('p-title').textContent = poem.title;
                 document.getElementById('poem-counter').textContent = `${index + 1}/${poems.length}`;
                 
-                // Xử lý xuống dòng: Giữ nguyên khoảng trống giữa các khổ
+                // Nguồn bộ sưu tập dưới chân trang
+                const colTag = document.getElementById('p-collection-tag');
+                if (poem.isCustom) {
+                    colTag.textContent = "Thơ bổ sung • Tủ thơ cá nhân";
+                } else if (poem.isOldSet) {
+                    colTag.textContent = "Tập Cũ • Ca dao & Dị bản truyền miệng";
+                } else {
+                    const num = parseInt(poem.id, 10);
+                    colTag.textContent = (num <= 100) ? "Phần I • Ca dao & Lời hò sưu tầm" : "Phần II • Thơ mới cảm hứng xưa";
+                }
+
+                // Xử lý xuống dòng
                 const formatted = poem.content.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
                 document.getElementById('p-content').innerHTML = formatted;
                 
+                updateCurrentPoemSaveUI();
                 updateSidebarActive();
                 
                 requestAnimationFrame(() => {
@@ -1604,38 +1972,185 @@ Vẫn mong cuối bến con thuyền có đôi.
             } else {
                 container.classList.remove('poem-visible');
                 container.classList.add('poem-hidden');
-                // Chờ CSS chuyển cảnh (0.3s)
-                setTimeout(updateContent, 300);
+                setTimeout(updateContent, 200);
             }
         }
 
+        // Lưu hoặc Bỏ lưu bài thơ đang đọc
+        function toggleSaveCurrentPoem() {
+            const poem = poems[currentIndex];
+            if (!poem) return;
+            toggleSaveByKey(poem.key, true);
+        }
+
+        function toggleSaveByKey(poemKey, animateBtn = false) {
+            const isNowSaved = !savedPoemKeys.has(poemKey);
+            if (isNowSaved) {
+                savedPoemKeys.add(poemKey);
+                showToast("Đã lưu vào Tủ thơ yêu thích!");
+            } else {
+                savedPoemKeys.delete(poemKey);
+                showToast("Đã bỏ lưu bài thơ");
+                // Nếu đang ở chế độ chỉ đọc bài đã lưu mà xóa hết bài
+                if (readingMode === 'saved' && savedPoemKeys.size === 0) {
+                    setReadingMode('all');
+                }
+            }
+
+            if (animateBtn) {
+                const icon1 = document.getElementById('card-save-icon');
+                const icon2 = document.getElementById('dock-save-icon');
+                icon1.classList.remove('animate-pop');
+                icon2.classList.remove('animate-pop');
+                void icon1.offsetWidth; // Reflow
+                icon1.classList.add('animate-pop');
+                icon2.classList.add('animate-pop');
+            }
+
+            updateCurrentPoemSaveUI();
+            updateSavedCounters();
+            updateSidebarItemSaveIcon(poemKey);
+            refreshSidebarVisibility();
+
+            if (window.saveBookmarkToCloud) {
+                window.saveBookmarkToCloud(poemKey, isNowSaved);
+            }
+        }
+
+        // Cập nhật trạng thái nút Lưu trên Card và trên thanh Dock
+        function updateCurrentPoemSaveUI() {
+            const poem = poems[currentIndex];
+            if (!poem) return;
+            const isSaved = savedPoemKeys.has(poem.key);
+
+            const cardBtn = document.getElementById('card-save-btn');
+            const cardIcon = document.getElementById('card-save-icon');
+            const cardText = document.getElementById('card-save-text');
+
+            const dockBtn = document.getElementById('dock-save-btn');
+            const dockIcon = document.getElementById('dock-save-icon');
+            const dockText = document.getElementById('dock-save-text');
+
+            if (isSaved) {
+                cardBtn.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-l_accent/40 dark:border-d_accent/40 bg-l_accent/10 dark:bg-d_accent/15 btn-interact text-l_accent dark:text-d_accent";
+                cardIcon.className = "fa-solid fa-heart text-sm text-l_accent dark:text-d_accent";
+                cardText.textContent = "Đã lưu";
+
+                dockBtn.classList.add('text-l_accent', 'dark:text-d_accent');
+                dockIcon.className = "fa-solid fa-bookmark text-base mb-1";
+                dockText.textContent = "Đã lưu";
+            } else {
+                cardBtn.className = "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext";
+                cardIcon.className = "fa-regular fa-heart text-sm";
+                cardText.textContent = "Lưu bài";
+
+                dockBtn.classList.remove('text-l_accent', 'dark:text-d_accent');
+                dockIcon.className = "fa-regular fa-bookmark text-base mb-1";
+                dockText.textContent = "Lưu bài";
+            }
+        }
+
+        // Cập nhật số lượng bài đã lưu trên Header & Sidebar Tab
+        function updateSavedCounters() {
+            const count = savedPoemKeys.size;
+            document.getElementById('header-saved-count').textContent = count;
+            document.getElementById('tab-saved-count').textContent = count;
+            document.getElementById('tab-all-count').textContent = poems.length;
+        }
+
+        // Lấy danh sách index theo chế độ đọc (Tất cả hoặc Chỉ bài đã lưu)
+        function getActivePoolIndices() {
+            if (readingMode === 'saved' && savedPoemKeys.size > 0) {
+                const indices = [];
+                poems.forEach((p, idx) => {
+                    if (savedPoemKeys.has(p.key)) indices.push(idx);
+                });
+                if (indices.length > 0) return indices;
+            }
+            return poems.map((_, idx) => idx);
+        }
+
         function nextPoem() {
-            currentIndex = (currentIndex + 1) % poems.length;
+            const pool = getActivePoolIndices();
+            const pos = pool.indexOf(currentIndex);
+            if (pos === -1) {
+                currentIndex = pool[0];
+            } else {
+                currentIndex = pool[(pos + 1) % pool.length];
+            }
             renderPoem(currentIndex);
             resetAutoPlayIfNeeded();
         }
 
         function prevPoem() {
-            currentIndex = (currentIndex - 1 + poems.length) % poems.length;
+            const pool = getActivePoolIndices();
+            const pos = pool.indexOf(currentIndex);
+            if (pos === -1) {
+                currentIndex = pool[0];
+            } else {
+                currentIndex = pool[(pos - 1 + pool.length) % pool.length];
+            }
             renderPoem(currentIndex);
             resetAutoPlayIfNeeded();
         }
 
         function randomPoem() {
+            const pool = getActivePoolIndices();
+            if (pool.length <= 1) {
+                if (pool.length === 1) {
+                    currentIndex = pool[0];
+                    renderPoem(currentIndex);
+                }
+                return;
+            }
             let newIndex;
-            do { newIndex = Math.floor(Math.random() * poems.length); } 
-            while (newIndex === currentIndex && poems.length > 1);
+            do {
+                newIndex = pool[Math.floor(Math.random() * pool.length)];
+            } while (newIndex === currentIndex);
             currentIndex = newIndex;
             renderPoem(currentIndex);
             resetAutoPlayIfNeeded();
         }
 
         function goToPoem(index) {
-            if(currentIndex === index) return;
             currentIndex = index;
             renderPoem(currentIndex);
-            if(window.innerWidth < 640) toggleSidebar(); // Chỉ đóng ở mobile
+            if (window.innerWidth < 640) closeSidebar();
             resetAutoPlayIfNeeded();
+        }
+
+        // Bật/Tắt chế độ chỉ đọc bài thơ đã lưu
+        function setReadingMode(mode) {
+            if (mode === 'saved' && savedPoemKeys.size === 0) {
+                showToast("Bạn chưa lưu bài thơ nào!");
+                return;
+            }
+            readingMode = mode;
+            const banner = document.getElementById('saved-mode-banner');
+            const btnReadSaved = document.getElementById('btn-read-saved-only');
+
+            if (readingMode === 'saved') {
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+                btnReadSaved.innerHTML = '<i class="fa-solid fa-check text-[0.6rem]"></i> Đang lọc bài đã lưu';
+                
+                const pool = getActivePoolIndices();
+                if (!pool.includes(currentIndex)) {
+                    currentIndex = pool[0];
+                    renderPoem(currentIndex);
+                }
+                showToast(`Đang duyệt ${pool.length} bài thơ đã lưu`);
+            } else {
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+                btnReadSaved.innerHTML = '<i class="fa-solid fa-play text-[0.6rem]"></i> Chỉ đọc bài đã lưu';
+                showToast("Đang duyệt toàn bộ tuyển tập");
+            }
+        }
+
+        function toggleSavedReadingMode() {
+            setReadingMode(readingMode === 'saved' ? 'all' : 'saved');
+            if (window.innerWidth < 640) closeSidebar();
         }
 
         function toggleAutoPlay() {
@@ -1645,27 +2160,23 @@ Vẫn mong cuối bến con thuyền có đôi.
             const indicator = document.getElementById('autoplay-indicator');
 
             if (isAutoPlaying) {
-                btn.classList.add('text-l_accent', 'dark:text-d_accent', 'bg-black/5', 'dark:bg-white/10');
-                icon.classList.remove('fa-clock');
-                icon.classList.add('fa-pause');
+                btn.classList.add('text-l_accent', 'dark:text-d_accent', 'bg-l_accent/10', 'dark:bg-d_accent/15');
+                icon.className = 'fa-solid fa-pause text-base mb-1';
                 indicator.classList.remove('hidden');
                 indicator.classList.add('flex');
                 
-                // Đổi bài mỗi 8 giây
                 autoPlayInterval = setInterval(() => {
-                    currentIndex = (currentIndex + 1) % poems.length;
-                    renderPoem(currentIndex);
+                    nextPoem();
                 }, 8000);
-                showToast("Tự động: BẬT");
+                showToast("Tự động chuyển bài: BẬT");
             } else {
-                btn.classList.remove('text-l_accent', 'dark:text-d_accent', 'bg-black/5', 'dark:bg-white/10');
-                icon.classList.remove('fa-pause');
-                icon.classList.add('fa-clock');
+                btn.classList.remove('text-l_accent', 'dark:text-d_accent', 'bg-l_accent/10', 'dark:bg-d_accent/15');
+                icon.className = 'fa-solid fa-play text-base mb-1';
                 indicator.classList.add('hidden');
                 indicator.classList.remove('flex');
                 
                 clearInterval(autoPlayInterval);
-                showToast("Tự động: TẮT");
+                showToast("Tự động chuyển bài: TẮT");
             }
         }
 
@@ -1673,15 +2184,14 @@ Vẫn mong cuối bến con thuyền có đôi.
             if (isAutoPlaying) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = setInterval(() => {
-                    currentIndex = (currentIndex + 1) % poems.length;
-                    renderPoem(currentIndex);
+                    nextPoem();
                 }, 8000);
             }
         }
 
         function copyPoem() {
             const poem = poems[currentIndex];
-            const textToCopy = `${poem.title}\n\n${poem.content}\n\n---\nNguồn: ${poem.category} - ${isNaN(poem.id) ? '' : 'Bài '}${poem.id}`;
+            const textToCopy = `${poem.title}\n\n${poem.content}\n\n— ${poem.category} (${isNaN(poem.id) ? poem.id : 'Bài ' + poem.id})`;
             
             const el = document.createElement('textarea');
             el.value = textToCopy;
@@ -1690,17 +2200,15 @@ Vẫn mong cuối bến con thuyền có đôi.
             document.execCommand('copy');
             document.body.removeChild(el);
             
-            showToast("Đã chép vào khay nhớ tạm!");
+            showToast("Đã sao chép bài thơ vào bộ nhớ tạm!");
         }
 
         function toggleTheme() {
             isDarkMode = !isDarkMode;
             if (isDarkMode) {
                 document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
             } else {
                 document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
             }
             updateThemeIcon();
         }
@@ -1708,9 +2216,9 @@ Vẫn mong cuối bến con thuyền có đôi.
         function updateThemeIcon() {
             const btn = document.getElementById('theme-btn');
             if (isDarkMode) {
-                btn.innerHTML = '<i class="fa-solid fa-sun text-sm"></i>';
+                btn.innerHTML = '<i class="fa-solid fa-sun text-xs text-d_accent"></i>';
             } else {
-                btn.innerHTML = '<i class="fa-solid fa-moon text-sm"></i>';
+                btn.innerHTML = '<i class="fa-solid fa-moon text-xs"></i>';
             }
         }
 
@@ -1728,102 +2236,289 @@ Vẫn mong cuối bến con thuyền có đôi.
             showToast(`Cỡ chữ: ${sizeName}`);
         }
 
+        let toastTimeout = null;
         function showToast(message) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').textContent = message;
             toast.classList.add('toast-show');
-            setTimeout(() => {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
                 toast.classList.remove('toast-show');
-            }, 2000);
+            }, 2200);
         }
 
-        // Tạo mục lục DOM một lần để chống giật
+        // Xây dựng danh sách bài thơ trong Sidebar (DOM tạo 1 lần để chống lag)
         function buildSidebar() {
             const container = document.getElementById('poem-list-container');
+            container.innerHTML = '';
             const frag = document.createDocumentFragment();
             
             poems.forEach((poem, index) => {
-                const btn = document.createElement('button');
-                btn.id = `sb-item-${index}`;
-                btn.className = `w-full text-left p-3 mb-1.5 rounded-lg transition-colors flex items-start gap-3 
-                                hover:bg-black/5 dark:hover:bg-white/5 border border-transparent`;
-                btn.onclick = () => goToPoem(index);
-                btn.setAttribute('data-search', `${poem.title.toLowerCase()} ${poem.id} ${poem.category.toLowerCase()}`);
-                
-                let idText = isNaN(poem.id) ? '*' : `#${poem.id}`;
+                const row = document.createElement('div');
+                row.id = `sb-item-${index}`;
+                row.className = `group w-full p-2.5 mb-1.5 rounded-xl transition-colors flex items-center justify-between gap-2 hover:bg-l_bg dark:hover:bg-d_bg border border-transparent cursor-pointer`;
+                row.setAttribute('data-search', `${poem.title.toLowerCase()} ${poem.id.toString().toLowerCase()} ${poem.category.toLowerCase()} ${poem.content.toLowerCase()}`);
+                row.setAttribute('data-category', poem.category);
+                row.setAttribute('data-key', poem.key);
 
-                btn.innerHTML = `
-                    <div class="text-xs font-bold text-l_subtext dark:text-d_subtext mt-1 opacity-60 w-8 text-center">${idText}</div>
-                    <div class="flex-1">
-                        <div class="font-sans font-medium text-l_text dark:text-d_text sb-title leading-snug">${poem.title}</div>
-                        <div class="text-[0.65rem] text-l_subtext dark:text-d_subtext uppercase tracking-wider mt-1 opacity-80">${poem.category}</div>
+                let idText = isNaN(poem.id) ? '★' : `#${poem.id}`;
+                const isSaved = savedPoemKeys.has(poem.key);
+
+                // Vùng bấm để đọc bài thơ
+                const mainClickArea = document.createElement('div');
+                mainClickArea.className = "flex items-start gap-3 flex-1 min-w-0";
+                mainClickArea.onclick = () => goToPoem(index);
+                mainClickArea.innerHTML = `
+                    <div class="text-[0.7rem] font-bold text-l_subtext dark:text-d_subtext mt-0.5 opacity-70 w-9 shrink-0 text-center py-0.5 rounded bg-l_subtle/60 dark:bg-d_subtle">${idText}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-serif font-semibold text-sm text-l_text dark:text-d_text sb-title truncate">${poem.title}</div>
+                        <div class="text-[0.65rem] text-l_subtext dark:text-d_subtext truncate mt-0.5">${poem.content.split('\n')[0]}</div>
+                        <div class="text-[0.6rem] text-l_accent/80 dark:text-d_accent/80 uppercase tracking-wider mt-1 font-medium truncate">${poem.category}</div>
                     </div>
                 `;
-                frag.appendChild(btn);
+
+                // Nút Lưu/Bỏ lưu nhanh ngay trong danh sách
+                const saveBtn = document.createElement('button');
+                saveBtn.id = `sb-save-${index}`;
+                saveBtn.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 hover:bg-black/5 dark:hover:bg-white/10 btn-interact ${isSaved ? 'text-l_accent dark:text-d_accent' : 'text-l_subtext/40 dark:text-d_subtext/40 hover:text-l_accent'}`;
+                saveBtn.title = "Lưu / Bỏ lưu bài thơ";
+                saveBtn.innerHTML = `<i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark text-xs"></i>`;
+                saveBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleSaveByKey(poem.key, false);
+                };
+
+                row.appendChild(mainClickArea);
+                row.appendChild(saveBtn);
+                frag.appendChild(row);
             });
             container.appendChild(frag);
+            refreshSidebarVisibility();
+        }
+
+        function updateSidebarItemSaveIcon(poemKey) {
+            const isSaved = savedPoemKeys.has(poemKey);
+            poems.forEach((p, idx) => {
+                if (p.key === poemKey) {
+                    const btn = document.getElementById(`sb-save-${idx}`);
+                    if (btn) {
+                        btn.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 hover:bg-black/5 dark:hover:bg-white/10 btn-interact ${isSaved ? 'text-l_accent dark:text-d_accent' : 'text-l_subtext/40 dark:text-d_subtext/40 hover:text-l_accent'}`;
+                        btn.innerHTML = `<i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark text-xs"></i>`;
+                    }
+                }
+            });
         }
 
         function updateSidebarActive() {
             poems.forEach((_, index) => {
                 const item = document.getElementById(`sb-item-${index}`);
-                if(!item) return;
+                if (!item) return;
                 
                 const title = item.querySelector('.sb-title');
                 
                 if (index === currentIndex) {
-                    item.classList.add('bg-black/5', 'dark:bg-white/10');
-                    title.classList.add('text-l_accent', 'dark:text-d_accent', 'font-bold');
-                    
-                    // Cuộn nhẹ nhàng đến item active trong sidebar
-                    if(item.scrollIntoViewIfNeeded) {
-                         item.scrollIntoViewIfNeeded();
-                    } else {
-                         item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
+                    item.classList.add('bg-l_bg', 'dark:bg-d_bg', 'border-l_border', 'dark:border-d_border');
+                    item.classList.remove('border-transparent');
+                    title.classList.add('text-l_accent', 'dark:text-d_accent');
                 } else {
-                    item.classList.remove('bg-black/5', 'dark:bg-white/10');
-                    title.classList.remove('text-l_accent', 'dark:text-d_accent', 'font-bold');
+                    item.classList.remove('bg-l_bg', 'dark:bg-d_bg', 'border-l_border', 'dark:border-d_border');
+                    item.classList.add('border-transparent');
+                    title.classList.remove('text-l_accent', 'dark:text-d_accent');
                 }
             });
         }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            if (sidebar.classList.contains('translate-x-full')) {
-                sidebar.classList.remove('translate-x-full');
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
+        // Chuyển đổi giữa Tab Tất cả & Tab Đã lưu trong Sidebar
+        function switchSidebarTab(tab) {
+            currentSidebarTab = tab;
+            const allBtn = document.getElementById('tab-all-btn');
+            const savedBtn = document.getElementById('tab-saved-btn');
+            const savedActions = document.getElementById('saved-tab-actions');
+
+            if (tab === 'saved') {
+                savedBtn.className = "py-2 px-3 rounded-lg text-xs font-semibold transition-all bg-l_surface dark:bg-d_surface text-l_text dark:text-d_text shadow-2xs flex items-center justify-center gap-1.5";
+                allBtn.className = "py-2 px-3 rounded-lg text-xs font-semibold transition-all text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text flex items-center justify-center gap-1.5";
+                savedActions.classList.remove('hidden');
+                savedActions.classList.add('flex');
             } else {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0', 'pointer-events-none');
+                allBtn.className = "py-2 px-3 rounded-lg text-xs font-semibold transition-all bg-l_surface dark:bg-d_surface text-l_text dark:text-d_text shadow-2xs flex items-center justify-center gap-1.5";
+                savedBtn.className = "py-2 px-3 rounded-lg text-xs font-semibold transition-all text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text flex items-center justify-center gap-1.5";
+                savedActions.classList.add('hidden');
+                savedActions.classList.remove('flex');
+            }
+
+            refreshSidebarVisibility();
+        }
+
+        // Lọc bài thơ theo Từ khóa + Chủ đề + Tab Đã lưu
+        function filterPoems() {
+            refreshSidebarVisibility();
+        }
+
+        function refreshSidebarVisibility() {
+            const term = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+            const selectedCat = document.getElementById('categoryFilter')?.value || 'all';
+            const listContainer = document.getElementById('poem-list-container');
+            const emptyState = document.getElementById('empty-saved-state');
+
+            let visibleCount = 0;
+
+            poems.forEach((poem, index) => {
+                const item = document.getElementById(`sb-item-${index}`);
+                if (!item) return;
+
+                const matchesSearch = !term || item.getAttribute('data-search').includes(term);
+                const matchesCat = selectedCat === 'all' || poem.category === selectedCat;
+                const matchesTab = currentSidebarTab === 'all' || savedPoemKeys.has(poem.key);
+
+                if (matchesSearch && matchesCat && matchesTab) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (currentSidebarTab === 'saved' && savedPoemKeys.size === 0) {
+                listContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                listContainer.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
             }
         }
 
-        function filterPoems() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            poems.forEach((_, index) => {
-                const item = document.getElementById(`sb-item-${index}`);
-                if(!item) return;
-                const searchData = item.getAttribute('data-search');
-                item.style.display = searchData.includes(term) ? 'flex' : 'none';
-            });
+        // Mở Mục lục ở tab Tất cả
+        function openAllPoems() {
+            switchSidebarTab('all');
+            openSidebar();
         }
 
-        // Hỗ trợ dùng bàn phím máy tính để sang bài
+        // Mở Mục lục trực tiếp ở tab Đã lưu
+        function openSavedPoems() {
+            switchSidebarTab('saved');
+            openSidebar();
+        }
+
+        function openSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+
+            const activeItem = document.getElementById(`sb-item-${currentIndex}`);
+            if (activeItem && activeItem.style.display !== 'none') {
+                setTimeout(() => {
+                    activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 150);
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Modal Thêm bài thơ mới
+        function openAddModal() {
+            const modal = document.getElementById('add-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('new-poem-title').focus();
+        }
+
+        function closeAddModal() {
+            const modal = document.getElementById('add-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitNewPoem() {
+            const titleInput = document.getElementById('new-poem-title');
+            const catInput = document.getElementById('new-poem-category');
+            const contentInput = document.getElementById('new-poem-content');
+
+            const title = titleInput.value.trim().toUpperCase();
+            const category = catInput.value.trim().toUpperCase() || "THƠ BỔ SUNG";
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                showToast("Vui lòng nhập đủ tựa đề và nội dung thơ!");
+                return;
+            }
+
+            const newId = String(poems.length + 1).padStart(3, '0');
+            const newPoem = {
+                id: newId,
+                title: title,
+                category: category,
+                content: content,
+                key: makePoemKey(newId, title),
+                isCustom: true,
+                createdAt: Date.now()
+            };
+
+            customPoems.push(newPoem);
+            poems = [...basePoems, ...customPoems];
+            savedPoemKeys.add(newPoem.key); // Tự động lưu bài thơ vừa thêm
+
+            if (window.saveCustomPoemToCloud) {
+                window.saveCustomPoemToCloud(newPoem);
+            }
+            if (window.saveBookmarkToCloud) {
+                window.saveBookmarkToCloud(newPoem.key, true);
+            }
+
+            populateCategoryFilter();
+            buildSidebar();
+            updateSavedCounters();
+
+            currentIndex = poems.length - 1;
+            renderPoem(currentIndex);
+
+            titleInput.value = '';
+            contentInput.value = '';
+            closeAddModal();
+            showToast("Đã thêm và lưu bài thơ mới!");
+        }
+
+        // Hỗ trợ bàn phím máy tính và vuốt màn hình cảm ứng (Swipe)
         document.addEventListener('keydown', (e) => {
+            // Không bắt phím khi đang gõ tìm kiếm hoặc thêm bài thơ
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
             if (e.key === 'ArrowRight') nextPoem();
             if (e.key === 'ArrowLeft') prevPoem();
+            if (e.key === 's' || e.key === 'S') toggleSaveCurrentPoem();
             if (e.key === 'Escape') {
-                const sidebar = document.getElementById('sidebar');
-                if (!sidebar.classList.contains('translate-x-full')) toggleSidebar();
+                closeSidebar();
+                closeAddModal();
             }
         });
 
-        // Bắt đầu
-        window.onload = init;
+        // Vuốt ngang trên điện thoại để sang trang mượt mà
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const poemCard = document.getElementById('poem-container');
 
+        poemCard.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        poemCard.addEventListener('touchend', (e) => {
+            const diffX = e.changedTouches[0].screenX - touchStartX;
+            const diffY = e.changedTouches[0].screenY - touchStartY;
+            if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+                if (diffX < 0) nextPoem();
+                else prevPoem();
+            }
+        }, { passive: true });
+
+        window.onload = init;
     </script>
 </body>
 </html>

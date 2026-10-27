@@ -2,7 +2,10 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Thi Ca">
     <title>Tuyển Tập Thơ Giao Duyên | Đầy đủ 226 Bài</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,48 +128,54 @@
         }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col font-sans bg-l_bg text-l_text dark:bg-d_bg dark:text-d_text selection:bg-l_accent selection:text-white dark:selection:bg-d_accent dark:selection:text-black">
+<body class="antialiased h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between font-sans bg-l_bg text-l_text dark:bg-d_bg dark:text-d_text selection:bg-l_accent selection:text-white dark:selection:bg-d_accent dark:selection:text-black">
 
-    <!-- HEADER CAO CẤP -->
-    <header class="w-full py-3.5 px-4 sm:px-6 border-b border-l_border dark:border-d_border bg-l_bg/95 dark:bg-d_bg/95 sticky top-0 z-20">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
+    <!-- HEADER CAO CẤP (GỌN GÀNG CHO MOBILE) -->
+    <header class="w-full py-2.5 px-3 sm:py-3 sm:px-6 border-b border-l_border dark:border-d_border bg-l_bg/95 dark:bg-d_bg/95 shrink-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
             <!-- Logo & Tên -->
-            <div class="flex items-center gap-3 cursor-pointer" onclick="goToPoem(0)">
-                <div class="w-9 h-9 rounded-lg bg-l_accent dark:bg-d_accent text-white dark:text-d_bg flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-feather-pointed text-sm"></i>
+            <div class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" onclick="goToPoem(0)">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-l_accent dark:bg-d_accent text-white dark:text-d_bg flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-feather-pointed text-xs sm:text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="font-serif font-bold text-base sm:text-lg leading-tight tracking-wide">Thi Ca Giao Duyên</h1>
-                    <p class="text-[0.68rem] text-l_subtext dark:text-d_subtext hidden sm:block">Tuyển tập Ca dao & Thơ tình cổ phong</p>
+                    <h1 class="font-serif font-bold text-sm sm:text-lg leading-tight tracking-wide">Thi Ca Giao Duyên</h1>
+                    <p class="text-[0.65rem] text-l_subtext dark:text-d_subtext hidden sm:block">Tuyển tập Ca dao & Thơ tình cổ phong</p>
                 </div>
             </div>
 
             <!-- Cụm công cụ trên Header -->
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                <!-- Nút mở nhanh Danh sách Đã Lưu -->
-                <button onclick="openSavedPoems()" class="h-9 px-3 rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact flex items-center gap-1.5 text-xs font-medium text-l_text dark:text-d_text shadow-2xs" title="Xem bài thơ đã lưu">
-                    <i class="fa-solid fa-bookmark text-l_accent dark:text-d_accent"></i>
-                    <span class="hidden md:inline">Đã lưu</span>
-                    <span id="header-saved-count" class="px-1.5 py-0.5 text-[0.65rem] rounded-full bg-l_subtle dark:bg-d_subtle font-bold text-l_accent dark:text-d_accent">0</span>
+            <div class="flex items-center gap-1 sm:gap-1.5">
+                <!-- Nút AI Sưu tầm / Sáng tác Thơ -->
+                <button onclick="openAiModal()" class="h-8 sm:h-9 px-2.5 sm:px-3 rounded-full border border-l_gold/60 dark:border-d_accent/50 bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact flex items-center gap-1.5 text-xs font-semibold text-l_accent dark:text-d_accent shadow-2xs" title="Dùng AI sưu tầm & sáng tác thêm bài thơ">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[0.7rem]"></i>
+                    <span>AI Thơ</span>
                 </button>
 
-                <!-- Nút thêm bài thơ mới -->
-                <button onclick="openAddModal()" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Thêm bài thơ mới">
+                <!-- Nút mở nhanh Danh sách Đã Lưu -->
+                <button onclick="openSavedPoems()" class="h-8 sm:h-9 px-2.5 sm:px-3 rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact flex items-center gap-1 text-xs font-medium text-l_text dark:text-d_text shadow-2xs" title="Xem bài thơ đã lưu">
+                    <i class="fa-solid fa-bookmark text-l_accent dark:text-d_accent text-[0.7rem]"></i>
+                    <span class="hidden md:inline">Đã lưu</span>
+                    <span id="header-saved-count" class="px-1.5 py-0.2 text-[0.65rem] rounded-full bg-l_subtle dark:bg-d_subtle font-bold text-l_accent dark:text-d_accent">0</span>
+                </button>
+
+                <!-- Nút thêm bài thơ thủ công -->
+                <button onclick="openAddModal()" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Tự viết bài thơ mới">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>
 
                 <!-- Đổi cỡ chữ -->
-                <button onclick="toggleFontSize()" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Đổi cỡ chữ">
+                <button onclick="toggleFontSize()" class="hidden sm:flex w-9 h-9 items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Đổi cỡ chữ">
                     <i class="fa-solid fa-text-height text-xs"></i>
                 </button>
                 
                 <!-- Đổi giao diện Sáng/Tối -->
-                <button onclick="toggleTheme()" id="theme-btn" class="w-9 h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Giao diện Sáng/Tối">
+                <button onclick="toggleTheme()" id="theme-btn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-l_border dark:border-d_border bg-l_surface dark:bg-d_surface hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text" title="Giao diện Sáng/Tối">
                     <i class="fa-solid fa-moon text-xs"></i>
                 </button>
 
                 <!-- Nút mở Mục lục -->
-                <button onclick="openAllPoems()" class="h-9 px-3.5 rounded-full bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg hover:opacity-90 btn-interact flex items-center gap-2 text-xs font-semibold ml-0.5 shadow-2xs" title="Mục lục bài thơ">
+                <button onclick="openAllPoems()" class="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg hover:opacity-90 btn-interact flex items-center gap-1.5 text-[0.7rem] sm:text-xs font-semibold shadow-2xs" title="Mục lục bài thơ">
                     <i class="fa-solid fa-bars-staggered"></i>
                     <span id="poem-counter">1/226</span>
                 </button>
@@ -174,25 +183,25 @@
         </div>
     </header>
 
-    <!-- KHU VỰC ĐỌC THƠ CHÍNH -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 py-5 sm:py-8 w-full max-w-4xl mx-auto relative">
+    <!-- KHU VỰC ĐỌC THƠ CHÍNH (VỪA KHÍT 1 TRANG MÀN HÌNH) -->
+    <main class="flex-1 min-h-0 flex flex-col items-center justify-between px-3 sm:px-6 py-2 sm:py-5 w-full max-w-4xl mx-auto relative overflow-hidden">
         
         <!-- Trạng thái đang xem danh sách Đã lưu hoặc Tự động phát -->
-        <div class="flex flex-wrap items-center justify-center gap-2 mb-3 min-h-[24px]">
-            <div id="saved-mode-banner" class="hidden items-center gap-2 text-xs font-medium bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent px-3 py-1 rounded-full border border-l_accent/20 dark:border-d_accent/20">
-                <i class="fa-solid fa-bookmark text-[0.65rem]"></i>
-                <span>Chế độ đọc: <strong>Bài thơ đã lưu</strong></span>
+        <div id="status-banners" class="flex flex-wrap items-center justify-center gap-2 shrink-0">
+            <div id="saved-mode-banner" class="hidden items-center gap-2 text-[0.7rem] font-medium bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent px-3 py-0.5 mb-1.5 rounded-full border border-l_accent/20 dark:border-d_accent/20">
+                <i class="fa-solid fa-bookmark text-[0.6rem]"></i>
+                <span>Đang lọc: <strong>Bài đã lưu</strong></span>
                 <button onclick="setReadingMode('all')" class="ml-1 underline hover:opacity-80 font-semibold">Xem tất cả</button>
             </div>
 
-            <div id="autoplay-indicator" class="hidden items-center gap-1.5 text-xs font-semibold text-l_accent dark:text-d_accent bg-l_surface dark:bg-d_surface px-3 py-1 rounded-full border border-l_border dark:border-d_border">
-                <span class="w-2 h-2 rounded-full bg-l_accent dark:bg-d_accent animate-ping"></span>
-                <span>Tự động chuyển bài (8s)</span>
+            <div id="autoplay-indicator" class="hidden items-center gap-1.5 text-[0.7rem] font-semibold text-l_accent dark:text-d_accent bg-l_surface dark:bg-d_surface px-3 py-0.5 mb-1.5 rounded-full border border-l_border dark:border-d_border">
+                <span class="w-1.5 h-1.5 rounded-full bg-l_accent dark:bg-d_accent animate-ping"></span>
+                <span>Tự chạy (8s)</span>
             </div>
         </div>
 
         <!-- Khung trang sách cùng nút chuyển nhanh trên màn hình lớn -->
-        <div class="w-full flex items-center justify-center gap-4 relative">
+        <div class="w-full flex-1 min-h-0 flex items-center justify-center gap-4 relative">
             
             <!-- Nút Lùi (Desktop) -->
             <button onclick="prevPoem()" class="hidden md:flex w-11 h-11 rounded-full bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border items-center justify-center text-l_subtext dark:text-d_subtext hover:text-l_accent dark:hover:text-d_accent hover:border-l_accent dark:hover:border-d_accent btn-interact shadow-2xs shrink-0" title="Bài trước (Phím mũi tên trái)">
@@ -200,61 +209,74 @@
             </button>
 
             <!-- TRANG THƠ CHÍNH (BOOK PAGE CARD) -->
-            <div id="poem-container" class="w-full max-w-2xl bg-l_surface dark:bg-d_surface rounded-2xl shadow-sm border border-l_border dark:border-d_border p-3 sm:p-4 poem-transition poem-visible relative">
+            <div id="poem-container" class="w-full max-w-2xl h-full bg-l_surface dark:bg-d_surface rounded-2xl shadow-sm border border-l_border dark:border-d_border p-2.5 sm:p-4 poem-transition poem-visible relative flex flex-col min-h-0">
                 
                 <!-- Khung viền kẻ chỉ bên trong tạo nét sang trọng như sách in -->
-                <div class="w-full h-full border border-l_border/80 dark:border-d_border/80 rounded-xl px-5 py-8 sm:px-12 sm:py-12 min-h-[50vh] sm:min-h-[54vh] flex flex-col justify-between relative">
+                <div class="w-full flex-1 min-h-0 border border-l_border/80 dark:border-d_border/80 rounded-xl px-4 py-4 sm:px-10 sm:py-8 flex flex-col justify-between relative overflow-hidden">
                     
                     <!-- 4 Góc trang trí cổ điển siêu nhẹ bằng SVG -->
-                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2.5 left-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V2h10M6 6h6v6"/></svg>
-                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2.5 right-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12V2H12M18 6h-6v6"/></svg>
-                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2.5 left-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12v10h10M6 18h6v-6"/></svg>
-                    <svg class="w-4 h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2.5 right-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12v10H12M18 18h-6v-6"/></svg>
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2 left-2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V2h10M6 6h6v6"/></svg>
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-l_gold/60 dark:text-d_accent/50 absolute top-2 right-2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12V2H12M18 6h-6v6"/></svg>
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2 left-2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12v10h10M6 18h6v-6"/></svg>
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-l_gold/60 dark:text-d_accent/50 absolute bottom-2 right-2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12v10H12M18 18h-6v-6"/></svg>
 
-                    <!-- Thanh đầu trang thơ: Số bài & Nút Lưu yêu thích -->
-                    <div class="flex items-center justify-between gap-2 z-10">
-                        <span id="p-id" class="text-xs font-semibold text-l_subtext dark:text-d_subtext tracking-widest uppercase px-2.5 py-1 rounded bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border">
+                    <!-- Thanh đầu trang thơ: Số bài & Cụm nút Lưu / Xóa -->
+                    <div class="flex items-center justify-between gap-2 z-10 shrink-0">
+                        <span id="p-id" class="text-[0.68rem] sm:text-xs font-semibold text-l_subtext dark:text-d_subtext tracking-widest uppercase px-2.5 py-1 rounded bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border">
                             Bài 01
                         </span>
 
-                        <button onclick="toggleSaveCurrentPoem()" id="card-save-btn" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext" title="Lưu bài thơ này">
-                            <i id="card-save-icon" class="fa-regular fa-heart text-sm"></i>
-                            <span id="card-save-text">Lưu bài</span>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <!-- Nút đổi cỡ chữ nhanh trên mobile -->
+                            <button onclick="toggleFontSize()" class="sm:hidden w-7 h-7 rounded-full flex items-center justify-center border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg text-l_subtext dark:text-d_subtext btn-interact" title="Đổi cỡ chữ">
+                                <i class="fa-solid fa-text-height text-[0.68rem]"></i>
+                            </button>
+
+                            <!-- Nút Xóa bài thơ hiện tại -->
+                            <button onclick="promptDeletePoem(currentIndex)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg hover:border-red-600/50 hover:text-red-600 dark:hover:text-red-400 btn-interact text-l_subtext dark:text-d_subtext" title="Xóa bài thơ này">
+                                <i class="fa-regular fa-trash-can text-xs"></i>
+                            </button>
+
+                            <!-- Nút Lưu yêu thích -->
+                            <button onclick="toggleSaveCurrentPoem()" id="card-save-btn" class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg hover:border-l_accent dark:hover:border-d_accent btn-interact text-l_subtext dark:text-d_subtext" title="Lưu bài thơ này">
+                                <i id="card-save-icon" class="fa-regular fa-heart text-xs sm:text-sm"></i>
+                                <span id="card-save-text">Lưu bài</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Nội dung trung tâm bài thơ -->
-                    <div class="my-auto py-8 flex flex-col items-center">
+                    <!-- Nội dung trung tâm bài thơ (Tự cân chỉnh giữa khung, cuộn mượt nếu thơ dài) -->
+                    <div class="my-auto py-2 sm:py-6 flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center w-full">
                         <!-- Nhãn Chủ đề -->
-                        <div class="mb-3">
-                            <span id="p-category" class="text-[0.68rem] sm:text-xs font-semibold text-l_accent dark:text-d_accent uppercase tracking-widest">
+                        <div class="mb-1.5 sm:mb-2.5 shrink-0">
+                            <span id="p-category" class="text-[0.65rem] sm:text-xs font-semibold text-l_accent dark:text-d_accent uppercase tracking-widest">
                                 Chủ đề
                             </span>
                         </div>
 
                         <!-- Tựa đề bài thơ -->
-                        <h2 id="p-title" class="text-2xl sm:text-3xl font-serif font-bold text-center text-l_text dark:text-d_text tracking-tight mb-3">
+                        <h2 id="p-title" class="text-xl sm:text-3xl font-serif font-bold text-center text-l_text dark:text-d_text tracking-tight mb-2 sm:mb-3 px-2 shrink-0">
                             <!-- Title -->
                         </h2>
 
                         <!-- Đường kẻ hoa văn nhỏ dưới tiêu đề -->
-                        <div class="flex items-center gap-2 mb-7 opacity-60">
-                            <span class="w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
-                            <span class="text-l_gold dark:text-d_accent text-[0.6rem]">✦</span>
-                            <span class="w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
+                        <div class="flex items-center gap-2 mb-4 sm:mb-6 opacity-60 shrink-0">
+                            <span class="w-6 sm:w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
+                            <span class="text-l_gold dark:text-d_accent text-[0.55rem]">✦</span>
+                            <span class="w-6 sm:w-8 h-[1px] bg-l_gold dark:bg-d_accent"></span>
                         </div>
 
                         <!-- Lời thơ -->
-                        <div id="p-content" class="font-serif text-center text-lg sm:text-xl leading-[2] sm:leading-[2.25] text-l_text/95 dark:text-d_text/95 max-w-lg mx-auto">
+                        <div id="p-content" class="font-serif text-center text-base sm:text-xl leading-[1.9] sm:leading-[2.2] text-l_text/95 dark:text-d_text/95 max-w-lg mx-auto px-1">
                             <!-- Content -->
                         </div>
                     </div>
                     
                     <!-- Chân trang thơ: Con dấu triện truyền thống -->
-                    <div class="flex items-center justify-between pt-4 border-t border-l_border/50 dark:border-d_border/50 text-xs text-l_subtext dark:text-d_subtext">
-                        <span id="p-collection-tag" class="text-[0.7rem] italic font-serif opacity-75">Tuyển tập Giao Duyên</span>
+                    <div class="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-l_border/50 dark:border-d_border/50 text-xs text-l_subtext dark:text-d_subtext shrink-0">
+                        <span id="p-collection-tag" class="text-[0.65rem] sm:text-[0.7rem] italic font-serif opacity-75 truncate max-w-[70%]">Tuyển tập Giao Duyên</span>
                         
-                        <div class="seal-stamp px-2 py-0.5 rounded-xs font-serif text-[0.65rem] font-bold tracking-widest uppercase select-none">
+                        <div class="seal-stamp px-1.5 py-0.5 rounded-xs font-serif text-[0.6rem] sm:text-[0.65rem] font-bold tracking-widest uppercase select-none shrink-0">
                             Ấn Tuyển
                         </div>
                     </div>
@@ -267,36 +289,36 @@
             </button>
         </div>
 
-        <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG (DOCK CAO CẤP) -->
-        <div class="w-full max-w-lg mt-5 bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl p-1.5 shadow-xs grid grid-cols-6 gap-1">
-            <button onclick="prevPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
-                <i class="fa-solid fa-arrow-left text-base mb-1"></i>
-                <span class="text-[0.65rem] font-medium">Trước</span>
+        <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG (DOCK GỌN GÀNG TRÊN MOBILE) -->
+        <div class="w-full max-w-lg mt-2 sm:mt-4 shrink-0 bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl p-1 sm:p-1.5 shadow-xs grid grid-cols-6 gap-1">
+            <button onclick="prevPoem()" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-solid fa-arrow-left text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span class="text-[0.6rem] sm:text-[0.65rem] font-medium">Trước</span>
             </button>
             
-            <button onclick="toggleSaveCurrentPoem()" id="dock-save-btn" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
-                <i id="dock-save-icon" class="fa-regular fa-bookmark text-base mb-1"></i>
-                <span id="dock-save-text" class="text-[0.65rem] font-medium">Lưu bài</span>
+            <button onclick="toggleSaveCurrentPoem()" id="dock-save-btn" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
+                <i id="dock-save-icon" class="fa-regular fa-bookmark text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span id="dock-save-text" class="text-[0.6rem] sm:text-[0.65rem] font-medium">Lưu bài</span>
             </button>
 
-            <button onclick="randomPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
-                <i class="fa-solid fa-shuffle text-base mb-1"></i>
-                <span class="text-[0.65rem] font-medium">Ngẫu nhiên</span>
+            <button onclick="randomPoem()" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-solid fa-shuffle text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span class="text-[0.6rem] sm:text-[0.65rem] font-medium">Ngẫu nhiên</span>
             </button>
 
-            <button onclick="toggleAutoPlay()" id="btn-autoplay" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
-                <i id="icon-autoplay" class="fa-solid fa-play text-base mb-1"></i>
-                <span class="text-[0.65rem] font-medium">Tự chạy</span>
+            <button onclick="toggleAutoPlay()" id="btn-autoplay" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext">
+                <i id="icon-autoplay" class="fa-solid fa-play text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span class="text-[0.6rem] sm:text-[0.65rem] font-medium">Tự chạy</span>
             </button>
 
-            <button onclick="copyPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
-                <i class="fa-regular fa-copy text-base mb-1"></i>
-                <span class="text-[0.65rem] font-medium">Sao chép</span>
+            <button onclick="copyPoem()" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl hover:bg-l_bg dark:hover:bg-d_subtle btn-interact text-l_subtext dark:text-d_subtext hover:text-l_text dark:hover:text-d_text">
+                <i class="fa-regular fa-copy text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span class="text-[0.6rem] sm:text-[0.65rem] font-medium">Sao chép</span>
             </button>
 
-            <button onclick="nextPoem()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent hover:bg-l_accent hover:text-white dark:hover:bg-d_accent dark:hover:text-black btn-interact">
-                <i class="fa-solid fa-arrow-right text-base mb-1"></i>
-                <span class="text-[0.65rem] font-semibold">Tiếp theo</span>
+            <button onclick="nextPoem()" class="flex flex-col items-center justify-center py-1.5 sm:py-2 px-1 rounded-xl bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent hover:bg-l_accent hover:text-white dark:hover:bg-d_accent dark:hover:text-black btn-interact">
+                <i class="fa-solid fa-arrow-right text-sm sm:text-base mb-0.5 sm:mb-1"></i>
+                <span class="text-[0.6rem] sm:text-[0.65rem] font-semibold">Tiếp theo</span>
             </button>
         </div>
     </main>
@@ -369,7 +391,107 @@
                 Khám phá 226 bài thơ
             </button>
         </div>
+
+        <!-- Chân Sidebar: Trạng thái tự động lưu Cookie Chrome -->
+        <div class="p-3 border-t border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg flex items-center justify-between text-[0.7rem]">
+            <div class="flex items-center gap-1.5 text-l_subtext dark:text-d_subtext">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400"></span>
+                <span id="cookie-status-text">Tự động lưu trên Cookie Chrome</span>
+            </div>
+            <span class="text-l_subtext/70 dark:text-d_subtext/70 font-serif italic">226 bài tuyển chọn</span>
+        </div>
     </aside>
+
+    <!-- MODAL AI SƯU TẦM & SÁNG TÁC THƠ MỚI -->
+    <div id="ai-modal" class="fixed inset-0 bg-black/45 dark:bg-black/65 z-50 hidden items-center justify-center p-4">
+        <div class="bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl max-w-lg w-full p-4 sm:p-5 shadow-2xl max-h-[90dvh] flex flex-col">
+            <div class="flex justify-between items-center pb-3 border-b border-l_border dark:border-d_border shrink-0">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent flex items-center justify-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif font-bold text-base sm:text-lg leading-tight">AI Sưu Tầm & Khởi Tạo Thơ</h3>
+                        <p class="text-[0.65rem] text-l_subtext dark:text-d_subtext">Tự động tìm & sáng tác thơ ca dao giao duyên phong cách xưa</p>
+                    </div>
+                </div>
+                <button onclick="closeAiModal()" class="w-8 h-8 rounded-full hover:bg-black/5 dark:hover:bg-white/10 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="py-3 space-y-3 text-xs overflow-y-auto flex-1 min-h-0">
+                <!-- Chọn nhanh chủ đề -->
+                <div>
+                    <label class="block font-semibold mb-1.5 text-l_subtext dark:text-d_subtext">Chọn chủ đề cảm hứng:</label>
+                    <div class="flex flex-wrap gap-1.5" id="ai-topic-pills">
+                        <button type="button" onclick="selectAiTopic(this, 'Thả thính khéo léo, duyên dáng')" class="ai-pill px-2.5 py-1.5 rounded-lg border border-l_accent dark:border-d_accent bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent font-semibold btn-interact">Thả thính duyên dáng</button>
+                        <button type="button" onclick="selectAiTopic(this, 'Tương tư, nhớ nhung đêm trăng')" class="ai-pill px-2.5 py-1.5 rounded-lg border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg text-l_subtext dark:text-d_subtext hover:border-l_accent btn-interact">Tương tư nhớ nhung</button>
+                        <button type="button" onclick="selectAiTopic(this, 'Hẹn ước trăm năm, duyên trầu cau')" class="ai-pill px-2.5 py-1.5 rounded-lg border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg text-l_subtext dark:text-d_subtext hover:border-l_accent btn-interact">Hẹn ước nên đôi</button>
+                        <button type="button" onclick="selectAiTopic(this, 'Lỡ duyên, tiếc nuối, chậm một bước')" class="ai-pill px-2.5 py-1.5 rounded-lg border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg text-l_subtext dark:text-d_subtext hover:border-l_accent btn-interact">Lỡ duyên tiếc nuối</button>
+                    </div>
+                </div>
+
+                <!-- Nhập ý tưởng tùy chỉnh & Số lượng -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div class="sm:col-span-2">
+                        <label class="block font-semibold mb-1 text-l_subtext dark:text-d_subtext">Hình ảnh / Từ khóa muốn có (tùy chọn):</label>
+                        <input id="ai-custom-prompt" type="text" placeholder="VD: Bến đò, hoa bưởi, nón quai thao, mưa chiều..." class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-l_accent dark:focus:border-d_accent">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-l_subtext dark:text-d_subtext">Số lượng:</label>
+                        <select id="ai-count-select" class="w-full bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-l_accent dark:focus:border-d_accent">
+                            <option value="1">1 bài thơ</option>
+                            <option value="3" selected>3 bài thơ</option>
+                            <option value="5">5 bài thơ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Nút bấm gọi AI -->
+                <button id="btn-run-ai" onclick="generatePoemsWithAI()" class="w-full py-2.5 rounded-xl bg-l_accent dark:bg-d_accent text-white dark:text-black font-semibold flex items-center justify-center gap-2 shadow-xs btn-interact">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span>Bắt đầu sưu tầm & sáng tác bằng AI</span>
+                </button>
+
+                <!-- Trạng thái Loading -->
+                <div id="ai-loading" class="hidden py-6 flex-col items-center justify-center text-center">
+                    <div class="w-8 h-8 border-2 border-l_accent dark:border-d_accent border-t-transparent rounded-full animate-spin mb-2"></div>
+                    <p class="font-serif italic text-sm text-l_text dark:text-d_text">Đang mài mực thảo thơ, kết ý giao duyên...</p>
+                </div>
+
+                <!-- Khu vực hiển thị kết quả từ AI -->
+                <div id="ai-results-wrapper" class="hidden space-y-2.5 pt-2 border-t border-l_border dark:border-d_border">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-l_accent dark:text-d_accent">Kết quả từ AI:</span>
+                        <button onclick="saveAllAiPoems()" class="px-3 py-1 rounded-lg bg-l_text text-l_bg dark:bg-d_text dark:text-d_bg font-semibold text-[0.7rem] btn-interact">
+                            + Lưu tất cả vào tuyển tập
+                        </button>
+                    </div>
+                    <div id="ai-results-list" class="space-y-2 max-h-[34dvh] overflow-y-auto pr-1">
+                        <!-- Các bài thơ AI tạo sẽ hiển thị tại đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XÁC NHẬN XÓA BÀI THƠ -->
+    <div id="delete-modal" class="fixed inset-0 bg-black/45 dark:bg-black/65 z-50 hidden items-center justify-center p-4">
+        <div class="bg-l_surface dark:bg-d_surface border border-l_border dark:border-d_border rounded-2xl max-w-sm w-full p-5 shadow-xl text-center">
+            <div class="w-11 h-11 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-regular fa-trash-can text-lg"></i>
+            </div>
+            <h3 class="font-serif font-bold text-lg mb-1">Xóa bài thơ này?</h3>
+            <p class="text-xs text-l_subtext dark:text-d_subtext mb-4 leading-relaxed">
+                Bạn có chắc muốn xóa bài <strong id="delete-poem-name" class="text-l_text dark:text-d_text">""</strong> khỏi danh sách hiển thị không?
+            </p>
+            <div class="flex items-center justify-center gap-2 text-xs">
+                <button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl border border-l_border dark:border-d_border hover:bg-l_bg dark:hover:bg-d_bg font-semibold btn-interact">Hủy</button>
+                <button onclick="confirmDeletePoem()" class="flex-1 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 btn-interact">Xóa bài thơ</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL THÊM BÀI THƠ MỚI (CHO PHÉP UPDATE TRỰC TIẾP) -->
     <div id="add-modal" class="fixed inset-0 bg-black/40 dark:bg-black/60 z-50 hidden items-center justify-center p-4">
@@ -1736,6 +1858,19 @@ Vẫn mong cuối bến con thuyền có đôi.
                     }, (error) => {
                         console.error("Lỗi đồng bộ bài thơ mới:", error);
                     });
+
+                    // Lắng nghe danh sách các bài thơ đã bị xóa
+                    const deletedRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'deleted_poems');
+                    onSnapshot(deletedRef, (snapshot) => {
+                        const delKeys = new Set();
+                        snapshot.forEach((docSnap) => {
+                            const data = docSnap.data();
+                            if (data && data.key) delKeys.add(data.key);
+                        });
+                        window.syncDeletedFromCloud(delKeys);
+                    }, (error) => {
+                        console.error("Lỗi đồng bộ danh sách xóa:", error);
+                    });
                 });
             } catch (e) {
                 console.warn("Chế độ lưu trên phiên hiện tại:", e);
@@ -1769,6 +1904,22 @@ Vẫn mong cuối bến con thuyền có đôi.
             }
         };
 
+        window.deletePoemOnCloud = async (poemObj) => {
+            if (!db || !currentUser || !poemObj) return;
+            try {
+                const docId = encodeURIComponent(poemObj.key);
+                const delRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'deleted_poems', docId);
+                await setDoc(delRef, { key: poemObj.key, deletedAt: Date.now() });
+
+                if (poemObj.isCustom) {
+                    const customRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'custom_poems', docId);
+                    await deleteDoc(customRef);
+                }
+            } catch (e) {
+                console.error("Không thể xóa bài thơ trên đám mây:", e);
+            }
+        };
+
         initCloudStorage();
     </script>
 
@@ -1780,22 +1931,310 @@ Vẫn mong cuối bến con thuyền có đôi.
         let currentIndex = 0;
         let isDarkMode = false;
         let fontSizes = [
-            'text-base sm:text-lg leading-[2]',
-            'text-lg sm:text-xl leading-[2] sm:leading-[2.25]',
-            'text-xl sm:text-2xl leading-[2.1] sm:leading-[2.35]'
+            'text-sm sm:text-lg leading-[1.85]',
+            'text-base sm:text-xl leading-[1.9] sm:leading-[2.2]',
+            'text-lg sm:text-2xl leading-[2.0] sm:leading-[2.3]'
         ];
         let currentFontSizeIndex = 1;
         let autoPlayInterval = null;
         let isAutoPlaying = false;
 
-        // Quản lý Lưu bài thơ & Tab mục lục
+        // Quản lý Lưu bài thơ, Xóa bài thơ & Tab mục lục
         let savedPoemKeys = new Set();
+        let deletedPoemKeys = new Set();
         let currentSidebarTab = 'all'; // 'all' | 'saved'
         let readingMode = 'all';       // 'all' | 'saved'
+        let pendingDeleteIndex = null;
+
+        // Quản lý AI tạo thơ
+        let selectedAiTopic = 'Thả thính khéo léo, duyên dáng';
+        let lastAiGeneratedPoems = [];
+
+        // =========================================================================
+        // HỆ THỐNG TỰ ĐỘNG LƯU COOKIE TRÌNH DUYỆT CHROME (KÈM INDEXEDDB DỰ PHÒNG)
+        // Tự động ghi nhớ bài đã lưu, bài tự thêm và vị trí đọc mà không cần thao tác
+        // =========================================================================
+        const COOKIE_SAVED = 'thica_saved_v2';
+        const COOKIE_DELETED = 'thica_deleted_v2';
+        const COOKIE_PREFS = 'thica_prefs_v2';
+        const COOKIE_CUSTOM_COUNT = 'thica_c_cnt';
+        const COOKIE_CUSTOM_PREFIX = 'thica_c_';
+        const IDB_NAME = 'ThiCaGiaoDuyenChromeDB';
+        const IDB_STORE = 'user_poems_store';
+
+        // Ghi Cookie chuẩn Chrome (Hạn 400 ngày - mức tối đa Chrome cho phép)
+        function setBrowserCookie(name, value, days = 400) {
+            try {
+                const d = new Date();
+                d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+                const expires = "expires=" + d.toUTCString();
+                const maxAge = "max-age=" + (days * 24 * 60 * 60);
+                const encoded = encodeURIComponent(value);
+                document.cookie = `${name}=${encoded}; ${expires}; ${maxAge}; path=/; SameSite=Lax`;
+            } catch (e) {
+                console.warn("Cookie write error:", e);
+            }
+        }
+
+        // Đọc Cookie theo tên
+        function getBrowserCookie(name) {
+            try {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i].trim();
+                    if (c.indexOf(nameEQ) === 0) {
+                        return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                    }
+                }
+            } catch (e) {
+                console.warn("Cookie read error:", e);
+            }
+            return null;
+        }
+
+        // Xóa một Cookie cụ thể
+        function removeBrowserCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/; SameSite=Lax`;
+        }
+
+        // Nén danh sách khóa bài thơ thành chuỗi ID siêu gọn để lưu mượt trên Cookie Chrome
+        function encodeKeysForCookie(keySet) {
+            const compactList = [];
+            keySet.forEach(k => {
+                const found = [...basePoems, ...customPoems].find(p => p.key === k);
+                if (found) {
+                    compactList.push(found.id);
+                } else {
+                    compactList.push(k);
+                }
+            });
+            return compactList.join('|');
+        }
+
+        // Giải mã chuỗi ID từ Cookie trở lại tập hợp khóa bài thơ chuẩn
+        function decodeKeysFromCookie(rawStr) {
+            const result = new Set();
+            if (!rawStr) return result;
+            const parts = rawStr.split('|').filter(Boolean);
+            const allKnown = [...basePoems, ...customPoems];
+            parts.forEach(token => {
+                const byId = allKnown.find(p => p.id === token || p.key === token);
+                if (byId) {
+                    result.add(byId.key);
+                } else if (token.includes('_')) {
+                    result.add(token);
+                }
+            });
+            return result;
+        }
+
+        // Lưu danh sách bài thơ tự thêm vào các Cookie phân mảnh
+        function saveCustomPoemsToCookies(list) {
+            try {
+                const oldCount = parseInt(getBrowserCookie(COOKIE_CUSTOM_COUNT) || '0', 10);
+                for (let i = 0; i < oldCount; i++) {
+                    removeBrowserCookie(COOKIE_CUSTOM_PREFIX + i);
+                }
+                if (!list || list.length === 0) {
+                    setBrowserCookie(COOKIE_CUSTOM_COUNT, '0');
+                    return;
+                }
+                const jsonStr = JSON.stringify(list);
+                const chunkSize = 1800;
+                const chunks = [];
+                for (let i = 0; i < jsonStr.length; i += chunkSize) {
+                    chunks.push(jsonStr.substring(i, i + chunkSize));
+                }
+                setBrowserCookie(COOKIE_CUSTOM_COUNT, String(chunks.length));
+                chunks.forEach((chunk, idx) => {
+                    setBrowserCookie(COOKIE_CUSTOM_PREFIX + idx, chunk);
+                });
+            } catch (e) {
+                console.warn("Chunked cookie error:", e);
+            }
+        }
+
+        // Đọc danh sách bài thơ tự thêm từ các Cookie phân mảnh
+        function loadCustomPoemsFromCookies() {
+            try {
+                const count = parseInt(getBrowserCookie(COOKIE_CUSTOM_COUNT) || '0', 10);
+                if (!count || count <= 0) return [];
+                let fullJson = '';
+                for (let i = 0; i < count; i++) {
+                    const part = getBrowserCookie(COOKIE_CUSTOM_PREFIX + i);
+                    if (part !== null) fullJson += part;
+                }
+                if (!fullJson) return [];
+                const parsed = JSON.parse(fullJson);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Kết nối IndexedDB dự phòng ngầm trên Chrome
+        function openChromeIDB() {
+            return new Promise((resolve) => {
+                if (!window.indexedDB) return resolve(null);
+                try {
+                    const req = indexedDB.open(IDB_NAME, 1);
+                    req.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(IDB_STORE)) {
+                            db.createObjectStore(IDB_STORE);
+                        }
+                    };
+                    req.onsuccess = (e) => resolve(e.target.result);
+                    req.onerror = () => resolve(null);
+                } catch (err) {
+                    resolve(null);
+                }
+            });
+        }
+
+        async function saveToChromeIDB(payload) {
+            const db = await openChromeIDB();
+            if (!db) return;
+            try {
+                const tx = db.transaction(IDB_STORE, 'readwrite');
+                tx.objectStore(IDB_STORE).put(payload, 'app_state');
+            } catch (e) {}
+        }
+
+        async function loadFromChromeIDB() {
+            const db = await openChromeIDB();
+            if (!db) return null;
+            return new Promise((resolve) => {
+                try {
+                    const tx = db.transaction(IDB_STORE, 'readonly');
+                    const req = tx.objectStore(IDB_STORE).get('app_state');
+                    req.onsuccess = () => resolve(req.result || null);
+                    req.onerror = () => resolve(null);
+                } catch (e) {
+                    resolve(null);
+                }
+            });
+        }
+
+        // Ghi toàn bộ trạng thái hiện tại vào Cookies trình duyệt Chrome + IndexedDB
+        function persistStateToBrowser() {
+            saveCustomPoemsToCookies(customPoems);
+            setBrowserCookie(COOKIE_SAVED, encodeKeysForCookie(savedPoemKeys));
+            setBrowserCookie(COOKIE_DELETED, encodeKeysForCookie(deletedPoemKeys));
+
+            const currentPoemKey = poems[currentIndex]?.key || '';
+            const prefs = {
+                k: currentPoemKey,
+                d: isDarkMode ? 1 : 0,
+                f: currentFontSizeIndex,
+                m: readingMode
+            };
+            setBrowserCookie(COOKIE_PREFS, JSON.stringify(prefs));
+
+            saveToChromeIDB({
+                savedKeys: Array.from(savedPoemKeys),
+                deletedKeys: Array.from(deletedPoemKeys),
+                customPoems: customPoems,
+                prefs: prefs,
+                updatedAt: Date.now()
+            });
+
+            const statusText = document.getElementById('cookie-status-text');
+            if (statusText) {
+                statusText.textContent = `Đã lưu tự động (${savedPoemKeys.size} bài yêu thích)`;
+            }
+        }
+
+        // Khôi phục dữ liệu từ Cookie + IndexedDB khi mở Chrome
+        async function restoreStateFromBrowser() {
+            const cookieCustoms = loadCustomPoemsFromCookies();
+            if (cookieCustoms.length > 0) {
+                customPoems = cookieCustoms;
+                rebuildActivePoems();
+            }
+
+            const rawSavedCookie = getBrowserCookie(COOKIE_SAVED);
+            const rawDeletedCookie = getBrowserCookie(COOKIE_DELETED);
+            const rawPrefsCookie = getBrowserCookie(COOKIE_PREFS);
+
+            if (rawSavedCookie) {
+                decodeKeysFromCookie(rawSavedCookie).forEach(k => savedPoemKeys.add(k));
+            }
+            if (rawDeletedCookie) {
+                decodeKeysFromCookie(rawDeletedCookie).forEach(k => deletedPoemKeys.add(k));
+            }
+
+            let savedPrefs = null;
+            if (rawPrefsCookie) {
+                try { savedPrefs = JSON.parse(rawPrefsCookie); } catch (e) {}
+            }
+
+            const idbData = await loadFromChromeIDB();
+            if (idbData) {
+                if (Array.isArray(idbData.customPoems) && idbData.customPoems.length > 0) {
+                    const existingKeys = new Set(customPoems.map(p => p.key));
+                    idbData.customPoems.forEach(cp => {
+                        if (cp && cp.key && !existingKeys.has(cp.key)) {
+                            customPoems.push(cp);
+                        }
+                    });
+                }
+                rebuildActivePoems();
+
+                if (Array.isArray(idbData.savedKeys)) {
+                    idbData.savedKeys.forEach(k => {
+                        if (!deletedPoemKeys.has(k)) savedPoemKeys.add(k);
+                    });
+                }
+                if (Array.isArray(idbData.deletedKeys)) {
+                    idbData.deletedKeys.forEach(k => deletedPoemKeys.add(k));
+                }
+                if (!savedPrefs && idbData.prefs) {
+                    savedPrefs = idbData.prefs;
+                }
+            }
+
+            rebuildActivePoems();
+
+            if (savedPrefs) {
+                if (typeof savedPrefs.d === 'number') {
+                    isDarkMode = savedPrefs.d === 1;
+                    document.documentElement.classList.toggle('dark', isDarkMode);
+                    updateThemeIcon();
+                }
+                if (typeof savedPrefs.f === 'number' && savedPrefs.f >= 0 && savedPrefs.f < fontSizes.length) {
+                    const pContent = document.getElementById('p-content');
+                    pContent.classList.remove(...fontSizes[currentFontSizeIndex].split(' '));
+                    currentFontSizeIndex = savedPrefs.f;
+                    pContent.classList.add(...fontSizes[currentFontSizeIndex].split(' '));
+                }
+                if (savedPrefs.m === 'saved' && savedPoemKeys.size > 0) {
+                    readingMode = 'saved';
+                    const banner = document.getElementById('saved-mode-banner');
+                    banner.classList.remove('hidden');
+                    banner.classList.add('flex');
+                }
+                if (savedPrefs.k) {
+                    const idx = poems.findIndex(p => p.key === savedPrefs.k);
+                    if (idx !== -1) currentIndex = idx;
+                }
+            }
+
+            persistStateToBrowser();
+        }
 
         // Tạo khóa định danh duy nhất cho mỗi bài thơ
         function makePoemKey(id, title) {
             return `${id}_${title}`;
+        }
+
+        // Gộp danh sách bài thơ gốc + bài thơ thêm mới và loại trừ các bài đã xóa
+        function rebuildActivePoems() {
+            poems = [...basePoems, ...customPoems].filter(p => !deletedPoemKeys.has(p.key));
+            if (currentIndex >= poems.length) {
+                currentIndex = Math.max(0, poems.length - 1);
+            }
         }
 
         // Trình phân tích văn bản tự động (Trích xuất đủ 226 bài thơ từ Raw Text)
@@ -1874,42 +2313,78 @@ Vẫn mong cuối bến con thuyền có đôi.
                 basePoems.push({...currentPoem});
             }
 
-            poems = [...basePoems, ...customPoems];
+            rebuildActivePoems();
         }
 
         // Khởi tạo ứng dụng
-        function init() {
+        async function init() {
             extractData();
-            populateCategoryFilter();
 
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add('dark');
                 isDarkMode = true;
                 updateThemeIcon();
             }
-            
+
+            // Khôi phục dữ liệu từ Cookie & IndexedDB trên trình duyệt
+            await restoreStateFromBrowser();
+
+            populateCategoryFilter();
             buildSidebar();
             updateSavedCounters();
             renderPoem(currentIndex, true);
+
+            // Tự động làm mới hạn Cookie mỗi khi người dùng quay lại tab trên Safari iOS
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    persistStateToBrowser();
+                }
+            });
         }
 
-        // Đồng bộ danh sách đã lưu từ Cloud
+        // Đồng bộ danh sách đã lưu từ Cloud (Hợp nhất với Cookie để không ghi đè mất dữ liệu local)
         window.syncSavedFromCloud = function(cloudKeys) {
-            savedPoemKeys = cloudKeys;
+            if (cloudKeys && cloudKeys.size > 0) {
+                cloudKeys.forEach(k => {
+                    if (!deletedPoemKeys.has(k)) savedPoemKeys.add(k);
+                });
+                persistStateToBrowser();
+            }
             updateSavedCounters();
             updateCurrentPoemSaveUI();
             refreshSidebarVisibility();
         };
 
-        // Đồng bộ bài thơ tự thêm từ Cloud
+        // Đồng bộ bài thơ tự thêm từ Cloud (Hợp nhất với Cookie)
         window.syncCustomPoemsFromCloud = function(cloudCustomPoems) {
-            cloudCustomPoems.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-            customPoems = cloudCustomPoems;
-            poems = [...basePoems, ...customPoems];
-            populateCategoryFilter();
-            buildSidebar();
-            updateSavedCounters();
-            renderPoem(currentIndex, true);
+            if (Array.isArray(cloudCustomPoems) && cloudCustomPoems.length > 0) {
+                const existingKeys = new Set(customPoems.map(p => p.key));
+                cloudCustomPoems.forEach(cp => {
+                    if (cp && cp.key && !existingKeys.has(cp.key) && !deletedPoemKeys.has(cp.key)) {
+                        customPoems.push(cp);
+                    }
+                });
+                customPoems.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                rebuildActivePoems();
+                persistStateToBrowser();
+                populateCategoryFilter();
+                buildSidebar();
+                updateSavedCounters();
+                renderPoem(currentIndex, true);
+            }
+        };
+
+        // Đồng bộ danh sách bài thơ đã xóa từ Cloud
+        window.syncDeletedFromCloud = function(cloudDeletedKeys) {
+            if (cloudDeletedKeys && cloudDeletedKeys.size > 0) {
+                cloudDeletedKeys.forEach(k => deletedPoemKeys.add(k));
+                rebuildActivePoems();
+                persistStateToBrowser();
+                populateCategoryFilter();
+                buildSidebar();
+                updateSavedCounters();
+                renderPoem(currentIndex, true);
+            }
         };
 
         // Xây dựng bộ lọc chủ đề trong Sidebar
@@ -1960,6 +2435,7 @@ Vẫn mong cuối bến con thuyền có đôi.
                 
                 updateCurrentPoemSaveUI();
                 updateSidebarActive();
+                persistStateToBrowser();
                 
                 requestAnimationFrame(() => {
                     container.classList.remove('poem-hidden');
@@ -2011,6 +2487,7 @@ Vẫn mong cuối bến con thuyền có đôi.
             updateSavedCounters();
             updateSidebarItemSaveIcon(poemKey);
             refreshSidebarVisibility();
+            persistStateToBrowser();
 
             if (window.saveBookmarkToCloud) {
                 window.saveBookmarkToCloud(poemKey, isNowSaved);
@@ -2211,6 +2688,7 @@ Vẫn mong cuối bến con thuyền có đôi.
                 document.documentElement.classList.remove('dark');
             }
             updateThemeIcon();
+            persistStateToBrowser();
         }
 
         function updateThemeIcon() {
@@ -2233,6 +2711,7 @@ Vẫn mong cuối bến con thuyền có đôi.
             pContent.classList.add(...newClasses);
             
             let sizeName = currentFontSizeIndex === 0 ? 'Nhỏ' : (currentFontSizeIndex === 1 ? 'Vừa' : 'Lớn');
+            persistStateToBrowser();
             showToast(`Cỡ chữ: ${sizeName}`);
         }
 
@@ -2277,10 +2756,13 @@ Vẫn mong cuối bến con thuyền có đôi.
                     </div>
                 `;
 
-                // Nút Lưu/Bỏ lưu nhanh ngay trong danh sách
+                // Cụm nút Lưu & Xóa nhanh ngay trong danh sách
+                const actionsWrap = document.createElement('div');
+                actionsWrap.className = "flex items-center gap-0.5 shrink-0";
+
                 const saveBtn = document.createElement('button');
                 saveBtn.id = `sb-save-${index}`;
-                saveBtn.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 hover:bg-black/5 dark:hover:bg-white/10 btn-interact ${isSaved ? 'text-l_accent dark:text-d_accent' : 'text-l_subtext/40 dark:text-d_subtext/40 hover:text-l_accent'}`;
+                saveBtn.className = `w-7 h-7 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 btn-interact ${isSaved ? 'text-l_accent dark:text-d_accent' : 'text-l_subtext/40 dark:text-d_subtext/40 hover:text-l_accent'}`;
                 saveBtn.title = "Lưu / Bỏ lưu bài thơ";
                 saveBtn.innerHTML = `<i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark text-xs"></i>`;
                 saveBtn.onclick = (e) => {
@@ -2288,8 +2770,20 @@ Vẫn mong cuối bến con thuyền có đôi.
                     toggleSaveByKey(poem.key, false);
                 };
 
+                const delBtn = document.createElement('button');
+                delBtn.className = `w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-500/10 text-l_subtext/35 dark:text-d_subtext/35 hover:text-red-600 dark:hover:text-red-400 btn-interact`;
+                delBtn.title = "Xóa bài thơ";
+                delBtn.innerHTML = `<i class="fa-regular fa-trash-can text-[0.7rem]"></i>`;
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    promptDeletePoem(index);
+                };
+
+                actionsWrap.appendChild(saveBtn);
+                actionsWrap.appendChild(delBtn);
+
                 row.appendChild(mainClickArea);
-                row.appendChild(saveBtn);
+                row.appendChild(actionsWrap);
                 frag.appendChild(row);
             });
             container.appendChild(frag);
@@ -2451,20 +2945,35 @@ Vẫn mong cuối bến con thuyền có đôi.
                 return;
             }
 
-            const newId = String(poems.length + 1).padStart(3, '0');
+            addPoemObjectToCollection(title, category, content, true);
+
+            titleInput.value = '';
+            contentInput.value = '';
+            closeAddModal();
+            showToast("Đã thêm và lưu bài thơ mới!");
+        }
+
+        // Hàm dùng chung để thêm bài thơ mới (từ form thủ công hoặc từ AI)
+        function addPoemObjectToCollection(title, category, content, jumpToNew = true) {
+            const nextNum = basePoems.length + customPoems.length + 1;
+            const newId = String(nextNum).padStart(3, '0');
+            const cleanTitle = title.trim().toUpperCase();
+            const cleanCat = (category || "THƠ AI SÁNG TÁC").trim().toUpperCase();
+            const cleanContent = content.trim();
+
             const newPoem = {
                 id: newId,
-                title: title,
-                category: category,
-                content: content,
-                key: makePoemKey(newId, title),
+                title: cleanTitle,
+                category: cleanCat,
+                content: cleanContent,
+                key: makePoemKey(newId, cleanTitle),
                 isCustom: true,
                 createdAt: Date.now()
             };
 
             customPoems.push(newPoem);
-            poems = [...basePoems, ...customPoems];
-            savedPoemKeys.add(newPoem.key); // Tự động lưu bài thơ vừa thêm
+            savedPoemKeys.add(newPoem.key);
+            rebuildActivePoems();
 
             if (window.saveCustomPoemToCloud) {
                 window.saveCustomPoemToCloud(newPoem);
@@ -2476,14 +2985,213 @@ Vẫn mong cuối bến con thuyền có đôi.
             populateCategoryFilter();
             buildSidebar();
             updateSavedCounters();
+            persistStateToBrowser();
 
-            currentIndex = poems.length - 1;
-            renderPoem(currentIndex);
+            if (jumpToNew) {
+                currentIndex = poems.length - 1;
+                renderPoem(currentIndex);
+            }
+        }
 
-            titleInput.value = '';
-            contentInput.value = '';
-            closeAddModal();
-            showToast("Đã thêm và lưu bài thơ mới!");
+        // ==========================================
+        // CHỨC NĂNG XÓA BÀI THƠ
+        // ==========================================
+        function promptDeletePoem(index) {
+            if (!poems[index]) return;
+            pendingDeleteIndex = index;
+            document.getElementById('delete-poem-name').textContent = poems[index].title;
+            const modal = document.getElementById('delete-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            pendingDeleteIndex = null;
+            const modal = document.getElementById('delete-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmDeletePoem() {
+            if (pendingDeleteIndex === null || !poems[pendingDeleteIndex]) {
+                closeDeleteModal();
+                return;
+            }
+            const targetPoem = poems[pendingDeleteIndex];
+            deletedPoemKeys.add(targetPoem.key);
+
+            if (savedPoemKeys.has(targetPoem.key)) {
+                savedPoemKeys.delete(targetPoem.key);
+                if (window.saveBookmarkToCloud) {
+                    window.saveBookmarkToCloud(targetPoem.key, false);
+                }
+            }
+
+            if (targetPoem.isCustom) {
+                customPoems = customPoems.filter(p => p.key !== targetPoem.key);
+            }
+
+            if (window.deletePoemOnCloud) {
+                window.deletePoemOnCloud(targetPoem);
+            }
+
+            rebuildActivePoems();
+            populateCategoryFilter();
+            buildSidebar();
+            updateSavedCounters();
+            persistStateToBrowser();
+
+            if (poems.length > 0) {
+                renderPoem(currentIndex, true);
+            } else {
+                document.getElementById('p-title').textContent = "TỦ THƠ TRỐNG";
+                document.getElementById('p-content').textContent = "Bạn đã xóa hết bài thơ. Hãy bấm nút AI Thơ hoặc dấu + để thêm bài mới.";
+                document.getElementById('poem-counter').textContent = "0/0";
+            }
+
+            closeDeleteModal();
+            showToast(`Đã xóa bài "${targetPoem.title}"`);
+        }
+
+        // ==========================================
+        // CHỨC NĂNG AI SƯU TẦM & SÁNG TÁC THƠ (GEMINI API)
+        // ==========================================
+        function openAiModal() {
+            const modal = document.getElementById('ai-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAiModal() {
+            const modal = document.getElementById('ai-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function selectAiTopic(btnEl, topic) {
+            selectedAiTopic = topic;
+            document.querySelectorAll('.ai-pill').forEach(btn => {
+                btn.className = "ai-pill px-2.5 py-1.5 rounded-lg border border-l_border dark:border-d_border bg-l_bg dark:bg-d_bg text-l_subtext dark:text-d_subtext hover:border-l_accent btn-interact";
+            });
+            btnEl.className = "ai-pill px-2.5 py-1.5 rounded-lg border border-l_accent dark:border-d_accent bg-l_accent/10 dark:bg-d_accent/15 text-l_accent dark:text-d_accent font-semibold btn-interact";
+        }
+
+        async function fetchGeminiWithRetry(payload, maxRetries = 4) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            let delay = 1000;
+
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return await response.json();
+                } catch (err) {
+                    if (attempt === maxRetries) throw err;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function generatePoemsWithAI() {
+            const customIdea = document.getElementById('ai-custom-prompt').value.trim();
+            const count = parseInt(document.getElementById('ai-count-select').value, 10) || 3;
+            const loadingEl = document.getElementById('ai-loading');
+            const resultsWrapper = document.getElementById('ai-results-wrapper');
+            const resultsList = document.getElementById('ai-results-list');
+            const btnRun = document.getElementById('btn-run-ai');
+
+            loadingEl.classList.remove('hidden');
+            loadingEl.classList.add('flex');
+            resultsWrapper.classList.add('hidden');
+            btnRun.disabled = true;
+            btnRun.classList.add('opacity-50');
+
+            const systemPrompt = "Bạn là một nhà sưu tầm ca dao dân gian và thi sĩ cổ phong Việt Nam. Hãy sưu tầm hoặc sáng tác các bài thơ lục bát / ca dao giao duyên 4 câu ngắn gọn, giàu hình ảnh quê hương (bến đò, trăng thanh, vườn đào, trầu cau, nón lá...), vần điệu chuẩn xác, ý tứ sâu sắc và lãng mạn.";
+            const userQuery = `Hãy tạo ${count} bài thơ lục bát hoặc ca dao giao duyên ngắn (4 câu mỗi bài) theo chủ đề: "${selectedAiTopic}". ${customIdea ? `Kết hợp tinh tế với hình ảnh/ý tưởng: "${customIdea}".` : ''} Trả về đúng định dạng JSON.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                title: { type: "STRING", description: "Tựa đề bài thơ viết IN HOA ngắn gọn (3-5 chữ)" },
+                                category: { type: "STRING", description: "Nhãn chủ đề ngắn gọn" },
+                                content: { type: "STRING", description: "Nội dung 4 câu thơ lục bát, mỗi câu cách nhau bởi dấu xuống dòng \\n" }
+                            },
+                            required: ["title", "category", "content"],
+                            propertyOrdering: ["title", "category", "content"]
+                        }
+                    }
+                }
+            };
+
+            try {
+                const result = await fetchGeminiWithRetry(payload);
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) throw new Error("Empty response");
+
+                const parsedPoems = JSON.parse(text);
+                lastAiGeneratedPoems = Array.isArray(parsedPoems) ? parsedPoems : [];
+
+                resultsList.innerHTML = '';
+                lastAiGeneratedPoems.forEach((item, idx) => {
+                    const card = document.createElement('div');
+                    card.className = "p-3 rounded-xl bg-l_bg dark:bg-d_bg border border-l_border dark:border-d_border flex flex-col gap-1.5";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-serif font-bold text-sm text-l_accent dark:text-d_accent">${item.title}</span>
+                            <button onclick="saveSingleAiPoem(${idx}, this)" class="px-2.5 py-1 rounded-lg bg-l_accent/15 dark:bg-d_accent/20 text-l_accent dark:text-d_accent font-semibold text-[0.68rem] hover:bg-l_accent hover:text-white dark:hover:bg-d_accent dark:hover:text-black btn-interact shrink-0">
+                                + Lưu & Đọc
+                            </button>
+                        </div>
+                        <div class="font-serif text-xs leading-relaxed text-l_text dark:text-d_text whitespace-pre-line">${item.content}</div>
+                    `;
+                    resultsList.appendChild(card);
+                });
+
+                resultsWrapper.classList.remove('hidden');
+            } catch (error) {
+                showToast("AI đang bận một chút, bạn hãy bấm thử lại nhé!");
+            } finally {
+                loadingEl.classList.add('hidden');
+                loadingEl.classList.remove('flex');
+                btnRun.disabled = false;
+                btnRun.classList.remove('opacity-50');
+            }
+        }
+
+        function saveSingleAiPoem(idx, btnEl) {
+            const item = lastAiGeneratedPoems[idx];
+            if (!item) return;
+            addPoemObjectToCollection(item.title, `AI • ${selectedAiTopic.split(',')[0]}`, item.content, true);
+            if (btnEl) {
+                btnEl.textContent = "Đã lưu ✓";
+                btnEl.disabled = true;
+                btnEl.classList.add('opacity-50');
+            }
+            showToast(`Đã thêm bài "${item.title}"!`);
+        }
+
+        function saveAllAiPoems() {
+            if (!lastAiGeneratedPoems.length) return;
+            lastAiGeneratedPoems.forEach((item, i) => {
+                const isLast = i === lastAiGeneratedPoems.length - 1;
+                addPoemObjectToCollection(item.title, `AI • ${selectedAiTopic.split(',')[0]}`, item.content, isLast);
+            });
+            closeAiModal();
+            showToast(`Đã thêm ${lastAiGeneratedPoems.length} bài thơ AI vào tuyển tập!`);
+            lastAiGeneratedPoems = [];
         }
 
         // Hỗ trợ bàn phím máy tính và vuốt màn hình cảm ứng (Swipe)
@@ -2496,6 +3204,8 @@ Vẫn mong cuối bến con thuyền có đôi.
             if (e.key === 'Escape') {
                 closeSidebar();
                 closeAddModal();
+                closeAiModal();
+                closeDeleteModal();
             }
         });
 

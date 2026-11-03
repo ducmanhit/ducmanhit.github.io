@@ -52,7 +52,22 @@
     </script>
 
     <style>
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+        
+        html, body {
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        button, [role="button"], [role="switch"], nav {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
         
         /* Chống tự động phóng to (Auto-zoom) trên iOS/Android khi chạm vào ô nhập chữ */
         input, textarea, select {
@@ -580,16 +595,16 @@
             </div>
         </div>
 
-        <!-- THANH ĐIỀU KHIỂN LIQUID GLASS DƯỚI CÙNG (GỌN GÀNG, CHỈ DÙNG MŨI TÊN, KHÔNG TRÀN VIỀN) -->
-        <nav aria-label="Điều khiển bài thơ" class="w-fit max-w-full mt-2.5 sm:mt-4 shrink-0 glisse-dock rounded-full p-1.5 sm:p-2 flex items-center justify-center gap-1.5 sm:gap-2.5 z-30 relative">
+        <!-- THANH ĐIỀU KHIỂN LIQUID GLASS DƯỚI CÙNG (DÀI BẰNG KHUNG THƠ, ĐỐI XỨNG CÂN ĐỐI) -->
+        <nav aria-label="Điều khiển bài thơ" class="w-full max-w-2xl mt-2.5 sm:mt-4 shrink-0 glisse-dock rounded-full p-1.5 sm:p-2 flex items-center justify-between gap-1.5 sm:gap-3 z-30 relative">
             
-            <!-- Nút Trước (Chỉ để mũi tên gọn đẹp) -->
-            <button onclick="prevPoem()" aria-label="Bài trước" title="Bài trước (Phím mũi tên trái)" class="glisse-btn glisse-nav-pill h-10 sm:h-11 w-12 sm:w-16 rounded-full flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-arrow-left-long text-sm text-l_accent dark:text-d_accent"></i>
+            <!-- Nút Trước (Mũi tên trái) -->
+            <button onclick="prevPoem()" aria-label="Bài trước" title="Bài trước (Phím mũi tên trái)" class="glisse-btn glisse-nav-pill h-10 sm:h-11 w-14 sm:w-24 rounded-full flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-arrow-left-long text-sm sm:text-base text-l_accent dark:text-d_accent"></i>
             </button>
 
             <!-- Cụm công cụ trung tâm: Lưu bài • Bật/Tắt Ngẫu nhiên • Chia sẻ • Tự chạy -->
-            <div class="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 rounded-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.05]">
+            <div class="flex-1 flex items-center justify-evenly sm:justify-center gap-1 sm:gap-2.5 px-2 sm:px-4 py-0.5 rounded-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.05] max-w-[260px] sm:max-w-xs">
                 <!-- Nút Lưu bài (Bật/Tắt) -->
                 <button onclick="toggleSaveCurrentPoem()" id="dock-save-btn" aria-label="Lưu bài" title="Lưu bài thơ (Phím S)" class="glisse-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-l_text dark:text-d_text shrink-0">
                     <i id="dock-save-icon" class="fa-regular fa-bookmark text-xs sm:text-sm"></i>
@@ -614,7 +629,7 @@
                 <div class="glisse-divider mx-0.5"></div>
 
                 <!-- Cụm Tự chạy: <Switch /> + Menu chọn thời gian 5s / 10s / 15s & Đếm ngược -->
-                <div class="flex items-center gap-1 pl-1 pr-1 h-9 sm:h-10 rounded-full">
+                <div class="flex items-center gap-1 pl-0.5 pr-0.5 h-9 sm:h-10 rounded-full shrink-0">
                     <button type="button" role="switch" id="btn-autoplay" aria-label="Tự chạy" aria-checked="false" onclick="toggleAutoPlay()" class="glisse-switch shrink-0" title="Bật/Tắt tự động chuyển bài">
                         <div class="glisse-switch-thumb flex items-center justify-center">
                             <i id="icon-autoplay" class="fa-solid fa-play text-[0.5rem] text-l_accent dark:text-d_accent opacity-80"></i>
@@ -625,9 +640,9 @@
                 </div>
             </div>
 
-            <!-- Nút Tiếp (Chỉ để mũi tên gọn đẹp, đối xứng hoàn toàn với nút Trước) -->
-            <button onclick="nextPoem()" aria-label="Bài tiếp theo" title="Bài tiếp theo (Phím mũi tên phải)" class="glisse-btn glisse-nav-pill h-10 sm:h-11 w-12 sm:w-16 rounded-full flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-arrow-right-long text-sm text-l_accent dark:text-d_accent"></i>
+            <!-- Nút Tiếp (Mũi tên phải, đối xứng hoàn toàn với nút Trước) -->
+            <button onclick="nextPoem()" aria-label="Bài tiếp theo" title="Bài tiếp theo (Phím mũi tên phải)" class="glisse-btn glisse-nav-pill h-10 sm:h-11 w-14 sm:w-24 rounded-full flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-arrow-right-long text-sm sm:text-base text-l_accent dark:text-d_accent"></i>
             </button>
         </nav>
     </main>
@@ -3587,6 +3602,20 @@ Vẫn mong cuối bến con thuyền có đôi.
                 else prevPoem();
             }
         }, { passive: true });
+
+        // Chặn hoàn toàn phóng to màn hình khi chạm đúp (Double-tap Zoom)
+        document.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        let lastTouchEndTime = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEndTime <= 300) {
+                if (e.cancelable) e.preventDefault();
+            }
+            lastTouchEndTime = now;
+        }, { passive: false });
 
         window.onload = init;
     </script>
